@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+
+    // Users collection is the root for per-user chat documents
+    match /users/{uid} {
+      // A user may only read their own user subtree
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      // Disallow blind writes at this level (use subpaths rules)
+      allow write: if false;
+
+      // Chat contact document (conversation metadata)
+      match /chats/{peerId} {
+        allow read: if isSignedIn() && request.auth.uid == uid;
+
+        // Allow participants to update meta fields like lastMessage, timeSent, isTyping, unreadCount
+        allow update: if isSignedIn() && (request.auth.uid == uid || request.auth.uid == peerId)
+          && request.resource.data.keys().hasOnly([
+              'contactId', 'lastMessage', 'timeSent', 'isRecipient',
+              'isTyping', 'unreadCount', 'name', 'profilePic', 'jobTitle'
+            ])
+          && request.resource.data.contactId == resource.data.contactId;
+        allow create, delete: if false; // created implicitly via messages
+
+        // Messages subcollection
+        match /messages/{messageId} {
+          // Either participant may read
+          allow read: if isSignedIn() && (request.auth.uid == uid || request.auth.uid == peerId);
+
+          // Create rules: only a participant may create, and senderId must match the authenticated user.
+          allow create: if isSignedIn()
+            && request.resource.data.senderId == request.auth.uid
+            && (
+              // Writing under sender's branch
+              (uid == request.auth.uid && peerId == request.resource.data.receiverId)
+              // Fan-out write under receiver's branch
+              || (uid == request.resource.data.receiverId && peerId == request.auth.uid)
+            )
+            && request.resource.data.keys().hasOnly([
+                'senderId','receiverId','text','type','timeSent','messageId','isSeen','mediaInfo','repliedMsg'
+              ]);
+
+          // Update rules:
+          // 1) Mark seen: only the receiver may change isSeen from false -> true, without altering other fields.
+          allow update: if isSignedIn()
+            && (
+              (
+                request.auth.uid == resource.data.receiverId
+                && resource.data.isSeen == false
+                && request.resource.data.isSeen == true
+                && request.resource.data.diff(resource.data).changedKeys().hasOnly(['isSeen'])
+              )
+            );
+
+          // Delete rules:
+          // - Either participant may delete in their own branch.
+          // - Sender may also delete the mirrored copy in the peer's branch.
+          allow delete: if isSignedIn() && (
+            request.auth.uid == uid // own branch
+            || request.auth.uid == resource.data.senderId // sender deleting mirrored copy
+          );
+        }
+      }
+    }
+  }
+}
+

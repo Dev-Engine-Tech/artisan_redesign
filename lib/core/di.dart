@@ -1,0 +1,405 @@
+import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source.dart';
+import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source_fake.dart';
+import 'package:artisans_circle/features/jobs/data/repositories/job_repository_impl.dart';
+import 'package:artisans_circle/features/jobs/domain/repositories/job_repository.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_jobs.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
+import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
+
+import 'package:artisans_circle/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:artisans_circle/features/auth/data/datasources/auth_remote_data_source_fake.dart';
+import 'package:artisans_circle/features/auth/data/datasources/auth_remote_data_source_impl.dart';
+import 'package:artisans_circle/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:artisans_circle/features/auth/domain/repositories/auth_repository.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/sign_in.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/sign_up.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/is_signed_in.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/get_current_user.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/sign_out.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/sign_in_with_google.dart';
+import 'package:artisans_circle/features/auth/domain/usecases/sign_in_with_apple.dart';
+import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
+import 'api/endpoints.dart';
+import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dart';
+import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
+    if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart'
+    as ssl;
+// Catalog feature
+import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
+import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
+import 'package:artisans_circle/features/catalog/data/repositories/catalog_repository_impl.dart';
+import 'package:artisans_circle/features/catalog/domain/repositories/catalog_repository.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/get_my_catalog_items.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/get_catalog_by_user.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/create_catalog.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/update_catalog.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/delete_catalog.dart';
+import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_bloc.dart';
+import 'package:artisans_circle/features/catalog/data/datasources/catalog_requests_remote_data_source.dart';
+import 'package:artisans_circle/features/catalog/data/repositories/catalog_requests_repository_impl.dart';
+import 'package:artisans_circle/features/catalog/domain/repositories/catalog_requests_repository.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/get_catalog_requests.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/get_catalog_request_details.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/approve_catalog_request.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/decline_catalog_request.dart';
+import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
+import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
+// Avoid importing Flutter widget types in core DI; pages import DI instead when needed.
+// Account feature
+import 'package:artisans_circle/features/account/data/datasources/account_remote_data_source.dart';
+import 'package:artisans_circle/features/account/data/repositories/account_repository_impl.dart';
+import 'package:artisans_circle/features/account/domain/repositories/account_repository.dart';
+import 'package:artisans_circle/features/account/domain/usecases/get_user_profile.dart';
+import 'package:artisans_circle/features/account/domain/usecases/update_user_profile.dart';
+import 'package:artisans_circle/features/account/domain/usecases/get_earnings.dart';
+import 'package:artisans_circle/features/account/domain/usecases/get_transactions.dart';
+import 'package:artisans_circle/features/account/domain/usecases/request_withdrawal.dart';
+import 'package:artisans_circle/features/account/domain/usecases/get_bank_accounts.dart';
+import 'package:artisans_circle/features/account/domain/usecases/add_bank_account.dart';
+import 'package:artisans_circle/features/account/domain/usecases/delete_bank_account.dart';
+import 'package:artisans_circle/features/account/domain/usecases/change_password.dart';
+import 'package:artisans_circle/features/account/domain/usecases/delete_account.dart';
+import 'package:artisans_circle/features/account/domain/usecases/upload_profile_image.dart';
+import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
+import 'package:artisans_circle/features/account/domain/usecases/add_skill.dart';
+import 'package:artisans_circle/features/account/domain/usecases/remove_skill.dart';
+import 'package:artisans_circle/features/account/domain/usecases/add_work_experience.dart';
+import 'package:artisans_circle/features/account/domain/usecases/update_work_experience.dart';
+import 'package:artisans_circle/features/account/domain/usecases/delete_work_experience.dart';
+import 'package:artisans_circle/features/account/domain/usecases/add_education.dart';
+import 'package:artisans_circle/features/account/domain/usecases/update_education.dart';
+import 'package:artisans_circle/features/account/domain/usecases/delete_education.dart';
+import 'package:artisans_circle/features/account/domain/usecases/get_bank_list.dart';
+import 'package:artisans_circle/features/account/domain/usecases/verify_bank_account.dart';
+import 'package:artisans_circle/features/account/domain/usecases/set_withdrawal_pin.dart';
+import 'package:artisans_circle/features/account/domain/usecases/verify_withdrawal_pin.dart';
+// Messages feature
+import 'package:artisans_circle/features/messages/data/datasources/messages_in_memory_data_source.dart';
+import 'package:artisans_circle/features/messages/data/repositories/messages_repository_impl.dart';
+import 'package:artisans_circle/features/messages/data/repositories/messages_repository_firebase.dart';
+import 'package:artisans_circle/features/messages/domain/repositories/messages_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart' as fb;
+import 'package:firebase_auth/firebase_auth.dart' as fba;
+// Notifications feature
+import 'package:artisans_circle/features/notifications/data/datasources/notification_remote_data_source.dart';
+import 'package:artisans_circle/features/notifications/data/datasources/notification_remote_data_source_impl.dart';
+import 'package:artisans_circle/features/notifications/data/repositories/notification_repository_impl.dart';
+import 'package:artisans_circle/features/notifications/domain/repositories/notification_repository.dart';
+
+final GetIt getIt = GetIt.instance;
+
+// Allow opting into insecure TLS (e.g., self-signed, wrong host) for dev only.
+// Never enable this in production.
+const bool kAllowInsecure =
+    bool.fromEnvironment('ALLOW_INSECURE', defaultValue: true);
+const bool kLogHttp = bool.fromEnvironment('LOG_HTTP', defaultValue: true);
+const bool kUseFirebaseMessages =
+    bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
+
+/// Call this during app startup (before runApp) to register dependencies.
+///
+/// Set [useFake] to true to register in-memory fakes for development and widget tests.
+Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
+  // External / 3rd party
+  final sharedPreferences = await SharedPreferences.getInstance();
+  getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+
+  getIt.registerLazySingleton<Dio>(() {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl ?? ApiEndpoints.baseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
+    // Attach Authorization header from SharedPreferences for all requests.
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        try {
+          final prefs = getIt<SharedPreferences>();
+          final token = prefs.getString('access_token');
+          options.headers.addAll({
+            'Accept': 'application/json',
+            'Content-Type':
+                options.headers['Content-Type'] ?? 'application/json',
+            if (token != null) 'Authorization': 'Bearer $token',
+          });
+        } catch (_) {}
+        handler.next(options);
+      },
+    ));
+    if (kLogHttp) {
+      dio.interceptors.add(PrettyDioLogger(
+        requestBody: true,
+        requestHeader: true,
+        responseHeader: false,
+        compact: true,
+      ));
+    }
+    // Optionally add a logging interceptor here for debugging
+    // Optionally relax certificate checks for a specific host in dev.
+    if (kAllowInsecure) {
+      try {
+        final host = Uri.parse(baseUrl ?? ApiEndpoints.baseUrl).host;
+        ssl.configureBadCertificate(dio, host: host);
+      } catch (_) {
+        // ignore: any issues configuring insecure mode should not crash app
+      }
+    }
+    return dio;
+  });
+
+  // Core / infrastructure - feature registrations
+  // Jobs feature
+  if (useFake) {
+    getIt.registerLazySingleton<JobRemoteDataSource>(
+      () => JobRemoteDataSourceFake(),
+    );
+  } else {
+    getIt.registerLazySingleton<JobRemoteDataSource>(
+      () => JobRemoteDataSourceImpl(getIt<Dio>()),
+    );
+  }
+
+  getIt.registerLazySingleton<JobRepository>(
+    () => JobRepositoryImpl(remoteDataSource: getIt<JobRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<GetJobs>(
+    () => GetJobs(getIt<JobRepository>()),
+  );
+
+  // Register additional usecases
+  getIt.registerLazySingleton<ApplyToJob>(
+    () => ApplyToJob(getIt<JobRepository>()),
+  );
+
+  getIt.registerLazySingleton<AcceptAgreement>(
+    () => AcceptAgreement(getIt<JobRepository>()),
+  );
+
+  // Request change usecase
+  getIt.registerLazySingleton<RequestChange>(
+    () => RequestChange(getIt<JobRepository>()),
+  );
+
+  // Auth feature (fake by default for development & tests)
+  if (useFake) {
+    getIt.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceFake(),
+    );
+  } else {
+    getIt.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl(getIt<Dio>(), getIt<SharedPreferences>()),
+    );
+  }
+
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(remote: getIt<AuthRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<SignIn>(() => SignIn(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignUp>(() => SignUp(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<IsSignedIn>(
+      () => IsSignedIn(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<GetCurrentUser>(
+      () => GetCurrentUser(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignOut>(() => SignOut(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignInWithGoogle>(
+      () => SignInWithGoogle(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignInWithApple>(
+      () => SignInWithApple(getIt<AuthRepository>()));
+
+  // Blocs / Cubits are registered as factories so they can be created with fresh state.
+  getIt.registerFactory<AuthBloc>(
+    () => AuthBloc(
+      signIn: getIt<SignIn>(),
+      signUp: getIt<SignUp>(),
+      isSignedIn: getIt<IsSignedIn>(),
+      getCurrentUser: getIt<GetCurrentUser>(),
+      signOut: getIt<SignOut>(),
+      signInWithGoogle: getIt<SignInWithGoogle>(),
+      signInWithApple: getIt<SignInWithApple>(),
+    ),
+  );
+
+  // SignUp Cubit (stepper wizard)
+  if (useFake) {
+    // For widget tests and development we register the cubit as a singleton so tests
+    // that call `getIt<SignUpCubit>()` get the same instance used by the widget.
+    getIt.registerLazySingleton<SignUpCubit>(
+      () => SignUpCubit(signUpUsecase: getIt<SignUp>()),
+    );
+  } else {
+    getIt.registerFactory<SignUpCubit>(
+      () => SignUpCubit(signUpUsecase: getIt<SignUp>()),
+    );
+  }
+
+  getIt.registerFactory<JobBloc>(
+    () => JobBloc(
+      getJobs: getIt<GetJobs>(),
+      applyToJob: getIt<ApplyToJob>(),
+      acceptAgreement: getIt<AcceptAgreement>(),
+      requestChange: getIt<RequestChange>(),
+    ),
+  );
+
+  // Catalog feature
+  if (useFake) {
+    getIt.registerLazySingleton<CatalogRemoteDataSource>(
+        () => CatalogRemoteDataSourceFake());
+  } else {
+    getIt.registerLazySingleton<CatalogRemoteDataSource>(
+        () => CatalogRemoteDataSourceImpl(getIt<Dio>()));
+  }
+  getIt.registerLazySingleton<CatalogRepository>(
+      () => CatalogRepositoryImpl(getIt<CatalogRemoteDataSource>()));
+  getIt.registerLazySingleton<GetMyCatalogItems>(
+      () => GetMyCatalogItems(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<GetCatalogByUser>(
+      () => GetCatalogByUser(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<CreateCatalog>(
+      () => CreateCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<UpdateCatalog>(
+      () => UpdateCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<DeleteCatalog>(
+      () => DeleteCatalog(getIt<CatalogRepository>()));
+  getIt.registerFactory<CatalogBloc>(() => CatalogBloc(
+      getMyCatalogItems: getIt<GetMyCatalogItems>(),
+      getCatalogByUser: getIt<GetCatalogByUser>()));
+  getIt.registerLazySingleton<CatalogCategoriesRemoteDataSource>(
+      () => CatalogCategoriesRemoteDataSourceImpl(getIt<Dio>()));
+
+  // Catalog Requests
+  getIt.registerLazySingleton<CatalogRequestsRemoteDataSource>(
+      () => CatalogRequestsRemoteDataSourceImpl(getIt<Dio>()));
+  getIt.registerLazySingleton<CatalogRequestsRepository>(() =>
+      CatalogRequestsRepositoryImpl(getIt<CatalogRequestsRemoteDataSource>()));
+  getIt.registerLazySingleton<GetCatalogRequests>(
+      () => GetCatalogRequests(getIt<CatalogRequestsRepository>()));
+  getIt.registerLazySingleton<GetCatalogRequestDetails>(
+      () => GetCatalogRequestDetails(getIt<CatalogRequestsRepository>()));
+  getIt.registerLazySingleton<ApproveCatalogRequest>(
+      () => ApproveCatalogRequest(getIt<CatalogRequestsRepository>()));
+  getIt.registerLazySingleton<DeclineCatalogRequest>(
+      () => DeclineCatalogRequest(getIt<CatalogRequestsRepository>()));
+  getIt.registerFactory<CatalogRequestsBloc>(() => CatalogRequestsBloc(
+        getRequests: getIt<GetCatalogRequests>(),
+        getDetails: getIt<GetCatalogRequestDetails>(),
+        approve: getIt<ApproveCatalogRequest>(),
+        decline: getIt<DeclineCatalogRequest>(),
+      ));
+
+  // No page factory registered to keep DI free of Flutter widget types.
+
+  // Account feature
+  getIt.registerLazySingleton<AccountRemoteDataSource>(
+      () => AccountRemoteDataSourceImpl(getIt<Dio>()));
+  getIt.registerLazySingleton<AccountRepository>(
+      () => AccountRepositoryImpl(getIt<AccountRemoteDataSource>()));
+  getIt.registerLazySingleton<GetUserProfile>(
+      () => GetUserProfile(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<UpdateUserProfile>(
+      () => UpdateUserProfile(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetEarnings>(
+      () => GetEarnings(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetTransactions>(
+      () => GetTransactions(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<RequestWithdrawal>(
+      () => RequestWithdrawal(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetBankAccounts>(
+      () => GetBankAccounts(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddBankAccount>(
+      () => AddBankAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteBankAccount>(
+      () => DeleteBankAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetBankList>(
+      () => GetBankList(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<VerifyBankAccount>(
+      () => VerifyBankAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<SetWithdrawalPin>(
+      () => SetWithdrawalPin(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<VerifyWithdrawalPin>(
+      () => VerifyWithdrawalPin(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<ChangePassword>(
+      () => ChangePassword(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteAccount>(
+      () => DeleteAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddSkill>(
+      () => AddSkill(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<RemoveSkill>(
+      () => RemoveSkill(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddWorkExperience>(
+      () => AddWorkExperience(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<UpdateWorkExperience>(
+      () => UpdateWorkExperience(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteWorkExperience>(
+      () => DeleteWorkExperience(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddEducation>(
+      () => AddEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<UpdateEducation>(
+      () => UpdateEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteEducation>(
+      () => DeleteEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<UploadProfileImage>(
+      () => UploadProfileImage(getIt<AccountRepository>()));
+  getIt.registerFactory<AccountBloc>(() => AccountBloc(
+        getUserProfile: getIt<GetUserProfile>(),
+        updateUserProfile: getIt<UpdateUserProfile>(),
+        getEarnings: getIt<GetEarnings>(),
+        getTransactions: getIt<GetTransactions>(),
+        requestWithdrawal: getIt<RequestWithdrawal>(),
+        getBankAccounts: getIt<GetBankAccounts>(),
+        addBankAccount: getIt<AddBankAccount>(),
+        deleteBankAccount: getIt<DeleteBankAccount>(),
+        getBankList: getIt<GetBankList>(),
+        verifyBankAccount: getIt<VerifyBankAccount>(),
+        setWithdrawalPin: getIt<SetWithdrawalPin>(),
+        verifyWithdrawalPin: getIt<VerifyWithdrawalPin>(),
+        changePassword: getIt<ChangePassword>(),
+        deleteAccount: getIt<DeleteAccount>(),
+        addSkill: getIt<AddSkill>(),
+        removeSkill: getIt<RemoveSkill>(),
+        addWork: getIt<AddWorkExperience>(),
+        updateWork: getIt<UpdateWorkExperience>(),
+        deleteWork: getIt<DeleteWorkExperience>(),
+        addEducation: getIt<AddEducation>(),
+        updateEducation: getIt<UpdateEducation>(),
+        deleteEducation: getIt<DeleteEducation>(),
+        uploadProfileImage: getIt<UploadProfileImage>(),
+      ));
+
+  // Messages feature
+  final bool hasFirebase = fb.Firebase.apps.isNotEmpty;
+  final bool hasFirebaseAuthUser = hasFirebase && (fba.FirebaseAuth.instance.currentUser != null);
+  final bool hasCustomToken = getIt<SharedPreferences>().getString('firebase_token') != null;
+  if (kUseFirebaseMessages && hasFirebase && (hasFirebaseAuthUser || hasCustomToken)) {
+    // Firebase-backed
+    getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+    getIt.registerLazySingleton<MessagesRepository>(
+        () => MessagesRepositoryFirebase(getIt<FirebaseFirestore>()));
+  } else {
+    // In-memory fallback
+    getIt.registerLazySingleton<InMemoryMessagesStore>(() => InMemoryMessagesStore());
+    getIt.registerLazySingleton<MessagesRepository>(
+        () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
+  }
+
+  // Notifications feature
+  getIt.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceImpl(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(remoteDataSource: getIt<NotificationRemoteDataSource>()),
+  );
+
+}

@@ -1,0 +1,10 @@
+import '../entities/user_profile.dart';
+import '../repositories/account_repository.dart';
+
+class RemoveSkill {
+  final AccountRepository repository;
+  RemoveSkill(this.repository);
+
+  Future<UserProfile> call(String skill) => repository.removeSkill(skill);
+}
+
