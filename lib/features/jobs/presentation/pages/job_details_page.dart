@@ -13,8 +13,11 @@ import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/apply_for_job_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/agreement_modal.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/change_request_status_modal.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_material_management_widget.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/features/jobs/presentation/pages/change_request_page.dart';
+import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_page.dart';
 
 class JobDetailsPage extends StatefulWidget {
   final Job job;
@@ -334,52 +337,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               const SizedBox(height: 18),
             ],
 
-            // Primary job actions
-            ElevatedButton(
-              onPressed: () {
-                // Provide the current JobBloc to the apply sheet so ApplyForJobPage's
-                // BlocListener and context.read<JobBloc>() calls succeed.
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (c) {
-                    // Use the bloc we obtained above (falling back to DI if necessary)
-                    JobBloc sheetBloc;
-                    try {
-                      sheetBloc = BlocProvider.of<JobBloc>(context);
-                    } catch (_) {
-                      sheetBloc = getIt<JobBloc>();
-                    }
-
-                    return DraggableScrollableSheet(
-                      expand: false,
-                      initialChildSize: 0.92,
-                      minChildSize: 0.5,
-                      maxChildSize: 0.95,
-                      builder: (_, controller) => Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(16)),
-                        ),
-                        child: BlocProvider.value(
-                          value: sheetBloc,
-                          child: ApplyForJobPage(job: job),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9A4B20), // brown accent reused
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Apply', style: TextStyle(fontSize: 16)),
-            ),
+            // Primary job actions (dynamic by status)
+            _buildPrimaryActionButtons(context, job),
 
             const SizedBox(height: 12),
 
@@ -470,6 +429,201 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
             const SizedBox(height: 40),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Dynamic primary actions for the details page based on job status
+  Widget _buildPrimaryActionButtons(BuildContext context, Job job) {
+    // Not applied yet → Apply
+    if (!job.applied) {
+      return ElevatedButton(
+        onPressed: () {
+          // Provide the current JobBloc to the apply sheet
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (c) {
+              JobBloc sheetBloc;
+              try {
+                sheetBloc = BlocProvider.of<JobBloc>(context);
+              } catch (_) {
+                sheetBloc = getIt<JobBloc>();
+              }
+
+              return DraggableScrollableSheet(
+                expand: false,
+                initialChildSize: 0.92,
+                minChildSize: 0.5,
+                maxChildSize: 0.95,
+                builder: (_, controller) => Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                  child: BlocProvider.value(
+                    value: sheetBloc,
+                    child: ApplyForJobPage(job: job),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF9A4B20),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        child: const Text('Apply', style: TextStyle(fontSize: 16)),
+      );
+    }
+
+    // Applied with agreement pending → Request Changes / View Agreement
+    if (job.agreement != null && job.status == JobStatus.pending) {
+      return Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () async {
+                // Navigate to request change page
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: BlocProvider.of<JobBloc>(context),
+                    child: ChangeRequestPage(job: job),
+                  ),
+                ));
+              },
+              style: OutlinedButton.styleFrom(
+                backgroundColor: AppColors.cardBackground,
+                side: BorderSide(color: AppColors.softBorder),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text(
+                'Request Changes',
+                style: TextStyle(
+                  color: AppColors.brownHeader,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                _showAgreementModal(context, job.agreement!);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.orange,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text(
+                'View Agreement',
+                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Change request exists → View Change Request
+    if (job.changeRequest != null) {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => DraggableScrollableSheet(
+                expand: false,
+                initialChildSize: 0.9,
+                minChildSize: 0.5,
+                maxChildSize: 0.95,
+                builder: (context, controller) => ChangeRequestStatusModal(
+                  job: job,
+                  changeRequest: job.changeRequest!,
+                ),
+              ),
+            );
+          },
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Colors.orange.withValues(alpha: 0.1),
+            side: BorderSide(color: Colors.orange.shade200),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: Text(
+            'View Change Request',
+            style: TextStyle(
+              color: Colors.orange.shade700,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Accepted / in progress → Open Project
+    if (job.status == JobStatus.accepted || job.status == JobStatus.inProgress) {
+      return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => const OngoingJobsPage(),
+            ));
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text('Open Project', style: TextStyle(fontSize: 16, color: Colors.white)),
+        ),
+      );
+    }
+
+    // Completed → View Summary (simple placeholder)
+    if (job.status == JobStatus.completed) {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Project summary coming soon')),
+            );
+          },
+          style: OutlinedButton.styleFrom(
+            backgroundColor: AppColors.cardBackground,
+            side: BorderSide(color: AppColors.softBorder),
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text('View Summary', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        ),
+      );
+    }
+
+    // Default (applied but waiting) → disable button
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: null,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        child: const Text('Waiting Agreement', style: TextStyle(fontSize: 16, color: Colors.white)),
       ),
     );
   }

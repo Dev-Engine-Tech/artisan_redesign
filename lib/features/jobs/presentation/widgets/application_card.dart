@@ -192,9 +192,21 @@ class ApplicationCard extends StatelessWidget {
   }
 
   bool _shouldShowActionButtons() {
-    return job.status == JobStatus.pending || 
-           job.status == JobStatus.changeRequested ||
-           (job.agreement != null && job.agreement!.status == 'pending');
+    // Show relevant actions for each status
+    if (job.status == JobStatus.pending) {
+      // Pending: If an agreement exists, show actions to review/accept or request changes
+      return job.agreement != null;
+    }
+    if (job.status == JobStatus.changeRequested) {
+      return true;
+    }
+    if (job.status == JobStatus.accepted || job.status == JobStatus.inProgress) {
+      return true; // allow opening project
+    }
+    if (job.status == JobStatus.completed) {
+      return true; // allow viewing summary
+    }
+    return false;
   }
 
   Widget _buildActionButtons(BuildContext context) {
@@ -265,6 +277,56 @@ class ApplicationCard extends StatelessWidget {
             'View Change Request',
             style: TextStyle(
               color: Colors.orange.shade700,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (job.status == JobStatus.accepted || job.status == JobStatus.inProgress) {
+      return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.orange,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            elevation: 0,
+          ),
+          child: const Text(
+            'Open Project',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (job.status == JobStatus.completed) {
+      return SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            backgroundColor: AppColors.cardBackground,
+            side: BorderSide(color: AppColors.softBorder),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text(
+            'View Summary',
+            style: TextStyle(
+              color: AppColors.brownHeader,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),

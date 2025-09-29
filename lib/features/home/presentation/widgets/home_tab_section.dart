@@ -7,6 +7,7 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/job_card.dart
 import 'package:artisans_circle/features/jobs/presentation/widgets/applications_list.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_request.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
 
 /// Performance-optimized tab section following SOLID principles
 /// Single Responsibility: Manages tab display and content
@@ -231,7 +232,8 @@ class JobsTabContent extends StatelessWidget {
         }
 
         if (state is JobStateLoaded) {
-          final jobs = state.jobs;
+          // Only show jobs that the artisan has NOT applied for
+          final jobs = state.jobs.where((j) => !j.applied).toList();
 
           if (jobs.isEmpty) {
             return const EmptyStateWidget(
@@ -459,6 +461,7 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
   List<CatalogRequest> _orders = [];
   bool _isLoading = true;
   String? _error;
+  String? _processingId; // request id currently being processed
 
   @override
   void initState() {
@@ -552,32 +555,94 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
       );
     }
 
-    // Performance: Use ListView.builder
-    return ListView.builder(
-      itemCount: _orders.length,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemBuilder: (context, index) {
-        final request = _orders[index];
-        // Convert CatalogRequest to Job for consistent UI
-        final jobFromRequest = Job(
-          id: request.id,
-          title: request.title,
-          category: 'Catalog Request',
-          description: request.description,
-          address: request.clientName ?? 'Client',
-          minBudget: (double.tryParse(request.priceMin ?? '0') ?? 0).toInt(),
-          maxBudget: (double.tryParse(request.priceMax ?? '0') ?? 0).toInt(),
-          duration: request.status?.toUpperCase() ?? 'PENDING',
-          applied: false,
-        );
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: JobCard(
-            job: jobFromRequest,
-            onTap: () => widget.onRequestTap(request),
-          ),
-        );
+    // Performance: Use ListView.builder with actions wired to CatalogRequestsBloc
+    return BlocListener<CatalogRequestsBloc, CatalogRequestsState>(
+      listener: (context, state) {
+        if (state is CatalogRequestApproving || state is CatalogRequestDeclining) {
+          setState(() {
+            _processingId = (state is CatalogRequestApproving)
+                ? state.id
+                : (state as CatalogRequestDeclining).id;
+          });
+        } else if (state is CatalogRequestActionSuccess) {
+          // Remove the item from the pending list after action
+          setState(() {
+            _orders.removeWhere((o) => o.id == state.id);
+            _processingId = null;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Request updated successfully')),
+          );
+        } else if (state is CatalogRequestsError) {
+          setState(() {
+            _processingId = null;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
       },
+      child: ListView.builder(
+        itemCount: _orders.length,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemBuilder: (context, index) {
+          final request = _orders[index];
+          // Convert CatalogRequest to Job for consistent UI
+          final jobFromRequest = Job(
+            id: request.id,
+            title: request.title,
+            category: 'Catalog Request',
+            description: request.description,
+            address: request.clientName ?? 'Client',
+            minBudget: (double.tryParse(request.priceMin ?? '0') ?? 0).toInt(),
+            maxBudget: (double.tryParse(request.priceMax ?? '0') ?? 0).toInt(),
+            duration: request.status?.toUpperCase() ?? 'PENDING',
+            applied: false,
+          );
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: JobCard(
+              job: jobFromRequest,
+              onTap: () => widget.onRequestTap(request),
+              primaryLabel: 'Accept Request',
+              secondaryLabel: 'Reject',
+              primaryAction: (_processingId == request.id)
+                  ? null
+                  : () {
+                      context
+                          .read<CatalogRequestsBloc>()
+                          .add(ApproveRequestEvent(request.id));
+                    },
+              secondaryAction: (_processingId == request.id)
+                  ? null
+                  : () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Reject Request'),
+                          content: const Text('Are you sure you want to reject this request?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx, true),
+                              child: const Text('Reject'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirmed == true) {
+                        context
+                            .read<CatalogRequestsBloc>()
+                            .add(DeclineRequestEvent(request.id));
+                      }
+                    },
+            ),
+          );
+        },
+      ),
     );
   }
 }
