@@ -116,21 +116,39 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
           const SnackBar(content: Text('Please add at least one milestone')));
       return;
     }
+    // Materials are required by API
+    if (_materials.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add at least one material item')));
+      return;
+    }
 
     // Build application payload mirroring the working GetX app
     final jobIdInt = int.tryParse(widget.job.id) ??
         int.tryParse(widget.job.id.replaceAll(RegExp(r'[^0-9]'), '')) ??
         0;
+    if (jobIdInt <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid job ID for application')));
+      return;
+    }
     final paymentTypeStr =
         _paymentMethod == PaymentMethod.byProject ? 'project' : 'milestone';
 
     final materials = _materials
+        .where((m) => m.descriptionController.text.trim().isNotEmpty)
         .map((m) => JobMaterial(
               description: m.descriptionController.text.trim(),
-              quantity: int.tryParse(m.quantityController.text.trim()) ?? 1,
-              price: int.tryParse(m.costController.text.trim()) ?? 0,
+              quantity: (int.tryParse(m.quantityController.text.trim()) ?? 1).clamp(1, 1000000),
+              price: (double.tryParse(m.costController.text.trim()) ?? 0).toInt(),
             ))
+        .where((m) => m.price > 0)
         .toList();
+    if (materials.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Add at least one material with a cost > 0')));
+      return;
+    }
     final milestones = _milestones
         .where((ms) => ms.date != null)
         .map((ms) => JobMilestone(
@@ -142,11 +160,14 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
 
     final application = JobApplication(
       job: jobIdInt,
-      duration: _selectedDuration ?? widget.job.duration,
+      duration: _selectedDuration?.trim().isNotEmpty == true
+          ? _selectedDuration!.trim()
+          : (widget.job.duration.trim().isNotEmpty
+              ? widget.job.duration
+              : 'Less than 1 month'),
       proposal: _proposalController.text.trim(),
       paymentType: paymentTypeStr,
-      desiredPay: int.tryParse(_desiredPayController.text.trim()) ??
-          widget.job.minBudget,
+      desiredPay: (int.tryParse(_desiredPayController.text.trim()) ?? widget.job.minBudget).clamp(0, 100000000),
       milestones: milestones,
       materials: materials,
       attachments: _attachments,

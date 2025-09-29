@@ -255,9 +255,18 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
         print('DEBUG: Apply to job failed with status: ${response.statusCode}');
         return false;
       }
+    } on DioException catch (e) {
+      print('DEBUG: Apply to job DioException: ${e.response?.statusCode} ${e.message}');
+      final data = e.response?.data;
+      String message = 'Failed to apply to job';
+      if (data is Map) {
+        // Try common error shapes
+        message = (data['detail'] ?? data['message'] ?? data['error'] ?? message).toString();
+      }
+      throw Exception(message);
     } catch (e) {
       print('DEBUG: Apply to job exception: $e');
-      rethrow;
+      throw Exception('Failed to apply to job: $e');
     }
   }
 

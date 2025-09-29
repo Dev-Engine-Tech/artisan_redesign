@@ -539,7 +539,25 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
         print('DEBUG: HomePage - BlocListener received state: ${state.runtimeType}');
         if (state is JobStateAppliedSuccess) {
           print('DEBUG: HomePage - Updating _applications with ${state.jobs.length} applications');
-          _updateApplications(state.jobs.cast<JobModel>());
+          // Convert domain Jobs to JobModel for local state storage
+          final converted = state.jobs.map((j) => JobModel(
+                id: j.id,
+                title: j.title,
+                category: j.category,
+                description: j.description,
+                address: j.address,
+                minBudget: j.minBudget,
+                maxBudget: j.maxBudget,
+                duration: j.duration,
+                applied: j.applied,
+                thumbnailUrl: j.thumbnailUrl,
+                status: j.status,
+                agreement: j.agreement,
+                changeRequest: j.changeRequest,
+                materials: j.materials,
+              ))
+              .toList();
+          _updateApplications(converted);
         }
       },
       child: Performance.timeSync('HomePage_build', () {

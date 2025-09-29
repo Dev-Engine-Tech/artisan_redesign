@@ -75,8 +75,8 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     try {
       final ok = await applyToJob(event.application);
       if (ok) {
-        // after successful apply, refresh list (simple approach)
-        final list = await getJobs();
+        // After successful apply, refresh applied jobs list
+        final list = await getApplications();
         emit(JobStateAppliedSuccess(
             jobs: list, jobId: event.application.job.toString()));
       } else {

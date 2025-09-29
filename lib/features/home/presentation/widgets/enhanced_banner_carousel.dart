@@ -4,6 +4,7 @@ import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/services/banner_service.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart';
+import 'package:artisans_circle/core/api/endpoints.dart';
 
 class EnhancedBannerCarousel extends StatefulWidget {
   final api.BannerCategory category;
@@ -75,11 +76,18 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   }
 
   BannerModel _convertApiBannerToUiBanner(api.ApiBannerItem apiBanner) {
+    String normalize(String? url) {
+      if (url == null || url.isEmpty) return '';
+      if (url.startsWith('http')) return url;
+      final base = ApiEndpoints.baseUrl;
+      final sep = url.startsWith('/') ? '' : '/';
+      return '$base$sep$url';
+    }
     return BannerModel(
       id: apiBanner.id.toString(),
       title: apiBanner.title,
       subtitle: _getSubtitleForCategory(),
-      imageUrl: apiBanner.image,
+      imageUrl: normalize(apiBanner.image),
       ctaText: _getCtaForCategory(),
       backgroundColor: _getColorForCategory(),
       onTap: () => _handleBannerTap(apiBanner),

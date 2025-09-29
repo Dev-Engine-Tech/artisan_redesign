@@ -11,20 +11,22 @@ class ApiBannerModel {
     required this.banners,
   });
 
-  factory ApiBannerModel.fromJson(Map<String, dynamic> json) => ApiBannerModel(
-        count: json["count"] ?? 0,
-        next: json["next"],
-        previous: json["previous"],
-        banners: List<ApiBannerItem>.from(
-          (json["results"] ?? []).map((x) => ApiBannerItem.fromJson(x)),
-        ),
-      );
+  factory ApiBannerModel.fromJson(Map<String, dynamic> json) {
+    // Accept several shapes: {results: []} OR {data: []} OR {banners: []}
+    final list = (json['results'] ?? json['data'] ?? json['banners'] ?? []) as List<dynamic>;
+    return ApiBannerModel(
+      count: json['count'] ?? (json['total'] ?? list.length) ?? 0,
+      next: json['next'],
+      previous: json['previous'],
+      banners: list.map((e) => ApiBannerItem.fromJson(e as Map<String, dynamic>)).toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-        "count": count,
-        "next": next,
-        "previous": previous,
-        "results": List<dynamic>.from(banners.map((x) => x.toJson())),
+        'count': count,
+        'next': next,
+        'previous': previous,
+        'results': List<dynamic>.from(banners.map((x) => x.toJson())),
       };
 }
 
@@ -45,10 +47,10 @@ class ApiBannerItem {
 
   factory ApiBannerItem.fromJson(Map<String, dynamic> json) => ApiBannerItem(
         id: json["id"] ?? 0,
-        title: json["title"] ?? '',
-        image: json["image"] ?? '',
-        category: json["category"] ?? 'ArtisanHomepage',
-        isActive: json["is_active"] ?? true,
+        title: json["title"] ?? json['name'] ?? '',
+        image: json["image"] ?? json['image_url'] ?? json['banner'] ?? '',
+        category: json["category"] ?? json['type'] ?? 'ArtisanHomepage',
+        isActive: json["is_active"] ?? json['active'] ?? true,
       );
 
   Map<String, dynamic> toJson() => {

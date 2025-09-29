@@ -178,14 +178,13 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     return dio;
   });
 
-  // Register optimized HTTP service for better performance
+  // Register optimized HTTP service using the same configured Dio instance
+  // so it inherits auth headers, logging and SSL settings.
   getIt.registerLazySingleton<HttpService>(
-    () => HttpServiceFactory.create(
-      baseUrl: baseUrl ?? ApiEndpoints.baseUrl,
+    () => OptimizedHttpService(
+      dio: getIt<Dio>(),
       cacheDuration: const Duration(minutes: 5),
       maxCacheSize: 100,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
     ),
   );
 

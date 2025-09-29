@@ -47,18 +47,18 @@ class _HomeTabSectionState extends State<HomeTabSection>
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_onTabChanged);
     
-    // Load Jobs for initial tab (Jobs tab is index 0) - delayed to avoid race condition
+    // Load Jobs for initial tab (Jobs tab is index 0) once after first frame
     if (_selectedIndex == 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (mounted) {
-            try {
-              context.read<JobBloc>().add(LoadJobs(page: 1, limit: 10));
-            } catch (e) {
-              // JobBloc not available, ignore
-            }
+        if (!mounted) return;
+        try {
+          final state = context.read<JobBloc>().state;
+          if (state is! JobStateLoaded) {
+            context.read<JobBloc>().add(LoadJobs(page: 1, limit: 10));
           }
-        });
+        } catch (_) {
+          // JobBloc not available, ignore
+        }
       });
     }
   }
@@ -76,14 +76,17 @@ class _HomeTabSectionState extends State<HomeTabSection>
         _selectedIndex = _tabController.index;
       });
       
-      // Load Jobs when user switches to Jobs tab (index 0)
-      if (_selectedIndex == 0) {
-        try {
+    // Load Jobs when user switches to Jobs tab (index 0) if not already loaded
+    if (_selectedIndex == 0) {
+      try {
+        final state = context.read<JobBloc>().state;
+        if (state is! JobStateLoaded) {
           context.read<JobBloc>().add(LoadJobs(page: 1, limit: 10));
-        } catch (e) {
-          // JobBloc not available, ignore
         }
+      } catch (e) {
+        // JobBloc not available, ignore
       }
+    }
     }
   }
 
@@ -319,6 +322,26 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
           
           print('DEBUG: ApplicationsTabContent - JobStateAppliedSuccess received with ${applications.length} applications');
           print('DEBUG: ApplicationsTabContent - First application: ${applications.isNotEmpty ? applications.first.title : 'none'}');
+        } else {
+          // Fallback to applications provided by parent when bloc doesn't currently hold applications
+          applications = widget.applications
+              .map((m) => Job(
+                    id: m.id,
+                    title: m.title,
+                    category: m.category,
+                    description: m.description,
+                    address: m.address,
+                    minBudget: m.minBudget,
+                    maxBudget: m.maxBudget,
+                    duration: m.duration,
+                    applied: true,
+                    thumbnailUrl: m.thumbnailUrl,
+                    status: m.status,
+                    agreement: m.agreement,
+                    changeRequest: m.changeRequest,
+                    materials: m.materials,
+                  ))
+              .toList();
         }
 
         return ApplicationsList(
@@ -606,4 +629,3 @@ class EmptyStateWidget extends StatelessWidget {
     );
   }
 }
-
