@@ -7,6 +7,8 @@ import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/filter_page.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/enhanced_banner_carousel.dart';
+import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_search_bar.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_tab_view.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
@@ -117,8 +119,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
       const SizedBox(height: 8),
       
       // Banner carousel
-      BannerCarousel(
-        banners: DefaultBanners.defaultBanners,
+      EnhancedBannerCarousel(
+        category: api.BannerCategory.job,
         height: 140,
         autoPlay: true,
       ),

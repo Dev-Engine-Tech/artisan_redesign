@@ -21,14 +21,19 @@ class BannerService {
         endpoint = ApiEndpoints.getBanners(category.apiValue);
       }
 
+      print('🎯 BANNER: Loading banners for ${category.apiValue} from $endpoint');
       final response = await _httpService.get(endpoint);
       
+      print('🎯 BANNER: Response status ${response.statusCode}');
       if (response.statusCode == 200) {
+        print('🎯 BANNER: Response data: ${response.data}');
         return ApiBannerModel.fromJson(response.data);
       } else {
+        print('🎯 BANNER: Failed with status ${response.statusCode}');
         throw Exception('Failed to load banners: ${response.statusCode}');
       }
     } on DioException catch (e) {
+      print('🎯 BANNER: DioException - ${e.response?.statusCode}: ${e.message}');
       if (e.response?.statusCode == 401) {
         throw Exception('Authentication required');
       } else if (e.response?.statusCode == 404) {
@@ -37,6 +42,7 @@ class BannerService {
         throw Exception('Network error: ${e.message}');
       }
     } catch (e) {
+      print('🎯 BANNER: Exception - $e');
       throw Exception('Failed to load banners: $e');
     }
   }

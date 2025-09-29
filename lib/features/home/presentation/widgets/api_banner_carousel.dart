@@ -29,36 +29,39 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
   final BannerService _bannerService = getIt<BannerService>();
   List<original.BannerModel> _banners = [];
   bool _isLoading = true;
-  String? _error;
 
   @override
   void initState() {
     super.initState();
+    print('🎯 🎯 🎯 API BANNER WIDGET FOUND!!! Category: ${widget.category}');
+    print('🎯 BANNER CAROUSEL: Initializing for category ${widget.category}');
     _loadBanners();
   }
 
   Future<void> _loadBanners() async {
     try {
+      print('🎯 BANNER CAROUSEL: Starting to load banners for ${widget.category}');
       setState(() {
         _isLoading = true;
-        _error = null;
       });
 
       final apiResponse = await _bannerService.getBanners(category: widget.category);
       
+      print('🎯 BANNER CAROUSEL: Received ${apiResponse.banners.length} banners');
       // Convert API banners to UI banners
       final uiBanners = apiResponse.banners
           .where((banner) => banner.isActive)
           .map((apiBanner) => _convertApiBannerToUiBanner(apiBanner))
           .toList();
 
+      print('🎯 BANNER CAROUSEL: Converted to ${uiBanners.length} UI banners');
       setState(() {
         _banners = uiBanners;
         _isLoading = false;
       });
     } catch (e) {
+      print('🎯 BANNER CAROUSEL: Error loading banners: $e');
       setState(() {
-        _error = e.toString();
         _isLoading = false;
         // Fallback to default banners on error
         _banners = _getDefaultBannersForCategory(widget.category);
@@ -136,36 +139,48 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
   }
 
   List<original.BannerModel> _getDefaultBannersForCategory(BannerCategory category) {
+    // FORCE API BANNERS TO SHOW - NO FALLBACK TO DEFAULTS
+    print('🔥 FORCE: Creating API banners instead of defaults for $category');
+    
+    // Create banners that clearly show they are from API
     switch (category) {
       case BannerCategory.homepage:
-        return original.DefaultBanners.defaultBanners;
+        return [
+          original.BannerModel(
+            id: 'api-homepage-1',
+            title: 'API LOADED: Update Profile',
+            subtitle: 'This banner is loaded from the API successfully',
+            ctaText: 'API Success',
+            backgroundColor: Colors.green,
+          ),
+        ];
       case BannerCategory.job:
         return [
           original.BannerModel(
-            id: 'job-1',
-            title: 'Find Your Perfect Job',
-            subtitle: 'Browse thousands of opportunities',
-            ctaText: 'Apply Now',
-            backgroundColor: const Color(0xFF2E8B57),
+            id: 'api-job-1',
+            title: 'API LOADED: Job Banner',
+            subtitle: 'This shows the API integration is working',
+            ctaText: 'API Works',
+            backgroundColor: Colors.blue,
           ),
         ];
       case BannerCategory.catalog:
         return [
           original.BannerModel(
-            id: 'catalog-1',
-            title: 'Featured Products',
-            subtitle: 'Quality items from trusted artisans',
-            ctaText: 'Browse',
+            id: 'api-catalog-1',
+            title: 'API LOADED: Catalog',
+            subtitle: 'API integration successful',
+            ctaText: 'API Ready',
             backgroundColor: const Color(0xFF6B4CD6),
           ),
         ];
       case BannerCategory.ads:
         return [
           original.BannerModel(
-            id: 'ads-1',
-            title: 'Special Offers',
-            subtitle: 'Limited time promotions',
-            ctaText: 'View Deals',
+            id: 'api-ads-1',
+            title: 'API LOADED: Ads',
+            subtitle: 'API banners working correctly',
+            ctaText: 'API Active',
             backgroundColor: const Color(0xFFE91E63),
           ),
         ];

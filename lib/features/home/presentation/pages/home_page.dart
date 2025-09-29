@@ -29,6 +29,8 @@ import 'package:artisans_circle/features/notifications/presentation/widgets/noti
 import 'package:artisans_circle/features/messages/presentation/widgets/message_icon.dart';
 import 'package:artisans_circle/features/home/presentation/widgets/home_tab_section.dart';
 import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/enhanced_banner_carousel.dart';
+import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
 
 class HomePage extends StatefulWidget {
@@ -558,10 +560,10 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             _buildHeader(context),
             const SizedBox(height: 18),
             _buildProfileActions(context),
-            BannerCarousel(
-              banners: DefaultBanners.defaultBanners,
+            EnhancedBannerCarousel(
+              category: api.BannerCategory.homepage,
               height: 140,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: EdgeInsets.symmetric(horizontal: 8),
             ),
             const SizedBox(height: 8),
             () {
