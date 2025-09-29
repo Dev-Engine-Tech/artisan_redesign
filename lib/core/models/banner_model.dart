@@ -62,12 +62,7 @@ class ApiBannerItem {
       };
 }
 
-enum BannerCategory { 
-  homepage, 
-  catalog, 
-  job, 
-  ads 
-}
+enum BannerCategory { homepage, catalog, job, ads }
 
 extension BannerCategoryExtension on BannerCategory {
   String get apiValue {

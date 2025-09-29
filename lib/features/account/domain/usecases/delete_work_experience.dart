@@ -7,4 +7,3 @@ class DeleteWorkExperience {
 
   Future<UserProfile> call(String id) => repository.deleteWorkExperience(id);
 }
-

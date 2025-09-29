@@ -17,11 +17,9 @@ class EducationPage extends StatelessWidget {
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state is AccountActionSuccess) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is AccountError) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
@@ -34,7 +32,8 @@ class EducationPage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _EduForm())),
+        onPressed: () =>
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _EduForm())),
         child: const Icon(Icons.add),
       ),
     );
@@ -50,7 +49,8 @@ class _EduTile extends StatelessWidget {
       child: ListTile(
         title: Text(edu.schoolName),
         subtitle: Text(edu.fieldOfStudy),
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _EduForm(existing: edu))),
+        onTap: () =>
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => _EduForm(existing: edu))),
         trailing: IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () => context.read<AccountBloc>().add(AccountDeleteEducation(edu.id)),
@@ -98,7 +98,11 @@ class _EduFormState extends State<_EduForm> {
   Future<void> _pickDate(bool isStart) async {
     final now = DateTime.now();
     final initial = (isStart ? startDate : endDate) ?? now;
-    final picked = await showDatePicker(context: context, initialDate: initial, firstDate: DateTime(1980), lastDate: DateTime(now.year + 5));
+    final picked = await showDatePicker(
+        context: context,
+        initialDate: initial,
+        firstDate: DateTime(1980),
+        lastDate: DateTime(now.year + 5));
     if (picked != null) setState(() => isStart ? startDate = picked : endDate = picked);
   }
 
@@ -111,17 +115,33 @@ class _EduFormState extends State<_EduForm> {
         children: [
           TextField(controller: school, decoration: const InputDecoration(labelText: 'School')),
           const SizedBox(height: 12),
-          TextField(controller: field, decoration: const InputDecoration(labelText: 'Field of Study')),
+          TextField(
+              controller: field, decoration: const InputDecoration(labelText: 'Field of Study')),
           const SizedBox(height: 12),
-          TextField(controller: degree, decoration: const InputDecoration(labelText: 'Degree (optional)')),
+          TextField(
+              controller: degree,
+              decoration: const InputDecoration(labelText: 'Degree (optional)')),
           const SizedBox(height: 12),
-          TextField(controller: description, maxLines: 3, decoration: const InputDecoration(labelText: 'Description (optional)')),
+          TextField(
+              controller: description,
+              maxLines: 3,
+              decoration: const InputDecoration(labelText: 'Description (optional)')),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: OutlinedButton(onPressed: () => _pickDate(true), child: Text(startDate == null ? 'Start Date' : startDate!.toLocal().toString().split(' ').first))),
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () => _pickDate(true),
+                      child: Text(startDate == null
+                          ? 'Start Date'
+                          : startDate!.toLocal().toString().split(' ').first))),
               const SizedBox(width: 8),
-              Expanded(child: OutlinedButton(onPressed: () => _pickDate(false), child: Text(endDate == null ? 'End Date' : endDate!.toLocal().toString().split(' ').first))),
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () => _pickDate(false),
+                      child: Text(endDate == null
+                          ? 'End Date'
+                          : endDate!.toLocal().toString().split(' ').first))),
             ],
           ),
           const SizedBox(height: 24),
@@ -135,8 +155,7 @@ class _EduFormState extends State<_EduForm> {
               }
               if (endDate != null && endDate!.isBefore(startDate!)) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('End date cannot be before start date')),
+                  const SnackBar(content: Text('End date cannot be before start date')),
                 );
                 return;
               }

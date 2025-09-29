@@ -64,7 +64,7 @@ class OptimizedHttpService implements HttpService {
     CancelToken? cancelToken,
   }) async {
     final cacheKey = _buildCacheKey(path, queryParameters);
-    
+
     // Check cache first for GET requests
     if (_shouldUseCache(options)) {
       final cached = _cacheManager.get<T>(cacheKey);
@@ -160,12 +160,12 @@ class OptimizedHttpService implements HttpService {
   ) async {
     try {
       final response = await request();
-      
+
       // Cache successful GET responses
       if (cacheKey != null && _shouldUseCache(options) && response.statusCode == 200) {
         _cacheManager.set(cacheKey, response);
       }
-      
+
       return response;
     } catch (e) {
       // Handle specific HTTP errors for better user experience
@@ -202,9 +202,8 @@ class OptimizedHttpService implements HttpService {
     if (queryParameters == null || queryParameters.isEmpty) {
       return path;
     }
-    final sortedParams = Map.fromEntries(
-      queryParameters.entries.toList()..sort((a, b) => a.key.compareTo(b.key))
-    );
+    final sortedParams =
+        Map.fromEntries(queryParameters.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
     return '$path?${Uri(queryParameters: sortedParams).query}';
   }
 
@@ -237,7 +236,7 @@ class HttpCacheManager {
     // Update access order for LRU eviction
     _accessOrder.remove(key);
     _accessOrder.addLast(key);
-    
+
     return entry.response as Response<T>;
   }
 
@@ -317,9 +316,9 @@ class RequestDeduplicator {
 /// Custom exception for HTTP-related errors
 class HttpException implements Exception {
   final String message;
-  
+
   const HttpException(this.message);
-  
+
   @override
   String toString() => 'HttpException: $message';
 }

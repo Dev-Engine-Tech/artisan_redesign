@@ -74,10 +74,16 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   void initState() {
     super.initState();
     // Auto-advance disabled to avoid animation-driven flakiness in widget tests.
-    _ordersBloc = getIt<CatalogRequestsBloc>();
-    _ordersBloc!.add(LoadCatalogRequests());
+    try {
+      _ordersBloc = BlocProvider.of<CatalogRequestsBloc>(context);
+      _ordersBloc!.add(LoadCatalogRequests());
+    } catch (_) {
+      // Fallback if provider not found (should not happen under AppShell)
+      _ordersBloc = getIt<CatalogRequestsBloc>();
+      _ordersBloc!.add(LoadCatalogRequests());
+    }
     _scrollController.addListener(_onScroll);
-    
+
     // Load real data from APIs
     _loadJobsData();
     _loadAccountData();
@@ -109,7 +115,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   void dispose() {
     _heroController.dispose();
     _scrollController.dispose();
-    _ordersBloc?.close();
+    // Do not close _ordersBloc here; AppShell owns its lifecycle
     super.dispose();
   }
 
@@ -190,22 +196,24 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
         case 1:
           // Applications tab - use applied jobs data only
           if (jobState is JobStateAppliedSuccess) {
-            return jobState.jobs.map((job) => JobModel(
-              id: job.id,
-              title: job.title,
-              category: job.category,
-              description: job.description,
-              address: job.address,
-              minBudget: job.minBudget,
-              maxBudget: job.maxBudget,
-              duration: job.duration,
-              applied: true, // These are from applied jobs endpoint
-              thumbnailUrl: job.thumbnailUrl,
-              status: job.status,
-              agreement: job.agreement,
-              changeRequest: job.changeRequest,
-              materials: job.materials,
-            )).toList();
+            return jobState.jobs
+                .map((job) => JobModel(
+                      id: job.id,
+                      title: job.title,
+                      category: job.category,
+                      description: job.description,
+                      address: job.address,
+                      minBudget: job.minBudget,
+                      maxBudget: job.maxBudget,
+                      duration: job.duration,
+                      applied: true, // These are from applied jobs endpoint
+                      thumbnailUrl: job.thumbnailUrl,
+                      status: job.status,
+                      agreement: job.agreement,
+                      changeRequest: job.changeRequest,
+                      materials: job.materials,
+                    ))
+                .toList();
           }
           return [];
         case 2:
@@ -218,25 +226,27 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
         default:
           // Jobs tab - use general jobs data only
           if (jobState is JobStateLoaded) {
-            return jobState.jobs.map((job) => JobModel(
-              id: job.id,
-              title: job.title,
-              category: job.category,
-              description: job.description,
-              address: job.address,
-              minBudget: job.minBudget,
-              maxBudget: job.maxBudget,
-              duration: job.duration,
-              applied: false, // These are from general jobs endpoint
-              thumbnailUrl: job.thumbnailUrl,
-            )).toList();
+            return jobState.jobs
+                .map((job) => JobModel(
+                      id: job.id,
+                      title: job.title,
+                      category: job.category,
+                      description: job.description,
+                      address: job.address,
+                      minBudget: job.minBudget,
+                      maxBudget: job.maxBudget,
+                      duration: job.duration,
+                      applied: false, // These are from general jobs endpoint
+                      thumbnailUrl: job.thumbnailUrl,
+                    ))
+                .toList();
           }
           return [];
       }
     } catch (e) {
       // JobBloc not available, fall back to sample data
     }
-    
+
     // Fallback to sample data
     switch (index) {
       case 1:
@@ -255,9 +265,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   // Convert CatalogRequest to JobModel for display consistency
   JobModel _catalogRequestToJob(CatalogRequest request) {
     // Use enhanced fields for better display
-    final displayTitle = request.catalogTitle?.isNotEmpty == true
-        ? request.catalogTitle!
-        : request.title;
+    final displayTitle =
+        request.catalogTitle?.isNotEmpty == true ? request.catalogTitle! : request.title;
 
     // Priority for price: paymentBudget > priceMin/Max > material cost
     int minBudget = 0;
@@ -269,15 +278,11 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       maxBudget = budget.toInt();
     } else if (request.priceMin != null || request.priceMax != null) {
       minBudget = double.tryParse(request.priceMin ?? '0')?.toInt() ?? 0;
-      maxBudget = double.tryParse(request.priceMax ?? request.priceMin ?? '0')
-              ?.toInt() ??
-          0;
+      maxBudget = double.tryParse(request.priceMax ?? request.priceMin ?? '0')?.toInt() ?? 0;
     } else {
       // Fallback to material cost calculation
       final totalCost = request.materials.fold<int>(
-          0,
-          (sum, material) =>
-              sum + ((material.price ?? 0) * (material.quantity ?? 1)));
+          0, (sum, material) => sum + ((material.price ?? 0) * (material.quantity ?? 1)));
       minBudget = totalCost;
       maxBudget = totalCost;
     }
@@ -287,18 +292,12 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       title: displayTitle,
       category: 'Catalog Request',
       description: request.description,
-      address: request.clientName != null
-          ? 'Order from ${request.clientName}'
-          : 'Client order',
+      address: request.clientName != null ? 'Order from ${request.clientName}' : 'Client order',
       minBudget: minBudget,
       maxBudget: maxBudget,
-      duration: request.projectStatus?.toUpperCase() ??
-          request.status?.toUpperCase() ??
-          'PENDING',
+      duration: request.projectStatus?.toUpperCase() ?? request.status?.toUpperCase() ?? 'PENDING',
       applied: true,
-      thumbnailUrl: request.catalogPictures.isNotEmpty
-          ? request.catalogPictures.first
-          : '',
+      thumbnailUrl: request.catalogPictures.isNotEmpty ? request.catalogPictures.first : '',
     );
   }
 
@@ -317,21 +316,18 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       if (!mounted) return;
       // ignore: use_build_context_synchronously
       showDialog(
-          useRootNavigator: true,
-          context: context,
-          builder: (c) => AlertDialog(
-            title: const Text('Success!'),
-            content: const Text(
-                'Agreement accepted. Payment requested and client notified. Proceed once deposit is made.'),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.of(c).pop(),
-                  child: const Text('OK')),
-            ],
-          ),
-        );
-      }
-    else if (result == 'request_changes') {
+        useRootNavigator: true,
+        context: context,
+        builder: (c) => AlertDialog(
+          title: const Text('Success!'),
+          content: const Text(
+              'Agreement accepted. Payment requested and client notified. Proceed once deposit is made.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(c).pop(), child: const Text('OK')),
+          ],
+        ),
+      );
+    } else if (result == 'request_changes') {
       // Open the dedicated Change Request page so the user can provide details.
       // Provide the existing JobBloc instance to the pushed route (fall back to DI).
       JobBloc bloc;
@@ -399,18 +395,13 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     });
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Requested changes. Client notified.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Requested changes. Client notified.')));
     }
   }
 
   // mapping for hero per tab
-  static const List<String> _tabs = [
-    'Jobs',
-    'Applications',
-    'Job Invite',
-    'Orders'
-  ];
+  static const List<String> _tabs = ['Jobs', 'Applications', 'Job Invite', 'Orders'];
 
   Widget _buildHero(BuildContext context) {
     return SizedBox(
@@ -423,9 +414,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.orange,
-                  borderRadius: BorderRadius.circular(14)),
+              decoration:
+                  BoxDecoration(color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
@@ -440,9 +430,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                           child: Text(
                             data['title']!,
                             style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 20),
+                                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -451,8 +439,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         Flexible(
                           child: Text(
                             data['subtitle']!,
-                            style: const TextStyle(
-                                color: Colors.white70, fontSize: 13),
+                            style: const TextStyle(color: Colors.white70, fontSize: 13),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -499,19 +486,14 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                   Text(label,
                       style: TextStyle(
                           color: AppColors.brownHeader,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                           fontSize: selected ? 13 : 12)),
                   const SizedBox(width: 4),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Text('56',
-                        style: TextStyle(
-                            fontSize: 10, color: AppColors.brownHeader)),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration:
+                        BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+                    child: Text('56', style: TextStyle(fontSize: 10, color: AppColors.brownHeader)),
                   ),
                 ],
               ),
@@ -540,34 +522,36 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
         if (state is JobStateAppliedSuccess) {
           print('DEBUG: HomePage - Updating _applications with ${state.jobs.length} applications');
           // Convert domain Jobs to JobModel for local state storage
-          final converted = state.jobs.map((j) => JobModel(
-                id: j.id,
-                title: j.title,
-                category: j.category,
-                description: j.description,
-                address: j.address,
-                minBudget: j.minBudget,
-                maxBudget: j.maxBudget,
-                duration: j.duration,
-                applied: j.applied,
-                thumbnailUrl: j.thumbnailUrl,
-                status: j.status,
-                agreement: j.agreement,
-                changeRequest: j.changeRequest,
-                materials: j.materials,
-              ))
+          final converted = state.jobs
+              .map((j) => JobModel(
+                    id: j.id,
+                    title: j.title,
+                    category: j.category,
+                    description: j.description,
+                    address: j.address,
+                    minBudget: j.minBudget,
+                    maxBudget: j.maxBudget,
+                    duration: j.duration,
+                    applied: j.applied,
+                    thumbnailUrl: j.thumbnailUrl,
+                    status: j.status,
+                    agreement: j.agreement,
+                    changeRequest: j.changeRequest,
+                    materials: j.materials,
+                  ))
               .toList();
           _updateApplications(converted);
         }
       },
       child: Performance.timeSync('HomePage_build', () {
-        return _buildOptimizedHomePage(context);
-      }) ?? _buildOptimizedHomePage(context),
+            return _buildOptimizedHomePage(context);
+          }) ??
+          _buildOptimizedHomePage(context),
     );
   }
-  
+
   Widget _buildOptimizedHomePage(BuildContext context) {
-    print('DEBUG: HomePage - _buildOptimizedHomePage called, _applications.length: ${_applications.length}');
+    // debug: applications length
     return Scaffold(
       backgroundColor: AppColors.lightPeach,
       body: SafeArea(
@@ -585,7 +569,6 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             ),
             const SizedBox(height: 8),
             () {
-              print('DEBUG: HomePage - About to create HomeTabSection with ${_applications.length} applications');
               return HomeTabSection(
                 onJobTap: _handleJobTap,
                 onRequestTap: _handleOrderTap,
@@ -599,10 +582,10 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       ),
     );
   }
-  
+
   Widget _buildHeader(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    
+
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
       child: Container(
@@ -626,9 +609,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         color: Colors.white24,
                       ),
                       child: const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.transparent,
-                        child: Icon(Icons.person, color: Colors.white)),
+                          radius: 20,
+                          backgroundColor: Colors.transparent,
+                          child: Icon(Icons.person, color: Colors.white)),
                     ),
                     const SizedBox(width: 12),
                     Column(
@@ -637,14 +620,12 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       children: [
                         Text('Hey, Uwak Daniel',
                             style: textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 18),
+                                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         Text('Welcome back!',
-                            style: textTheme.bodyMedium?.copyWith(
-                                color: Colors.white70, fontSize: 12),
+                            style:
+                                textTheme.bodyMedium?.copyWith(color: Colors.white70, fontSize: 12),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                       ],
@@ -663,9 +644,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(16)),
+              decoration:
+                  BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(16)),
               child: Text('Available Balance',
                   style: textTheme.bodySmall?.copyWith(color: Colors.white70)),
             ),
@@ -676,9 +656,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                 if (accountState is AccountEarningsLoaded) {
                   final available = accountState.earnings.available;
                   balanceText = available.toStringAsFixed(0).replaceAllMapped(
-                    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                    (match) => '${match[1]},',
-                  );
+                        RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                        (match) => '${match[1]},',
+                      );
                 } else if (accountState is AccountLoading) {
                   balanceText = '...';
                 } else if (accountState is AccountError) {
@@ -686,13 +666,12 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                 } else {
                   balanceText = '...';
                 }
-                
+
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('NGN',
-                        style: textTheme.titleLarge?.copyWith(
-                            color: Colors.white70, fontSize: 20)),
+                        style: textTheme.titleLarge?.copyWith(color: Colors.white70, fontSize: 20)),
                     const SizedBox(width: 8),
                     Flexible(
                       child: FittedBox(
@@ -700,20 +679,15 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         alignment: Alignment.centerLeft,
                         child: Text(balanceText,
                             style: textTheme.headlineLarge?.copyWith(
-                                color: Colors.white,
-                                fontSize: 36,
-                                fontWeight: FontWeight.w800)),
+                                color: Colors.white, fontSize: 36, fontWeight: FontWeight.w800)),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Container(
                       decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
-                      child: const Icon(Icons.visibility,
-                          color: Colors.white70, size: 18),
+                          color: Colors.white24, borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      child: const Icon(Icons.visibility, color: Colors.white70, size: 18),
                     ),
                   ],
                 );
@@ -728,19 +702,18 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       final accountBloc = BlocProvider.of<AccountBloc>(context);
                       final state = accountBloc.state;
                       double earnings = 300000;
-                      
+
                       if (state is AccountEarningsLoaded) {
                         earnings = state.earnings.available;
                       }
-                      
+
                       showWithdrawFlow(context, earnings: earnings);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       side: const BorderSide(color: Colors.white24),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                     ),
                     child: const Row(
@@ -770,8 +743,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       backgroundColor: Colors.transparent,
                       side: const BorderSide(color: Colors.white24),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                     ),
                     child: const Row(
@@ -791,7 +763,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       ),
     );
   }
-  
+
   Widget _buildProfileActions(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, authState) {
@@ -799,7 +771,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           final user = authState.user;
           final profileProgress = ProfileUtils.calculateProfileProgress(user);
           final isVerified = user.isVerified;
-          
+
           return ProfileActionButtons(
             profileProgress: profileProgress,
             isVerified: isVerified,
@@ -810,7 +782,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       },
     );
   }
-  
+
   void _handleJobTap(Job job) {
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
       JobBloc bloc;
@@ -825,14 +797,14 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       );
     }));
   }
-  
+
   void _handleOrderTap(CatalogRequest request) {
     final job = _catalogRequestToJob(request).toEntity();
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => OrderDetailsPage(job: job),
     ));
   }
-  
+
   void _updateApplications(List<JobModel> applications) {
     setState(() {
       _applications = applications;

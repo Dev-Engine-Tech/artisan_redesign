@@ -51,9 +51,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(10)),
+              decoration:
+                  BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 icon: const Icon(Icons.chevron_left, color: Colors.black54),
                 onPressed: () {
@@ -63,10 +62,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ),
           ),
           title: const Text('Discover',
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600)),
+              style: TextStyle(color: Colors.black87, fontSize: 20, fontWeight: FontWeight.w600)),
           centerTitle: false,
           actions: [],
         ),
@@ -95,8 +91,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           const Icon(Icons.search, color: Colors.black26),
                           const SizedBox(width: 8),
                           Flexible(
-                            child: Text(
-                                'Search products, services and artisans',
+                            child: Text('Search products, services and artisans',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -106,15 +101,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           Container(
                             margin: const EdgeInsets.symmetric(vertical: 6),
                             decoration: BoxDecoration(
-                                color: AppColors.softPink,
-                                borderRadius: BorderRadius.circular(10)),
+                                color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
                             child: IconButton(
-                              icon: const Icon(Icons.filter_list,
-                                  color: AppColors.brownHeader),
+                              icon: const Icon(Icons.filter_list, color: AppColors.brownHeader),
                               onPressed: () async {
                                 // Open the Filter page as a draggable bottom sheet.
-                                final filters =
-                                    await showModalBottomSheet<dynamic>(
+                                final filters = await showModalBottomSheet<dynamic>(
                                   context: context,
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
@@ -126,8 +118,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                     builder: (_, controller) => Container(
                                       decoration: const BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(16)),
+                                        borderRadius:
+                                            BorderRadius.vertical(top: Radius.circular(16)),
                                       ),
                                       child: const FilterPage(),
                                     ),
@@ -136,8 +128,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                 if (filters != null) {
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Filters applied')));
+                                        const SnackBar(content: Text('Filters applied')));
                                   }
                                 }
                               },
@@ -156,8 +147,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     child: Container(
                       height: 120,
                       decoration: BoxDecoration(
-                          color: AppColors.orange,
-                          borderRadius: BorderRadius.circular(14)),
+                          color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
@@ -181,8 +171,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                   const SizedBox(height: 6),
                                   Text(
                                     'Find rewarding projects, connect with clients, and take your career to new heights.',
-                                    style: const TextStyle(
-                                        color: Colors.white70, fontSize: 12),
+                                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -193,14 +182,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                       onPressed: () {},
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.brownHeader,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16),
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
                                         shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
+                                            borderRadius: BorderRadius.circular(8)),
                                       ),
-                                      child: const Text('Apply',
-                                          style: TextStyle(fontSize: 14)),
+                                      child: const Text('Apply', style: TextStyle(fontSize: 14)),
                                     ),
                                   ),
                                 ],
@@ -213,8 +199,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                               height: 86,
                               decoration: const BoxDecoration(
                                   color: Colors.white24,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)))),
+                                  borderRadius: BorderRadius.all(Radius.circular(12)))),
                         ],
                       ),
                     ),
@@ -270,9 +255,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
               }
 
               if (state is JobStateLoaded || state is JobStateAppliedSuccess) {
-                final jobs = state is JobStateLoaded
-                    ? state.jobs
-                    : (state as JobStateAppliedSuccess).jobs;
+                final jobs =
+                    state is JobStateLoaded ? state.jobs : (state as JobStateAppliedSuccess).jobs;
                 if (jobs.isEmpty) {
                   return RefreshIndicator(
                     onRefresh: () async {
@@ -357,10 +341,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(12)),
-              child: Text('56',
-                  style: TextStyle(fontSize: 12, color: AppColors.brownHeader)),
+              decoration:
+                  BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              child: Text('56', style: TextStyle(fontSize: 12, color: AppColors.brownHeader)),
             ),
           ],
         ),

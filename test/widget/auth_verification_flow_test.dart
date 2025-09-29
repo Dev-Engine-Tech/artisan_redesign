@@ -42,8 +42,7 @@ void main() {
 
       // Make mockAuthBloc.stream produce an initial AuthInitial state so BlocProvider can read it.
       when(() => mockAuthBloc.state).thenReturn(const AuthInitial());
-      whenListen(mockAuthBloc, const Stream<AuthState>.empty(),
-          initialState: const AuthInitial());
+      whenListen(mockAuthBloc, const Stream<AuthState>.empty(), initialState: const AuthInitial());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -80,8 +79,7 @@ void main() {
       print('TEST: identitySubmitted true');
 
       // Simulate selfie capture by directly calling cubit (the real SelfieCapturePage would also call this)
-      await verificationCubit.submitSelfie(
-          selfiePath: 'local://selfie_test.jpg');
+      await verificationCubit.submitSelfie(selfiePath: 'local://selfie_test.jpg');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       expect(verificationCubit.state.selfieCaptured, isTrue);
       print('TEST: selfieCaptured true');
@@ -129,8 +127,7 @@ void main() {
       expect(find.text('Congratulations!'), findsOneWidget);
 
       // Verify that AuthMarkVerified was dispatched to the AuthBloc
-      verify(() => mockAuthBloc.add(any(that: isA<AuthMarkVerified>())))
-          .called(1);
+      verify(() => mockAuthBloc.add(any(that: isA<AuthMarkVerified>()))).called(1);
 
       await verificationCubit.close();
     },

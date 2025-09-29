@@ -49,8 +49,8 @@ class AgreementModal extends StatelessWidget {
                   child: Text(
                     'Project Agreement',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ),
                 IconButton(
@@ -114,15 +114,15 @@ class AgreementModal extends StatelessWidget {
           Text(
             job.title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             job.category,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey.shade600,
-            ),
+                  color: Colors.grey.shade600,
+                ),
           ),
         ],
       ),
@@ -143,8 +143,8 @@ class AgreementModal extends StatelessWidget {
           Text(
             'Agreement Details',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 12),
           _buildDetailRow('Agreement ID', '#${agreement.id}'),
@@ -157,15 +157,15 @@ class AgreementModal extends StatelessWidget {
             Text(
               'Client Comments:',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             const SizedBox(height: 4),
             Text(
               agreement.comment,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade700,
-              ),
+                    color: Colors.grey.shade700,
+                  ),
             ),
           ],
         ],
@@ -187,8 +187,8 @@ class AgreementModal extends StatelessWidget {
           Text(
             'Payment Breakdown',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 12),
           Row(
@@ -201,8 +201,8 @@ class AgreementModal extends StatelessWidget {
               Text(
                 '₦${agreement.agreedPayment.toStringAsFixed(0)}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
           ),
@@ -213,14 +213,14 @@ class AgreementModal extends StatelessWidget {
               Text(
                 'Platform Fee (5%)',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+                      color: Colors.grey.shade600,
+                    ),
               ),
               Text(
                 '₦${(agreement.agreedPayment * 0.05).toStringAsFixed(0)}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+                      color: Colors.grey.shade600,
+                    ),
               ),
             ],
           ),
@@ -231,15 +231,15 @@ class AgreementModal extends StatelessWidget {
               Text(
                 'You\'ll Receive',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
               Text(
                 '₦${(agreement.agreedPayment * 0.95).toStringAsFixed(0)}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.green,
-                ),
+                      fontWeight: FontWeight.w700,
+                      color: Colors.green,
+                    ),
               ),
             ],
           ),
@@ -262,8 +262,8 @@ class AgreementModal extends StatelessWidget {
           Text(
             'Project Timeline',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 12),
           if (agreement.startDate != null)
@@ -295,9 +295,9 @@ class AgreementModal extends StatelessWidget {
               Text(
                 'Important Terms',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.orange.shade700,
-                ),
+                      fontWeight: FontWeight.w700,
+                      color: Colors.orange.shade700,
+                    ),
               ),
             ],
           ),
@@ -308,8 +308,8 @@ class AgreementModal extends StatelessWidget {
             '• Quality standards must be maintained throughout\n'
             '• Communication should remain professional at all times',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.orange.shade700,
-            ),
+                  color: Colors.orange.shade700,
+                ),
           ),
         ],
       ),
@@ -467,7 +467,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
   final _reasonController = TextEditingController();
   final _proposedChangesController = TextEditingController();
   String _selectedCategory = 'Timeline';
-  
+
   final List<String> _categories = [
     'Timeline',
     'Payment',
@@ -513,8 +513,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                   child: Text(
                     'Request Changes',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ),
                 IconButton(
@@ -537,8 +537,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                   Text(
                     'What would you like to change about this agreement?',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: 16),
 
@@ -546,8 +546,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                   Text(
                     'Category',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -561,12 +561,14 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                       child: DropdownButton<String>(
                         value: _selectedCategory,
                         isExpanded: true,
-                        items: _categories.map((category) => 
-                          DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          ),
-                        ).toList(),
+                        items: _categories
+                            .map(
+                              (category) => DropdownMenuItem(
+                                value: category,
+                                child: Text(category),
+                              ),
+                            )
+                            .toList(),
                         onChanged: (value) {
                           if (value != null) {
                             setState(() => _selectedCategory = value);
@@ -581,8 +583,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                   Text(
                     'Proposed Changes',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -608,8 +610,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                   Text(
                     'Reason for Changes',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -729,9 +731,9 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
 
     // Submit the change request
     context.read<JobBloc>().add(RequestChangeEvent(
-      jobId: widget.job.id,
-      reason: _reasonController.text.trim(),
-    ));
+          jobId: widget.job.id,
+          reason: _reasonController.text.trim(),
+        ));
 
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(

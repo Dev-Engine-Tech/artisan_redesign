@@ -85,9 +85,8 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Loading, Loaded] when getJobs succeeds',
       build: () {
-        when(() => mockGetJobs(
-            page: any(named: 'page'),
-            limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
+        when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+            .thenAnswer((_) async => [sampleJob]);
         return bloc;
       },
       act: (bloc) => bloc.add(LoadJobs(page: 1, limit: 10)),
@@ -103,9 +102,8 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Loading, Error] when getJobs throws',
       build: () {
-        when(() => mockGetJobs(
-            page: any(named: 'page'),
-            limit: any(named: 'limit'))).thenThrow(Exception('network'));
+        when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+            .thenThrow(Exception('network'));
         return bloc;
       },
       act: (bloc) => bloc.add(LoadJobs(page: 1, limit: 10)),
@@ -120,11 +118,9 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Applying, AppliedSuccess] when applyToJob succeeds and getJobs returns list',
       build: () {
-        when(() => mockApplyToJob(any(that: isA<JobApplication>())))
-            .thenAnswer((_) async => true);
-        when(() => mockGetJobs(
-            page: any(named: 'page'),
-            limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
+        when(() => mockApplyToJob(any(that: isA<JobApplication>()))).thenAnswer((_) async => true);
+        when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+            .thenAnswer((_) async => [sampleJob]);
         return bloc;
       },
       act: (bloc) => bloc.add(ApplyToJobEvent(
@@ -141,8 +137,7 @@ void main() {
         isA<JobStateAppliedSuccess>(),
       ],
       verify: (_) {
-        verify(() => mockApplyToJob(any(that: isA<JobApplication>())))
-            .called(1);
+        verify(() => mockApplyToJob(any(that: isA<JobApplication>()))).called(1);
         verify(() => mockGetJobs()).called(1);
       },
     );
@@ -150,8 +145,7 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Applying, Error] when applyToJob returns false',
       build: () {
-        when(() => mockApplyToJob(any(that: isA<JobApplication>())))
-            .thenAnswer((_) async => false);
+        when(() => mockApplyToJob(any(that: isA<JobApplication>()))).thenAnswer((_) async => false);
         return bloc;
       },
       act: (bloc) => bloc.add(ApplyToJobEvent(
@@ -197,9 +191,8 @@ void main() {
       'emits [Applying, AgreementAccepted] when acceptAgreement succeeds and getJobs returns list',
       build: () {
         when(() => mockAcceptAgreement('1')).thenAnswer((_) async => true);
-        when(() => mockGetJobs(
-            page: any(named: 'page'),
-            limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
+        when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+            .thenAnswer((_) async => [sampleJob]);
         return bloc;
       },
       act: (bloc) => bloc.add(AcceptAgreementEvent(jobId: '1')),
@@ -229,8 +222,7 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Applying, Error] when acceptAgreement throws',
       build: () {
-        when(() => mockAcceptAgreement('1'))
-            .thenThrow(Exception('agreement failed'));
+        when(() => mockAcceptAgreement('1')).thenThrow(Exception('agreement failed'));
         return bloc;
       },
       act: (bloc) => bloc.add(AcceptAgreementEvent(jobId: '1')),

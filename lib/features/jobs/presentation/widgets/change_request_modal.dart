@@ -49,17 +49,17 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
       _isSubmitting = true;
     });
 
-    final changeTypeLabel = _changeTypes
-        .firstWhere((type) => type['value'] == _selectedChangeType)['label'];
-    
+    final changeTypeLabel =
+        _changeTypes.firstWhere((type) => type['value'] == _selectedChangeType)['label'];
+
     final reason = '$changeTypeLabel: ${_reasonController.text.trim()}';
 
     context.read<JobBloc>().add(
-      RequestChangeEvent(
-        jobId: widget.job.id,
-        reason: reason,
-      ),
-    );
+          RequestChangeEvent(
+            jobId: widget.job.id,
+            reason: reason,
+          ),
+        );
   }
 
   @override
@@ -106,7 +106,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                
+
                 // Header
                 Padding(
                   padding: const EdgeInsets.all(20),
@@ -119,16 +119,16 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                             Text(
                               'Request Changes',
                               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               'Specify what changes you need for this project',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.black54,
-                              ),
+                                    color: Colors.black54,
+                                  ),
                             ),
                           ],
                         ),
@@ -146,7 +146,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                     ],
                   ),
                 ),
-                
+
                 // Content
                 Expanded(
                   child: Form(
@@ -169,16 +169,16 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                               Text(
                                 widget.job.title,
                                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.brownHeader,
-                                ),
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.brownHeader,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 widget.job.category,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.black54,
-                                ),
+                                      color: Colors.black54,
+                                    ),
                               ),
                               const SizedBox(height: 8),
                               Row(
@@ -186,37 +186,37 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                   Text(
                                     'Agreed Amount: ',
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Colors.black54,
-                                    ),
+                                          color: Colors.black54,
+                                        ),
                                   ),
                                   Text(
                                     'NGN ${widget.job.minBudget.toString().replaceAllMapped(
-                                      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                                      (match) => '${match[1]},',
-                                    )}',
+                                          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                                          (match) => '${match[1]},',
+                                        )}',
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader,
-                                    ),
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.brownHeader,
+                                        ),
                                   ),
                                 ],
                               ),
                             ],
                           ),
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Change type selection
                         Text(
                           'What type of change do you need?',
                           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.brownHeader,
+                              ),
                         ),
                         const SizedBox(height: 12),
-                        
+
                         ..._changeTypes.map((changeType) {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 8),
@@ -271,13 +271,13 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                       child: Text(
                                         changeType['label']!,
                                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          color: _selectedChangeType == changeType['value']
-                                              ? AppColors.brownHeader
-                                              : Colors.black87,
-                                          fontWeight: _selectedChangeType == changeType['value']
-                                              ? FontWeight.w600
-                                              : FontWeight.normal,
-                                        ),
+                                              color: _selectedChangeType == changeType['value']
+                                                  ? AppColors.brownHeader
+                                                  : Colors.black87,
+                                              fontWeight: _selectedChangeType == changeType['value']
+                                                  ? FontWeight.w600
+                                                  : FontWeight.normal,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -286,19 +286,19 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                             ),
                           );
                         }),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Reason text field
                         Text(
                           'Explain the changes you need',
                           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.brownHeader,
+                              ),
                         ),
                         const SizedBox(height: 12),
-                        
+
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: AppColors.softBorder),
@@ -308,7 +308,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                             controller: _reasonController,
                             maxLines: 6,
                             decoration: const InputDecoration(
-                              hintText: 'Please provide detailed explanation of the changes needed...',
+                              hintText:
+                                  'Please provide detailed explanation of the changes needed...',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(16),
                             ),
@@ -320,13 +321,13 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                             },
                           ),
                         ),
-                        
+
                         const SizedBox(height: 100), // Extra space for bottom button
                       ],
                     ),
                   ),
                 ),
-                
+
                 // Submit button
                 Container(
                   padding: const EdgeInsets.all(20),
@@ -408,16 +409,16 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
             Text(
               'Request Sent!',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppColors.brownHeader,
-              ),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.brownHeader,
+                  ),
             ),
             const SizedBox(height: 12),
             Text(
               'Your change request has been submitted successfully. The client will be notified and will respond soon.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.black54,
-              ),
+                    color: Colors.black54,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),

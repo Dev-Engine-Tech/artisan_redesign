@@ -6,4 +6,3 @@ class UploadProfileImage {
 
   Future<String> call(String path) => repository.uploadProfileImage(path);
 }
-

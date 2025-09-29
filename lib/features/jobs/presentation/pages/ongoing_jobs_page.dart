@@ -211,8 +211,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((job) {
         return job.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               job.category.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               job.description.toLowerCase().contains(_searchQuery.toLowerCase());
+            job.category.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            job.description.toLowerCase().contains(_searchQuery.toLowerCase());
       }).toList();
     }
 
@@ -264,13 +264,11 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            _searchQuery.isNotEmpty
-                ? 'No projects match your search'
-                : 'No ongoing projects',
+            _searchQuery.isNotEmpty ? 'No projects match your search' : 'No ongoing projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.black54,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -278,8 +276,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                 ? 'Try adjusting your search filters'
                 : 'Start working on projects to see them here',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black38,
-            ),
+                  color: Colors.black38,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -301,16 +299,16 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           Text(
             'Error loading projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.red.shade700,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
-            ),
+                  color: Colors.black54,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -389,9 +387,9 @@ class OngoingJobCard extends StatelessWidget {
                 Text(
                   job.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.brownHeader,
-                  ),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.brownHeader,
+                      ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -399,8 +397,8 @@ class OngoingJobCard extends StatelessWidget {
                 Text(
                   job.category,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.black54,
-                  ),
+                        color: Colors.black54,
+                      ),
                 ),
               ],
             ),
@@ -534,9 +532,9 @@ class OngoingJobCard extends StatelessWidget {
           child: _buildDetailItem(
             Icons.attach_money,
             'NGN ${job.minBudget.toString().replaceAllMapped(
-              RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-              (match) => '${match[1]},',
-            )}',
+                  RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                  (match) => '${match[1]},',
+                )}',
           ),
         ),
         Expanded(
@@ -582,7 +580,7 @@ class OngoingJobCard extends StatelessWidget {
       final date = DateTime.parse(deadline);
       final now = DateTime.now();
       final difference = date.difference(now).inDays;
-      
+
       if (difference < 0) {
         return 'Overdue';
       } else if (difference == 0) {

@@ -13,8 +13,7 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
-  final TextEditingController _deliveryChargeController =
-      TextEditingController();
+  final TextEditingController _deliveryChargeController = TextEditingController();
 
   @override
   void dispose() {
@@ -31,10 +30,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(text,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.brownHeader)),
     );
   }
 
@@ -59,10 +55,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Agreements',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w700)),
+              style:
+                  Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
           _agreementRow('Agreed Payment:', agreedPayment),
           const SizedBox(height: 8),
@@ -97,10 +91,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       children: [
         Text(label, style: Theme.of(context).textTheme.bodyMedium),
         Text(value,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
       ],
     );
   }
@@ -117,17 +108,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Project Request',
-            style: TextStyle(color: Colors.black87)),
+        title: const Text('Project Request', style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
         child: ListView(
@@ -147,8 +136,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   CircleAvatar(
                     radius: 22,
                     backgroundColor: Colors.grey.shade200,
-                    child:
-                        const Icon(Icons.person, color: AppColors.brownHeader),
+                    child: const Icon(Icons.person, color: AppColors.brownHeader),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -156,11 +144,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
                         Text('Uwak Daniel',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 16)),
+                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
                         SizedBox(height: 4),
-                        Text('@danuwk',
-                            style: TextStyle(color: Colors.black45)),
+                        Text('@danuwk', style: TextStyle(color: Colors.black45)),
                       ],
                     ),
                   ),
@@ -168,10 +154,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF213447),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: const Text('View Profile'),
                   ),
@@ -210,29 +194,25 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(job.title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 6),
-                        Text('Abbys Furniture',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.black45)),
-                      ]),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(job.title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 6),
+                    Text('Abbys Furniture',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.black45)),
+                  ]),
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
-                      color: AppColors.softPeach,
-                      borderRadius: BorderRadius.circular(10)),
+                      color: AppColors.softPeach, borderRadius: BorderRadius.circular(10)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -246,9 +226,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.black87)),
+                              ?.copyWith(fontWeight: FontWeight.w800, color: Colors.black87)),
                     ],
                   ),
                 )
@@ -259,10 +237,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
             // Delivery Option (address pill)
             Text('Delivery Option',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700)),
+                style:
+                    Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             Container(
               width: double.infinity,
@@ -271,8 +247,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 color: AppColors.softPeach,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Text(
-                  '15a, oladipo diya street, Lekki phase 1 Ido LGA, Lagos state.'),
+              child: const Text('15a, oladipo diya street, Lekki phase 1 Ido LGA, Lagos state.'),
             ),
 
             const SizedBox(height: 12),
@@ -302,33 +277,26 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 border: Border.all(color: AppColors.softBorder),
               ),
               padding: const EdgeInsets.all(16),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Description',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 10),
-                    Text(
-                      job.description,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black54),
-                    ),
-                  ]),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text('Description',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 10),
+                Text(
+                  job.description,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54),
+                ),
+              ]),
             ),
 
             const SizedBox(height: 18),
 
             // Add delivery charge input
             Text('Add delivery charge',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700)),
+                style:
+                    Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             TextField(
               controller: _deliveryChargeController,
@@ -338,10 +306,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 filled: true,
                 fillColor: AppColors.cardBackground,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               ),
             ),
 
@@ -367,29 +333,25 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF9A4B20),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child:
-                  const Text('Accept Request', style: TextStyle(fontSize: 16)),
+              child: const Text('Accept Request', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 12),
 
             OutlinedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Request rejected')));
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('Request rejected')));
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: AppColors.softPink,
                 foregroundColor: AppColors.brownHeader,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child:
-                  const Text('Reject Request', style: TextStyle(fontSize: 16)),
+              child: const Text('Reject Request', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 40),
@@ -425,17 +387,15 @@ class OrderSummaryPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Confirm Order',
-            style: TextStyle(color: Colors.black87)),
+        title: const Text('Confirm Order', style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
         child: ListView(
@@ -449,26 +409,21 @@ class OrderSummaryPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.softBorder),
               ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(job.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    Text(job.category,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.black45)),
-                    const SizedBox(height: 8),
-                    Text(job.description,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                  ]),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(job.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 6),
+                Text(job.category,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45)),
+                const SizedBox(height: 8),
+                Text(job.description,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ]),
             ),
 
             const SizedBox(height: 12),
@@ -480,41 +435,33 @@ class OrderSummaryPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.subtleBorder),
               ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Agreements',
-                        style: TextStyle(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    _summaryRow(context, 'Agreed Payment',
-                        'NGN ${agreedPayment.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    _summaryRow(context, 'Delivery Fee',
-                        'NGN ${delivery.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    _summaryRow(context, 'Service Charge',
-                        'NGN ${serviceCharge.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    _summaryRow(
-                        context, 'WHT (2%)', 'NGN ${wht.toStringAsFixed(2)}'),
-                    const SizedBox(height: 12),
-                    _summaryRow(context, 'Amount you will get',
-                        'NGN ${amountYouGet.toStringAsFixed(2)}'),
-                  ]),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Agreements', style: TextStyle(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 8),
+                _summaryRow(context, 'Agreed Payment', 'NGN ${agreedPayment.toStringAsFixed(2)}'),
+                const SizedBox(height: 6),
+                _summaryRow(context, 'Delivery Fee', 'NGN ${delivery.toStringAsFixed(2)}'),
+                const SizedBox(height: 6),
+                _summaryRow(context, 'Service Charge', 'NGN ${serviceCharge.toStringAsFixed(2)}'),
+                const SizedBox(height: 6),
+                _summaryRow(context, 'WHT (2%)', 'NGN ${wht.toStringAsFixed(2)}'),
+                const SizedBox(height: 12),
+                _summaryRow(
+                    context, 'Amount you will get', 'NGN ${amountYouGet.toStringAsFixed(2)}'),
+              ]),
             ),
 
             const SizedBox(height: 18),
             ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Order confirmed')));
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('Order confirmed')));
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF9A4B20),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text('Submit', style: TextStyle(fontSize: 16)),
             ),
@@ -531,10 +478,7 @@ class OrderSummaryPage extends StatelessWidget {
       children: [
         Text(label, style: Theme.of(context).textTheme.bodyMedium),
         Text(value,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w700)),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
       ],
     );
   }

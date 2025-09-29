@@ -86,9 +86,9 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
               child: Text(
                 widget.title,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.brownHeader,
-                ),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.brownHeader,
+                    ),
               ),
             ),
             if (!widget.readOnly)
@@ -108,7 +108,6 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
           ],
         ),
         const SizedBox(height: 12),
-        
         if (_materials.isEmpty)
           Container(
             padding: const EdgeInsets.all(24),
@@ -127,20 +126,18 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.readOnly 
-                        ? 'No materials specified'
-                        : 'No materials added yet',
+                    widget.readOnly ? 'No materials specified' : 'No materials added yet',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
-                    ),
+                          color: Colors.black54,
+                        ),
                   ),
                   if (!widget.readOnly) ...[
                     const SizedBox(height: 4),
                     Text(
                       'Tap the + button to add materials',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.black38,
-                      ),
+                            color: Colors.black38,
+                          ),
                     ),
                   ],
                 ],
@@ -171,9 +168,9 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         child: Text(
                           'Material Description',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                         ),
                       ),
                       Expanded(
@@ -181,9 +178,9 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         child: Text(
                           'Qty',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -192,9 +189,9 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         child: Text(
                           'Unit Price',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -203,18 +200,16 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         child: Text(
                           'Total',
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                           textAlign: TextAlign.right,
                         ),
                       ),
-                      if (!widget.readOnly)
-                        const SizedBox(width: 40),
+                      if (!widget.readOnly) const SizedBox(width: 40),
                     ],
                   ),
                 ),
-                
                 ...List.generate(_materials.length, (index) {
                   return _MaterialRow(
                     material: _materials[index],
@@ -223,7 +218,6 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                     onRemove: () => _removeMaterial(index),
                   );
                 }),
-                
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
@@ -239,9 +233,9 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         child: Text(
                           'Total Material Cost',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                         ),
                       ),
                       const Expanded(flex: 2, child: SizedBox()),
@@ -250,18 +244,17 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         flex: 3,
                         child: Text(
                           'NGN ${totalCost.toStringAsFixed(0).replaceAllMapped(
-                            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                            (match) => '${match[1]},',
-                          )}',
+                                RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                                (match) => '${match[1]},',
+                              )}',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                           textAlign: TextAlign.right,
                         ),
                       ),
-                      if (!widget.readOnly)
-                        const SizedBox(width: 40),
+                      if (!widget.readOnly) const SizedBox(width: 40),
                     ],
                   ),
                 ),
@@ -314,13 +307,13 @@ class _MaterialRowState extends State<_MaterialRow> {
   void _updateMaterial() {
     final quantity = int.tryParse(_quantityController.text) ?? 1;
     final price = double.tryParse(_priceController.text) ?? 0.0;
-    
+
     final updatedMaterial = widget.material.copyWith(
       name: _nameController.text,
       quantity: quantity,
       price: price,
     );
-    
+
     widget.onChanged(updatedMaterial);
   }
 
@@ -354,7 +347,6 @@ class _MaterialRowState extends State<_MaterialRow> {
                     onChanged: (_) => _updateMaterial(),
                   ),
           ),
-          
           Expanded(
             flex: 2,
             child: widget.readOnly
@@ -376,7 +368,6 @@ class _MaterialRowState extends State<_MaterialRow> {
                     onChanged: (_) => _updateMaterial(),
                   ),
           ),
-          
           Expanded(
             flex: 3,
             child: widget.readOnly
@@ -399,21 +390,19 @@ class _MaterialRowState extends State<_MaterialRow> {
                     onChanged: (_) => _updateMaterial(),
                   ),
           ),
-          
           Expanded(
             flex: 3,
             child: Text(
               'NGN ${widget.material.totalPrice.toStringAsFixed(0).replaceAllMapped(
-                RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                (match) => '${match[1]},',
-              )}',
+                    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                    (match) => '${match[1]},',
+                  )}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
               textAlign: TextAlign.right,
             ),
           ),
-          
           if (!widget.readOnly)
             SizedBox(
               width: 40,

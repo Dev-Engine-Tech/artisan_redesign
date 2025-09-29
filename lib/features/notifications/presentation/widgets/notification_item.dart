@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
-import 'package:artisans_circle/features/notifications/domain/entities/notification.dart' as entities;
+import 'package:artisans_circle/features/notifications/domain/entities/notification.dart'
+    as entities;
 
 class NotificationItem extends StatelessWidget {
   final entities.Notification notification;
@@ -56,7 +57,7 @@ class NotificationItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                
+
                 // Notification content
                 Expanded(
                   child: Column(
@@ -71,9 +72,9 @@ class NotificationItem extends StatelessWidget {
                           color: Colors.black87,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 4),
-                      
+
                       // Type/Category
                       Text(
                         notification.type.displayTitle,
@@ -83,9 +84,9 @@ class NotificationItem extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 8),
-                      
+
                       // Time ago
                       Text(
                         notification.timeAgo,
@@ -97,7 +98,7 @@ class NotificationItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                
+
                 // Unread indicator
                 if (!notification.read)
                   Container(

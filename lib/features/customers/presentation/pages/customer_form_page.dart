@@ -18,7 +18,7 @@ class CustomerFormPage extends StatefulWidget {
 class _CustomerFormPageState extends State<CustomerFormPage> {
   final _formKey = GlobalKey<FormState>();
   final _customerRepository = CustomerRepositoryFake();
-  
+
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
@@ -41,7 +41,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
 
   void _initializeControllers() {
     final customer = widget.customer;
-    
+
     _nameController = TextEditingController(text: customer?.name ?? '');
     _emailController = TextEditingController(text: customer?.email ?? '');
     _phoneController = TextEditingController(text: customer?.phone ?? '');
@@ -135,12 +135,15 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         controller: controller,
         keyboardType: keyboardType,
         maxLines: maxLines,
-        validator: validator ?? (required ? (value) {
-          if (value?.isEmpty ?? true) {
-            return '$label is required';
-          }
-          return null;
-        } : null),
+        validator: validator ??
+            (required
+                ? (value) {
+                    if (value?.isEmpty ?? true) {
+                      return '$label is required';
+                    }
+                    return null;
+                  }
+                : null),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
@@ -194,7 +197,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
 
   String? _validatePhone(String? value) {
     if (value?.isEmpty ?? true) return null; // Phone is optional
-    
+
     final phoneRegex = RegExp(r'^\+?[\d\s\-\(\)]+$');
     if (!phoneRegex.hasMatch(value!)) {
       return 'Enter a valid phone number';
@@ -220,7 +223,8 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         city: _cityController.text.trim().isEmpty ? null : _cityController.text.trim(),
         state: _stateController.text.trim().isEmpty ? null : _stateController.text.trim(),
         country: _countryController.text.trim().isEmpty ? null : _countryController.text.trim(),
-        postalCode: _postalCodeController.text.trim().isEmpty ? null : _postalCodeController.text.trim(),
+        postalCode:
+            _postalCodeController.text.trim().isEmpty ? null : _postalCodeController.text.trim(),
         notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
         createdAt: widget.customer?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
@@ -237,9 +241,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _isEditing 
-                ? 'Customer updated successfully!'
-                : 'Customer created successfully!',
+              _isEditing ? 'Customer updated successfully!' : 'Customer created successfully!',
             ),
             backgroundColor: Colors.green,
           ),
@@ -302,13 +304,13 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                 ),
               ),
             ),
-            
+
             // Form Content
             SliverToBoxAdapter(
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  
+
                   // Basic Information Section
                   _buildSection(
                     title: 'Basic Information',
@@ -346,7 +348,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                       ),
                     ],
                   ),
-                  
+
                   // Address Information Section
                   _buildSection(
                     title: 'Address Information',
@@ -402,7 +404,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                       ),
                     ],
                   ),
-                  
+
                   // Additional Information Section
                   _buildSection(
                     title: 'Additional Information',
@@ -417,9 +419,9 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Save Button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -455,7 +457,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 40),
                 ],
               ),

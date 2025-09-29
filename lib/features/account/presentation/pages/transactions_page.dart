@@ -37,10 +37,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
           if (state is AccountLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (state is AccountTransactionsLoaded) {
             final transactions = state.transactions;
-            
+
             if (transactions.isEmpty) {
               return Center(
                 child: Column(
@@ -80,7 +80,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 separatorBuilder: (context, index) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
-                  
+
                   return Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -101,18 +101,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: transaction.amount > 0 
+                            color: transaction.amount > 0
                                 ? Colors.green.withOpacity(0.1)
                                 : Colors.red.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: Icon(
-                            transaction.amount > 0 
-                                ? Icons.arrow_downward
-                                : Icons.arrow_upward,
-                            color: transaction.amount > 0 
-                                ? Colors.green
-                                : Colors.red,
+                            transaction.amount > 0 ? Icons.arrow_downward : Icons.arrow_upward,
+                            color: transaction.amount > 0 ? Colors.green : Colors.red,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -122,8 +118,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                transaction.description ?? 
-                                (transaction.amount > 0 ? 'Payment Received' : 'Withdrawal'),
+                                transaction.description ??
+                                    (transaction.amount > 0 ? 'Payment Received' : 'Withdrawal'),
                                 style: textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -157,9 +153,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                               '${transaction.amount > 0 ? '+' : ''}${transaction.currency} ${transaction.amount.abs().toStringAsFixed(0)}',
                               style: textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: transaction.amount > 0 
-                                    ? Colors.green
-                                    : Colors.red,
+                                color: transaction.amount > 0 ? Colors.green : Colors.red,
                               ),
                             ),
                           ],
@@ -171,7 +165,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
               ),
             );
           }
-          
+
           if (state is AccountError) {
             return Center(
               child: Column(

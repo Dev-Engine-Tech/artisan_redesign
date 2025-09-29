@@ -9,7 +9,7 @@ import 'create_invoice_page.dart';
 class InvoicesPage extends StatelessWidget {
   final InvoiceStatus? status;
   final String? title;
-  
+
   const InvoicesPage({
     super.key,
     this.status,
@@ -18,9 +18,9 @@ class InvoicesPage extends StatelessWidget {
 
   String _formatCurrency(double amount) {
     return 'NGN ${amount.toStringAsFixed(0).replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-      (match) => '${match[1]},',
-    )}';
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )}';
   }
 
   String _getStatusText(InvoiceStatus status) {
@@ -155,8 +155,18 @@ class InvoicesPage extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
@@ -199,7 +209,7 @@ class InvoicesPage extends StatelessWidget {
             if (state is InvoiceLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-            
+
             if (state is InvoiceError) {
               return Center(
                 child: Padding(
@@ -235,10 +245,10 @@ class InvoicesPage extends StatelessWidget {
                 ),
               );
             }
-            
+
             if (state is InvoicesLoaded) {
               final invoices = state.invoices;
-              
+
               if (invoices.isEmpty) {
                 return Center(
                   child: Padding(
@@ -278,7 +288,7 @@ class InvoicesPage extends StatelessWidget {
                   ),
                 );
               }
-              
+
               return ListView.builder(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: invoices.length,
@@ -287,7 +297,7 @@ class InvoicesPage extends StatelessWidget {
                 },
               );
             }
-            
+
             return const SizedBox.shrink();
           },
         ),
@@ -309,7 +319,7 @@ class InvoicesPage extends StatelessWidget {
     } else {
       mode = InvoiceMode.view;
     }
-    
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => CreateInvoicePage(

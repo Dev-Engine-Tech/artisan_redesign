@@ -58,7 +58,8 @@ class InvoiceMenuPage extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.notifications_outlined, color: Colors.grey, size: 20),
+                          icon: const Icon(Icons.notifications_outlined,
+                              color: Colors.grey, size: 20),
                           padding: const EdgeInsets.all(8),
                           constraints: const BoxConstraints(),
                         ),
@@ -67,9 +68,9 @@ class InvoiceMenuPage extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Top Icon Grid (4 icons)
               Row(
                 children: [
@@ -107,9 +108,9 @@ class InvoiceMenuPage extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Earnings Balance Card - Reduced size
               Container(
                 width: double.infinity,
@@ -169,9 +170,9 @@ class InvoiceMenuPage extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Stats Row
               Row(
                 children: [
@@ -241,9 +242,9 @@ class InvoiceMenuPage extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // Watch tutorial section
               Container(
                 padding: const EdgeInsets.all(20),
@@ -292,9 +293,9 @@ class InvoiceMenuPage extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Frequently client section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -317,25 +318,30 @@ class InvoiceMenuPage extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               SizedBox(
                 height: 100,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildClientAvatar('Cooper', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
-                    _buildClientAvatar('Wilson', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'),
-                    _buildClientAvatar('Jacob', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'),
-                    _buildClientAvatar('Albert', 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150'),
-                    _buildClientAvatar('Robert', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150'),
+                    _buildClientAvatar('Cooper',
+                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
+                    _buildClientAvatar('Wilson',
+                        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'),
+                    _buildClientAvatar('Jacob',
+                        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'),
+                    _buildClientAvatar('Albert',
+                        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150'),
+                    _buildClientAvatar('Robert',
+                        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150'),
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Recent invoice section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -358,9 +364,9 @@ class InvoiceMenuPage extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -375,7 +381,8 @@ class InvoiceMenuPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         image: const DecorationImage(
-                          image: NetworkImage('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
+                          image: NetworkImage(
+                              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -457,7 +464,7 @@ class InvoiceMenuPage extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 20),
             ],
           ),

@@ -40,44 +40,42 @@ class _MyEarningsPageState extends State<MyEarningsPage> {
         body: BlocListener<AccountBloc, AccountState>(
           listener: (context, state) {
             if (state is AccountActionSuccess) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
               if (state.message.toLowerCase().contains('withdrawal')) {
                 // refresh earnings + transactions after withdrawal
                 context.read<AccountBloc>().add(AccountLoadEarnings());
                 context.read<AccountBloc>().add(const AccountLoadTransactions());
               }
             } else if (state is AccountError) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           child: Column(
             children: [
               Expanded(
                 child: BlocBuilder<AccountBloc, AccountState>(
-                buildWhen: (prev, curr) =>
-                    curr is AccountEarningsLoaded ||
-                    curr is AccountTransactionsLoaded ||
-                    curr is AccountLoading ||
-                    curr is AccountError,
-                builder: (context, state) {
-                  return _EarningsBody(state: state);
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _showWithdrawDialog(context),
-                  child: const Text('Request Withdrawal'),
+                  buildWhen: (prev, curr) =>
+                      curr is AccountEarningsLoaded ||
+                      curr is AccountTransactionsLoaded ||
+                      curr is AccountLoading ||
+                      curr is AccountError,
+                  builder: (context, state) {
+                    return _EarningsBody(state: state);
+                  },
                 ),
               ),
-            )
-          ],
-        ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => _showWithdrawDialog(context),
+                    child: const Text('Request Withdrawal'),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -98,16 +96,13 @@ class _MyEarningsPageState extends State<MyEarningsPage> {
           decoration: const InputDecoration(hintText: 'Amount'),
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               final amount = double.tryParse(ctr.text.trim());
               if (amount != null && amount > 0) {
                 Navigator.pop(ctx);
-                context
-                    .read<AccountBloc>()
-                    .add(AccountRequestWithdrawal(amount));
+                context.read<AccountBloc>().add(AccountRequestWithdrawal(amount));
               }
             },
             child: const Text('Submit'),
@@ -155,8 +150,7 @@ class _EarningsBody extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
-        Text('Transaction History',
-            style: Theme.of(context).textTheme.titleMedium),
+        Text('Transaction History', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         ...tx.map((t) => Card(
               child: ListTile(
@@ -220,8 +214,16 @@ extension on _MyEarningsPageState {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: a, obscureText: true, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'PIN')),
-            TextField(controller: b, obscureText: true, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Confirm PIN')),
+            TextField(
+                controller: a,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'PIN')),
+            TextField(
+                controller: b,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Confirm PIN')),
           ],
         ),
         actions: [
@@ -256,8 +258,7 @@ class _StatCard extends StatelessWidget {
             children: [
               Text(title, style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 4),
-              Text(value.toStringAsFixed(2),
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(value.toStringAsFixed(2), style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
         ),

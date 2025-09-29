@@ -28,8 +28,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
   // Step 1 controllers
   final TextEditingController _titleController = TextEditingController();
   String? _category;
-  final TextEditingController _subCategoryIdController =
-      TextEditingController();
+  final TextEditingController _subCategoryIdController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   String? _selectedCategoryName;
   String? _selectedSubcategoryName;
@@ -87,10 +86,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     if (it != null) {
       _titleController.text = it.title;
       _descriptionController.text = it.description;
-      if (it.priceMin != null)
-        _minPriceController.text = it.priceMin.toString();
-      if (it.priceMax != null)
-        _maxPriceController.text = it.priceMax.toString();
+      if (it.priceMin != null) _minPriceController.text = it.priceMin.toString();
+      if (it.priceMax != null) _maxPriceController.text = it.priceMax.toString();
 
       // Initialize existing images
       if (it.imageUrl != null && it.imageUrl!.isNotEmpty) {
@@ -141,12 +138,11 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
   Future<void> _submit() async {
     final title = _titleController.text.trim();
     final desc = _descriptionController.text.trim();
-    final subCategoryId = _subCategoryIdController.text.trim().isEmpty
-        ? '1'
-        : _subCategoryIdController.text.trim();
+    final subCategoryId =
+        _subCategoryIdController.text.trim().isEmpty ? '1' : _subCategoryIdController.text.trim();
     if (title.isEmpty || desc.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter title and description')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Please enter title and description')));
       return;
     }
     int? toInt(String s) => int.tryParse(s.replaceAll(',', '').trim());
@@ -199,14 +195,11 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(widget.item == null
-              ? 'Catalogue submitted'
-              : 'Catalogue updated')));
+          content: Text(widget.item == null ? 'Catalogue submitted' : 'Catalogue updated')));
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Failed to submit: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit: $e')));
     }
   }
 
@@ -217,17 +210,15 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       leading: Padding(
         padding: const EdgeInsets.only(left: 12.0),
         child: Container(
-          decoration: BoxDecoration(
-              color: AppColors.softPink,
-              borderRadius: BorderRadius.circular(10)),
+          decoration:
+              BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
           child: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black54),
             onPressed: _back,
           ),
         ),
       ),
-      title: const Text('Upload Projects',
-          style: TextStyle(color: Colors.black87)),
+      title: const Text('Upload Projects', style: TextStyle(color: Colors.black87)),
     );
   }
 
@@ -257,8 +248,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
         const SizedBox(height: 8),
-        const Text('Project Title',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Project Title', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         TextField(
           controller: _titleController,
@@ -267,10 +257,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             fillColor: AppColors.cardBackground,
             hintText: 'what are you working on ?',
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           ),
         ),
         const SizedBox(height: 12),
@@ -285,29 +273,23 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               'Title Samples\n• Modern 4-seater dinning table.\n• Eternal elegance wedding gown.\n• Metal staircases handrails.'),
         ),
         const SizedBox(height: 18),
-        const Text('Select project category',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Select project category', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           initialValue: _category,
-          items: _categories
-              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-              .toList(),
+          items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
           onChanged: (v) => setState(() => _category = v),
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.cardBackground,
             hintText: 'Select project category',
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           ),
         ),
         const SizedBox(height: 12),
-        const Text('Sub-category',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Sub-category', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: _pickSubcategory,
@@ -322,16 +304,14 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                    child: Text(_selectedSubcategoryName ??
-                        'Select sub-category (tap to choose)')),
+                    child: Text(_selectedSubcategoryName ?? 'Select sub-category (tap to choose)')),
                 const Icon(Icons.chevron_right),
               ],
             ),
           ),
         ),
         const SizedBox(height: 18),
-        const Text('Project Description',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Project Description', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         TextField(
           controller: _descriptionController,
@@ -342,10 +322,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             fillColor: AppColors.cardBackground,
             hintText: 'Describe what your project is',
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
         ),
         const SizedBox(height: 8),
@@ -353,16 +331,14 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-                color: AppColors.softBorder, style: BorderStyle.solid),
+            border: Border.all(color: AppColors.softBorder, style: BorderStyle.solid),
             color: AppColors.cardBackground,
           ),
           child: const Text(
               'Descriptions should be specific to the product\n• Clear description of what your preferences and specifications are\n• Details about how you and your team likes to work'),
         ),
         const SizedBox(height: 18),
-        const Text('Attached File (Optional)',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Attached File (Optional)', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () async {
@@ -375,21 +351,16 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             height: 160,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                  color: AppColors.softBorder,
-                  style: BorderStyle.solid,
-                  width: 1.5),
+              border: Border.all(color: AppColors.softBorder, style: BorderStyle.solid, width: 1.5),
               color: Colors.white,
             ),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.perm_media_outlined,
-                      color: AppColors.orange, size: 36),
+                  const Icon(Icons.perm_media_outlined, color: AppColors.orange, size: 36),
                   const SizedBox(height: 8),
-                  const Text(
-                      'Copy and paste images, videos or any file from your device.'),
+                  const Text('Copy and paste images, videos or any file from your device.'),
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () async {
@@ -401,13 +372,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       side: BorderSide(color: AppColors.orange),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: Text('Upload Media',
-                        style: TextStyle(color: AppColors.orange)),
+                    child: Text('Upload Media', style: TextStyle(color: AppColors.orange)),
                   )
                 ],
               ),
@@ -420,11 +388,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             child: Wrap(
               spacing: 8,
               children: _media.map((m) {
-                String displayText =
-                    m.startsWith('http') ? 'Existing Image' : m.split('/').last;
+                String displayText = m.startsWith('http') ? 'Existing Image' : m.split('/').last;
                 return Chip(
-                    label: Text(displayText),
-                    onDeleted: () => setState(() => _media.remove(m)));
+                    label: Text(displayText), onDeleted: () => setState(() => _media.remove(m)));
               }).toList(),
             ),
           ),
@@ -436,8 +402,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF9A4B20),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             child: const Text('Proceed'),
           ),
@@ -452,8 +417,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
         const SizedBox(height: 8),
-        const Text('Price Range',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Price Range', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -467,10 +431,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                   fillColor: AppColors.cardBackground,
                   hintText: '100,000',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 ),
               ),
             ),
@@ -485,45 +447,36 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                   fillColor: AppColors.cardBackground,
                   hintText: '100,000',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 18),
-        const Text('Product Timeline',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Product Timeline', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           initialValue: _timeline,
-          items: _timelines
-              .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-              .toList(),
+          items: _timelines.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
           onChanged: (v) => setState(() => _timeline = v),
           decoration: InputDecoration(
             filled: true,
             fillColor: AppColors.cardBackground,
             hintText: 'Select preferable timeline',
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           ),
         ),
         const SizedBox(height: 18),
-        const Text('Select preferred skill',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Select preferred skill', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-              color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(10)),
+              color: AppColors.cardBackground, borderRadius: BorderRadius.circular(10)),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -541,21 +494,18 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 }),
                 selectedColor: const Color(0xFF9A4B20),
                 backgroundColor: Colors.white,
-                labelStyle:
-                    TextStyle(color: selected ? Colors.white : Colors.black87),
+                labelStyle: TextStyle(color: selected ? Colors.white : Colors.black87),
               );
             }).toList(),
           ),
         ),
         const SizedBox(height: 18),
-        const Text('Materials Preference',
-            style: TextStyle(fontWeight: FontWeight.w600)),
+        const Text('Materials Preference', style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-              color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(10)),
+              color: AppColors.cardBackground, borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
               // ignore: deprecated_member_use
@@ -588,8 +538,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF9A4B20),
               padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             child: const Text('Proceed'),
           ),
@@ -615,8 +564,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Select Sub-category',
-                    style:
-                        TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
                 const SizedBox(height: 8),
                 Expanded(
                   child: ListView.builder(
@@ -631,8 +579,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                                   onTap: () {
                                     _subCategoryIdController.text = s.id;
                                     _selectedCategoryName = g.name;
-                                    _selectedSubcategoryName =
-                                        '${g.name} • ${s.name}';
+                                    _selectedSubcategoryName = '${g.name} • ${s.name}';
                                     Navigator.of(ctx).pop();
                                     setState(() {});
                                   },
@@ -649,8 +596,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load categories: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to load categories: $e')));
     }
   }
 
@@ -667,25 +614,19 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             color: AppColors.softPink,
             child: Center(
               child: _media.isEmpty
-                  ? const Icon(Icons.image_outlined,
-                      size: 56, color: AppColors.orange)
+                  ? const Icon(Icons.image_outlined, size: 56, color: AppColors.orange)
                   : Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children:
-                          _media.map((m) => Chip(label: Text(m))).toList()),
+                      children: _media.map((m) => Chip(label: Text(m))).toList()),
             ),
           ),
         ),
         const SizedBox(height: 12),
-        Text(
-            _titleController.text.isEmpty
-                ? 'Untitled project'
-                : _titleController.text,
+        Text(_titleController.text.isEmpty ? 'Untitled project' : _titleController.text,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
         const SizedBox(height: 6),
-        Text(_category ?? 'Uncategorized',
-            style: const TextStyle(color: Colors.black54)),
+        Text(_category ?? 'Uncategorized', style: const TextStyle(color: Colors.black54)),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
@@ -696,10 +637,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             border: Border.all(color: AppColors.softBorder),
           ),
           child: Text('Duration: ${_timeline ?? 'Not specified'}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.brownHeader)),
+              style:
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.brownHeader)),
         ),
         const SizedBox(height: 14),
         Container(
@@ -709,10 +648,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             border: Border.all(color: AppColors.softBorder),
           ),
           padding: const EdgeInsets.all(16),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('Description',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text('Description', style: TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             Text(
                 _descriptionController.text.isEmpty
@@ -742,8 +679,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF213447),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
           child: const Text('Edit'),
         ),
@@ -753,8 +689,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF9A4B20),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: const Text('Submit'),
         ),

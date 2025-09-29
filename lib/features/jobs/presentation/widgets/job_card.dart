@@ -35,15 +35,12 @@ class JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final budgetText = job.minBudget == job.maxBudget 
+    final budgetText = job.minBudget == job.maxBudget
         ? '₦${job.maxBudget.toString()}'
         : '₦${job.minBudget.toString()} - ₦${job.maxBudget.toString()}';
-    final titleStyle = Theme.of(context)
-        .textTheme
-        .titleLarge
-        ?.copyWith(fontWeight: FontWeight.w600);
-    final subtitleStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54);
+    final titleStyle =
+        Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600);
+    final subtitleStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -75,8 +72,7 @@ class JobCard extends StatelessWidget {
                         color: AppColors.softPink,
                         image: job.thumbnailUrl.isNotEmpty
                             ? DecorationImage(
-                                image: NetworkImage(
-                                    sanitizeImageUrl(job.thumbnailUrl)),
+                                image: NetworkImage(sanitizeImageUrl(job.thumbnailUrl)),
                                 fit: BoxFit.cover)
                             : null,
                       ),
@@ -106,8 +102,7 @@ class JobCard extends StatelessWidget {
                           ],
                           const SizedBox(height: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                             decoration: BoxDecoration(
                               color: AppColors.softPink,
                               borderRadius: BorderRadius.circular(8),
@@ -132,14 +127,12 @@ class JobCard extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => JobShareService.shareJob(job),
-                          icon: const Icon(Icons.share_outlined,
-                              size: 20, color: Colors.black54),
+                          icon: const Icon(Icons.share_outlined, size: 20, color: Colors.black54),
                           tooltip: 'Share Job',
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.more_vert,
-                              size: 20, color: Colors.black54),
+                          icon: const Icon(Icons.more_vert, size: 20, color: Colors.black54),
                         ),
                       ],
                     ),
@@ -158,15 +151,13 @@ class JobCard extends StatelessWidget {
                             .bodyLarge
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppColors.cardBackground,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: AppColors.subtleBorder),
                       ),
-                      child: Text(job.duration,
-                          style: Theme.of(context).textTheme.bodyMedium),
+                      child: Text(job.duration, style: Theme.of(context).textTheme.bodyMedium),
                     )
                   ],
                 ),
@@ -195,13 +186,10 @@ class JobCard extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _getPrimaryButtonColor(),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
-                          child: Text(
-                              primaryLabel ?? _getPrimaryLabel(),
+                          child: Text(primaryLabel ?? _getPrimaryLabel(),
                               style: const TextStyle(fontSize: 16)),
                         ),
                       ),
@@ -216,17 +204,14 @@ class JobCard extends StatelessWidget {
                           style: OutlinedButton.styleFrom(
                             backgroundColor: AppColors.softPeach,
                             side: BorderSide.none,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             foregroundColor: AppColors.brownHeader,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.reviews,
-                                  size: 16, color: AppColors.orange),
+                              const Icon(Icons.reviews, size: 16, color: AppColors.orange),
                               const SizedBox(width: 6),
                               Text(secondaryLabel ?? _getSecondaryLabel(),
                                   style: Theme.of(context)
@@ -252,7 +237,7 @@ class JobCard extends StatelessWidget {
   Widget _buildStatusIndicator() {
     Color statusColor;
     IconData statusIcon;
-    
+
     if (job.status == JobStatus.accepted) {
       statusColor = Colors.green;
       statusIcon = Icons.check_circle;
@@ -287,7 +272,7 @@ class JobCard extends StatelessWidget {
   Widget _buildApplicationStatus() {
     final status = job.applicationStatus;
     Color statusColor;
-    
+
     if (status == 'Accepted') {
       statusColor = Colors.green;
     } else if (status == 'Review Agreement') {
@@ -335,7 +320,7 @@ class JobCard extends StatelessWidget {
         }));
       };
     }
-    
+
     // If there's an agreement, show agreement modal directly
     if (job.agreement != null) {
       return () {
@@ -356,7 +341,7 @@ class JobCard extends StatelessWidget {
         );
       };
     }
-    
+
     // If there's a change request, show change request status modal
     if (job.changeRequest != null) {
       return () {
@@ -371,7 +356,7 @@ class JobCard extends StatelessWidget {
         );
       };
     }
-    
+
     // No agreement yet - waiting state, button should be disabled
     return null;
   }
@@ -381,7 +366,7 @@ class JobCard extends StatelessWidget {
     if (!job.applied) {
       return 'Apply';
     }
-    
+
     if (job.status == JobStatus.accepted) {
       return 'View Project';
     } else if (job.agreement != null) {
@@ -399,7 +384,7 @@ class JobCard extends StatelessWidget {
     if (!job.applied) {
       return AppColors.orange;
     }
-    
+
     if (job.status == JobStatus.accepted) {
       return Colors.green;
     } else if (job.agreement != null) {

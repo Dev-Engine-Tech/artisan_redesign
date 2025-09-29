@@ -20,9 +20,8 @@ class CatalogItemModel extends CatalogItem {
     final client = json['client'] as Map<String, dynamic>?;
 
     // Extract pictures from catalog
-    final pictures = catalog?['pictures'] as List? ??
-        json['pictures'] as List? ??
-        json['images'] as List?;
+    final pictures =
+        catalog?['pictures'] as List? ?? json['pictures'] as List? ?? json['images'] as List?;
     String? imageUrl;
     if (pictures != null && pictures.isNotEmpty) {
       final first = pictures.first;
@@ -66,23 +65,17 @@ class CatalogItemModel extends CatalogItem {
 
     return CatalogItemModel(
       id: (catalogData['id'] ?? json['id'] ?? '').toString(),
-      title: (catalogData['title'] ?? json['title'] ?? json['name'] ?? '')
-          .toString(),
-      description: (catalogData['description'] ??
-              json['description'] ??
-              json['desc'] ??
-              '')
-          .toString(),
+      title: (catalogData['title'] ?? json['title'] ?? json['name'] ?? '').toString(),
+      description:
+          (catalogData['description'] ?? json['description'] ?? json['desc'] ?? '').toString(),
       priceMin: toInt(catalogData['price_min'] ??
           json['price_min'] ??
           json['min_price'] ??
           json['payment_budget']),
-      priceMax: toInt(
-          catalogData['price_max'] ?? json['price_max'] ?? json['max_price']),
-      projectTimeline: (catalogData['project_timeline'] ??
-              json['project_timeline'] ??
-              json['duration'])
-          ?.toString(),
+      priceMax: toInt(catalogData['price_max'] ?? json['price_max'] ?? json['max_price']),
+      projectTimeline:
+          (catalogData['project_timeline'] ?? json['project_timeline'] ?? json['duration'])
+              ?.toString(),
       imageUrl: imageUrl,
       ownerName: ownerName,
       status: json['status']?.toString(),

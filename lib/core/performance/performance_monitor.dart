@@ -29,10 +29,10 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
   final Map<String, int> _widgetRebuildCounts = {};
   final List<NetworkMetric> _networkMetrics = [];
   final List<FrameMetric> _frameMetrics = [];
-  
+
   bool _isMonitoring = false;
   // AnalyticsService? _analyticsService;
-  
+
   /// Set analytics service for enhanced monitoring
   // void setAnalyticsService(AnalyticsService analyticsService) {
   //   _analyticsService = analyticsService;
@@ -66,7 +66,7 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
     if (startTime != null) {
       final duration = DateTime.now().difference(startTime);
       _completedTimers[name] = duration;
-      
+
       // Log slow operations (>100ms)
       if (duration.inMilliseconds > 100) {
         log('⚠️ Slow operation detected: $name took ${duration.inMilliseconds}ms');
@@ -87,7 +87,7 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
   void trackWidgetRebuild(String widgetName) {
     if (!_isMonitoring) return;
     _widgetRebuildCounts[widgetName] = (_widgetRebuildCounts[widgetName] ?? 0) + 1;
-    
+
     // Log excessive rebuilds
     final rebuildCount = _widgetRebuildCounts[widgetName]!;
     if (rebuildCount > 50 && rebuildCount % 25 == 0) {
@@ -108,7 +108,7 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
       success: success,
       timestamp: DateTime.now(),
     ));
-    
+
     // Log slow network requests (>2s)
     if (duration.inMilliseconds > 2000) {
       log('⚠️ Slow network request: $endpoint took ${duration.inMilliseconds}ms');
@@ -127,20 +127,20 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
 
   void _onFrameCallback(List<FrameTiming> timings) {
     if (!_isMonitoring) return;
-    
+
     for (final timing in timings) {
       final frameDuration = timing.totalSpan;
       _frameMetrics.add(FrameMetric(
         duration: frameDuration,
         timestamp: DateTime.now(),
       ));
-      
+
       // Log dropped frames (>16.67ms for 60fps)
       if (frameDuration.inMilliseconds > 17) {
         log('⚠️ Dropped frame detected: ${frameDuration.inMilliseconds}ms');
       }
     }
-    
+
     // Keep only recent metrics (last 1000 frames)
     if (_frameMetrics.length > 1000) {
       _frameMetrics.removeRange(0, _frameMetrics.length - 1000);
@@ -150,10 +150,10 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
   @override
   void generateReport() {
     if (!_isMonitoring && kDebugMode) return;
-    
+
     log('📊 Performance Report:');
     log('==================');
-    
+
     // Timer report
     if (_completedTimers.isNotEmpty) {
       log('⏱️ Operation Timings:');
@@ -161,7 +161,7 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
         log('  $name: ${duration.inMilliseconds}ms');
       });
     }
-    
+
     // Widget rebuild report
     if (_widgetRebuildCounts.isNotEmpty) {
       log('🔄 Widget Rebuilds:');
@@ -171,27 +171,31 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
         log('  ${entry.key}: ${entry.value} rebuilds');
       }
     }
-    
+
     // Network report
     if (_networkMetrics.isNotEmpty) {
       log('🌐 Network Metrics:');
-      final successRate = _networkMetrics.where((m) => m.success).length / _networkMetrics.length * 100;
-      final avgDuration = _networkMetrics.map((m) => m.duration.inMilliseconds).reduce((a, b) => a + b) / _networkMetrics.length;
+      final successRate =
+          _networkMetrics.where((m) => m.success).length / _networkMetrics.length * 100;
+      final avgDuration =
+          _networkMetrics.map((m) => m.duration.inMilliseconds).reduce((a, b) => a + b) /
+              _networkMetrics.length;
       log('  Success rate: ${successRate.toStringAsFixed(1)}%');
       log('  Average duration: ${avgDuration.toStringAsFixed(0)}ms');
       log('  Total requests: ${_networkMetrics.length}');
     }
-    
+
     // Frame rate report
     if (_frameMetrics.isNotEmpty) {
       log('🎬 Frame Metrics:');
-      final recentFrames = _frameMetrics.where((f) => 
-        DateTime.now().difference(f.timestamp).inMinutes < 5
-      ).toList();
-      
+      final recentFrames =
+          _frameMetrics.where((f) => DateTime.now().difference(f.timestamp).inMinutes < 5).toList();
+
       if (recentFrames.isNotEmpty) {
         final droppedFrames = recentFrames.where((f) => f.duration.inMilliseconds > 17).length;
-        final avgFrameTime = recentFrames.map((f) => f.duration.inMilliseconds).reduce((a, b) => a + b) / recentFrames.length;
+        final avgFrameTime =
+            recentFrames.map((f) => f.duration.inMilliseconds).reduce((a, b) => a + b) /
+                recentFrames.length;
         log('  Recent frames: ${recentFrames.length}');
         log('  Dropped frames: $droppedFrames (${(droppedFrames / recentFrames.length * 100).toStringAsFixed(1)}%)');
         log('  Average frame time: ${avgFrameTime.toStringAsFixed(1)}ms');
@@ -230,19 +234,19 @@ class FrameMetric {
 /// Follows Single Responsibility Principle
 mixin PerformanceTrackingMixin<T extends StatefulWidget> on State<T> {
   final PerformanceMonitor _monitor = DefaultPerformanceMonitor();
-  
+
   @override
   void initState() {
     super.initState();
     _monitor.trackWidgetRebuild('${widget.runtimeType}_initState');
   }
-  
+
   @override
   Widget build(BuildContext context) {
     _monitor.trackWidgetRebuild('${widget.runtimeType}_build');
     return buildWithTracking(context);
   }
-  
+
   /// Override this instead of build() to get automatic performance tracking
   Widget buildWithTracking(BuildContext context);
 }
@@ -264,7 +268,7 @@ class PerformanceTracker extends StatefulWidget {
 
 class _PerformanceTrackerState extends State<PerformanceTracker> {
   final PerformanceMonitor _monitor = DefaultPerformanceMonitor();
-  
+
   @override
   Widget build(BuildContext context) {
     _monitor.trackWidgetRebuild(widget.name);
@@ -275,10 +279,10 @@ class _PerformanceTrackerState extends State<PerformanceTracker> {
 /// Utility functions for easy performance monitoring
 class Performance {
   static final PerformanceMonitor _monitor = DefaultPerformanceMonitor();
-  
+
   static void enable() => (_monitor as DefaultPerformanceMonitor).enable();
   static void disable() => (_monitor as DefaultPerformanceMonitor).disable();
-  
+
   static void time(String name, Future<void> Function() operation) async {
     _monitor.startTimer(name);
     try {
@@ -287,7 +291,7 @@ class Performance {
       _monitor.endTimer(name);
     }
   }
-  
+
   static T timeSync<T>(String name, T Function() operation) {
     _monitor.startTimer(name);
     try {
@@ -296,15 +300,15 @@ class Performance {
       _monitor.endTimer(name);
     }
   }
-  
+
   static void trackRebuild(String widgetName) {
     _monitor.trackWidgetRebuild(widgetName);
   }
-  
+
   static void trackNetwork(String endpoint, Duration duration, bool success) {
     _monitor.trackNetworkRequest(endpoint, duration, success);
   }
-  
+
   static void generateReport() {
     _monitor.generateReport();
   }

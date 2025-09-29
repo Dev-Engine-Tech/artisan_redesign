@@ -7,8 +7,7 @@ import '../../domain/entities/message.dart' as ent;
 class InMemoryMessagesStore {
   final Map<String, List<ent.Message>> _messagesByConversation = {};
   final Map<String, StreamController<List<ent.Message>>> _messageCtrls = {};
-  final StreamController<List<ent.Conversation>> _conversationsCtrl =
-      StreamController.broadcast();
+  final StreamController<List<ent.Conversation>> _conversationsCtrl = StreamController.broadcast();
 
   // conversationId -> Conversation meta
   final Map<String, ent.Conversation> _conversations = {};
@@ -214,7 +213,8 @@ class InMemoryMessagesStore {
     _emitConversations();
   }
 
-  void _updateConvFromMessage(String conversationId, ent.Message msg, {bool incrementUnread = false}) {
+  void _updateConvFromMessage(String conversationId, ent.Message msg,
+      {bool incrementUnread = false}) {
     final c = _conversations[conversationId];
     if (c == null) return;
     final newC = c.copyWith(

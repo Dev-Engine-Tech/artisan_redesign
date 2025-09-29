@@ -21,4 +21,3 @@ class ConversationsError extends ConversationsState {
   @override
   List<Object?> get props => [message];
 }
-

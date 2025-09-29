@@ -138,7 +138,6 @@ class _ApplicationsListState extends State<ApplicationsList> {
     );
   }
 
-
   void _handleRequestChange(Job job) {
     Navigator.push(
       context,

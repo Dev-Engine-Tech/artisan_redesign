@@ -10,7 +10,7 @@ class CatalogMaterial extends Equatable {
   List<Object?> get props => [description, quantity, price];
 }
 
-/// Enhanced client information structure  
+/// Enhanced client information structure
 class CatalogClient extends Equatable {
   final int id;
   final String firstName;
@@ -35,7 +35,8 @@ class CatalogClient extends Equatable {
   String get fullName => '$firstName $lastName';
 
   @override
-  List<Object?> get props => [id, firstName, lastName, email, phone, homeAddress, profilePic, stateName];
+  List<Object?> get props =>
+      [id, firstName, lastName, email, phone, homeAddress, profilePic, stateName];
 }
 
 /// Enhanced catalog product structure

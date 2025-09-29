@@ -322,18 +322,20 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
     if (_searchQuery.isNotEmpty) {
       filtered = filtered.where((job) {
         return job.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               job.category.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               (job.clientName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+            job.category.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            (job.clientName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
       }).toList();
     }
 
     // Apply sorting
     switch (_sortBy) {
       case 'date_desc':
-        filtered.sort((a, b) => (b.completedDate ?? DateTime.now()).compareTo(a.completedDate ?? DateTime.now()));
+        filtered.sort((a, b) =>
+            (b.completedDate ?? DateTime.now()).compareTo(a.completedDate ?? DateTime.now()));
         break;
       case 'date_asc':
-        filtered.sort((a, b) => (a.completedDate ?? DateTime.now()).compareTo(b.completedDate ?? DateTime.now()));
+        filtered.sort((a, b) =>
+            (a.completedDate ?? DateTime.now()).compareTo(b.completedDate ?? DateTime.now()));
         break;
       case 'amount_desc':
         filtered.sort((a, b) => b.minBudget.compareTo(a.minBudget));
@@ -386,13 +388,11 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            _searchQuery.isNotEmpty
-                ? 'No projects match your search'
-                : 'No completed projects yet',
+            _searchQuery.isNotEmpty ? 'No projects match your search' : 'No completed projects yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.black54,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -400,8 +400,8 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                 ? 'Try adjusting your search filters'
                 : 'Complete projects to see them here with earnings and reviews',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black38,
-            ),
+                  color: Colors.black38,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -423,16 +423,16 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
           Text(
             'Error loading completed projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.red.shade700,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
-            ),
+                  color: Colors.black54,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -470,9 +470,9 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
             Text(
               'Sort by',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppColors.brownHeader,
-              ),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.brownHeader,
+                  ),
             ),
             const SizedBox(height: 16),
             ...[
@@ -482,25 +482,25 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
               {'label': 'Amount (Lowest First)', 'value': 'amount_asc'},
               {'label': 'Rating (Highest First)', 'value': 'rating_desc'},
             ].map((option) => ListTile(
-              title: Text(option['label']!),
-              leading: Radio<String>(
-                value: option['value']!,
-                groupValue: _sortBy,
-                onChanged: (value) {
-                  setState(() {
-                    _sortBy = value!;
-                  });
-                  Navigator.of(context).pop();
-                },
-                activeColor: AppColors.orange,
-              ),
-              onTap: () {
-                setState(() {
-                  _sortBy = option['value']!;
-                });
-                Navigator.of(context).pop();
-              },
-            )),
+                  title: Text(option['label']!),
+                  leading: Radio<String>(
+                    value: option['value']!,
+                    groupValue: _sortBy,
+                    onChanged: (value) {
+                      setState(() {
+                        _sortBy = value!;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    activeColor: AppColors.orange,
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _sortBy = option['value']!;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                )),
           ],
         ),
       ),
@@ -606,9 +606,9 @@ class CompletedJobCard extends StatelessWidget {
                 Text(
                   job.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.brownHeader,
-                  ),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.brownHeader,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -647,9 +647,7 @@ class CompletedJobCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isPaid 
-            ? Colors.green.withValues(alpha: 0.1)
-            : Colors.orange.withValues(alpha: 0.1),
+        color: isPaid ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -774,9 +772,9 @@ class CompletedJobCard extends StatelessWidget {
             Icons.attach_money,
             'Earnings',
             'NGN ${job.minBudget.toString().replaceAllMapped(
-              RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-              (match) => '${match[1]},',
-            )}',
+                  RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                  (match) => '${match[1]},',
+                )}',
           ),
         ),
         Expanded(
@@ -883,7 +881,7 @@ class CompletedJobCard extends StatelessWidget {
     if (date == null) return 'Recently';
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
-    
+
     if (difference == 0) {
       return 'Today';
     } else if (difference == 1) {

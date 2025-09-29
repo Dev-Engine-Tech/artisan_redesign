@@ -13,8 +13,7 @@ class CatalogRepositoryImpl implements CatalogRepository {
   }
 
   @override
-  Future<List<CatalogItem>> getCatalogByUser(String userId,
-      {int page = 1}) async {
+  Future<List<CatalogItem>> getCatalogByUser(String userId, {int page = 1}) async {
     final models = await remote.getCatalogByUser(userId, page: page);
     return models.map((e) => e.toEntity()).toList();
   }

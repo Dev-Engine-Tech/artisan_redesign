@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/services/banner_service.dart';
@@ -21,7 +22,9 @@ class EnhancedBannerCarousel extends StatefulWidget {
     this.autoPlay = true,
     this.padding,
   }) {
-    print('🚨🚨🚨 ENHANCED BANNER CONSTRUCTOR CALLED WITH $category 🚨🚨🚨');
+    if (kDebugMode) {
+      debugPrint('EnhancedBanner: constructor called with $category');
+    }
   }
 
   @override
@@ -35,28 +38,31 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   @override
   void initState() {
     super.initState();
-    print('🎯 🎯 🎯 ENHANCED BANNER WIDGET CREATED!!! Category: ${widget.category}');
-    print('🎯 ENHANCED BANNER: Initializing for category ${widget.category}');
+    if (kDebugMode) {
+      debugPrint('EnhancedBanner: created for category ${widget.category}');
+    }
     _loadBanners();
   }
 
   Future<void> _loadBanners() async {
-    print('🎯 ENHANCED BANNER: Starting to load banners for ${widget.category}');
-    
+    if (kDebugMode) {
+      debugPrint('EnhancedBanner: loading banners for ${widget.category}');
+    }
+
     try {
       final bannerService = getIt<BannerService>();
-      print('🎯 ENHANCED BANNER: Got banner service instance');
-      
+      if (kDebugMode) debugPrint('EnhancedBanner: got banner service');
+
       final apiResponse = await bannerService.getBanners(category: widget.category);
-      print('🎯 ENHANCED BANNER: Received ${apiResponse.banners.length} banners from API');
-      
+      if (kDebugMode) debugPrint('EnhancedBanner: received ${apiResponse.banners.length} banners');
+
       // Convert API banners to UI banners
       final uiBanners = apiResponse.banners
           .where((banner) => banner.isActive)
           .map((apiBanner) => _convertApiBannerToUiBanner(apiBanner))
           .toList();
 
-      print('🎯 ENHANCED BANNER: Converted to ${uiBanners.length} UI banners');
+      if (kDebugMode) debugPrint('EnhancedBanner: converted to ${uiBanners.length} UI banners');
       if (mounted) {
         setState(() {
           _banners = uiBanners;
@@ -64,7 +70,7 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
         });
       }
     } catch (e) {
-      print('🎯 ENHANCED BANNER: Error loading banners: $e');
+      if (kDebugMode) debugPrint('EnhancedBanner: error loading banners: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -83,6 +89,7 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
       final sep = url.startsWith('/') ? '' : '/';
       return '$base$sep$url';
     }
+
     return BannerModel(
       id: apiBanner.id.toString(),
       title: apiBanner.title,
@@ -139,7 +146,7 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   }
 
   List<BannerModel> _getDefaultBannersForCategory() {
-    print('🎯 ENHANCED BANNER: Using default banners for ${widget.category}');
+    if (kDebugMode) debugPrint('EnhancedBanner: using default banners for ${widget.category}');
     switch (widget.category) {
       case api.BannerCategory.homepage:
         return DefaultBanners.defaultBanners;
@@ -178,8 +185,9 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    print('🎯 ENHANCED BANNER: Building with ${_banners.length} banners, loading: $_isLoading');
-    
+    if (kDebugMode)
+      debugPrint('EnhancedBanner: build banners=${_banners.length} loading=$_isLoading');
+
     if (_isLoading) {
       return Container(
         height: widget.height,

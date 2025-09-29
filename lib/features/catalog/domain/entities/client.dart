@@ -27,15 +27,15 @@ class Client extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    firstName,
-    lastName,
-    email,
-    phone,
-    homeAddress,
-    profilePic,
-    state,
-  ];
+        id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        homeAddress,
+        profilePic,
+        state,
+      ];
 
   Client copyWith({
     int? id,

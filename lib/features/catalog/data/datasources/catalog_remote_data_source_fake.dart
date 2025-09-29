@@ -76,8 +76,7 @@ class CatalogRemoteDataSourceFake implements CatalogRemoteDataSource {
   }
 
   @override
-  Future<List<CatalogItemModel>> getCatalogByUser(String userId,
-      {int page = 1}) async {
+  Future<List<CatalogItemModel>> getCatalogByUser(String userId, {int page = 1}) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 500));
 

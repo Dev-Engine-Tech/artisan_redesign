@@ -75,9 +75,9 @@ class DiscoverSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          
+
           const SizedBox(width: 12),
-          
+
           // Filter button
           Container(
             decoration: BoxDecoration(
@@ -95,7 +95,7 @@ class DiscoverSearchBar extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(12),
                 ),
-                
+
                 // Filter count badge
                 if (showFilterBadge && filterCount > 0)
                   Positioned(
@@ -215,7 +215,7 @@ class PopularSearches extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final searches = popularSearches.isNotEmpty ? popularSearches : defaultSearches;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(

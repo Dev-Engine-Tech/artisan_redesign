@@ -7,8 +7,7 @@ abstract class AuthRepository {
 
   /// Attempts to create a new account using email/phone + password.
   /// Returns the created User on success, or null on failure.
-  Future<User?> signUp(
-      {required String identifier, required String password, String? name});
+  Future<User?> signUp({required String identifier, required String password, String? name});
 
   /// Returns whether a user is currently signed in.
   Future<bool> isSignedIn();
@@ -39,10 +38,8 @@ abstract class AuthRepository {
   Future<void> forgotPassword({required String email});
 
   /// Reset password using token
-  Future<bool> resetPassword(
-      {required String token, required String newPassword});
+  Future<bool> resetPassword({required String token, required String newPassword});
 
   /// Change password for authenticated user
-  Future<bool> changePassword(
-      {required String currentPassword, required String newPassword});
+  Future<bool> changePassword({required String currentPassword, required String newPassword});
 }

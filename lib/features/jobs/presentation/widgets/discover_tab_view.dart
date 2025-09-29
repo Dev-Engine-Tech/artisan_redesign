@@ -21,8 +21,7 @@ class DiscoverTabView extends StatefulWidget {
   State<DiscoverTabView> createState() => _DiscoverTabViewState();
 }
 
-class _DiscoverTabViewState extends State<DiscoverTabView>
-    with TickerProviderStateMixin {
+class _DiscoverTabViewState extends State<DiscoverTabView> with TickerProviderStateMixin {
   late TabController _tabController;
   int _currentIndex = 0;
 
@@ -47,7 +46,7 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
 
   void _handleTabChange() {
     if (_tabController.indexIsChanging) return;
-    
+
     setState(() {
       _currentIndex = _tabController.index;
     });
@@ -74,12 +73,12 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
               final index = entry.key;
               final tab = entry.value;
               final isSelected = _currentIndex == index;
-              
+
               return _buildTabChip(tab, isSelected);
             }).toList(),
           ),
         ),
-        
+
         // Tab content
         Expanded(
           child: TabBarView(
@@ -205,15 +204,15 @@ class DiscoverTabContent extends StatelessWidget {
               Text(
                 'Oops! Something went wrong',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               const SizedBox(height: 8),
               Text(
                 error!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                      color: Colors.grey[600],
+                    ),
                 textAlign: TextAlign.center,
               ),
               if (onRetry != null) ...[

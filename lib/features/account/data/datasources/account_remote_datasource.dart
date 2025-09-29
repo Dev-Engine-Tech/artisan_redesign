@@ -68,7 +68,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     int? yearsOfExperience,
   }) async {
     final requestBody = <String, dynamic>{};
-    
+
     if (firstName != null) requestBody['first_name'] = firstName;
     if (lastName != null) requestBody['last_name'] = lastName;
     if (jobTitle != null) requestBody['job_title'] = jobTitle;
@@ -120,7 +120,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> transactionsJson = jsonData['results'] ?? jsonData['data'] ?? [];
-      
+
       return transactionsJson.map((json) => TransactionModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load transactions: ${response.statusCode}');
@@ -148,7 +148,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> accountsJson = jsonData['results'] ?? jsonData['data'] ?? [];
-      
+
       return accountsJson.map((json) => BankAccountModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load bank accounts: ${response.statusCode}');

@@ -1,10 +1,7 @@
 import '../../domain/entities/earnings.dart';
 
 class EarningsModel extends Earnings {
-  const EarningsModel(
-      {required double total,
-      required double available,
-      required double pending})
+  const EarningsModel({required double total, required double available, required double pending})
       : super(total: total, available: available, pending: pending);
 
   factory EarningsModel.fromJson(Map<String, dynamic> json) {
@@ -45,9 +42,7 @@ class TransactionModel extends TransactionItem {
       amount: (json['amount'] as num?)?.toDouble() ?? 0,
       currency: json['currency']?.toString() ?? 'NGN',
       status: json['status']?.toString() ?? 'unknown',
-      date: DateTime.tryParse(json['date']?.toString() ??
-              json['created_at']?.toString() ??
-              '') ??
+      date: DateTime.tryParse(json['date']?.toString() ?? json['created_at']?.toString() ?? '') ??
           DateTime.now(),
       description: json['description']?.toString(),
     );

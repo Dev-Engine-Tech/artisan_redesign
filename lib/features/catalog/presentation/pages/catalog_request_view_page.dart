@@ -68,8 +68,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             }
           },
           builder: (context, state) {
-            if (state is CatalogRequestsLoading ||
-                state is CatalogRequestsInitial) {
+            if (state is CatalogRequestsLoading || state is CatalogRequestsInitial) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is CatalogRequestsError) {
@@ -169,8 +168,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                 child: Text(
                   request.title,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ),
               _buildStatusBadge(request),
@@ -211,8 +210,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           Text(
             'Client Information',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 12),
           Row(
@@ -294,15 +293,15 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           Text(
             'Description',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             request.description.isNotEmpty ? request.description : 'No description provided',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
-            ),
+                  color: Colors.black54,
+                ),
           ),
         ],
       ),
@@ -323,8 +322,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           Text(
             'Delivery Information',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 8),
           Row(
@@ -342,7 +341,6 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     );
   }
 
-
   Widget _buildApprovalStatusCard(BuildContext context, CatalogRequest request) {
     return Container(
       decoration: BoxDecoration(
@@ -357,8 +355,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           Text(
             'Approval Status',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 12),
           Row(
@@ -370,12 +368,12 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: request.isBothApproved 
+                  color: request.isBothApproved
                       ? Colors.green.withValues(alpha: 0.1)
                       : Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: request.isBothApproved 
+                    color: request.isBothApproved
                         ? Colors.green.withValues(alpha: 0.3)
                         : Colors.orange.withValues(alpha: 0.3),
                   ),
@@ -479,7 +477,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
               side: BorderSide(color: Colors.red.shade300),
             ),
             child: Text(
-              'Decline', 
+              'Decline',
               style: TextStyle(fontSize: 16, color: Colors.red.shade600),
             ),
           ),
@@ -491,7 +489,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
   Widget _buildStatusBadge(CatalogRequest request) {
     Color statusColor;
     String statusText;
-    
+
     if (request.isBothApproved) {
       statusColor = Colors.green;
       statusText = 'Approved';
@@ -573,16 +571,16 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                 );
                 return;
               }
-              
+
               context.read<CatalogRequestsBloc>().add(
-                DeclineRequestEvent(
-                  request.id,
-                  reason: reasonController.text.trim(),
-                  message: messageController.text.trim().isEmpty 
-                      ? null 
-                      : messageController.text.trim(),
-                ),
-              );
+                    DeclineRequestEvent(
+                      request.id,
+                      reason: reasonController.text.trim(),
+                      message: messageController.text.trim().isEmpty
+                          ? null
+                          : messageController.text.trim(),
+                    ),
+                  );
               Navigator.of(dialogContext).pop();
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),

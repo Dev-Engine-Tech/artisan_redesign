@@ -11,6 +11,7 @@ export 'package:artisans_circle/features/jobs/presentation/bloc/job_state.dart';
 
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_event.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_state.dart';
+import 'dart:developer' as dev;
 
 class JobBloc extends Bloc<JobEvent, JobState> {
   final GetJobs getJobs;
@@ -56,15 +57,15 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   Future<void> _onLoadApplications(LoadApplications event, Emitter<JobState> emit) async {
-    print('DEBUG: JobBloc - Loading applications, page: ${event.page}, limit: ${event.limit}');
+    dev.log('Loading applications page=${event.page} limit=${event.limit}', name: 'JobBloc');
     emit(const JobStateLoading());
     try {
       final list = await getApplications(page: event.page, limit: event.limit);
-      print('DEBUG: JobBloc - Received ${list.length} applications');
+      dev.log('Received ${list.length} applications', name: 'JobBloc');
       emit(JobStateAppliedSuccess(jobs: list, jobId: ''));
-      print('DEBUG: JobBloc - Emitted JobStateAppliedSuccess with ${list.length} jobs');
+      dev.log('Emitted JobStateAppliedSuccess with ${list.length} jobs', name: 'JobBloc');
     } catch (e) {
-      print('DEBUG: JobBloc - Error loading applications: $e');
+      dev.log('Error loading applications: $e', name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }

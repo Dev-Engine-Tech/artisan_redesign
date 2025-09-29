@@ -16,8 +16,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       modelIsArtisan: json['is_artisan'] as bool,
       modelProfilePictureUrl: json['profile_picture'] as String?,
       modelBio: json['bio'] as String?,
-      modelSkills:
-          (json['skills'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      modelSkills: (json['skills'] as List<dynamic>?)?.map((e) => e as String).toList(),
       modelLocation: json['location'] as String?,
       modelState: json['state'] as String?,
       modelLga: json['lga'] as String?,
@@ -69,36 +68,31 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'ongoing_jobs': instance.modelOngoingJobs,
     };
 
-LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
-    LoginResponse(
+LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) => LoginResponse(
       accessToken: json['access'] as String,
       expiry: json['expiry'] as String?,
       firebaseAccessToken: json['firebase_access_token'] as String?,
       phone: json['phone'] as String?,
     );
 
-Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) => <String, dynamic>{
       'access': instance.accessToken,
       'expiry': instance.expiry,
       'firebase_access_token': instance.firebaseAccessToken,
       'phone': instance.phone,
     };
 
-RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) =>
-    RegisterResponse(
+RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) => RegisterResponse(
       pinId: json['pin_id'] as String?,
       message: json['message'] as String?,
     );
 
-Map<String, dynamic> _$RegisterResponseToJson(RegisterResponse instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$RegisterResponseToJson(RegisterResponse instance) => <String, dynamic>{
       'pin_id': instance.pinId,
       'message': instance.message,
     };
 
-OtpVerificationResponse _$OtpVerificationResponseFromJson(
-        Map<String, dynamic> json) =>
+OtpVerificationResponse _$OtpVerificationResponseFromJson(Map<String, dynamic> json) =>
     OtpVerificationResponse(
       accessToken: json['access'] as String?,
       expiry: json['expiry'] as String?,
@@ -106,8 +100,7 @@ OtpVerificationResponse _$OtpVerificationResponseFromJson(
       message: json['message'] as String?,
     );
 
-Map<String, dynamic> _$OtpVerificationResponseToJson(
-        OtpVerificationResponse instance) =>
+Map<String, dynamic> _$OtpVerificationResponseToJson(OtpVerificationResponse instance) =>
     <String, dynamic>{
       'access': instance.accessToken,
       'expiry': instance.expiry,

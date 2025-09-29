@@ -31,8 +31,7 @@ import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'api/endpoints.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dart';
 import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
-    if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart'
-    as ssl;
+    if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart' as ssl;
 import 'package:artisans_circle/core/services/banner_service.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
@@ -99,9 +98,12 @@ import 'package:artisans_circle/features/notifications/domain/repositories/notif
 // Invoice feature
 import 'package:artisans_circle/features/invoices/data/repositories/invoice_repository_fake.dart';
 import 'package:artisans_circle/features/invoices/domain/repositories/invoice_repository.dart';
-import 'package:artisans_circle/features/invoices/domain/usecases/get_invoices.dart' as invoice_usecases;
-import 'package:artisans_circle/features/invoices/domain/usecases/create_invoice.dart' as invoice_usecases;
-import 'package:artisans_circle/features/invoices/domain/usecases/send_invoice.dart' as invoice_usecases;
+import 'package:artisans_circle/features/invoices/domain/usecases/get_invoices.dart'
+    as invoice_usecases;
+import 'package:artisans_circle/features/invoices/domain/usecases/create_invoice.dart'
+    as invoice_usecases;
+import 'package:artisans_circle/features/invoices/domain/usecases/send_invoice.dart'
+    as invoice_usecases;
 import 'package:artisans_circle/features/invoices/presentation/bloc/invoice_bloc.dart';
 import 'package:artisans_circle/core/network/http_service.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
@@ -111,11 +113,9 @@ final GetIt getIt = GetIt.instance;
 
 // Allow opting into insecure TLS (e.g., self-signed, wrong host) for dev only.
 // Never enable this in production.
-const bool kAllowInsecure =
-    bool.fromEnvironment('ALLOW_INSECURE', defaultValue: true);
+const bool kAllowInsecure = bool.fromEnvironment('ALLOW_INSECURE', defaultValue: true);
 const bool kLogHttp = bool.fromEnvironment('LOG_HTTP', defaultValue: true);
-const bool kUseFirebaseMessages =
-    bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
+const bool kUseFirebaseMessages = bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
 
 /// Call this during app startup (before runApp) to register dependencies.
 ///
@@ -124,7 +124,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   // External / 3rd party
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
-  
+
   // Register secure storage for sensitive data
   getIt.registerLazySingleton<SecureStorage>(() => SecureStorage());
 
@@ -144,8 +144,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
           final token = await secureStorage.getAccessToken();
           options.headers.addAll({
             'Accept': 'application/json',
-            'Content-Type':
-                options.headers['Content-Type'] ?? 'application/json',
+            'Content-Type': options.headers['Content-Type'] ?? 'application/json',
             if (token != null) 'Authorization': 'Bearer $token',
           });
         } catch (_) {}
@@ -250,7 +249,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     );
   } else {
     getIt.registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(getIt<Dio>(), getIt<SharedPreferences>(), getIt<SecureStorage>()),
+      () => AuthRemoteDataSourceImpl(
+          getIt<Dio>(), getIt<SharedPreferences>(), getIt<SecureStorage>()),
     );
   }
 
@@ -260,15 +260,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
 
   getIt.registerLazySingleton<SignIn>(() => SignIn(getIt<AuthRepository>()));
   getIt.registerLazySingleton<SignUp>(() => SignUp(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<IsSignedIn>(
-      () => IsSignedIn(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<GetCurrentUser>(
-      () => GetCurrentUser(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<IsSignedIn>(() => IsSignedIn(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<GetCurrentUser>(() => GetCurrentUser(getIt<AuthRepository>()));
   getIt.registerLazySingleton<SignOut>(() => SignOut(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<SignInWithGoogle>(
-      () => SignInWithGoogle(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<SignInWithApple>(
-      () => SignInWithApple(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignInWithGoogle>(() => SignInWithGoogle(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignInWithApple>(() => SignInWithApple(getIt<AuthRepository>()));
 
   // Blocs / Cubits are registered as factories so they can be created with fresh state.
   getIt.registerFactory<AuthBloc>(
@@ -308,8 +304,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
 
   // Catalog feature
   if (useFake) {
-    getIt.registerLazySingleton<CatalogRemoteDataSource>(
-        () => CatalogRemoteDataSourceFake());
+    getIt.registerLazySingleton<CatalogRemoteDataSource>(() => CatalogRemoteDataSourceFake());
   } else {
     getIt.registerLazySingleton<CatalogRemoteDataSource>(
         () => CatalogRemoteDataSourceImpl(getIt<Dio>()));
@@ -318,25 +313,20 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       () => CatalogRepositoryImpl(getIt<CatalogRemoteDataSource>()));
   getIt.registerLazySingleton<GetMyCatalogItems>(
       () => GetMyCatalogItems(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<GetCatalogByUser>(
-      () => GetCatalogByUser(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<CreateCatalog>(
-      () => CreateCatalog(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<UpdateCatalog>(
-      () => UpdateCatalog(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<DeleteCatalog>(
-      () => DeleteCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<GetCatalogByUser>(() => GetCatalogByUser(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<CreateCatalog>(() => CreateCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<UpdateCatalog>(() => UpdateCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<DeleteCatalog>(() => DeleteCatalog(getIt<CatalogRepository>()));
   getIt.registerFactory<CatalogBloc>(() => CatalogBloc(
-      getMyCatalogItems: getIt<GetMyCatalogItems>(),
-      getCatalogByUser: getIt<GetCatalogByUser>()));
+      getMyCatalogItems: getIt<GetMyCatalogItems>(), getCatalogByUser: getIt<GetCatalogByUser>()));
   getIt.registerLazySingleton<CatalogCategoriesRemoteDataSource>(
       () => CatalogCategoriesRemoteDataSourceImpl(getIt<Dio>()));
 
   // Catalog Requests
   getIt.registerLazySingleton<CatalogRequestsRemoteDataSource>(
       () => CatalogRequestsRemoteDataSourceImpl(getIt<Dio>()));
-  getIt.registerLazySingleton<CatalogRequestsRepository>(() =>
-      CatalogRequestsRepositoryImpl(getIt<CatalogRequestsRemoteDataSource>()));
+  getIt.registerLazySingleton<CatalogRequestsRepository>(
+      () => CatalogRequestsRepositoryImpl(getIt<CatalogRequestsRemoteDataSource>()));
   getIt.registerLazySingleton<GetCatalogRequests>(
       () => GetCatalogRequests(getIt<CatalogRequestsRepository>()));
   getIt.registerLazySingleton<GetCatalogRequestDetails>(
@@ -359,50 +349,36 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       () => AccountRemoteDataSourceImpl(getIt<Dio>()));
   getIt.registerLazySingleton<AccountRepository>(
       () => AccountRepositoryImpl(getIt<AccountRemoteDataSource>()));
-  getIt.registerLazySingleton<GetUserProfile>(
-      () => GetUserProfile(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetUserProfile>(() => GetUserProfile(getIt<AccountRepository>()));
   getIt.registerLazySingleton<UpdateUserProfile>(
       () => UpdateUserProfile(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetEarnings>(
-      () => GetEarnings(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetTransactions>(
-      () => GetTransactions(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetEarnings>(() => GetEarnings(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetTransactions>(() => GetTransactions(getIt<AccountRepository>()));
   getIt.registerLazySingleton<RequestWithdrawal>(
       () => RequestWithdrawal(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetBankAccounts>(
-      () => GetBankAccounts(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<AddBankAccount>(
-      () => AddBankAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetBankAccounts>(() => GetBankAccounts(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddBankAccount>(() => AddBankAccount(getIt<AccountRepository>()));
   getIt.registerLazySingleton<DeleteBankAccount>(
       () => DeleteBankAccount(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetBankList>(
-      () => GetBankList(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetBankList>(() => GetBankList(getIt<AccountRepository>()));
   getIt.registerLazySingleton<VerifyBankAccount>(
       () => VerifyBankAccount(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<SetWithdrawalPin>(
-      () => SetWithdrawalPin(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<SetWithdrawalPin>(() => SetWithdrawalPin(getIt<AccountRepository>()));
   getIt.registerLazySingleton<VerifyWithdrawalPin>(
       () => VerifyWithdrawalPin(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<ChangePassword>(
-      () => ChangePassword(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<DeleteAccount>(
-      () => DeleteAccount(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<AddSkill>(
-      () => AddSkill(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<RemoveSkill>(
-      () => RemoveSkill(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<ChangePassword>(() => ChangePassword(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteAccount>(() => DeleteAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddSkill>(() => AddSkill(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<RemoveSkill>(() => RemoveSkill(getIt<AccountRepository>()));
   getIt.registerLazySingleton<AddWorkExperience>(
       () => AddWorkExperience(getIt<AccountRepository>()));
   getIt.registerLazySingleton<UpdateWorkExperience>(
       () => UpdateWorkExperience(getIt<AccountRepository>()));
   getIt.registerLazySingleton<DeleteWorkExperience>(
       () => DeleteWorkExperience(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<AddEducation>(
-      () => AddEducation(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<UpdateEducation>(
-      () => UpdateEducation(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<DeleteEducation>(
-      () => DeleteEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddEducation>(() => AddEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<UpdateEducation>(() => UpdateEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteEducation>(() => DeleteEducation(getIt<AccountRepository>()));
   getIt.registerLazySingleton<UploadProfileImage>(
       () => UploadProfileImage(getIt<AccountRepository>()));
   getIt.registerFactory<AccountBloc>(() => AccountBloc(
@@ -442,10 +418,10 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   //   getIt.registerLazySingleton<MessagesRepository>(
   //       () => MessagesRepositoryFirebase(getIt<FirebaseFirestore>()));
   // } else {
-    // In-memory fallback
-    getIt.registerLazySingleton<InMemoryMessagesStore>(() => InMemoryMessagesStore());
-    getIt.registerLazySingleton<MessagesRepository>(
-        () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
+  // In-memory fallback
+  getIt.registerLazySingleton<InMemoryMessagesStore>(() => InMemoryMessagesStore());
+  getIt.registerLazySingleton<MessagesRepository>(
+      () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
   // }
 
   // Notifications feature
@@ -477,5 +453,4 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       repository: getIt<InvoiceRepository>(),
     ),
   );
-
 }

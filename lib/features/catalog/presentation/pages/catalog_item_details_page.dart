@@ -20,9 +20,8 @@ class CatalogItemDetailsPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
@@ -50,8 +49,7 @@ class CatalogItemDetailsPage extends StatelessWidget {
                       height: 180,
                       color: AppColors.softPink,
                       child: const Center(
-                          child: Icon(Icons.image_outlined,
-                              size: 56, color: AppColors.orange))),
+                          child: Icon(Icons.image_outlined, size: 56, color: AppColors.orange))),
             ),
             const SizedBox(height: 12),
             Container(
@@ -60,53 +58,43 @@ class CatalogItemDetailsPage extends StatelessWidget {
                   color: AppColors.cardBackground,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.softBorder)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    if (item.ownerName != null && item.ownerName!.isNotEmpty)
-                      Text(item.ownerName!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.black45)),
-                    const SizedBox(height: 12),
-                    Text(item.description,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.black54)),
-                    const SizedBox(height: 12),
-                    Wrap(spacing: 8, children: [
-                      if (item.priceMin != null)
-                        _Badge(
-                            label:
-                                '₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
-                      if (item.projectTimeline != null)
-                        _Badge(label: item.projectTimeline!),
-                    ]),
-                  ]),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(item.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 6),
+                if (item.ownerName != null && item.ownerName!.isNotEmpty)
+                  Text(item.ownerName!,
+                      style:
+                          Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45)),
+                const SizedBox(height: 12),
+                Text(item.description,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54)),
+                const SizedBox(height: 12),
+                Wrap(spacing: 8, children: [
+                  if (item.priceMin != null)
+                    _Badge(
+                        label:
+                            '₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
+                  if (item.projectTimeline != null) _Badge(label: item.projectTimeline!),
+                ]),
+              ]),
             ),
             const SizedBox(height: 18),
             ElevatedButton(
               onPressed: () async {
                 // Open edit flow
                 final changed = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(
-                      builder: (_) => const UploadCataloguePage()),
+                  MaterialPageRoute(builder: (_) => const UploadCataloguePage()),
                 );
                 if (changed == true && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Catalogue updated')));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text('Catalogue updated')));
                 }
               },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF9A4B20)),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9A4B20)),
               child: const Text('Edit Catalogue'),
             ),
             const SizedBox(height: 12),
@@ -115,19 +103,18 @@ class CatalogItemDetailsPage extends StatelessWidget {
                 final ok = await getIt<DeleteCatalog>().call(item.id);
                 if (context.mounted) {
                   if (ok) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Catalogue deleted')));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Catalogue deleted')));
                     Navigator.of(context).pop(true);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Failed to delete catalogue')));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(content: Text('Failed to delete catalogue')));
                   }
                 }
               },
               icon: const Icon(Icons.delete_outline),
               label: const Text('Delete Catalogue'),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEB2D2D)),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEB2D2D)),
             ),
           ],
         ),
@@ -143,13 +130,9 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-          color: AppColors.softPeach, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: AppColors.softPeach, borderRadius: BorderRadius.circular(8)),
       child: Text(label,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.brownHeader)),
     );
   }
 }

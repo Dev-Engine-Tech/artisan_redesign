@@ -5,14 +5,15 @@ import 'package:flutter/services.dart';
 class JobShareService {
   static const String _appName = 'Artisans Circle';
   static const String _appStoreUrl = 'https://apps.apple.com/app/artisans-circle/id123456789';
-  static const String _playStoreUrl = 'https://play.google.com/store/apps/details?id=com.artisanscircle.app';
+  static const String _playStoreUrl =
+      'https://play.google.com/store/apps/details?id=com.artisanscircle.app';
   static const String _webUrl = 'https://artisanscircle.com';
 
   /// Share a job with formatted text and app promotion
   static Future<void> shareJob(Job job, {String? subject}) async {
     try {
       final shareText = _formatJobShareText(job);
-      
+
       await Share.share(
         shareText,
         subject: subject ?? 'Check out this job opportunity on $_appName',
@@ -27,7 +28,7 @@ class JobShareService {
   static Future<void> shareJobAsReferral(Job job, {String? personalMessage}) async {
     try {
       final shareText = _formatJobReferralText(job, personalMessage);
-      
+
       await Share.share(
         shareText,
         subject: 'Job Opportunity Referral - $_appName',
@@ -41,7 +42,7 @@ class JobShareService {
   static Future<void> shareJobCollection(List<Job> jobs, String collectionName) async {
     try {
       final shareText = _formatJobCollectionText(jobs, collectionName);
-      
+
       await Share.share(
         shareText,
         subject: '$collectionName - $_appName',
@@ -65,7 +66,7 @@ class JobShareService {
   static Future<void> shareApp({String? personalMessage}) async {
     try {
       final shareText = _formatAppShareText(personalMessage);
-      
+
       await Share.share(
         shareText,
         subject: 'Join me on $_appName - Find Your Next Project',
@@ -76,7 +77,7 @@ class JobShareService {
   }
 
   static String _formatJobShareText(Job job) {
-    final budget = job.minBudget == job.maxBudget 
+    final budget = job.minBudget == job.maxBudget
         ? '₦${job.maxBudget.toStringAsFixed(0)}'
         : '₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}';
 
@@ -102,7 +103,7 @@ Web: $_webUrl
   }
 
   static String _formatJobReferralText(Job job, String? personalMessage) {
-    final budget = job.minBudget == job.maxBudget 
+    final budget = job.minBudget == job.maxBudget
         ? '₦${job.maxBudget.toStringAsFixed(0)}'
         : '₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}';
 
@@ -129,10 +130,10 @@ Good luck! 🍀
 
   static String _formatJobCollectionText(List<Job> jobs, String collectionName) {
     final jobsPreview = jobs.take(3).map((job) {
-      final budget = job.minBudget == job.maxBudget 
+      final budget = job.minBudget == job.maxBudget
           ? '₦${job.maxBudget.toStringAsFixed(0)}'
           : '₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}';
-      
+
       return '• ${job.title} - $budget (${job.duration})';
     }).join('\n');
 
@@ -178,12 +179,12 @@ Web: $_webUrl
   static Future<ShareResult?> shareJobWithResult(Job job, {String? subject}) async {
     try {
       final shareText = _formatJobShareText(job);
-      
+
       final result = await Share.shareWithResult(
         shareText,
         subject: subject ?? 'Check out this job opportunity on $_appName',
       );
-      
+
       return result;
     } catch (e) {
       print('Error sharing job with result: $e');

@@ -28,7 +28,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   int _filterCount = 0;
   List<Job> _allJobs = [];
   List<Job> _filteredJobs = [];
-  
+
   final List<DiscoverTab> _tabs = [
     const DiscoverTab(label: 'Best Matches', key: 'matches'),
     const DiscoverTab(label: 'Saved Jobs', key: 'saved'),
@@ -62,37 +62,36 @@ class _DiscoverPageState extends State<DiscoverPage> {
       value: bloc,
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: widget.showHeader ? AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(10)),
-              child: IconButton(
-                icon: const Icon(Icons.chevron_left, color: Colors.black54),
-                onPressed: () {
-                  // In shell the back may not pop; keep as placeholder
-                },
-              ),
-            ),
-          ),
-          title: const Text('Discover',
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600)),
-          centerTitle: false,
-          actions: const [],
-        ) : null,
+        appBar: widget.showHeader
+            ? AppBar(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+                    child: IconButton(
+                      icon: const Icon(Icons.chevron_left, color: Colors.black54),
+                      onPressed: () {
+                        // In shell the back may not pop; keep as placeholder
+                      },
+                    ),
+                  ),
+                ),
+                title: const Text('Discover',
+                    style: TextStyle(
+                        color: Colors.black87, fontSize: 20, fontWeight: FontWeight.w600)),
+                centerTitle: false,
+                actions: const [],
+              )
+            : null,
         body: SafeArea(
           child: Column(
             children: [
               // Header widgets
               if (widget.showHeader) ..._buildHeader(),
-              
+
               // Tab navigation and content
               Expanded(
                 child: DiscoverTabView(
@@ -117,16 +116,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
   List<Widget> _buildHeader() {
     return [
       const SizedBox(height: 8),
-      
+
       // Banner carousel
       EnhancedBannerCarousel(
         category: api.BannerCategory.job,
         height: 140,
         autoPlay: true,
       ),
-      
+
       const SizedBox(height: 16),
-      
+
       // Search bar with filter
       DiscoverSearchBar(
         controller: _searchController,
@@ -137,7 +136,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         filterCount: _filterCount,
         showFilterBadge: _filterCount > 0,
       ),
-      
+
       const SizedBox(height: 8),
     ];
   }
@@ -162,7 +161,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         }
 
         final jobs = _getJobsForTab(index, state);
-        
+
         if (jobs.isEmpty) {
           return DiscoverTabContent(
             child: _buildEmptyState(index),
@@ -195,7 +194,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   List<Job> _getJobsForTab(int index, JobState state) {
     List<Job> allJobs = [];
-    
+
     if (state is JobStateLoaded) {
       allJobs = state.jobs;
       _allJobs = allJobs; // Store for search
@@ -253,16 +252,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
             Text(
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[600],
-              ),
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[600],
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               subtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[500],
-              ),
+                    color: Colors.grey[500],
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -279,8 +278,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
       } else {
         _filteredJobs = _allJobs.where((job) {
           return job.title.toLowerCase().contains(query.toLowerCase()) ||
-                 job.category.toLowerCase().contains(query.toLowerCase()) ||
-                 job.description.toLowerCase().contains(query.toLowerCase());
+              job.category.toLowerCase().contains(query.toLowerCase()) ||
+              job.description.toLowerCase().contains(query.toLowerCase());
         }).toList();
       }
     });
@@ -312,7 +311,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         ),
       ),
     );
-    
+
     if (filters != null && mounted) {
       setState(() {
         _filterCount = 3; // Mock filter count

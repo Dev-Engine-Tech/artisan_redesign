@@ -30,7 +30,6 @@ class JobTimelineWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
         ),
-        
         Padding(
           padding: const EdgeInsets.all(20),
           child: Row(
@@ -42,16 +41,16 @@ class JobTimelineWidget extends StatelessWidget {
                     Text(
                       'Project Details',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.brownHeader,
-                      ),
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.brownHeader,
+                          ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Track progress and manage project milestones',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
-                      ),
+                            color: Colors.black54,
+                          ),
                     ),
                   ],
                 ),
@@ -69,7 +68,6 @@ class JobTimelineWidget extends StatelessWidget {
             ],
           ),
         ),
-        
         Expanded(
           child: ListView(
             controller: scrollController,
@@ -163,9 +161,9 @@ class JobTimelineWidget extends StatelessWidget {
                   Icons.attach_money,
                   'Budget',
                   'NGN ${job.minBudget.toString().replaceAllMapped(
-                    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                    (match) => '${match[1]},',
-                  )}',
+                        RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                        (match) => '${match[1]},',
+                      )}',
                 ),
               ),
               Expanded(
@@ -214,7 +212,7 @@ class JobTimelineWidget extends StatelessWidget {
 
   Widget _buildProgressSection() {
     final progressList = job.progressUpdates ?? [];
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -590,7 +588,8 @@ class JobTimelineWidget extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Pause Project'),
-        content: const Text('Are you sure you want to pause this project? You can resume it later.'),
+        content:
+            const Text('Are you sure you want to pause this project? You can resume it later.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -615,7 +614,8 @@ class JobTimelineWidget extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Complete Project'),
-        content: const Text('Are you sure you want to mark this project as complete? This action cannot be undone.'),
+        content: const Text(
+            'Are you sure you want to mark this project as complete? This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),

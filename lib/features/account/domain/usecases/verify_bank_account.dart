@@ -7,4 +7,3 @@ class VerifyBankAccount {
   Future<String> call({required String bankCode, required String accountNumber}) =>
       repository.verifyBankAccount(bankCode: bankCode, accountNumber: accountNumber);
 }
-

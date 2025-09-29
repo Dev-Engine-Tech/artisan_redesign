@@ -29,9 +29,7 @@ class InvoiceModel extends Invoice {
       clientEmail: json['clientEmail'],
       issueDate: DateTime.parse(json['issueDate']),
       dueDate: DateTime.parse(json['dueDate']),
-      items: (json['items'] as List)
-          .map((item) => InvoiceItemModel.fromJson(item))
-          .toList(),
+      items: (json['items'] as List).map((item) => InvoiceItemModel.fromJson(item)).toList(),
       subtotal: json['subtotal'].toDouble(),
       taxRate: json['taxRate'].toDouble(),
       taxAmount: json['taxAmount'].toDouble(),

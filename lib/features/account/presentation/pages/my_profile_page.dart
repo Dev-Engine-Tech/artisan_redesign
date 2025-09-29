@@ -48,8 +48,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
         body: BlocConsumer<AccountBloc, AccountState>(
           listener: (context, state) {
             if (state is AccountActionSuccess) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -121,19 +120,16 @@ class _ProfileView extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        if (profile.profileImage != null &&
-                            profile.profileImage!.isNotEmpty) {
+                        if (profile.profileImage != null && profile.profileImage!.isNotEmpty) {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (_) => ImagePreviewPage(
-                                  imageUrl: profile.profileImage!,
-                                  heroTag: 'profile_photo')));
+                                  imageUrl: profile.profileImage!, heroTag: 'profile_photo')));
                         }
                       },
                       child: CircleAvatar(
                         radius: 32,
                         backgroundColor: AppColors.softPink,
-                        child: profile.profileImage != null &&
-                                profile.profileImage!.isNotEmpty
+                        child: profile.profileImage != null && profile.profileImage!.isNotEmpty
                             ? Hero(
                                 tag: 'profile_photo',
                                 child: ClipOval(
@@ -142,14 +138,12 @@ class _ProfileView extends StatelessWidget {
                                     width: 64,
                                     height: 64,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => const Icon(
-                                        Icons.person_outline,
-                                        color: AppColors.orange),
+                                    errorBuilder: (_, __, ___) =>
+                                        const Icon(Icons.person_outline, color: AppColors.orange),
                                   ),
                                 ),
                               )
-                            : const Icon(Icons.person_outline,
-                                color: AppColors.orange),
+                            : const Icon(Icons.person_outline, color: AppColors.orange),
                       ),
                     ),
                     Material(
@@ -159,9 +153,7 @@ class _ProfileView extends StatelessWidget {
                           // pick & upload photo
                           final picker = await _pickImagePath();
                           if (picker != null && context.mounted) {
-                            context
-                                .read<AccountBloc>()
-                                .add(AccountUploadProfileImage(picker));
+                            context.read<AccountBloc>().add(AccountUploadProfileImage(picker));
                           }
                         },
                         child: const CircleAvatar(
@@ -178,10 +170,7 @@ class _ProfileView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          profile.fullName.isNotEmpty
-                              ? profile.fullName
-                              : 'Unnamed',
+                      Text(profile.fullName.isNotEmpty ? profile.fullName : 'Unnamed',
                           style: Theme.of(context).textTheme.titleMedium),
                       if (profile.email != null) Text(profile.email!),
                       if (profile.phone != null) Text(profile.phone!),
@@ -229,8 +218,7 @@ class _ProfileView extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => BlocProvider.value(
                   value: context.read<AccountBloc>(),
-                  child: YearsOfExperiencePage(
-                      initial: profile.yearsOfExperience),
+                  child: YearsOfExperiencePage(initial: profile.yearsOfExperience),
                 ),
               ),
             ),

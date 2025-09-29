@@ -28,8 +28,7 @@ class CatalogRequestModel extends CatalogRequest {
   });
 
   static CatalogMaterial _materialFrom(Map<String, dynamic> m) {
-    int? toInt(dynamic v) =>
-        v == null ? null : (v is int ? v : int.tryParse(v.toString()));
+    int? toInt(dynamic v) => v == null ? null : (v is int ? v : int.tryParse(v.toString()));
     return CatalogMaterial(
       description: (m['description'] ?? m['material'] ?? '').toString(),
       quantity: toInt(m['quantity']),
@@ -40,9 +39,8 @@ class CatalogRequestModel extends CatalogRequest {
   factory CatalogRequestModel.fromJson(Map<String, dynamic> json) {
     final client = json['client'] as Map? ?? json['user'] as Map?;
     final catalog = json['catalog'] as Map? ?? <String, dynamic>{};
-    final materialsList = (json['materials'] as List?) ??
-        (json['material_list'] as List?) ??
-        const [];
+    final materialsList =
+        (json['materials'] as List?) ?? (json['material_list'] as List?) ?? const [];
 
     DateTime? parseDate(dynamic v) {
       if (v == null) return null;
@@ -94,10 +92,8 @@ class CatalogRequestModel extends CatalogRequest {
 
     return CatalogRequestModel(
       id: (json['id'] ?? json['request_id'] ?? '').toString(),
-      title: (json['title'] ?? json['product_title'] ?? json['name'] ?? '')
-          .toString(),
-      description:
-          (json['description'] ?? json['product_description'] ?? '').toString(),
+      title: (json['title'] ?? json['product_title'] ?? json['name'] ?? '').toString(),
+      description: (json['description'] ?? json['product_description'] ?? '').toString(),
       clientName: client != null
           ? [client['first_name'], client['last_name']]
               .whereType<String>()
@@ -106,9 +102,8 @@ class CatalogRequestModel extends CatalogRequest {
               .trim()
           : null,
       clientPhone: client != null ? client['phone']?.toString() : null,
-      materials: materialsList
-          .map((e) => _materialFrom(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      materials:
+          materialsList.map((e) => _materialFrom(Map<String, dynamic>.from(e as Map))).toList(),
       createdAt: parseDate(json['created_at']),
       status: json['status']?.toString(),
 
@@ -125,7 +120,8 @@ class CatalogRequestModel extends CatalogRequest {
       catalog: parseCatalog(catalog),
       client: parseClient(client),
       deliveryDateTime: parseDate(json['delivery_date']),
-      requestStatus: CatalogRequestStatusExtension.fromString(json['status']?.toString() ?? 'pending'),
+      requestStatus:
+          CatalogRequestStatusExtension.fromString(json['status']?.toString() ?? 'pending'),
       isArtisanApproved: json['is_artisan_approved'] == true,
       isClientApproved: json['is_client_approved'] == true,
     );

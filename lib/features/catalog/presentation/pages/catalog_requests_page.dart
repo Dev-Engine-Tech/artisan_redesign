@@ -45,8 +45,7 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
             if (state is CatalogRequestsLoaded) _next = state.next;
           },
           builder: (context, state) {
-            if (state is CatalogRequestsLoading ||
-                state is CatalogRequestsInitial) {
+            if (state is CatalogRequestsLoading || state is CatalogRequestsInitial) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is CatalogRequestsError) {
@@ -65,8 +64,7 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
                     if (index == items.length) {
                       if (_next != null) {
                         return TextButton(
-                          onPressed: () =>
-                              bloc.add(LoadCatalogRequests(next: _next)),
+                          onPressed: () => bloc.add(LoadCatalogRequests(next: _next)),
                           child: const Text('Load more'),
                         );
                       }

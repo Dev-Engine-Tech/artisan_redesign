@@ -1,8 +1,7 @@
 import '../../domain/entities/user.dart';
 
 class SignUpState {
-  final int
-      step; // 0: user info, 1: password, 2: phone verify, 3: set pin, 4: complete
+  final int step; // 0: user info, 1: password, 2: phone verify, 3: set pin, 4: complete
   final String firstName;
   final String lastName;
   final String identifier; // email or phone

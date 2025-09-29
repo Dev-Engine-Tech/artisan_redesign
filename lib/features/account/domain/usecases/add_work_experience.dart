@@ -6,7 +6,5 @@ class AddWorkExperience {
   final AccountRepository repository;
   AddWorkExperience(this.repository);
 
-  Future<UserProfile> call(ent.WorkExperience work) =>
-      repository.addWorkExperience(work);
+  Future<UserProfile> call(ent.WorkExperience work) => repository.addWorkExperience(work);
 }
-

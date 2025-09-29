@@ -56,7 +56,7 @@ class ProjectReviewModal extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            
+
             // Project Info
             Container(
               padding: const EdgeInsets.all(16),
@@ -84,7 +84,7 @@ class ProjectReviewModal extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                  if (job.clientName != null) ...[ 
+                  if (job.clientName != null) ...[
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -103,11 +103,11 @@ class ProjectReviewModal extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Rating Section
-            if (job.rating != null) ...[ 
+            if (job.rating != null) ...[
               const Text(
                 'Rating',
                 style: TextStyle(
@@ -121,9 +121,7 @@ class ProjectReviewModal extends StatelessWidget {
                 children: [
                   ...List.generate(5, (index) {
                     return Icon(
-                      index < (job.rating ?? 0).floor()
-                          ? Icons.star
-                          : Icons.star_border,
+                      index < (job.rating ?? 0).floor() ? Icons.star : Icons.star_border,
                       color: Colors.amber,
                       size: 24,
                     );
@@ -141,9 +139,9 @@ class ProjectReviewModal extends StatelessWidget {
               ),
               const SizedBox(height: 20),
             ],
-            
+
             // Review Text
-            if (job.clientReview != null) ...[ 
+            if (job.clientReview != null) ...[
               const Text(
                 'Review',
                 style: TextStyle(
@@ -170,7 +168,7 @@ class ProjectReviewModal extends StatelessWidget {
                   ),
                 ),
               ),
-            ] else ...[ 
+            ] else ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -198,9 +196,9 @@ class ProjectReviewModal extends StatelessWidget {
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 24),
-            
+
             // Action Buttons
             Row(
               children: [

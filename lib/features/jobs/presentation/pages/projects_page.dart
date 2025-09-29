@@ -55,27 +55,22 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
           children: [
             Text(
               'Artisans with catalog projects receive more orders than those without.',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black54),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54),
             ),
             const SizedBox(height: 12),
             OutlinedButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const UploadCataloguePage()));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => const UploadCataloguePage()));
               },
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 side: BorderSide(color: AppColors.orange, width: 1.5),
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: Text('Upload Catalogue',
-                  style: TextStyle(
-                      color: AppColors.orange, fontWeight: FontWeight.w600)),
+                  style: TextStyle(color: AppColors.orange, fontWeight: FontWeight.w600)),
             ),
           ],
         ),
@@ -99,20 +94,15 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
             const SizedBox(width: 8),
             Expanded(
               child: Text('Search products, services and artisans',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.black38)),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black38)),
             ),
             const SizedBox(width: 8),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                  color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(8)),
+              decoration:
+                  BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(8)),
               child: IconButton(
-                icon:
-                    const Icon(Icons.filter_list, color: AppColors.brownHeader),
+                icon: const Icon(Icons.filter_list, color: AppColors.brownHeader),
                 onPressed: () {},
               ),
             ),
@@ -127,8 +117,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         height: 160,
-        decoration: BoxDecoration(
-            color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
+        decoration: BoxDecoration(color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
@@ -139,9 +128,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
                 children: const [
                   Text('Discover Your Ideal\nJob match',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20)),
+                          color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
                   SizedBox(height: 8),
                   Text(
                       'Find rewarding projects, connect with clients, and take your career to new heights.',
@@ -154,8 +141,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
                 width: 86,
                 height: 86,
                 decoration: const BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.all(Radius.circular(12)))),
+                    color: Colors.white24, borderRadius: BorderRadius.all(Radius.circular(12)))),
           ],
         ),
       ),
@@ -174,9 +160,8 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(10)),
+              decoration:
+                  BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 icon: const Icon(Icons.chevron_left, color: Colors.black54),
                 onPressed: () {},
@@ -184,10 +169,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
             ),
           ),
           title: const Text('Projects',
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600)),
+              style: TextStyle(color: Colors.black87, fontSize: 20, fontWeight: FontWeight.w600)),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(50),
             child: Container(
@@ -279,8 +261,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
           final items = state.items;
           if (items.isEmpty) {
             return RefreshIndicator(
-              onRefresh: () async =>
-                  context.read<CatalogBloc>().add(RefreshMyCatalog()),
+              onRefresh: () async => context.read<CatalogBloc>().add(RefreshMyCatalog()),
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
@@ -293,8 +274,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
           }
 
           return RefreshIndicator(
-            onRefresh: () async =>
-                context.read<CatalogBloc>().add(RefreshMyCatalog()),
+            onRefresh: () async => context.read<CatalogBloc>().add(RefreshMyCatalog()),
             child: ListView.builder(
               padding: EdgeInsets.zero,
               itemCount: header.length + items.length,
@@ -323,8 +303,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
           borderRadius: BorderRadius.circular(12),
           onTap: () async {
             final changed = await Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                  builder: (_) => CatalogItemDetailsPage(item: item)),
+              MaterialPageRoute(builder: (_) => CatalogItemDetailsPage(item: item)),
             );
             if (changed == true && mounted) {
               context.read<CatalogBloc>().add(RefreshMyCatalog());
@@ -335,8 +314,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
             children: [
               // Large image banner
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                 child: Container(
                   height: 180,
                   width: double.infinity,
@@ -344,16 +322,14 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
                     color: AppColors.cardBackground,
                     image: item.imageUrl != null && item.imageUrl!.isNotEmpty
                         ? DecorationImage(
-                            image:
-                                NetworkImage(sanitizeImageUrl(item.imageUrl!)),
+                            image: NetworkImage(sanitizeImageUrl(item.imageUrl!)),
                             fit: BoxFit.cover,
                           )
                         : null,
                   ),
                   child: item.imageUrl == null || item.imageUrl!.isEmpty
                       ? const Center(
-                          child: Icon(Icons.image_outlined,
-                              size: 48, color: Colors.grey),
+                          child: Icon(Icons.image_outlined, size: 48, color: Colors.grey),
                         )
                       : null,
                 ),
@@ -394,8 +370,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
                         // Price range
                         if (item.priceMin != null || item.priceMax != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: AppColors.softPeach,
                               borderRadius: BorderRadius.circular(6),
@@ -421,8 +396,7 @@ class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.schedule,
-                              size: 16, color: Colors.black54),
+                          const Icon(Icons.schedule, size: 16, color: Colors.black54),
                           const SizedBox(width: 4),
                           Text(
                             'Duration: ${item.projectTimeline}',

@@ -56,7 +56,7 @@ class JobCompletionCertificate extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            
+
             // Certificate Content
             Container(
               width: double.infinity,
@@ -103,9 +103,9 @@ class JobCompletionCertificate extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Certificate Body
                   Text(
                     'This certifies that',
@@ -115,7 +115,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
@@ -133,9 +133,9 @@ class JobCompletionCertificate extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   Text(
                     'has successfully completed the project',
                     style: TextStyle(
@@ -144,7 +144,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -174,9 +174,9 @@ class JobCompletionCertificate extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Project Details
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -196,7 +196,7 @@ class JobCompletionCertificate extends StatelessWidget {
                         'NGN ${_formatAmount(job.agreement?.amount ?? job.minBudget.toDouble())}',
                         Icons.attach_money,
                       ),
-                      if (job.rating != null) ...[ 
+                      if (job.rating != null) ...[
                         Container(
                           width: 1,
                           height: 40,
@@ -210,11 +210,11 @@ class JobCompletionCertificate extends StatelessWidget {
                       ],
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Completion Date
-                  if (job.completedDate != null) ...[ 
+                  if (job.completedDate != null) ...[
                     Text(
                       'Completed on ${_formatDate(job.completedDate!)}',
                       style: TextStyle(
@@ -224,9 +224,9 @@ class JobCompletionCertificate extends StatelessWidget {
                       ),
                     ),
                   ],
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Verification Code
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -247,9 +247,9 @@ class JobCompletionCertificate extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Action Buttons
             Row(
               children: [
@@ -324,15 +324,25 @@ class JobCompletionCertificate extends StatelessWidget {
 
   String _formatAmount(double amount) {
     return amount.toStringAsFixed(0).replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-      (match) => '${match[1]},',
-    );
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        );
   }
 
   String _formatDate(DateTime date) {
     final months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }

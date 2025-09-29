@@ -51,7 +51,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.95);
-    
+
     if (widget.autoPlay && widget.banners.length > 1) {
       _startAutoPlay();
     }
@@ -180,7 +180,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
                       ],
                     ),
                   ),
-                  
+
                   // Right image or placeholder
                   Expanded(
                     flex: 1,
@@ -239,9 +239,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
           width: _currentIndex == index ? 20 : 8,
           height: 8,
           decoration: BoxDecoration(
-            color: _currentIndex == index 
-                ? AppColors.orange 
-                : AppColors.orange.withValues(alpha: 0.3),
+            color:
+                _currentIndex == index ? AppColors.orange : AppColors.orange.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -253,35 +252,36 @@ class _BannerCarouselState extends State<BannerCarousel> {
 // Default banners for demo purposes
 class DefaultBanners {
   static List<BannerModel> get defaultBanners => [
-    BannerModel(
-      id: '1',
-      title: 'Discover Your Ideal\nJob Match',
-      subtitle: 'Find rewarding projects, connect with clients, and take your career to new heights.',
-      ctaText: 'Apply',
-      backgroundColor: AppColors.orange,
-      onTap: () {
-        // Navigate to jobs page
-      },
-    ),
-    BannerModel(
-      id: '2',
-      title: 'Artisan Tips & Best Practices',
-      subtitle: 'Improve your listings and win more orders with short tips.',
-      ctaText: 'Learn',
-      backgroundColor: const Color(0xFF6B4CD6),
-      onTap: () {
-        // Navigate to tips page
-      },
-    ),
-    BannerModel(
-      id: '3',
-      title: 'Featured Projects',
-      subtitle: 'Browse featured projects handpicked for you.',
-      ctaText: 'Explore',
-      backgroundColor: const Color(0xFF2E8B57),
-      onTap: () {
-        // Navigate to featured projects
-      },
-    ),
-  ];
+        BannerModel(
+          id: '1',
+          title: 'Discover Your Ideal\nJob Match',
+          subtitle:
+              'Find rewarding projects, connect with clients, and take your career to new heights.',
+          ctaText: 'Apply',
+          backgroundColor: AppColors.orange,
+          onTap: () {
+            // Navigate to jobs page
+          },
+        ),
+        BannerModel(
+          id: '2',
+          title: 'Artisan Tips & Best Practices',
+          subtitle: 'Improve your listings and win more orders with short tips.',
+          ctaText: 'Learn',
+          backgroundColor: const Color(0xFF6B4CD6),
+          onTap: () {
+            // Navigate to tips page
+          },
+        ),
+        BannerModel(
+          id: '3',
+          title: 'Featured Projects',
+          subtitle: 'Browse featured projects handpicked for you.',
+          ctaText: 'Explore',
+          backgroundColor: const Color(0xFF2E8B57),
+          onTap: () {
+            // Navigate to featured projects
+          },
+        ),
+      ];
 }

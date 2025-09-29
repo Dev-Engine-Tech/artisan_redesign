@@ -7,4 +7,3 @@ class RemoveSkill {
 
   Future<UserProfile> call(String skill) => repository.removeSkill(skill);
 }
-

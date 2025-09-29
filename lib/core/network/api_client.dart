@@ -40,7 +40,7 @@ class ApiClient {
   }) async {
     final uri = _buildUri(endpoint, queryParams);
     final headers = await _getHeaders(includeAuth: requireAuth);
-    
+
     return _httpClient.get(uri, headers: headers);
   }
 
@@ -52,7 +52,7 @@ class ApiClient {
   }) async {
     final uri = _buildUri(endpoint);
     final headers = await _getHeaders(includeAuth: requireAuth);
-    
+
     return _httpClient.post(
       uri,
       headers: headers,
@@ -68,7 +68,7 @@ class ApiClient {
   }) async {
     final uri = _buildUri(endpoint);
     final headers = await _getHeaders(includeAuth: requireAuth);
-    
+
     return _httpClient.put(
       uri,
       headers: headers,
@@ -84,7 +84,7 @@ class ApiClient {
   }) async {
     final uri = _buildUri(endpoint);
     final headers = await _getHeaders(includeAuth: requireAuth);
-    
+
     return _httpClient.patch(
       uri,
       headers: headers,
@@ -99,7 +99,7 @@ class ApiClient {
   }) async {
     final uri = _buildUri(endpoint);
     final headers = await _getHeaders(includeAuth: requireAuth);
-    
+
     return _httpClient.delete(uri, headers: headers);
   }
 
@@ -109,13 +109,14 @@ class ApiClient {
     final cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';
     final cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
     final uri = Uri.parse('$cleanBaseUrl$cleanEndpoint');
-    
+
     if (queryParams != null && queryParams.isNotEmpty) {
-      return uri.replace(queryParameters: queryParams.map(
+      return uri.replace(
+          queryParameters: queryParams.map(
         (key, value) => MapEntry(key, value.toString()),
       ));
     }
-    
+
     return uri;
   }
 

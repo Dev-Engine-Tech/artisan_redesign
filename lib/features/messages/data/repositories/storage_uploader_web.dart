@@ -10,4 +10,3 @@ Future<String?> uploadFile(
   // Return null to fallback to using the original path (UI will render an icon).
   return null;
 }
-

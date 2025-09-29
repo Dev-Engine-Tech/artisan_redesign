@@ -38,16 +38,16 @@ class _SplashPageState extends State<SplashPage> {
       listener: (context, state) {
         if (state is AuthAuthenticated) {
           // If authenticated, go to app shell (home)
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const AppShell()));
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
         } else if (state is AuthUnauthenticated) {
           // If not authenticated, show sign in page
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const SignInPage()));
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (_) => const SignInPage()));
         } else if (state is AuthError) {
           // On error fallback to sign in page
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const SignInPage()));
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (_) => const SignInPage()));
         }
       },
       child: Scaffold(
@@ -63,15 +63,12 @@ class _SplashPageState extends State<SplashPage> {
                 borderRadius: BorderRadius.circular(28),
               ),
               child: const Center(
-                  child: Icon(Icons.handshake_outlined,
-                      size: 56, color: Color(0xFF2E3A59))),
+                  child: Icon(Icons.handshake_outlined, size: 56, color: Color(0xFF2E3A59))),
             ),
             const SizedBox(height: 18),
             const Text('Artisans Circle',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF2E3A59))),
+                style:
+                    TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
             const SizedBox(height: 8),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 72.0),

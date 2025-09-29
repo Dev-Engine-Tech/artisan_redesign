@@ -33,7 +33,8 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       id: 'app_1',
       title: 'Kitchen Cabinet Installation',
       category: 'Carpentry',
-      description: 'Install custom kitchen cabinets in modern home. High-quality materials required.',
+      description:
+          'Install custom kitchen cabinets in modern home. High-quality materials required.',
       address: '12 Victoria Island, Lagos State',
       minBudget: 200000,
       maxBudget: 300000,
@@ -53,7 +54,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
         deadline: '2024-02-15T10:00:00Z',
       ),
     ),
-    
+
     // Job with changeRequested status - should show "View Change Request" button
     JobModel(
       id: 'app_2',
@@ -69,7 +70,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       status: JobStatus.changeRequested,
       projectStatus: AppliedProjectStatus.ongoing,
     ),
-    
+
     // Job with accepted status - should show minimal buttons (just tap to view details)
     JobModel(
       id: 'app_3',
@@ -85,7 +86,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       status: JobStatus.accepted,
       projectStatus: AppliedProjectStatus.ongoing,
     ),
-    
+
     // Job with inProgress status
     JobModel(
       id: 'app_4',
@@ -101,7 +102,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       status: JobStatus.inProgress,
       projectStatus: AppliedProjectStatus.ongoing,
     ),
-    
+
     // Completed job
     JobModel(
       id: 'app_5',
@@ -123,7 +124,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   Future<List<JobModel>> loadApplications({int page = 1, int limit = 20}) async {
     // simulate network latency
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     // Return the sample applied jobs with different statuses
     final start = (page - 1) * limit;
     if (start >= _appliedJobs.length) return <JobModel>[];
@@ -208,7 +209,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
     await Future.delayed(const Duration(milliseconds: 300));
     final idx = _appliedJobs.indexWhere((j) => j.id == projectId);
     if (idx == -1) return true;
-    
+
     final model = _appliedJobs[idx];
     _appliedJobs[idx] = JobModel(
       id: model.id,

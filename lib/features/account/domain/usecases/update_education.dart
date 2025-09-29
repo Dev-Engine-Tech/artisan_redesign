@@ -8,4 +8,3 @@ class UpdateEducation {
 
   Future<UserProfile> call(ent.Education edu) => repository.updateEducation(edu);
 }
-

@@ -5,17 +5,16 @@ import 'package:artisans_circle/features/notifications/data/datasources/notifica
 
 class NotificationRepositoryImpl implements NotificationRepository {
   final NotificationRemoteDataSource remoteDataSource;
-  
+
   // Stream controllers for real-time updates
-  final StreamController<List<Notification>> _notificationsController = 
+  final StreamController<List<Notification>> _notificationsController =
       StreamController<List<Notification>>.broadcast();
-  final StreamController<int> _unreadCountController = 
-      StreamController<int>.broadcast();
-  
+  final StreamController<int> _unreadCountController = StreamController<int>.broadcast();
+
   // Cache for notifications
   List<Notification> _cachedNotifications = [];
   int _cachedUnreadCount = 0;
-  
+
   // Timer for periodic updates
   Timer? _updateTimer;
 
@@ -79,7 +78,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<void> markAsRead(String notificationId) async {
     try {
       await remoteDataSource.markAsRead(notificationId);
-      
+
       // Update cached data optimistically
       _cachedNotifications = _cachedNotifications.map((notification) {
         if (notification.id == notificationId) {
@@ -87,10 +86,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
         }
         return notification;
       }).toList();
-      
+
       // Update unread count
       _cachedUnreadCount = _cachedNotifications.where((n) => !n.read).length;
-      
+
       // Notify listeners
       _notificationsController.add(_cachedNotifications);
       _unreadCountController.add(_cachedUnreadCount);
@@ -103,14 +102,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<void> markAllAsRead() async {
     try {
       await remoteDataSource.markAllAsRead();
-      
+
       // Update cached data optimistically
       _cachedNotifications = _cachedNotifications.map((notification) {
         return notification.copyWith(read: true);
       }).toList();
-      
+
       _cachedUnreadCount = 0;
-      
+
       // Notify listeners
       _notificationsController.add(_cachedNotifications);
       _unreadCountController.add(_cachedUnreadCount);

@@ -56,10 +56,7 @@ class AgreementPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Project Agreement',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w700)),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           Text('Agreed Payment: NGN ${job.minBudget}',
               style: Theme.of(context).textTheme.bodyMedium),
@@ -74,17 +71,15 @@ class AgreementPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title:
-            const Text('Application', style: TextStyle(color: Colors.black87)),
+        title: const Text('Application', style: TextStyle(color: Colors.black87)),
       ),
       backgroundColor: AppColors.lightPeach,
       body: SafeArea(
@@ -92,8 +87,7 @@ class AgreementPage extends StatelessWidget {
           children: [
             paymentSummary,
             const Divider(height: 1),
-            Expanded(
-                child: AgreementContent(job: job, showActionsInline: false)),
+            Expanded(child: AgreementContent(job: job, showActionsInline: false)),
           ],
         ),
       ),
@@ -108,18 +102,14 @@ class AgreementPage extends StatelessWidget {
                 onPressed: () {
                   // Dispatch AcceptAgreementEvent; the BlocListener in AgreementContent
                   // will pop with `true` when the operation completes successfully.
-                  context
-                      .read<JobBloc>()
-                      .add(AcceptAgreementEvent(jobId: job.id));
+                  context.read<JobBloc>().add(AcceptAgreementEvent(jobId: job.id));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF9A4B20),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Accept and request payment',
-                    style: TextStyle(fontSize: 16)),
+                child: const Text('Accept and request payment', style: TextStyle(fontSize: 16)),
               ),
             ),
             const SizedBox(height: 8),
@@ -130,8 +120,7 @@ class AgreementPage extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   backgroundColor: AppColors.cardBackground,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: const Text('Request Changes',
                     style: TextStyle(fontSize: 16, color: Colors.black87)),
@@ -178,20 +167,13 @@ class AgreementContent extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Job Details',
-              style: TextStyle(fontWeight: FontWeight.w700)),
+          const Text('Job Details', style: TextStyle(fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
           Text(job.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.w700)),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           Text(job.category,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.black45)),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45)),
           const SizedBox(height: 8),
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
         ]),
@@ -219,37 +201,28 @@ class AgreementContent extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text('Project proposal',
-              style: Theme.of(context).textTheme.bodySmall),
+          Text('Project proposal', style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 6),
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 12),
-          Text('How long will this project take you?',
-              style: TextStyle(color: Colors.black54)),
+          Text('How long will this project take you?', style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           Text(job.duration, style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 12),
-          Text('How do you want to be paid?',
-              style: TextStyle(color: Colors.black54)),
+          Text('How do you want to be paid?', style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           Text('By Project', style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 12),
-          Text('Desired pay (optional)',
-              style: TextStyle(color: Colors.black54)),
+          Text('Desired pay (optional)', style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           Text('NGN ${job.minBudget}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.brownHeader)),
+              style:
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.brownHeader)),
           const SizedBox(height: 12),
 
           // Material list
           Text('Material List',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w600)),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
@@ -261,45 +234,31 @@ class AgreementContent extends StatelessWidget {
               children: [
                 // headers
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
                       Expanded(
                           flex: 5,
                           child: Text('Material Description',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader))),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w700, color: AppColors.brownHeader))),
                       Expanded(
                           flex: 2,
                           child: Text('Quantity',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader))),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w700, color: AppColors.brownHeader))),
                       Expanded(
                           flex: 3,
                           child: Text('Cost',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader))),
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w700, color: AppColors.brownHeader))),
                     ],
                   ),
                 ),
                 const Divider(height: 1),
                 // row 1
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
                       const Expanded(flex: 5, child: Text('1 by 12 wood')),
@@ -311,8 +270,7 @@ class AgreementContent extends StatelessWidget {
                 const Divider(height: 1),
                 // row 2
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
                       const Expanded(flex: 5, child: Text('Zinc Nail')),
@@ -324,14 +282,12 @@ class AgreementContent extends StatelessWidget {
                 const Divider(height: 1),
                 // total row
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
                   child: Row(
                     children: [
                       const Expanded(
                           flex: 5,
-                          child: Text('Total',
-                              style: TextStyle(fontWeight: FontWeight.w700))),
+                          child: Text('Total', style: TextStyle(fontWeight: FontWeight.w700))),
                       const Expanded(flex: 2, child: SizedBox()),
                       Expanded(
                           flex: 3,
@@ -354,8 +310,7 @@ class AgreementContent extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xFF9C27B0).withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(8),
-              border:
-                  Border.all(color: const Color(0xFF9C27B0).withValues(alpha: 0.15)),
+              border: Border.all(color: const Color(0xFF9C27B0).withValues(alpha: 0.15)),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Row(
@@ -364,14 +319,11 @@ class AgreementContent extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                        color: AppColors.orange,
-                        borderRadius: BorderRadius.circular(8)),
-                    child:
-                        const Icon(Icons.picture_as_pdf, color: Colors.white)),
+                        color: AppColors.orange, borderRadius: BorderRadius.circular(8)),
+                    child: const Icon(Icons.picture_as_pdf, color: Colors.white)),
                 const SizedBox(width: 12),
                 Expanded(
-                    child: Text(
-                        'Sample project\n867 Kb · 14 Feb 2022 at 11:30 am',
+                    child: Text('Sample project\n867 Kb · 14 Feb 2022 at 11:30 am',
                         style: Theme.of(context).textTheme.bodySmall)),
               ],
             ),
@@ -399,88 +351,70 @@ class AgreementContent extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                      child: Text(label,
-                          style: const TextStyle(color: Colors.black54))),
+                  Expanded(child: Text(label, style: const TextStyle(color: Colors.black54))),
                   const SizedBox(width: 8),
-                  Text(value,
-                      style:
-                          valueStyle ?? Theme.of(context).textTheme.bodyMedium),
+                  Text(value, style: valueStyle ?? Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
             );
           }
 
-          return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Text('Project Agreement',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                          color: AppColors.softPeach,
-                          borderRadius: BorderRadius.circular(6)),
-                      child: Text(
-                          job.status.name == 'accepted' ? 'Accepted' : 'Pending',
-                          style: const TextStyle(fontSize: 12)),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 12),
-                // Breakdown box (matches design blue-framed area)
+                Text('Project Agreement',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(width: 8),
                 Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.softBorder),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      row('Agreed Payment:', 'NGN ${agreed.toString()}',
-                          valueStyle: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.brownHeader)),
-                      row('Service Charge:',
-                          '- NGN ${serviceCharge.toString()}',
-                          valueStyle:
-                              const TextStyle(color: Color(0xFF9A4B20))),
-                      row('WHT (2%):', '- NGN ${wht.toString()}',
-                          valueStyle:
-                              const TextStyle(color: Color(0xFF9A4B20))),
-                      const Divider(),
-                      row('Amount You will get:',
-                          'NGN ${amountYouGet.toString()}',
-                          valueStyle: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.brownHeader)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                const Text('Agreed Delivery Date',
-                    style: TextStyle(color: Colors.black54)),
-                const SizedBox(height: 6),
-                const Text(agreedDate, style: TextStyle(color: Colors.black87)),
-                const SizedBox(height: 12),
-                const Text('Comment', style: TextStyle(color: Colors.black54)),
-                const SizedBox(height: 6),
-                Text(comment, style: Theme.of(context).textTheme.bodyMedium),
-                const SizedBox(height: 8),
-              ]);
+                      color: AppColors.softPeach, borderRadius: BorderRadius.circular(6)),
+                  child: Text(job.status.name == 'accepted' ? 'Accepted' : 'Pending',
+                      style: const TextStyle(fontSize: 12)),
+                )
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Breakdown box (matches design blue-framed area)
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.softBorder),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  row('Agreed Payment:', 'NGN ${agreed.toString()}',
+                      valueStyle: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700, color: AppColors.brownHeader)),
+                  row('Service Charge:', '- NGN ${serviceCharge.toString()}',
+                      valueStyle: const TextStyle(color: Color(0xFF9A4B20))),
+                  row('WHT (2%):', '- NGN ${wht.toString()}',
+                      valueStyle: const TextStyle(color: Color(0xFF9A4B20))),
+                  const Divider(),
+                  row('Amount You will get:', 'NGN ${amountYouGet.toString()}',
+                      valueStyle: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700, color: AppColors.brownHeader)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text('Agreed Delivery Date', style: TextStyle(color: Colors.black54)),
+            const SizedBox(height: 6),
+            const Text(agreedDate, style: TextStyle(color: Colors.black87)),
+            const SizedBox(height: 12),
+            const Text('Comment', style: TextStyle(color: Colors.black54)),
+            const SizedBox(height: 6),
+            Text(comment, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 8),
+          ]);
         }),
       ),
       const SizedBox(height: 16),
@@ -499,18 +433,14 @@ class AgreementContent extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     // Dispatch AcceptAgreementEvent; the BlocListener will pop with true when accepted
-                    context
-                        .read<JobBloc>()
-                        .add(AcceptAgreementEvent(jobId: job.id));
+                    context.read<JobBloc>().add(AcceptAgreementEvent(jobId: job.id));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF9A4B20),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Accept and request payment',
-                      style: TextStyle(fontSize: 16)),
+                  child: const Text('Accept and request payment', style: TextStyle(fontSize: 16)),
                 ),
               ),
               const SizedBox(height: 8),
@@ -521,8 +451,7 @@ class AgreementContent extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     backgroundColor: AppColors.cardBackground,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Request Changes',
                       style: TextStyle(fontSize: 16, color: Colors.black87)),
@@ -548,8 +477,7 @@ class AgreementContent extends StatelessWidget {
           }
         } else if (state is JobStateError) {
           // surface errors inside the sheet/page
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: SafeArea(

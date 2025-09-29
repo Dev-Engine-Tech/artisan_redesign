@@ -49,9 +49,9 @@ class ApplicationCard extends StatelessWidget {
                         Text(
                           job.title,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.brownHeader,
-                          ),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.brownHeader,
+                              ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -59,8 +59,8 @@ class ApplicationCard extends StatelessWidget {
                         Text(
                           job.category,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.black54,
-                          ),
+                                color: Colors.black54,
+                              ),
                         ),
                       ],
                     ),
@@ -89,8 +89,8 @@ class ApplicationCard extends StatelessWidget {
                     child: Text(
                       job.address,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.black54,
-                      ),
+                            color: Colors.black54,
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -109,19 +109,19 @@ class ApplicationCard extends StatelessWidget {
                   Text(
                     job.duration,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.black54,
-                    ),
+                          color: Colors.black54,
+                        ),
                   ),
                   const Spacer(),
                   Text(
                     'NGN ${job.minBudget.toString().replaceAllMapped(
-                      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                      (match) => '${match[1]},',
-                    )}',
+                          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                          (match) => '${match[1]},',
+                        )}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.brownHeader,
-                    ),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.brownHeader,
+                        ),
                   ),
                 ],
               ),

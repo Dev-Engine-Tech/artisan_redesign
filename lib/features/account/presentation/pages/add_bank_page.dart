@@ -58,8 +58,7 @@ class _AddBankPageState extends State<AddBankPage> {
               _banksLoading = true;
             } else if (state is AccountError) {
               // Show add/delete failures as global snackbar; verify/list use dialog-only errors
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             } else if (state is AccountBankAccountsLoaded) {
               _accountsCache = state.accounts;
             }
@@ -79,9 +78,7 @@ class _AddBankPageState extends State<AddBankPage> {
               isVerified = state.profile.isVerified;
             }
             if (state is AccountBankAccountsLoaded || state is AccountBankMutationLoading) {
-              final accounts = state is AccountBankAccountsLoaded
-                  ? state.accounts
-                  : _accountsCache;
+              final accounts = state is AccountBankAccountsLoaded ? state.accounts : _accountsCache;
               Widget content;
               if (accounts.isEmpty) {
                 content = _EmptyState(
@@ -108,7 +105,9 @@ class _AddBankPageState extends State<AddBankPage> {
                         width: double.infinity,
                         child: OutlinedButton(
                           onPressed: isVerified ? () => _showAddDialog(context) : null,
-                          child: Text(isVerified ? 'Add another bank account' : 'Verify your identity to add bank'),
+                          child: Text(isVerified
+                              ? 'Add another bank account'
+                              : 'Verify your identity to add bank'),
                         ),
                       ),
                     )
@@ -147,8 +146,7 @@ class _AddBankPageState extends State<AddBankPage> {
               onPressed: verified
                   ? () => _showAddDialog(context, requireVerified: false)
                   : () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Complete KYC to add bank account')),
+                        const SnackBar(content: Text('Complete KYC to add bank account')),
                       ),
               child: const Icon(Icons.add),
             );
@@ -188,224 +186,223 @@ class _AddBankPageState extends State<AddBankPage> {
           return BlocProvider<AccountBloc>.value(
             value: _bloc,
             child: AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Add Bank Account'),
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  tooltip: 'Refresh banks',
-                  onPressed: () {
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Add Bank Account'),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    tooltip: 'Refresh banks',
+                    onPressed: () {
+                      banksError = false;
+                      banksErrorMessage = null;
+                      _bloc.add(const AccountLoadBankList(forceRefresh: true));
+                      _banksLoading = true;
+                      setStateDialog(() {});
+                    },
+                  ),
+                ],
+              ),
+              content: BlocListener<AccountBloc, AccountState>(
+                listenWhen: (prev, curr) =>
+                    curr is AccountBankListLoaded ||
+                    curr is AccountBankListLoading ||
+                    curr is AccountBankListError ||
+                    curr is AccountBankVerified ||
+                    curr is AccountBankVerifyLoading ||
+                    curr is AccountBankVerifyError,
+                listener: (context, state) {
+                  if (state is AccountBankListLoaded) {
+                    _banks = state.banks;
+                    _banksLoading = false;
                     banksError = false;
                     banksErrorMessage = null;
-                    _bloc.add(const AccountLoadBankList(forceRefresh: true));
-                    _banksLoading = true;
                     setStateDialog(() {});
-                  },
+                  } else if (state is AccountBankListLoading) {
+                    _banksLoading = true;
+                    banksError = false;
+                    banksErrorMessage = null;
+                    setStateDialog(() {});
+                  } else if (state is AccountBankListError) {
+                    _banksLoading = false;
+                    banksError = true;
+                    banksErrorMessage = 'Unable to load banks. Please retry.';
+                    setStateDialog(() {});
+                  } else if (state is AccountBankVerifyLoading) {
+                    verifying = true;
+                    numberError = null;
+                    setStateDialog(() {});
+                  } else if (state is AccountBankVerified) {
+                    verifying = false;
+                    verifiedName = state.accountName;
+                    nameCtr.text = verifiedName ?? '';
+                    numberError = null;
+                    setStateDialog(() {});
+                  } else if (state is AccountBankVerifyError) {
+                    verifying = false;
+                    numberError = 'Verification failed. Please check details and try again.';
+                    setStateDialog(() {});
+                  }
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_banksLoading) const LinearProgressIndicator(minHeight: 2),
+                    if (!_banksLoading && banksError)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(banksErrorMessage ?? 'Unable to load banks.',
+                                style: const TextStyle(color: Colors.red)),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              minimumSize: const Size(0, 36),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () {
+                              banksError = false;
+                              _bloc.add(AccountLoadBankList());
+                              _banksLoading = true;
+                              setStateDialog(() {});
+                            },
+                            child: const Text('Retry'),
+                          )
+                        ],
+                      ),
+                    if (!_banksLoading && !banksError)
+                      DropdownButtonFormField<BankInfo>(
+                        initialValue: selected,
+                        items: _banks
+                            .map((b) => DropdownMenuItem(value: b, child: Text(b.name)))
+                            .toList(),
+                        onChanged: (b) {
+                          selected = b;
+                          verifiedName = null;
+                          nameCtr.text = '';
+                          dropdownError = null;
+                          if (numberCtr.text.isNotEmpty) {
+                            showChangeHint = true;
+                          }
+                          setStateDialog(() {});
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Select Bank',
+                          errorText: dropdownError,
+                        ),
+                      ),
+                    if (showChangeHint)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.info_outline, size: 14, color: Colors.orange),
+                            SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                'Bank changed. Please re-verify account number.',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Account Number (10 digits)',
+                        errorText: numberError,
+                      ),
+                      controller: numberCtr,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(10),
+                      ],
+                      keyboardType: TextInputType.number,
+                      onChanged: (v) async {
+                        verifiedName = null;
+                        nameCtr.text = '';
+                        numberError = null;
+                        verifying = false;
+                        showChangeHint = false;
+                        setStateDialog(() {});
+                        debounce?.cancel();
+                        final value = v.trim();
+                        if (selected == null) {
+                          dropdownError = 'Please select a bank';
+                          setStateDialog(() {});
+                          return;
+                        }
+                        if (value.isEmpty || value.length < 10) {
+                          numberError =
+                              value.isEmpty ? null : 'Enter a valid 10-digit account number';
+                          setStateDialog(() {});
+                          return;
+                        }
+                        if (value.length == 10 && selected != null) {
+                          debounce = Timer(const Duration(milliseconds: 500), () {
+                            verifying = true;
+                            setStateDialog(() {});
+                            context.read<AccountBloc>().add(
+                                AccountVerifyBank(bankCode: selected!.code, accountNumber: value));
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: const InputDecoration(labelText: 'Account Name (auto)'),
+                      controller: nameCtr,
+                      readOnly: true,
+                    ),
+                    const SizedBox(height: 8),
+                    if (verifying)
+                      Row(
+                        children: const [
+                          SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                          SizedBox(width: 8),
+                          Text('Verifying...'),
+                        ],
+                      ),
+                    if (verifiedName != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Verified: $verifiedName',
+                            style: const TextStyle(color: Colors.green)),
+                      ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: (selected != null &&
+                          numberCtr.text.trim().length == 10 &&
+                          (verifiedName != null && verifiedName!.isNotEmpty))
+                      ? () {
+                          final name = nameCtr.text.trim();
+                          final number = numberCtr.text.trim();
+                          Navigator.pop(ctx);
+                          context.read<AccountBloc>().add(AccountAddBankAccount(
+                                bankName: selected!.name,
+                                bankCode: selected!.code,
+                                accountName: name,
+                                accountNumber: number,
+                              ));
+                        }
+                      : null,
+                  child: const Text('Save'),
                 ),
               ],
             ),
-            content: BlocListener<AccountBloc, AccountState>(
-              listenWhen: (prev, curr) =>
-                  curr is AccountBankListLoaded ||
-                  curr is AccountBankListLoading ||
-                  curr is AccountBankListError ||
-                  curr is AccountBankVerified ||
-                  curr is AccountBankVerifyLoading ||
-                  curr is AccountBankVerifyError,
-              listener: (context, state) {
-                if (state is AccountBankListLoaded) {
-                  _banks = state.banks;
-                  _banksLoading = false;
-                  banksError = false;
-                  banksErrorMessage = null;
-                  setStateDialog(() {});
-                } else if (state is AccountBankListLoading) {
-                  _banksLoading = true;
-                  banksError = false;
-                  banksErrorMessage = null;
-                  setStateDialog(() {});
-                } else if (state is AccountBankListError) {
-                  _banksLoading = false;
-                  banksError = true;
-                  banksErrorMessage = 'Unable to load banks. Please retry.';
-                  setStateDialog(() {});
-                } else if (state is AccountBankVerifyLoading) {
-                  verifying = true;
-                  numberError = null;
-                  setStateDialog(() {});
-                } else if (state is AccountBankVerified) {
-                  verifying = false;
-                  verifiedName = state.accountName;
-                  nameCtr.text = verifiedName ?? '';
-                  numberError = null;
-                  setStateDialog(() {});
-                } else if (state is AccountBankVerifyError) {
-                  verifying = false;
-                  numberError = 'Verification failed. Please check details and try again.';
-                  setStateDialog(() {});
-                }
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_banksLoading) const LinearProgressIndicator(minHeight: 2),
-                  if (!_banksLoading && banksError)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(banksErrorMessage ?? 'Unable to load banks.',
-                              style: const TextStyle(color: Colors.red)),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            minimumSize: const Size(0, 36),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          onPressed: () {
-                            banksError = false;
-                            _bloc.add(AccountLoadBankList());
-                            _banksLoading = true;
-                            setStateDialog(() {});
-                          },
-                          child: const Text('Retry'),
-                        )
-                      ],
-                    ),
-                  if (!_banksLoading && !banksError)
-                    DropdownButtonFormField<BankInfo>(
-                      initialValue: selected,
-                      items: _banks
-                          .map((b) => DropdownMenuItem(value: b, child: Text(b.name)))
-                          .toList(),
-                      onChanged: (b) {
-                        selected = b;
-                        verifiedName = null;
-                        nameCtr.text = '';
-                        dropdownError = null;
-                        if (numberCtr.text.isNotEmpty) {
-                          showChangeHint = true;
-                        }
-                        setStateDialog(() {});
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Select Bank',
-                        errorText: dropdownError,
-                      ),
-                    ),
-                  if (showChangeHint)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6.0),
-                      child: Row(
-                        children: const [
-                          Icon(Icons.info_outline, size: 14, color: Colors.orange),
-                          SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              'Bank changed. Please re-verify account number.',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Account Number (10 digits)',
-                      errorText: numberError,
-                    ),
-                    controller: numberCtr,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(10),
-                    ],
-                    keyboardType: TextInputType.number,
-                    onChanged: (v) async {
-                      verifiedName = null;
-                      nameCtr.text = '';
-                      numberError = null;
-                      verifying = false;
-                      showChangeHint = false;
-                      setStateDialog(() {});
-                      debounce?.cancel();
-                      final value = v.trim();
-                      if (selected == null) {
-                        dropdownError = 'Please select a bank';
-                        setStateDialog(() {});
-                        return;
-                      }
-                      if (value.isEmpty || value.length < 10) {
-                        numberError = value.isEmpty
-                            ? null
-                            : 'Enter a valid 10-digit account number';
-                        setStateDialog(() {});
-                        return;
-                      }
-                      if (value.length == 10 && selected != null) {
-                        debounce = Timer(const Duration(milliseconds: 500), () {
-                          verifying = true;
-                          setStateDialog(() {});
-                          context.read<AccountBloc>().add(AccountVerifyBank(
-                              bankCode: selected!.code, accountNumber: value));
-                        });
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    decoration:
-                        const InputDecoration(labelText: 'Account Name (auto)'),
-                    controller: nameCtr,
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 8),
-                  if (verifying)
-                    Row(
-                      children: const [
-                        SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        SizedBox(width: 8),
-                        Text('Verifying...'),
-                      ],
-                    ),
-                  if (verifiedName != null)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Verified: $verifiedName',
-                          style: const TextStyle(color: Colors.green)),
-                    ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: (selected != null && numberCtr.text.trim().length == 10 &&
-                        (verifiedName != null && verifiedName!.isNotEmpty))
-                    ? () {
-                        final name = nameCtr.text.trim();
-                        final number = numberCtr.text.trim();
-                        Navigator.pop(ctx);
-                        context.read<AccountBloc>().add(AccountAddBankAccount(
-                              bankName: selected!.name,
-                              bankCode: selected!.code,
-                              accountName: name,
-                              accountNumber: number,
-                            ));
-                      }
-                    : null,
-                child: const Text('Save'),
-              ),
-            ],
-          ),
           );
         });
       },
@@ -422,8 +419,7 @@ class _BankTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading:
-            const CircleAvatar(child: Icon(Icons.account_balance_outlined)),
+        leading: const CircleAvatar(child: Icon(Icons.account_balance_outlined)),
         title: Text(account.bankName),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,9 +428,8 @@ class _BankTile extends StatelessWidget {
             Text('Account Name: ${account.accountName}'),
           ],
         ),
-        trailing: IconButton(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete, color: Colors.red)),
+        trailing:
+            IconButton(onPressed: onDelete, icon: const Icon(Icons.delete, color: Colors.red)),
       ),
     );
   }
@@ -452,8 +447,7 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.account_balance_outlined,
-                size: 64, color: Colors.grey),
+            const Icon(Icons.account_balance_outlined, size: 64, color: Colors.grey),
             const SizedBox(height: 12),
             Text(
               verified ? 'No bank accounts yet' : 'Verify your identity to add bank accounts',
@@ -461,8 +455,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-                onPressed: onAdd,
-                child: Text(verified ? 'Add bank account' : 'Verify identity'))
+                onPressed: onAdd, child: Text(verified ? 'Add bank account' : 'Verify identity'))
           ],
         ),
       ),

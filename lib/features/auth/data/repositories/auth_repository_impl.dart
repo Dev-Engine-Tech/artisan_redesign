@@ -12,21 +12,15 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.remote});
 
   @override
-  Future<User?> signIn(
-      {required String identifier, required String password}) async {
-    final user =
-        await remote.signIn(identifier: identifier, password: password);
+  Future<User?> signIn({required String identifier, required String password}) async {
+    final user = await remote.signIn(identifier: identifier, password: password);
     _currentUser = user;
     return user;
   }
 
   @override
-  Future<User?> signUp(
-      {required String identifier,
-      required String password,
-      String? name}) async {
-    final user = await remote.signUp(
-        identifier: identifier, password: password, name: name);
+  Future<User?> signUp({required String identifier, required String password, String? name}) async {
+    final user = await remote.signUp(identifier: identifier, password: password, name: name);
     _currentUser = user;
     return user;
   }
@@ -144,8 +138,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<bool> resetPassword(
-      {required String token, required String newPassword}) async {
+  Future<bool> resetPassword({required String token, required String newPassword}) async {
     try {
       return await remote.resetPassword(token: token, newPassword: newPassword);
     } catch (e) {

@@ -17,11 +17,9 @@ class WorkExperiencePage extends StatelessWidget {
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state is AccountActionSuccess) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is AccountError) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
@@ -34,7 +32,8 @@ class WorkExperiencePage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _WorkForm())),
+        onPressed: () =>
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _WorkForm())),
         child: const Icon(Icons.add),
       ),
     );
@@ -50,7 +49,8 @@ class _WorkTile extends StatelessWidget {
       child: ListTile(
         title: Text(exp.jobTitle),
         subtitle: Text(exp.companyName),
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => _WorkForm(existing: exp))),
+        onTap: () =>
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => _WorkForm(existing: exp))),
         trailing: IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () => context.read<AccountBloc>().add(AccountDeleteWorkExperience(exp.id)),
@@ -100,7 +100,11 @@ class _WorkFormState extends State<_WorkForm> {
   Future<void> _pickDate(bool isStart) async {
     final now = DateTime.now();
     final initial = (isStart ? startDate : endDate) ?? now;
-    final picked = await showDatePicker(context: context, initialDate: initial, firstDate: DateTime(1980), lastDate: DateTime(now.year + 5));
+    final picked = await showDatePicker(
+        context: context,
+        initialDate: initial,
+        firstDate: DateTime(1980),
+        lastDate: DateTime(now.year + 5));
     if (picked != null) setState(() => isStart ? startDate = picked : endDate = picked);
   }
 
@@ -117,13 +121,26 @@ class _WorkFormState extends State<_WorkForm> {
           const SizedBox(height: 12),
           TextField(controller: location, decoration: const InputDecoration(labelText: 'Location')),
           const SizedBox(height: 12),
-          TextField(controller: description, maxLines: 3, decoration: const InputDecoration(labelText: 'Description')),
+          TextField(
+              controller: description,
+              maxLines: 3,
+              decoration: const InputDecoration(labelText: 'Description')),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: OutlinedButton(onPressed: () => _pickDate(true), child: Text(startDate == null ? 'Start Date' : startDate!.toLocal().toString().split(' ').first))),
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () => _pickDate(true),
+                      child: Text(startDate == null
+                          ? 'Start Date'
+                          : startDate!.toLocal().toString().split(' ').first))),
               const SizedBox(width: 8),
-              Expanded(child: OutlinedButton(onPressed: () => _pickDate(false), child: Text(endDate == null ? 'End Date' : endDate!.toLocal().toString().split(' ').first))),
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: () => _pickDate(false),
+                      child: Text(endDate == null
+                          ? 'End Date'
+                          : endDate!.toLocal().toString().split(' ').first))),
             ],
           ),
           SwitchListTile(
@@ -142,8 +159,7 @@ class _WorkFormState extends State<_WorkForm> {
               }
               if (endDate != null && endDate!.isBefore(startDate!)) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('End date cannot be before start date')),
+                  const SnackBar(content: Text('End date cannot be before start date')),
                 );
                 return;
               }

@@ -55,11 +55,9 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
         body: BlocConsumer<AccountBloc, AccountState>(
           listener: (context, state) {
             if (state is AccountActionSuccess) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             } else if (state is AccountError) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
@@ -147,7 +145,8 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
       final info = await PackageInfo.fromPlatform();
       final current = info.version;
       final latest = const String.fromEnvironment('LATEST_VERSION', defaultValue: '');
-      final storeUrl = const String.fromEnvironment('APP_UPDATE_URL', defaultValue: 'https://artisansbridge.com');
+      final storeUrl = const String.fromEnvironment('APP_UPDATE_URL',
+          defaultValue: 'https://artisansbridge.com');
       if (latest.isNotEmpty && latest != current) {
         final uri = Uri.parse(storeUrl);
         // TODO: URL launcher functionality temporarily disabled
@@ -197,13 +196,13 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
           ],
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
-              context.read<AccountBloc>().add(AccountChangePassword(
-                  oldPassword: oldCtr.text, newPassword: newCtr.text));
+              context
+                  .read<AccountBloc>()
+                  .add(AccountChangePassword(oldPassword: oldCtr.text, newPassword: newCtr.text));
             },
             child: const Text('Update'),
           ),
@@ -224,19 +223,18 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
             const Text('This action cannot be undone'),
             const SizedBox(height: 8),
             TextField(
-                controller: otpCtr,
-                decoration: const InputDecoration(labelText: 'OTP (optional)')),
+                controller: otpCtr, decoration: const InputDecoration(labelText: 'OTP (optional)')),
           ],
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
             onPressed: () {
               Navigator.pop(ctx);
-              context.read<AccountBloc>().add(AccountDeleteAccount(
-                  otp: otpCtr.text.isEmpty ? null : otpCtr.text));
+              context
+                  .read<AccountBloc>()
+                  .add(AccountDeleteAccount(otp: otpCtr.text.isEmpty ? null : otpCtr.text));
             },
             child: const Text('Delete'),
           ),
@@ -265,15 +263,14 @@ class _HeaderCard extends StatelessWidget {
                     final url = profile?.profileImage;
                     if (url != null && url.isNotEmpty) {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => ImagePreviewPage(
-                              imageUrl: url, heroTag: 'support_profile')));
+                          builder: (_) =>
+                              ImagePreviewPage(imageUrl: url, heroTag: 'support_profile')));
                     }
                   },
                   child: CircleAvatar(
                     radius: 28,
                     backgroundColor: AppColors.softPink,
-                    child: profile?.profileImage != null &&
-                            profile!.profileImage!.isNotEmpty
+                    child: profile?.profileImage != null && profile!.profileImage!.isNotEmpty
                         ? Hero(
                             tag: 'support_profile',
                             child: ClipOval(
@@ -282,14 +279,12 @@ class _HeaderCard extends StatelessWidget {
                                 width: 56,
                                 height: 56,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Icon(
-                                    Icons.person_outline,
-                                    color: AppColors.orange),
+                                errorBuilder: (_, __, ___) =>
+                                    const Icon(Icons.person_outline, color: AppColors.orange),
                               ),
                             ),
                           )
-                        : const Icon(Icons.person_outline,
-                            color: AppColors.orange),
+                        : const Icon(Icons.person_outline, color: AppColors.orange),
                   ),
                 ),
                 Material(
@@ -331,8 +326,7 @@ class _HeaderCard extends StatelessWidget {
                     child: const CircleAvatar(
                       radius: 10,
                       backgroundColor: AppColors.orange,
-                      child:
-                          Icon(Icons.camera_alt, size: 12, color: Colors.white),
+                      child: Icon(Icons.camera_alt, size: 12, color: Colors.white),
                     ),
                   ),
                 )
@@ -344,14 +338,11 @@ class _HeaderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    profile?.fullName.isNotEmpty == true
-                        ? profile!.fullName
-                        : 'Your Profile',
+                    profile?.fullName.isNotEmpty == true ? profile!.fullName : 'Your Profile',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   if (profile?.phone != null && profile!.phone!.isNotEmpty)
-                    Text(profile!.phone!,
-                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text(profile!.phone!, style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
             )
@@ -370,10 +361,7 @@ class _SectionTitle extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(title,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.brownHeader)),
     );
   }
 }
@@ -384,10 +372,7 @@ class _MenuTile extends StatelessWidget {
   final bool isDestructive;
   final VoidCallback? onTap;
   const _MenuTile(
-      {required this.icon,
-      required this.title,
-      this.onTap,
-      this.isDestructive = false});
+      {required this.icon, required this.title, this.onTap, this.isDestructive = false});
 
   @override
   Widget build(BuildContext context) {
@@ -395,14 +380,11 @@ class _MenuTile extends StatelessWidget {
       child: ListTile(
         leading: Container(
           decoration: BoxDecoration(
-              color: AppColors.badgeBackground,
-              borderRadius: BorderRadius.circular(10)),
+              color: AppColors.badgeBackground, borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.all(8),
-          child: Icon(icon,
-              color: isDestructive ? AppColors.danger : AppColors.orange),
+          child: Icon(icon, color: isDestructive ? AppColors.danger : AppColors.orange),
         ),
-        title: Text(title,
-            style: TextStyle(color: isDestructive ? AppColors.danger : null)),
+        title: Text(title, style: TextStyle(color: isDestructive ? AppColors.danger : null)),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

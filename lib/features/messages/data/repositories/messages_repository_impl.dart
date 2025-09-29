@@ -17,7 +17,8 @@ class MessagesRepositoryImpl implements MessagesRepository {
   }
 
   @override
-  Stream<List<Message>> watchMessages({required int currentUserId, required String conversationId}) {
+  Stream<List<Message>> watchMessages(
+      {required int currentUserId, required String conversationId}) {
     store.seed(currentUserId: currentUserId);
     return store.watchMessages(conversationId);
   }
@@ -43,7 +44,8 @@ class MessagesRepositoryImpl implements MessagesRepository {
   }
 
   @override
-  Future<void> setTyping({required int currentUserId, required String conversationId, required bool typing}) async {
+  Future<void> setTyping(
+      {required int currentUserId, required String conversationId, required bool typing}) async {
     store.setTyping(conversationId, typing);
   }
 

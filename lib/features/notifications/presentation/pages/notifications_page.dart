@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
-import 'package:artisans_circle/features/notifications/domain/entities/notification.dart' as entities;
+import 'package:artisans_circle/features/notifications/domain/entities/notification.dart'
+    as entities;
 import 'package:artisans_circle/features/notifications/presentation/widgets/notification_item.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   final ScrollController _scrollController = ScrollController();
-  
+
   // Mock data for now - will be replaced with actual repository calls
   List<entities.Notification> _notifications = [];
   bool _isLoading = true;
@@ -32,7 +33,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Future<void> _loadNotifications() async {
     // Mock data - replace with actual repository call
     await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-    
+
     setState(() {
       _notifications = [
         entities.Notification(

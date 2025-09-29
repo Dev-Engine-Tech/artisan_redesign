@@ -113,7 +113,7 @@ class InvoiceRepositoryFake implements InvoiceRepository {
     InvoiceStatus? status,
   }) async {
     await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
-    
+
     var filteredInvoices = _invoices.where((invoice) {
       if (status != null) {
         return invoice.status == status;
@@ -127,11 +127,11 @@ class InvoiceRepositoryFake implements InvoiceRepository {
     // Pagination
     final startIndex = (page - 1) * limit;
     final endIndex = startIndex + limit;
-    
+
     if (startIndex >= filteredInvoices.length) {
       return [];
     }
-    
+
     final paginatedInvoices = filteredInvoices.sublist(
       startIndex,
       endIndex > filteredInvoices.length ? filteredInvoices.length : endIndex,
@@ -143,55 +143,55 @@ class InvoiceRepositoryFake implements InvoiceRepository {
   @override
   Future<Invoice> getInvoiceById(String id) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final invoice = _invoices.firstWhere(
       (invoice) => invoice.id == id,
       orElse: () => throw Exception('Invoice not found'),
     );
-    
+
     return invoice.toEntity();
   }
 
   @override
   Future<Invoice> createInvoice(Invoice invoice) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final newInvoice = InvoiceModel.fromEntity(invoice.copyWith(
       id: 'INV_${DateTime.now().millisecondsSinceEpoch}',
       invoiceNumber: 'INV-${(_invoices.length + 1).toString().padLeft(3, '0')}',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     ));
-    
+
     _invoices.add(newInvoice);
     _streamController.add(_invoices.map((e) => e.toEntity()).toList());
-    
+
     return newInvoice.toEntity();
   }
 
   @override
   Future<Invoice> updateInvoice(Invoice invoice) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     final index = _invoices.indexWhere((inv) => inv.id == invoice.id);
     if (index == -1) {
       throw Exception('Invoice not found');
     }
-    
+
     final updatedInvoice = InvoiceModel.fromEntity(invoice.copyWith(
       updatedAt: DateTime.now(),
     ));
-    
+
     _invoices[index] = updatedInvoice;
     _streamController.add(_invoices.map((e) => e.toEntity()).toList());
-    
+
     return updatedInvoice.toEntity();
   }
 
   @override
   Future<void> deleteInvoice(String id) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     _invoices.removeWhere((invoice) => invoice.id == id);
     _streamController.add(_invoices.map((e) => e.toEntity()).toList());
   }
@@ -199,34 +199,34 @@ class InvoiceRepositoryFake implements InvoiceRepository {
   @override
   Future<Invoice> sendInvoice(String invoiceId) async {
     await Future.delayed(const Duration(milliseconds: 600));
-    
+
     final invoice = await getInvoiceById(invoiceId);
     final updatedInvoice = invoice.copyWith(
       status: InvoiceStatus.validated,
       updatedAt: DateTime.now(),
     );
-    
+
     return await updateInvoice(updatedInvoice);
   }
 
   @override
   Future<Invoice> markAsPaid(String invoiceId, DateTime paidDate) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     final invoice = await getInvoiceById(invoiceId);
     final updatedInvoice = invoice.copyWith(
       status: InvoiceStatus.paid,
       paidDate: paidDate,
       updatedAt: DateTime.now(),
     );
-    
+
     return await updateInvoice(updatedInvoice);
   }
 
   @override
   Future<String> generateInvoicePdf(String invoiceId) async {
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     // In a real implementation, this would generate a PDF and return the file path or URL
     return 'https://example.com/invoices/$invoiceId.pdf';
   }

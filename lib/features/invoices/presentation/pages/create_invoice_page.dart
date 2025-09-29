@@ -7,7 +7,7 @@ enum InvoiceMode { create, edit, view }
 class CreateInvoicePage extends StatefulWidget {
   final Invoice? invoice;
   final InvoiceMode mode;
-  
+
   const CreateInvoicePage({
     Key? key,
     this.invoice,
@@ -18,8 +18,7 @@ class CreateInvoicePage extends StatefulWidget {
   State<CreateInvoicePage> createState() => _CreateInvoicePageState();
 }
 
-class _CreateInvoicePageState extends State<CreateInvoicePage>
-    with SingleTickerProviderStateMixin {
+class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _customerController = TextEditingController();
   final _deliveryAddressController = TextEditingController();
@@ -27,7 +26,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   final _termsController = TextEditingController();
   DateTime _invoiceDate = DateTime.now();
   DateTime _dueDate = DateTime.now().add(const Duration(days: 30));
-  
+
   // Dynamic lists for invoice management
   final List<_InvoiceSection> _invoiceSections = [];
   final List<_InvoiceLineItem> _independentLines = [];
@@ -40,9 +39,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     _tabController = TabController(length: 3, vsync: this);
     _populateFromInvoice();
   }
-  
+
   bool get _isReadOnly => widget.mode == InvoiceMode.view;
-  
+
   String _getAppBarTitle() {
     switch (widget.mode) {
       case InvoiceMode.create:
@@ -61,18 +60,18 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         }
     }
   }
-  
+
   void _populateFromInvoice() {
     if (widget.invoice != null) {
       final invoice = widget.invoice!;
-      
+
       // Populate basic fields
       _customerController.text = invoice.clientName;
       _deliveryAddressController.text = invoice.clientEmail; // Using clientEmail as address for now
       _termsController.text = invoice.notes ?? '';
       _invoiceDate = invoice.issueDate;
       _dueDate = invoice.dueDate;
-      
+
       // Populate invoice items as independent lines
       _independentLines.clear();
       for (final item in invoice.items) {
@@ -82,7 +81,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           unitPriceController: TextEditingController(text: item.unitPrice.toString()),
         ));
       }
-      
+
       // Note: Materials and measurements would need to be stored separately in a real app
       // For now, we'll leave them empty when viewing existing invoices
     }
@@ -95,7 +94,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     _deliveryAddressController.dispose();
     _productController.dispose();
     _termsController.dispose();
-    
+
     // Dispose dynamic items
     for (final section in _invoiceSections) {
       section.dispose();
@@ -109,7 +108,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     for (final measurement in _measurements) {
       measurement.dispose();
     }
-    
+
     super.dispose();
   }
 
@@ -173,7 +172,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Form Fields Row
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +197,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                         ),
                       ),
                       const SizedBox(width: 24),
-                      
+
                       // Right Column
                       Expanded(
                         child: Column(
@@ -236,9 +235,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Tab Bar
                   TabBar(
                     controller: _tabController,
@@ -251,7 +250,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                       Tab(text: 'Measurement'),
                     ],
                   ),
-                  
+
                   // Tab Content
                   SizedBox(
                     height: 400,
@@ -264,9 +263,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Totals Section
                   Container(
                     width: double.infinity,
@@ -278,16 +277,19 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        _buildTotalRow('Total Invoice:', 'NGN ${_calculateInvoiceLinesTotal().toStringAsFixed(2)}'),
-                        _buildTotalRow('Total Materials:', 'NGN ${_calculateMaterialsTotal().toStringAsFixed(2)}'),
+                        _buildTotalRow('Total Invoice:',
+                            'NGN ${_calculateInvoiceLinesTotal().toStringAsFixed(2)}'),
+                        _buildTotalRow('Total Materials:',
+                            'NGN ${_calculateMaterialsTotal().toStringAsFixed(2)}'),
                         const Divider(),
-                        _buildTotalRow('Total:', 'NGN ${_calculateGrandTotal().toStringAsFixed(2)}', isBold: true),
+                        _buildTotalRow('Total:', 'NGN ${_calculateGrandTotal().toStringAsFixed(2)}',
+                            isBold: true),
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Terms & Conditions Section
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,7 +328,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
               ),
             ),
           ),
-          
+
           // Bottom Actions
           Container(
             padding: const EdgeInsets.all(16),
@@ -349,7 +351,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
   Widget _buildBottomActionBar() {
     List<Widget> buttons = [];
-    
+
     // Always show Share button
     buttons.add(
       Expanded(
@@ -370,12 +372,13 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         ),
       ),
     );
-    
+
     buttons.add(const SizedBox(width: 8));
-    
+
     // Show Create Job button for draft and validated invoices
-    if (widget.mode != InvoiceMode.view || 
-        (widget.invoice?.status == InvoiceStatus.draft || widget.invoice?.status == InvoiceStatus.validated)) {
+    if (widget.mode != InvoiceMode.view ||
+        (widget.invoice?.status == InvoiceStatus.draft ||
+            widget.invoice?.status == InvoiceStatus.validated)) {
       buttons.add(
         Expanded(
           child: ElevatedButton.icon(
@@ -395,15 +398,15 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           ),
         ),
       );
-      
+
       buttons.add(const SizedBox(width: 8));
     }
-    
+
     // Add main action button (Confirm/Pay) - but not for paid invoices
     if (!(widget.mode == InvoiceMode.view && widget.invoice?.status == InvoiceStatus.paid)) {
       String buttonText;
       VoidCallback onPressed;
-      
+
       switch (widget.mode) {
         case InvoiceMode.create:
         case InvoiceMode.edit:
@@ -420,7 +423,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           }
           break;
       }
-      
+
       buttons.add(
         Expanded(
           child: ElevatedButton.icon(
@@ -441,7 +444,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         ),
       );
     }
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -462,32 +465,33 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
       ),
     );
   }
-  
+
   void _shareInvoice() {
     // TODO: Implement share functionality
     // This would share the invoice via email, PDF, etc.
     print('Share invoice functionality');
   }
-  
+
   void _createJob() {
     // TODO: Implement create job functionality
     // This would create a new job based on the invoice
     print('Create job functionality');
   }
-  
+
   void _confirmInvoice() {
     // TODO: Implement invoice confirmation logic
     // This would update the invoice status from draft to validated
     Navigator.of(context).pop();
   }
-  
+
   void _payInvoice() {
     // TODO: Implement payment logic
     // This would update the invoice status from validated to paid
     Navigator.of(context).pop();
   }
 
-  Widget _buildFormField(String label, String hint, TextEditingController controller, {bool? readOnly}) {
+  Widget _buildFormField(String label, String hint, TextEditingController controller,
+      {bool? readOnly}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -609,10 +613,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   void _addLineToSection(int sectionIndex) {
     setState(() {
       _invoiceSections[sectionIndex].items.add(_InvoiceLineItem(
-        labelController: TextEditingController(),
-        quantityController: TextEditingController(text: '1'),
-        unitPriceController: TextEditingController(),
-      ));
+            labelController: TextEditingController(),
+            quantityController: TextEditingController(text: '1'),
+            unitPriceController: TextEditingController(),
+          ));
     });
   }
 
@@ -725,7 +729,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return Column(
       children: [
         const SizedBox(height: 16),
-        
+
         // Table Header
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -735,15 +739,19 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           ),
           child: const Row(
             children: [
-              Expanded(flex: 3, child: Text('Label', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 3, child: Text('Label', style: TextStyle(fontWeight: FontWeight.w600))),
               Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 2,
+                  child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
               SizedBox(width: 32),
             ],
           ),
         ),
-        
+
         // Sections
         for (var i = 0; i < _invoiceSections.length; i++) ...[
           // Section Header
@@ -757,9 +765,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
               children: [
                 Expanded(
                   child: Text(
-                    _invoiceSections[i].descriptionController.text.isEmpty 
-                      ? 'Section ${i + 1}' 
-                      : _invoiceSections[i].descriptionController.text,
+                    _invoiceSections[i].descriptionController.text.isEmpty
+                        ? 'Section ${i + 1}'
+                        : _invoiceSections[i].descriptionController.text,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
                 ),
@@ -779,13 +787,13 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           for (var j = 0; j < _invoiceSections[i].items.length; j++)
             _buildInvoiceLineRow(_invoiceSections[i].items[j], () => _removeLineFromSection(i, j)),
         ],
-        
+
         // Independent Lines
         for (var i = 0; i < _independentLines.length; i++)
           _buildInvoiceLineRow(_independentLines[i], () => _removeIndependentLine(i)),
-        
+
         const SizedBox(height: 16),
-        
+
         // Action Buttons
         if (!_isReadOnly)
           Row(
@@ -901,7 +909,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
   Widget _buildSectionCard(int sectionIndex) {
     final section = _invoiceSections[sectionIndex];
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
@@ -929,15 +937,14 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                   ),
               ],
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Section Items
-            for (var i = 0; i < section.items.length; i++)
-              _buildInvoiceLineCard(sectionIndex, i),
-            
+            for (var i = 0; i < section.items.length; i++) _buildInvoiceLineCard(sectionIndex, i),
+
             const SizedBox(height: 8),
-            
+
             // Add Line Button
             TextButton.icon(
               onPressed: () => _addLineToSection(sectionIndex),
@@ -952,7 +959,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
   Widget _buildInvoiceLineCard(int sectionIndex, int itemIndex) {
     final item = _invoiceSections[sectionIndex].items[itemIndex];
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       color: Colors.grey.shade50,
@@ -981,9 +988,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                   ),
               ],
             ),
-            
+
             const SizedBox(height: 8),
-            
+
             // Second Row - Qty, Price, Tax, Total
             Row(
               children: [
@@ -1047,7 +1054,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return Column(
       children: [
         const SizedBox(height: 16),
-        
+
         // Table Header
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1057,21 +1064,25 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           ),
           child: const Row(
             children: [
-              Expanded(flex: 3, child: Text('Material', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 3, child: Text('Material', style: TextStyle(fontWeight: FontWeight.w600))),
               Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 2,
+                  child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
               SizedBox(width: 32),
             ],
           ),
         ),
-        
+
         // Materials
         for (var i = 0; i < _materials.length; i++)
           _buildMaterialRow(_materials[i], () => _removeMaterial(i)),
-        
+
         const SizedBox(height: 16),
-        
+
         // Action Button
         if (!_isReadOnly)
           ElevatedButton.icon(
@@ -1149,7 +1160,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
   Widget _buildMaterialCard(int index) {
     final material = _materials[index];
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -1223,7 +1234,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return Column(
       children: [
         const SizedBox(height: 16),
-        
+
         // Table Header
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1240,13 +1251,13 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
             ],
           ),
         ),
-        
+
         // Measurements
         for (var i = 0; i < _measurements.length; i++)
           _buildMeasurementRow(_measurements[i], () => _removeMeasurement(i)),
-        
+
         const SizedBox(height: 16),
-        
+
         // Action Button
         if (!_isReadOnly)
           ElevatedButton.icon(
@@ -1315,7 +1326,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
   Widget _buildMeasurementCard(int index) {
     final measurement = _measurements[index];
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(

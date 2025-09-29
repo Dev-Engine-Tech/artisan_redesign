@@ -7,4 +7,3 @@ class AddSkill {
 
   Future<UserProfile> call(String skill) => repository.addSkill(skill);
 }
-

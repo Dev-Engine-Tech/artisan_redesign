@@ -44,8 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthResetPasswordRequested>(_onResetPasswordRequested);
   }
 
-  Future<void> _onAuthCheckRequested(
-      AuthCheckRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onAuthCheckRequested(AuthCheckRequested event, Emitter<AuthState> emit) async {
     if (kDebugMode) {
       print('🔐 AuthBloc: Checking authentication status');
     }
@@ -55,7 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (kDebugMode) {
         print('🔐 AuthBloc: Is signed in: $signedIn');
       }
-      
+
       if (!signedIn) {
         emit(const AuthUnauthenticated());
         return;
@@ -65,7 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (kDebugMode) {
         print('🔐 AuthBloc: Current user: ${user?.firstName} ${user?.lastName}');
       }
-      
+
       if (user != null) {
         emit(AuthAuthenticated(user: user));
       } else {
@@ -80,19 +79,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onSignInRequested(
-      AuthSignInRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onSignInRequested(AuthSignInRequested event, Emitter<AuthState> emit) async {
     if (kDebugMode) {
       print('🔐 AuthBloc: Sign in requested for: ${event.identifier}');
     }
     emit(const AuthLoading());
     try {
-      final user = await signIn.call(
-          identifier: event.identifier, password: event.password);
+      final user = await signIn.call(identifier: event.identifier, password: event.password);
       if (kDebugMode) {
         print('🔐 AuthBloc: Sign in result - user: ${user?.firstName} ${user?.lastName}');
       }
-      
+
       if (user != null) {
         emit(AuthAuthenticated(user: user));
       } else {
@@ -106,14 +103,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onSignUpRequested(
-      AuthSignUpRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onSignUpRequested(AuthSignUpRequested event, Emitter<AuthState> emit) async {
     emit(const AuthLoading());
     try {
       final user = await signUp.call(
-          identifier: event.identifier,
-          password: event.password,
-          name: event.name);
+          identifier: event.identifier, password: event.password, name: event.name);
       if (user != null) {
         // If user is returned but not phone verified, show OTP verification
         if (!user.isPhoneVerified) {
@@ -159,8 +153,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onSignedOut(
-      AuthSignedOut event, Emitter<AuthState> emit) async {
+  Future<void> _onSignedOut(AuthSignedOut event, Emitter<AuthState> emit) async {
     emit(const AuthLoading());
     try {
       await signOut.call();
@@ -170,8 +163,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onMarkVerified(
-      AuthMarkVerified event, Emitter<AuthState> emit) async {
+  Future<void> _onMarkVerified(AuthMarkVerified event, Emitter<AuthState> emit) async {
     final current = state;
     if (current is AuthAuthenticated) {
       // Update the in-memory user to reflect verification (demo only).
@@ -206,15 +198,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onResendOtpRequested(
-      AuthResendOtpRequested event, Emitter<AuthState> emit) async {
+  Future<void> _onResendOtpRequested(AuthResendOtpRequested event, Emitter<AuthState> emit) async {
     try {
       final repo = getIt<AuthRepository>();
       final success = await repo.resendOtp(phone: event.phone);
 
       if (!success) {
-        emit(const AuthError(
-            message: 'Failed to resend OTP. Please try again.'));
+        emit(const AuthError(message: 'Failed to resend OTP. Please try again.'));
       } else {
         emit(AuthOtpSent(phone: event.phone));
       }
@@ -251,8 +241,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (success) {
         emit(const AuthUnauthenticated());
       } else {
-        emit(const AuthError(
-            message: 'Failed to reset password. Please try again.'));
+        emit(const AuthError(message: 'Failed to reset password. Please try again.'));
       }
     } catch (e) {
       emit(AuthError(message: e.toString()));

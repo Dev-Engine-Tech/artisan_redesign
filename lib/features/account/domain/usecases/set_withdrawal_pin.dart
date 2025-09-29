@@ -6,4 +6,3 @@ class SetWithdrawalPin {
 
   Future<bool> call(String pin) => repository.setWithdrawalPin(pin);
 }
-

@@ -127,7 +127,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
     try {
       emit(InvoiceLoading());
       await repository.deleteInvoice(event.invoiceId);
-      
+
       // Reload the invoices list after deletion
       if (state is InvoicesLoaded) {
         final currentState = state as InvoicesLoaded;

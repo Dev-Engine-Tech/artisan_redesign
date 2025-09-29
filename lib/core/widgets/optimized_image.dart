@@ -106,9 +106,9 @@ class OptimizedImage extends StatelessWidget {
       child: Icon(
         Icons.error_outline,
         color: Colors.grey.shade600,
-        size: (width != null && height != null) 
-          ? (width! < height! ? width! * 0.3 : height! * 0.3)
-          : 24,
+        size: (width != null && height != null)
+            ? (width! < height! ? width! * 0.3 : height! * 0.3)
+            : 24,
       ),
     );
   }

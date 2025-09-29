@@ -49,17 +49,17 @@ class ApplicationStatusModal extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Status icon
           _buildStatusIcon(),
-          
+
           const SizedBox(height: 20),
-          
+
           // Title and message
           _buildContent(context),
-          
+
           const SizedBox(height: 24),
-          
+
           // Action buttons
           _buildActionButtons(context),
         ],
@@ -108,31 +108,31 @@ class ApplicationStatusModal extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     String title;
     String message;
-    
+
     switch (actionType) {
       case ApplicationActionType.accepted:
         title = 'Application Accepted!';
-        message = additionalMessage ?? 
+        message = additionalMessage ??
             'Congratulations! Your application has been accepted. You can now proceed with the project agreement.';
         break;
       case ApplicationActionType.rejected:
         title = 'Application Declined';
-        message = additionalMessage ?? 
+        message = additionalMessage ??
             'Unfortunately, your application was not selected for this project. Don\'t give up - there are many other opportunities!';
         break;
       case ApplicationActionType.changeRequested:
         title = 'Changes Requested';
-        message = additionalMessage ?? 
+        message = additionalMessage ??
             'The client has requested some changes to your proposal. Please review and update your application accordingly.';
         break;
       case ApplicationActionType.inProgress:
         title = 'Project In Progress';
-        message = additionalMessage ?? 
+        message = additionalMessage ??
             'Great! Your project is now in progress. Keep the client updated on your progress and deliverables.';
         break;
       case ApplicationActionType.completed:
         title = 'Project Completed!';
-        message = additionalMessage ?? 
+        message = additionalMessage ??
             'Congratulations! You have successfully completed this project. Payment will be processed according to the agreement.';
         break;
     }
@@ -142,21 +142,21 @@ class ApplicationStatusModal extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: AppColors.brownHeader,
-          ),
+                fontWeight: FontWeight.w700,
+                color: AppColors.brownHeader,
+              ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 12),
         Text(
           message,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.black54,
-            height: 1.5,
-          ),
+                color: Colors.black54,
+                height: 1.5,
+              ),
           textAlign: TextAlign.center,
         ),
-        
+
         // Job info
         const SizedBox(height: 20),
         Container(
@@ -172,16 +172,16 @@ class ApplicationStatusModal extends StatelessWidget {
               Text(
                 job.title,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.brownHeader,
-                ),
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.brownHeader,
+                    ),
               ),
               const SizedBox(height: 4),
               Text(
                 job.category,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.black54,
-                ),
+                      color: Colors.black54,
+                    ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -190,18 +190,18 @@ class ApplicationStatusModal extends StatelessWidget {
                   Text(
                     'Amount:',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
-                    ),
+                          color: Colors.black54,
+                        ),
                   ),
                   Text(
                     'NGN ${job.minBudget.toString().replaceAllMapped(
-                      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                      (match) => '${match[1]},',
-                    )}',
+                          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                          (match) => '${match[1]},',
+                        )}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.brownHeader,
-                    ),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.brownHeader,
+                        ),
                   ),
                 ],
               ),
@@ -214,7 +214,7 @@ class ApplicationStatusModal extends StatelessWidget {
 
   Widget _buildActionButtons(BuildContext context) {
     List<Widget> buttons = [];
-    
+
     switch (actionType) {
       case ApplicationActionType.accepted:
         buttons = [
@@ -258,7 +258,7 @@ class ApplicationStatusModal extends StatelessWidget {
           ),
         ];
         break;
-        
+
       case ApplicationActionType.rejected:
         buttons = [
           SizedBox(
@@ -284,7 +284,7 @@ class ApplicationStatusModal extends StatelessWidget {
           ),
         ];
         break;
-        
+
       case ApplicationActionType.changeRequested:
         buttons = [
           Expanded(
@@ -326,7 +326,7 @@ class ApplicationStatusModal extends StatelessWidget {
           ),
         ];
         break;
-        
+
       case ApplicationActionType.inProgress:
       case ApplicationActionType.completed:
         buttons = [
@@ -352,8 +352,8 @@ class ApplicationStatusModal extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onPrimaryAction ?? () => Navigator.of(context).pop(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: actionType == ApplicationActionType.completed 
-                    ? Colors.green.shade600 
+                backgroundColor: actionType == ApplicationActionType.completed
+                    ? Colors.green.shade600
                     : Colors.blue.shade500,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(

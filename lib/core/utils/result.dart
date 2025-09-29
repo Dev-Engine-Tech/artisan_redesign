@@ -143,8 +143,7 @@ class AppFailure extends Equatable {
       );
 
   /// Unexpected errors
-  factory AppFailure.unexpected(String message, {Exception? exception}) =>
-      AppFailure(
+  factory AppFailure.unexpected(String message, {Exception? exception}) => AppFailure(
         message: message,
         code: 'UNEXPECTED_ERROR',
         exception: exception,

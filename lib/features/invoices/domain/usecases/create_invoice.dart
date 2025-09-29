@@ -9,7 +9,7 @@ class CreateInvoice {
   Future<Invoice> call(Invoice invoice) async {
     return await repository.createInvoice(invoice);
   }
-  
+
   Future<Invoice> execute(Invoice invoice) async {
     return await repository.createInvoice(invoice);
   }

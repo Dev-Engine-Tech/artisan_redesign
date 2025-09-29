@@ -14,10 +14,10 @@ class ChangeRequest extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    proposedChange,
-    reason,
-  ];
+        id,
+        proposedChange,
+        reason,
+      ];
 
   ChangeRequest copyWith({
     int? id,

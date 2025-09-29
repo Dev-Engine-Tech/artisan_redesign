@@ -19,11 +19,11 @@ class Catalog extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    title,
-    description,
-    pictures,
-  ];
+        id,
+        title,
+        description,
+        pictures,
+      ];
 
   Catalog copyWith({
     int? id,

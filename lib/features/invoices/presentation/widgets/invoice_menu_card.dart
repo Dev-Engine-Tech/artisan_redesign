@@ -23,8 +23,7 @@ class InvoiceMenuCard extends StatefulWidget {
   State<InvoiceMenuCard> createState() => _InvoiceMenuCardState();
 }
 
-class _InvoiceMenuCardState extends State<InvoiceMenuCard>
-    with SingleTickerProviderStateMixin {
+class _InvoiceMenuCardState extends State<InvoiceMenuCard> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   bool _isPressed = false;
@@ -103,9 +102,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                   ),
                 ],
                 border: Border.all(
-                  color: _isPressed
-                      ? widget.accentColor.withOpacity(0.3)
-                      : Colors.transparent,
+                  color: _isPressed ? widget.accentColor.withOpacity(0.3) : Colors.transparent,
                   width: 2,
                 ),
               ),
@@ -134,7 +131,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                           ),
                         ),
                       ),
-                      
+
                       // Main content
                       Padding(
                         padding: const EdgeInsets.all(24),
@@ -193,9 +190,9 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                                 ),
                               ],
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             // Title and subtitle
                             Expanded(
                               child: Column(
@@ -227,7 +224,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                           ],
                         ),
                       ),
-                      
+
                       // Hover indicator
                       if (_isPressed)
                         Positioned.fill(

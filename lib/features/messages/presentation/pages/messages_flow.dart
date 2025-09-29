@@ -55,9 +55,8 @@ class MessagesListPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).maybePop(),
@@ -65,8 +64,7 @@ class MessagesListPage extends StatelessWidget {
           ),
         ),
         title: const Text('Messages',
-            style:
-                TextStyle(color: Colors.black87, fontWeight: FontWeight.w700)),
+            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w700)),
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: Colors.black54),
@@ -108,8 +106,7 @@ class MessagesListPage extends StatelessWidget {
                       ),
                       child: Container(
                         color: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         child: Row(
                           children: [
                             Stack(
@@ -117,8 +114,7 @@ class MessagesListPage extends StatelessWidget {
                                 CircleAvatar(
                                   radius: 28,
                                   backgroundColor: AppColors.softPink,
-                                  child: const Icon(Icons.person,
-                                      color: AppColors.brownHeader),
+                                  child: const Icon(Icons.person, color: AppColors.brownHeader),
                                 ),
                                 if (c.online)
                                   Positioned(
@@ -130,8 +126,7 @@ class MessagesListPage extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           color: AppColors.orange,
                                           shape: BoxShape.circle,
-                                          border: Border.all(
-                                              color: Colors.white, width: 2)),
+                                          border: Border.all(color: Colors.white, width: 2)),
                                     ),
                                   )
                               ],
@@ -161,40 +156,29 @@ class MessagesListPage extends StatelessWidget {
                                   if (c.jobTitle != null)
                                     Text(c.jobTitle!,
                                         style: const TextStyle(
-                                            color: AppColors.orange,
-                                            fontWeight: FontWeight.w700)),
+                                            color: AppColors.orange, fontWeight: FontWeight.w700)),
                                   const SizedBox(height: 6),
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: Text(
-                                            c.isTyping
-                                                ? 'typing…'
-                                                : (c.lastMessage ?? ''),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(
-                                                    color: c.isTyping
-                                                        ? AppColors.orange
-                                                        : Colors.black54),
+                                        child: Text(c.isTyping ? 'typing…' : (c.lastMessage ?? ''),
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                color:
+                                                    c.isTyping ? AppColors.orange : Colors.black54),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis),
                                       ),
                                       if (c.unreadCount > 0)
                                         Container(
-                                          margin:
-                                              const EdgeInsets.only(left: 8),
+                                          margin: const EdgeInsets.only(left: 8),
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8, vertical: 6),
                                           decoration: BoxDecoration(
                                               color: AppColors.orange,
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
+                                              borderRadius: BorderRadius.circular(12)),
                                           child: Text('${c.unreadCount}',
                                               style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12)),
+                                                  color: Colors.white, fontSize: 12)),
                                         )
                                     ],
                                   )
@@ -252,8 +236,8 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     _scrollController.addListener(() {
       if (!_scrollController.hasClients) return;
-      final atBottom = _scrollController.position.pixels >=
-          (_scrollController.position.maxScrollExtent - 48);
+      final atBottom =
+          _scrollController.position.pixels >= (_scrollController.position.maxScrollExtent - 48);
       final show = !atBottom;
       if (show != _showScrollToBottom) {
         setState(() => _showScrollToBottom = show);
@@ -268,6 +252,7 @@ class _ChatPageState extends State<ChatPage> {
       final mi = dt.minute.toString().padLeft(2, '0');
       return '$h:$mi';
     }
+
     if (m.type == domain.MessageType.audio) {
       // voice placeholder bubble
       return Container(
@@ -279,20 +264,16 @@ class _ChatPageState extends State<ChatPage> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.play_arrow,
-                color: mine ? Colors.white : AppColors.brownHeader),
+            Icon(Icons.play_arrow, color: mine ? Colors.white : AppColors.brownHeader),
             const SizedBox(width: 8),
             Container(
                 width: 140,
                 height: 28,
                 color: Colors.transparent,
                 child: const Center(
-                    child: Text('▂ ▃ ▄ ▅ ▂ ▃ ▄',
-                        style: TextStyle(color: Colors.white)))),
+                    child: Text('▂ ▃ ▄ ▅ ▂ ▃ ▄', style: TextStyle(color: Colors.white)))),
             const SizedBox(width: 8),
-            Text('00:16',
-                style: TextStyle(
-                    color: mine ? Colors.white : Colors.grey, fontSize: 12)),
+            Text('00:16', style: TextStyle(color: mine ? Colors.white : Colors.grey, fontSize: 12)),
             if (mine) ...[
               const SizedBox(width: 8),
               Icon(
@@ -337,9 +318,7 @@ class _ChatPageState extends State<ChatPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(_t(m.timestamp),
-                  style: TextStyle(
-                      fontSize: 10,
-                      color: mine ? Colors.black45 : Colors.black45)),
+                  style: TextStyle(fontSize: 10, color: mine ? Colors.black45 : Colors.black45)),
               if (mine) ...[
                 const SizedBox(width: 6),
                 Icon(
@@ -417,11 +396,9 @@ class _ChatPageState extends State<ChatPage> {
               ),
               if (mine) ...[
                 const SizedBox(width: 8),
-                Text(_t(m.timestamp),
-                    style: const TextStyle(fontSize: 10, color: Colors.white70)),
+                Text(_t(m.timestamp), style: const TextStyle(fontSize: 10, color: Colors.white70)),
                 const SizedBox(width: 4),
-                Icon(m.isSeen ? Icons.done_all : Icons.done,
-                    size: 16, color: Colors.white70)
+                Icon(m.isSeen ? Icons.done_all : Icons.done, size: 16, color: Colors.white70)
               ]
             ],
           ),
@@ -439,7 +416,9 @@ class _ChatPageState extends State<ChatPage> {
         final sender = m.senderId;
         final List<domain.Message> group = [m];
         int j = i + 1;
-        while (j < messages.length && messages[j].type == domain.MessageType.image && messages[j].senderId == sender) {
+        while (j < messages.length &&
+            messages[j].type == domain.MessageType.image &&
+            messages[j].senderId == sender) {
           group.add(messages[j]);
           j++;
         }
@@ -471,9 +450,8 @@ class _ChatPageState extends State<ChatPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.chevron_left, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
@@ -489,21 +467,15 @@ class _ChatPageState extends State<ChatPage> {
             const SizedBox(width: 8),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(conv.name,
-                  style: const TextStyle(
-                      color: AppColors.brownHeader,
-                      fontWeight: FontWeight.w700)),
+                  style:
+                      const TextStyle(color: AppColors.brownHeader, fontWeight: FontWeight.w700)),
               Text(conv.isTyping ? 'typing…' : (conv.online ? 'Online' : 'Offline'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.black45)),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45)),
             ])
           ],
         ),
         actions: [
-          IconButton(
-              icon: const Icon(Icons.more_vert, color: Colors.black54),
-              onPressed: () {}),
+          IconButton(icon: const Icon(Icons.more_vert, color: Colors.black54), onPressed: () {}),
         ],
       ),
       body: SafeArea(
@@ -517,26 +489,19 @@ class _ChatPageState extends State<ChatPage> {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(widget.job!.title,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 6),
-                        Text(widget.job!.category,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: Colors.black45)),
-                        const SizedBox(height: 8),
-                        Text(widget.job!.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ]),
+                      color: AppColors.cardBackground, borderRadius: BorderRadius.circular(12)),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(widget.job!.title, style: const TextStyle(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 6),
+                    Text(widget.job!.category,
+                        style:
+                            Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45)),
+                    const SizedBox(height: 8),
+                    Text(widget.job!.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ]),
                 ),
               ),
 
@@ -557,20 +522,17 @@ class _ChatPageState extends State<ChatPage> {
                       final messages = state.messages;
                       return ListView.builder(
                         controller: _scrollController,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         itemCount: _groupMessages(messages, currentUserId).length + 1,
                         itemBuilder: (context, index) {
                           if (index == 0) {
                             return Center(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                     color: AppColors.cardBackground,
                                     borderRadius: BorderRadius.circular(12)),
-                                child: const Text('Today',
-                                    style: TextStyle(color: Colors.black54)),
+                                child: const Text('Today', style: TextStyle(color: Colors.black54)),
                               ),
                             );
                           }
@@ -585,7 +547,8 @@ class _ChatPageState extends State<ChatPage> {
                                   context: context,
                                   backgroundColor: Colors.white,
                                   shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+                                      borderRadius:
+                                          BorderRadius.vertical(top: Radius.circular(16))),
                                   builder: (_) {
                                     return SafeArea(
                                       child: Column(
@@ -603,13 +566,15 @@ class _ChatPageState extends State<ChatPage> {
                                           ),
                                           if (item.isMine(currentUserId))
                                             ListTile(
-                                              leading: const Icon(Icons.delete_outline, color: Colors.red),
+                                              leading: const Icon(Icons.delete_outline,
+                                                  color: Colors.red),
                                               title: const Text('Delete for me'),
                                               onTap: () => Navigator.pop(context, 'delete_me'),
                                             ),
                                           if (item.isMine(currentUserId))
                                             ListTile(
-                                              leading: const Icon(Icons.delete_forever, color: Colors.red),
+                                              leading: const Icon(Icons.delete_forever,
+                                                  color: Colors.red),
                                               title: const Text('Delete for everyone'),
                                               onTap: () => Navigator.pop(context, 'delete_all'),
                                             ),
@@ -626,12 +591,14 @@ class _ChatPageState extends State<ChatPage> {
                                   case 'forward':
                                     {
                                       final repo = getIt<MessagesRepository>();
-                                      final chosen = await showModalBottomSheet<List<domain.Conversation>>(
+                                      final chosen =
+                                          await showModalBottomSheet<List<domain.Conversation>>(
                                         context: context,
                                         isScrollControlled: true,
                                         backgroundColor: Colors.white,
                                         shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+                                            borderRadius:
+                                                BorderRadius.vertical(top: Radius.circular(16))),
                                         builder: (ctx) {
                                           final selected = <String>{};
                                           return SafeArea(
@@ -650,24 +617,29 @@ class _ChatPageState extends State<ChatPage> {
                                                           padding: EdgeInsets.all(16.0),
                                                           child: Text('Forward to…',
                                                               style: TextStyle(
-                                                                  fontWeight: FontWeight.w700, fontSize: 16)),
+                                                                  fontWeight: FontWeight.w700,
+                                                                  fontSize: 16)),
                                                         ),
                                                         const Divider(height: 1),
                                                         Expanded(
-                                                          child: BlocBuilder<ConversationsBloc, ConversationsState>(
+                                                          child: BlocBuilder<ConversationsBloc,
+                                                              ConversationsState>(
                                                             builder: (context, state) {
                                                               if (state is ConversationsLoaded) {
                                                                 final list = state.conversations;
                                                                 if (list.isEmpty) {
                                                                   return const Center(
-                                                                      child: Text('No conversations yet'));
+                                                                      child: Text(
+                                                                          'No conversations yet'));
                                                                 }
                                                                 return ListView.separated(
                                                                   itemCount: list.length,
-                                                                  separatorBuilder: (_, __) => const Divider(height: 1),
+                                                                  separatorBuilder: (_, __) =>
+                                                                      const Divider(height: 1),
                                                                   itemBuilder: (ctx, i) {
                                                                     final c = list[i];
-                                                                    final checked = selected.contains(c.id);
+                                                                    final checked =
+                                                                        selected.contains(c.id);
                                                                     return CheckboxListTile(
                                                                       value: checked,
                                                                       onChanged: (v) {
@@ -681,20 +653,25 @@ class _ChatPageState extends State<ChatPage> {
                                                                       },
                                                                       title: Text(c.name,
                                                                           style: const TextStyle(
-                                                                              fontWeight: FontWeight.w600)),
-                                                                      subtitle: Text(c.jobTitle ?? '',
+                                                                              fontWeight:
+                                                                                  FontWeight.w600)),
+                                                                      subtitle: Text(
+                                                                          c.jobTitle ?? '',
                                                                           maxLines: 1,
-                                                                          overflow: TextOverflow.ellipsis),
+                                                                          overflow: TextOverflow
+                                                                              .ellipsis),
                                                                     );
                                                                   },
                                                                 );
                                                               }
                                                               if (state is ConversationsError) {
                                                                 return Center(
-                                                                    child: Text('Error: ${state.message}'));
+                                                                    child: Text(
+                                                                        'Error: ${state.message}'));
                                                               }
                                                               return const Center(
-                                                                  child: CircularProgressIndicator());
+                                                                  child:
+                                                                      CircularProgressIndicator());
                                                             },
                                                           ),
                                                         ),
@@ -704,7 +681,8 @@ class _ChatPageState extends State<ChatPage> {
                                                             children: [
                                                               Expanded(
                                                                 child: OutlinedButton(
-                                                                  onPressed: () => Navigator.pop(ctx),
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(ctx),
                                                                   child: const Text('Cancel'),
                                                                 ),
                                                               ),
@@ -715,14 +693,19 @@ class _ChatPageState extends State<ChatPage> {
                                                                       ? null
                                                                       : () {
                                                                           // Return selected conversations
-                                                                          final list = (context.read<ConversationsBloc>().state
+                                                                          final list = (context
+                                                                                      .read<
+                                                                                          ConversationsBloc>()
+                                                                                      .state
                                                                                   as ConversationsLoaded)
                                                                               .conversations
-                                                                              .where((c) => selected.contains(c.id))
+                                                                              .where((c) => selected
+                                                                                  .contains(c.id))
                                                                               .toList();
                                                                           Navigator.pop(ctx, list);
                                                                         },
-                                                                  child: Text('Forward (${selected.length})'),
+                                                                  child: Text(
+                                                                      'Forward (${selected.length})'),
                                                                 ),
                                                               ),
                                                             ],
@@ -766,7 +749,9 @@ class _ChatPageState extends State<ChatPage> {
                                         }
                                         if (!mounted) break;
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Message forwarded to ${chosen.length} conversation(s)')),
+                                          SnackBar(
+                                              content: Text(
+                                                  'Message forwarded to ${chosen.length} conversation(s)')),
                                         );
                                       } catch (e) {
                                         if (!mounted) break;
@@ -782,7 +767,8 @@ class _ChatPageState extends State<ChatPage> {
                                         context: context,
                                         builder: (ctx) => AlertDialog(
                                           title: const Text('Delete for me?'),
-                                          content: const Text('This will remove the message from your device.'),
+                                          content: const Text(
+                                              'This will remove the message from your device.'),
                                           actions: [
                                             TextButton(
                                               onPressed: () => Navigator.pop(ctx, false),
@@ -814,7 +800,8 @@ class _ChatPageState extends State<ChatPage> {
                                                       conversationId: conv.id,
                                                       text: item.text ?? '',
                                                     );
-                                                  } else if (item.type == domain.MessageType.image) {
+                                                  } else if (item.type ==
+                                                      domain.MessageType.image) {
                                                     if ((item.mediaUrl ?? '').isNotEmpty) {
                                                       await repo.sendImage(
                                                         currentUserId: currentUserId,
@@ -822,7 +809,8 @@ class _ChatPageState extends State<ChatPage> {
                                                         fileUrl: item.mediaUrl!,
                                                       );
                                                     }
-                                                  } else if (item.type == domain.MessageType.audio) {
+                                                  } else if (item.type ==
+                                                      domain.MessageType.audio) {
                                                     if ((item.mediaUrl ?? '').isNotEmpty) {
                                                       await repo.sendAudio(
                                                         currentUserId: currentUserId,
@@ -845,7 +833,8 @@ class _ChatPageState extends State<ChatPage> {
                                         context: context,
                                         builder: (ctx) => AlertDialog(
                                           title: const Text('Delete for everyone?'),
-                                          content: const Text('This will permanently delete the message for all participants.'),
+                                          content: const Text(
+                                              'This will permanently delete the message for all participants.'),
                                           actions: [
                                             TextButton(
                                               onPressed: () => Navigator.pop(ctx, false),
@@ -910,7 +899,9 @@ class _ChatPageState extends State<ChatPage> {
                                                     : Container(
                                                         color: Colors.black12,
                                                         child: Icon(Icons.image,
-                                                            color: mine ? Colors.white : AppColors.brownHeader),
+                                                            color: mine
+                                                                ? Colors.white
+                                                                : AppColors.brownHeader),
                                                       ),
                                               ),
                                             ),
@@ -987,8 +978,7 @@ class _ChatPageState extends State<ChatPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                          color: AppColors.cardBackground,
-                          borderRadius: BorderRadius.circular(30)),
+                          color: AppColors.cardBackground, borderRadius: BorderRadius.circular(30)),
                       child: Row(
                         children: [
                           Expanded(
@@ -1008,9 +998,7 @@ class _ChatPageState extends State<ChatPage> {
                               },
                             ),
                           ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.attach_file)),
+                          IconButton(onPressed: () {}, icon: const Icon(Icons.attach_file)),
                           IconButton(
                               onPressed: () {
                                 // TODO: Image picker functionality temporarily disabled

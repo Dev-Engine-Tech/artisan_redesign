@@ -11,23 +11,23 @@ abstract class JobsRemoteDataSource {
     String? search,
     String? category,
   });
-  
+
   Future<List<JobModel>> getApplications({
     int page = 1,
     int limit = 20,
   });
-  
+
   Future<JobModel> getJobDetails(String jobId);
-  
+
   Future<bool> applyToJob(JobApplication application);
-  
+
   Future<bool> acceptAgreement(String jobId);
-  
+
   Future<bool> requestChange({
     required String jobId,
     required String reason,
   });
-  
+
   Future<bool> saveJob(String jobId);
 }
 
@@ -58,7 +58,7 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> jobsJson = jsonData['results'] ?? jsonData['data'] ?? [];
-      
+
       return jobsJson.map((json) => JobModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load jobs: ${response.statusCode}');
@@ -83,7 +83,7 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       final List<dynamic> applicationsJson = jsonData['results'] ?? jsonData['data'] ?? [];
-      
+
       return applicationsJson.map((json) {
         // Applications might have job nested inside
         final jobData = json['job'] ?? json;

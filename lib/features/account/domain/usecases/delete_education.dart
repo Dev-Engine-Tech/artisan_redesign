@@ -7,4 +7,3 @@ class DeleteEducation {
 
   Future<UserProfile> call(String id) => repository.deleteEducation(id);
 }
-

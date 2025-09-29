@@ -56,11 +56,9 @@ class PaymentSummaryWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            
             _buildPaymentItem('Project', job.title),
             _buildPaymentItem('Category', job.category),
             const Divider(height: 32),
-            
             _buildPaymentItem(
               'Total Amount',
               'NGN ${_formatAmount(job.agreement?.amount ?? job.minBudget.toDouble())}',
@@ -71,16 +69,13 @@ class PaymentSummaryWidget extends StatelessWidget {
               _getPaymentStatusText(job.paymentStatus ?? 'completed'),
               statusColor: _getPaymentStatusColor(job.paymentStatus ?? 'completed'),
             ),
-            
-            if (job.completedDate != null) ...[ 
+            if (job.completedDate != null) ...[
               _buildPaymentItem(
                 'Completed Date',
                 _formatDate(job.completedDate!),
               ),
             ],
-            
             const SizedBox(height: 24),
-            
             Row(
               children: [
                 Expanded(
@@ -163,9 +158,9 @@ class PaymentSummaryWidget extends StatelessWidget {
 
   String _formatAmount(double amount) {
     return amount.toStringAsFixed(0).replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-      (match) => '${match[1]},',
-    );
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        );
   }
 
   String _getPaymentStatusText(String status) {
@@ -196,8 +191,18 @@ class PaymentSummaryWidget extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }

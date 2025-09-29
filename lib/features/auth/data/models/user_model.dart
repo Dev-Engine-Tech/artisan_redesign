@@ -141,18 +141,15 @@ class UserModel extends User {
           idDocumentUrl: modelIdDocumentUrl,
           selfieUrl: modelSelfieUrl,
           isActive: modelIsActive ?? true,
-          createdAt:
-              modelCreatedAt != null ? DateTime.tryParse(modelCreatedAt) : null,
-          updatedAt:
-              modelUpdatedAt != null ? DateTime.tryParse(modelUpdatedAt) : null,
+          createdAt: modelCreatedAt != null ? DateTime.tryParse(modelCreatedAt) : null,
+          updatedAt: modelUpdatedAt != null ? DateTime.tryParse(modelUpdatedAt) : null,
           totalEarnings: modelTotalEarnings,
           availableBalance: modelAvailableBalance,
           completedJobs: modelCompletedJobs,
           ongoingJobs: modelOngoingJobs,
         );
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
@@ -211,8 +208,7 @@ class LoginResponse {
     this.phone,
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseFromJson(json);
+  factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
 }
@@ -230,8 +226,7 @@ class RegisterResponse {
     this.message,
   });
 
-  factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
-      _$RegisterResponseFromJson(json);
+  factory RegisterResponse.fromJson(Map<String, dynamic> json) => _$RegisterResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$RegisterResponseToJson(this);
 }

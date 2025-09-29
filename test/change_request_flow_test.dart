@@ -71,8 +71,7 @@ void main() {
     mockAcceptAgreement = MockAcceptAgreement();
     mockRequestChange = MockRequestChange();
 
-    when(() =>
-            mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+    when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
         .thenAnswer((_) async => [sampleJob]);
 
     bloc = JobBloc(
@@ -92,23 +91,19 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Applying, ChangeRequested] when requestChange succeeds and getJobs returns list',
       build: () {
-        when(() => mockRequestChange(
-            jobId: any(named: 'jobId'),
-            reason: any(named: 'reason'))).thenAnswer((_) async => true);
-        when(() => mockGetJobs(
-            page: any(named: 'page'),
-            limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
+        when(() => mockRequestChange(jobId: any(named: 'jobId'), reason: any(named: 'reason')))
+            .thenAnswer((_) async => true);
+        when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+            .thenAnswer((_) async => [sampleJob]);
         return bloc;
       },
-      act: (bloc) =>
-          bloc.add(RequestChangeEvent(jobId: '1', reason: 'please change')),
+      act: (bloc) => bloc.add(RequestChangeEvent(jobId: '1', reason: 'please change')),
       expect: () => [
         isA<JobStateApplying>(),
         isA<JobStateChangeRequested>(),
       ],
       verify: (_) {
-        verify(() => mockRequestChange(jobId: '1', reason: 'please change'))
-            .called(1);
+        verify(() => mockRequestChange(jobId: '1', reason: 'please change')).called(1);
         verify(() => mockGetJobs()).called(1);
       },
     );
@@ -116,13 +111,11 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Applying, Error] when requestChange returns false',
       build: () {
-        when(() => mockRequestChange(
-            jobId: any(named: 'jobId'),
-            reason: any(named: 'reason'))).thenAnswer((_) async => false);
+        when(() => mockRequestChange(jobId: any(named: 'jobId'), reason: any(named: 'reason')))
+            .thenAnswer((_) async => false);
         return bloc;
       },
-      act: (bloc) =>
-          bloc.add(RequestChangeEvent(jobId: '1', reason: 'please change')),
+      act: (bloc) => bloc.add(RequestChangeEvent(jobId: '1', reason: 'please change')),
       expect: () => [
         isA<JobStateApplying>(),
         isA<JobStateError>(),
@@ -131,15 +124,12 @@ void main() {
   });
 
   group('ChangeRequestPage (widget)', () {
-    testWidgets(
-        'submitting form dispatches RequestChangeEvent and shows success dialog',
+    testWidgets('submitting form dispatches RequestChangeEvent and shows success dialog',
         (tester) async {
       // Arrange: make requestChange succeed and getJobs return list
-      when(() => mockRequestChange(
-          jobId: any(named: 'jobId'),
-          reason: any(named: 'reason'))).thenAnswer((_) async => true);
-      when(() =>
-              mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
+      when(() => mockRequestChange(jobId: any(named: 'jobId'), reason: any(named: 'reason')))
+          .thenAnswer((_) async => true);
+      when(() => mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
           .thenAnswer((_) async => [sampleJob]);
 
       // Provide a mock bloc instance and drive its states directly so the widget
@@ -172,8 +162,7 @@ void main() {
       // validator so a selection is not required for submission in the UI.
       final textFieldFinder = find.byType(TextFormField);
       expect(textFieldFinder, findsOneWidget);
-      await tester.enterText(
-          textFieldFinder, 'Please adjust the delivery date');
+      await tester.enterText(textFieldFinder, 'Please adjust the delivery date');
       await tester.pumpAndSettle();
 
       // Tap Submit Request button
@@ -192,8 +181,7 @@ void main() {
         }
       }
 
-      expect(found, isTrue,
-          reason: 'Expected Request Sent dialog to appear within timeout');
+      expect(found, isTrue, reason: 'Expected Request Sent dialog to appear within timeout');
 
       // Expect the success dialog to appear with the 'Request Sent' title
       expect(find.text('Request Sent'), findsOneWidget);

@@ -6,4 +6,3 @@ class VerifyWithdrawalPin {
 
   Future<bool> call(String pin) => repository.verifyWithdrawalPin(pin);
 }
-

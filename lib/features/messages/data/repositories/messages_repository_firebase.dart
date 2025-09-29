@@ -20,15 +20,12 @@ class MessagesRepositoryFirebase implements MessagesRepository {
   Stream<List<ent.Conversation>> watchConversations({required int currentUserId}) {
     // Avoid Firestore errors if 'timeSent' mixed types exist by not ordering server-side.
     // Sort client-side by lastTimestamp desc instead.
-    return _users
-        .doc(currentUserId.toString())
-        .collection('chats')
-        .snapshots()
-        .map((qs) {
-          final list = qs.docs.map((d) => _conversationFromDoc(d)).toList();
-          list.sort((a, b) => (b.lastTimestamp ?? DateTime(0)).compareTo(a.lastTimestamp ?? DateTime(0)));
-          return list;
-        });
+    return _users.doc(currentUserId.toString()).collection('chats').snapshots().map((qs) {
+      final list = qs.docs.map((d) => _conversationFromDoc(d)).toList();
+      list.sort(
+          (a, b) => (b.lastTimestamp ?? DateTime(0)).compareTo(a.lastTimestamp ?? DateTime(0)));
+      return list;
+    });
   }
 
   ent.Conversation _conversationFromDoc(QueryDocumentSnapshot<Map<String, dynamic>> d) {
@@ -60,7 +57,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
   }
 
   @override
-  Stream<List<ent.Message>> watchMessages({required int currentUserId, required String conversationId}) {
+  Stream<List<ent.Message>> watchMessages(
+      {required int currentUserId, required String conversationId}) {
     return _users
         .doc(currentUserId.toString())
         .collection('chats')
@@ -71,7 +69,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
         .map((qs) => qs.docs.map((d) => _messageFromDoc(conversationId, d)).toList());
   }
 
-  ent.Message _messageFromDoc(String conversationId, QueryDocumentSnapshot<Map<String, dynamic>> d) {
+  ent.Message _messageFromDoc(
+      String conversationId, QueryDocumentSnapshot<Map<String, dynamic>> d) {
     final m = d.data();
     final typeStr = (m['type'] ?? 'text') as String;
     final type = _typeFromString(typeStr);
@@ -185,12 +184,15 @@ class MessagesRepositoryFirebase implements MessagesRepository {
 
     void setContact(String owner, String peer, {required bool recipient}) {
       final ref = _users.doc(owner).collection('chats').doc(peer);
-      batch.set(ref, {
-        'contactId': peer,
-        'lastMessage': text,
-        'timeSent': now.millisecondsSinceEpoch,
-        'isRecipient': recipient,
-      }, SetOptions(merge: true));
+      batch.set(
+          ref,
+          {
+            'contactId': peer,
+            'lastMessage': text,
+            'timeSent': now.millisecondsSinceEpoch,
+            'isRecipient': recipient,
+          },
+          SetOptions(merge: true));
     }
 
     setMessage(currentUserId.toString(), receiverId);
@@ -236,7 +238,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
   }
 
   @override
-  Future<void> setTyping({required int currentUserId, required String conversationId, required bool typing}) async {
+  Future<void> setTyping(
+      {required int currentUserId, required String conversationId, required bool typing}) async {
     // Persist typing on the RECEIVER's chat doc so they see you typing.
     await _users
         .doc(conversationId)
@@ -288,12 +291,15 @@ class MessagesRepositoryFirebase implements MessagesRepository {
 
     void setContact(String owner, String peer, {required bool recipient}) {
       final ref = _users.doc(owner).collection('chats').doc(peer);
-      batch.set(ref, {
-        'contactId': peer,
-        'lastMessage': '🎵 Audio',
-        'timeSent': now.millisecondsSinceEpoch,
-        'isRecipient': recipient,
-      }, SetOptions(merge: true));
+      batch.set(
+          ref,
+          {
+            'contactId': peer,
+            'lastMessage': '🎵 Audio',
+            'timeSent': now.millisecondsSinceEpoch,
+            'isRecipient': recipient,
+          },
+          SetOptions(merge: true));
     }
 
     setMessage(currentUserId.toString(), receiverId);
@@ -345,12 +351,15 @@ class MessagesRepositoryFirebase implements MessagesRepository {
 
     void setContact(String owner, String peer, {required bool recipient}) {
       final ref = _users.doc(owner).collection('chats').doc(peer);
-      batch.set(ref, {
-        'contactId': peer,
-        'lastMessage': '📷 Photo',
-        'timeSent': now.millisecondsSinceEpoch,
-        'isRecipient': recipient,
-      }, SetOptions(merge: true));
+      batch.set(
+          ref,
+          {
+            'contactId': peer,
+            'lastMessage': '📷 Photo',
+            'timeSent': now.millisecondsSinceEpoch,
+            'isRecipient': recipient,
+          },
+          SetOptions(merge: true));
     }
 
     setMessage(currentUserId.toString(), receiverId);

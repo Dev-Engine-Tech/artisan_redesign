@@ -89,7 +89,7 @@ class SecureStorage {
     await _secureStorage.delete(key: _firebaseTokenKey);
     await _secureStorage.delete(key: _userIdKey);
     await _secureStorage.delete(key: _pinIdKey);
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_isLoggedInKey, false);
   }
@@ -109,7 +109,7 @@ class SecureStorage {
       await _secureStorage.write(key: _firebaseTokenKey, value: firebaseToken);
     }
     await _secureStorage.write(key: _userIdKey, value: userId);
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_isLoggedInKey, true);
   }

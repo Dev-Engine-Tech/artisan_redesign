@@ -6,7 +6,7 @@ import 'features/auth/presentation/pages/splash_page.dart';
 /// Simple test main to verify core app functionality without problematic dependencies
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   runApp(const TestArtisansApp());
 }
 

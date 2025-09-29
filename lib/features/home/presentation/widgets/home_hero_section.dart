@@ -11,8 +11,7 @@ class HomeHeroSection extends StatefulWidget {
   State<HomeHeroSection> createState() => _HomeHeroSectionState();
 }
 
-class _HomeHeroSectionState extends State<HomeHeroSection>
-    with AutomaticKeepAliveClientMixin {
+class _HomeHeroSectionState extends State<HomeHeroSection> with AutomaticKeepAliveClientMixin {
   late final PageController _heroController;
   late final List<HeroItem> _heroItems;
 
@@ -63,7 +62,7 @@ class _HomeHeroSectionState extends State<HomeHeroSection>
   @override
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
-    
+
     return SizedBox(
       height: 200,
       child: PageView.builder(

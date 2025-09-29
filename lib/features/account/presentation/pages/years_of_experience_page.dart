@@ -35,8 +35,7 @@ class _YearsOfExperiencePageState extends State<YearsOfExperiencePage> {
       body: BlocListener<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state is AccountActionSuccess) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             Navigator.pop(context);
           }
         },
@@ -78,4 +77,3 @@ class _YearsOfExperiencePageState extends State<YearsOfExperiencePage> {
     );
   }
 }
-

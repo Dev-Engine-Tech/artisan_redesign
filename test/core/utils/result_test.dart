@@ -163,7 +163,7 @@ void main() {
       test('should create success result with extension', () {
         const data = 'test';
         final result = data.success;
-        
+
         expect(result.isSuccess, isTrue);
         expect(result.data, equals(data));
       });
@@ -171,7 +171,7 @@ void main() {
       test('should create failure result with extension', () {
         final failure = AppFailure.network('Error');
         final result = failure.failure<String>();
-        
+
         expect(result.isFailure, isTrue);
         expect(result.failure, equals(failure));
       });
@@ -180,14 +180,14 @@ void main() {
     group('safeCall', () {
       test('should return success when operation succeeds', () async {
         final result = await safeCall(() async => 'success');
-        
+
         expect(result.isSuccess, isTrue);
         expect(result.data, equals('success'));
       });
 
       test('should return failure when operation throws Exception', () async {
         final result = await safeCall(() async => throw Exception('test error'));
-        
+
         expect(result.isFailure, isTrue);
         expect(result.failure.code, equals('UNEXPECTED_ERROR'));
         expect(result.failure.message, contains('test error'));
@@ -195,7 +195,7 @@ void main() {
 
       test('should return failure when operation throws non-Exception', () async {
         final result = await safeCall(() async => throw 'string error');
-        
+
         expect(result.isFailure, isTrue);
         expect(result.failure.code, equals('UNEXPECTED_ERROR'));
         expect(result.failure.message, equals('string error'));
@@ -206,7 +206,7 @@ void main() {
           await Future.delayed(const Duration(milliseconds: 1));
           return 42;
         });
-        
+
         expect(result.isSuccess, isTrue);
         expect(result.data, equals(42));
       });
@@ -218,7 +218,7 @@ void main() {
             .map<String>((data) => data.toUpperCase())
             .map<int>((data) => data.length)
             .map<String>((data) => 'Length: $data');
-        
+
         expect(result.isSuccess, isTrue);
         expect(result.data, equals('Length: 5'));
       });
@@ -228,7 +228,7 @@ void main() {
             .map<String>((data) => data.toUpperCase())
             .map<int>((data) => throw Exception('error'))
             .map<String>((data) => 'Length: $data');
-        
+
         expect(result.isFailure, isTrue);
         expect(result.failure.code, equals('UNEXPECTED_ERROR'));
       });
@@ -237,7 +237,7 @@ void main() {
         final result = Success(5)
             .flatMap<String>((data) => Success('Number: $data'))
             .flatMap<int>((data) => Success(data.length));
-        
+
         expect(result.isSuccess, isTrue);
         expect(result.data, equals(9));
       });
@@ -246,7 +246,7 @@ void main() {
         final result = Success(5)
             .flatMap<String>((data) => Success('Number: $data'))
             .flatMap<int>((data) => Failure(AppFailure.validation('Invalid')));
-        
+
         expect(result.isFailure, isTrue);
         expect(result.failure.code, equals('VALIDATION_ERROR'));
       });

@@ -63,12 +63,9 @@ class ApiEndpoints {
   static const String createCatalog = '/catalog/api/catalog/products/';
   static const String updateCatalog = '/catalog/api/catalog/product/';
   static const String deleteCatalog = '/catalog/api/catalog/product/';
-  static const String catalogRequests =
-      '/catalog/api/artisan/catalog/request/lists/';
-  static const String catalogRequestDetails =
-      '/catalog/api/catalog-request-details/';
-  static const String respondToCatalogRequest =
-      '/catalog/api/respond-to-catalog-request/';
+  static const String catalogRequests = '/catalog/api/artisan/catalog/request/lists/';
+  static const String catalogRequestDetails = '/catalog/api/catalog-request-details/';
+  static const String respondToCatalogRequest = '/catalog/api/respond-to-catalog-request/';
   static const String myCatalogItems = '/catalog/api/artisan/catalog/lists/';
   static const String catalogByUser = '/catalog/api/artisan/catalog/lists/';
 
@@ -87,8 +84,7 @@ class ApiEndpoints {
   // Notification endpoints
   static const String notifications = '/notifications/';
   static const String markNotificationAsRead = '/notifications/mark-as-read/';
-  static const String markAllNotificationsAsRead =
-      '/notifications/mark-all-as-read/';
+  static const String markAllNotificationsAsRead = '/notifications/mark-all-as-read/';
 
   // File Upload endpoints
   static const String uploadImage = '/upload/image/';
@@ -109,20 +105,15 @@ class ApiEndpoints {
   // Dynamic endpoints with parameters
   static String getUserProfileById(int userId) => '/user/profile/$userId/';
   static String jobById(int jobId) => '/job/api/jobs/$jobId/';
-  static String acceptAgreementByProjectId(String id) =>
-      '/job/api/project/$id/accept/';
-  static String saveOrUnsaveJobById(String id) =>
-      '/job/api/jobs/$id/save-or-unsave/';
-  static String catalogById(int catalogId) =>
-      '/catalog/api/catalog/$catalogId/';
-  static String jobRequestChangeById(String jobId) =>
-      '/job/api/request-change/$jobId/';
+  static String acceptAgreementByProjectId(String id) => '/job/api/project/$id/accept/';
+  static String saveOrUnsaveJobById(String id) => '/job/api/jobs/$id/save-or-unsave/';
+  static String catalogById(int catalogId) => '/catalog/api/catalog/$catalogId/';
+  static String jobRequestChangeById(String jobId) => '/job/api/request-change/$jobId/';
   static String jobProgressById(int jobId) => '/job/api/job-progress/$jobId/';
-  static String notificationById(int notificationId) =>
-      '/notifications/$notificationId/';
+  static String notificationById(int notificationId) => '/notifications/$notificationId/';
   static String lgasByState(int stateId) => '/location/lgas/$stateId/';
   static String getBannersByCategory(String category) => '/banners/category/$category/';
-  
+
   // Banner endpoints with category support
   static String getBanners(String category) => '/auth/get/banners/$category/';
 }

@@ -5,8 +5,10 @@ import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/change_request.dart';
-import 'package:artisans_circle/features/jobs/domain/entities/material.dart' as job_entities;
-import 'package:artisans_circle/features/messages/domain/entities/conversation.dart' as domain;
+import 'package:artisans_circle/features/jobs/domain/entities/material.dart'
+    as job_entities;
+import 'package:artisans_circle/features/messages/domain/entities/conversation.dart'
+    as domain;
 import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/core/theme.dart';
@@ -18,6 +20,7 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/job_material_
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/change_request_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_page.dart';
+import 'package:artisans_circle/features/jobs/presentation/pages/job_summary_page.dart';
 
 class JobDetailsPage extends StatefulWidget {
   final Job job;
@@ -233,6 +236,30 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
 
             const SizedBox(height: 12),
 
+            // Status chip
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: _getStatusColor(job.applicationStatus)
+                      .withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: _getStatusColor(job.applicationStatus)
+                          .withValues(alpha: 0.4)),
+                ),
+                child: Text(
+                  job.applicationStatus,
+                  style: TextStyle(
+                    color: _getStatusColor(job.applicationStatus),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+
             // Duration pill
             Container(
               width: double.infinity,
@@ -330,7 +357,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 padding: const EdgeInsets.all(16),
                 child: JobMaterialManagementWidget(
                   materials: job.materials,
-                  readOnly: job.agreement != null || job.status == JobStatus.accepted,
+                  readOnly:
+                      job.agreement != null || job.status == JobStatus.accepted,
                   title: 'Project Materials',
                 ),
               ),
@@ -460,7 +488,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 builder: (_, controller) => Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(16)),
                   ),
                   child: BlocProvider.value(
                     value: sheetBloc,
@@ -474,7 +503,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF9A4B20),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         child: const Text('Apply', style: TextStyle(fontSize: 16)),
       );
@@ -499,7 +529,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 backgroundColor: AppColors.cardBackground,
                 side: BorderSide(color: AppColors.softBorder),
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: Text(
                 'Request Changes',
@@ -520,11 +551,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.orange,
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text(
                 'View Agreement',
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -558,7 +593,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
             backgroundColor: Colors.orange.withValues(alpha: 0.1),
             side: BorderSide(color: Colors.orange.shade200),
             padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: Text(
             'View Change Request',
@@ -573,7 +609,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
     }
 
     // Accepted / in progress → Open Project
-    if (job.status == JobStatus.accepted || job.status == JobStatus.inProgress) {
+    if (job.status == JobStatus.accepted ||
+        job.status == JobStatus.inProgress) {
       return SizedBox(
         width: double.infinity,
         child: ElevatedButton(
@@ -585,9 +622,11 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          child: const Text('Open Project', style: TextStyle(fontSize: 16, color: Colors.white)),
+          child: const Text('Open Project',
+              style: TextStyle(fontSize: 16, color: Colors.white)),
         ),
       );
     }
@@ -598,17 +637,21 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
         width: double.infinity,
         child: OutlinedButton(
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Project summary coming soon')),
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => JobSummaryPage(job: job),
+              ),
             );
           },
           style: OutlinedButton.styleFrom(
             backgroundColor: AppColors.cardBackground,
             side: BorderSide(color: AppColors.softBorder),
             padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          child: const Text('View Summary', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          child: const Text('View Summary',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
         ),
       );
     }
@@ -621,9 +664,11 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.grey,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
-        child: const Text('Waiting Agreement', style: TextStyle(fontSize: 16, color: Colors.white)),
+        child: const Text('Waiting Agreement',
+            style: TextStyle(fontSize: 16, color: Colors.white)),
       ),
     );
   }
@@ -634,8 +679,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       title: Text(
         'Application Status',
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+              fontWeight: FontWeight.w700,
+            ),
       ),
       backgroundColor: AppColors.cardBackground,
       collapsedBackgroundColor: AppColors.cardBackground,
@@ -657,12 +702,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(job.applicationStatus).withValues(alpha: 0.1),
+                      color: _getStatusColor(job.applicationStatus)
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: _getStatusColor(job.applicationStatus).withValues(alpha: 0.3),
+                        color: _getStatusColor(job.applicationStatus)
+                            .withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
@@ -681,15 +729,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 Text(
                   'Your Proposal:',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   job.proposal!,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.black54,
-                  ),
+                        color: Colors.black54,
+                      ),
                 ),
               ],
             ],
@@ -705,8 +753,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       title: Text(
         'Project Agreement',
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+              fontWeight: FontWeight.w700,
+            ),
       ),
       backgroundColor: AppColors.cardBackground,
       collapsedBackgroundColor: AppColors.cardBackground,
@@ -725,9 +773,11 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInfoRow('Payment', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
+              _buildInfoRow(
+                  'Payment', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
               const SizedBox(height: 8),
-              _buildInfoRow('Delivery Date', _formatDate(agreement.deliveryDate)),
+              _buildInfoRow(
+                  'Delivery Date', _formatDate(agreement.deliveryDate)),
               if (agreement.startDate != null) ...[
                 const SizedBox(height: 8),
                 _buildInfoRow('Start Date', _formatDate(agreement.startDate!)),
@@ -736,15 +786,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 'Comments:',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               const SizedBox(height: 4),
               Text(
                 agreement.comment,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
-                ),
+                      color: Colors.black54,
+                    ),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -777,8 +827,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       title: Text(
         'Change Request',
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+              fontWeight: FontWeight.w700,
+            ),
       ),
       backgroundColor: AppColors.cardBackground,
       collapsedBackgroundColor: AppColors.cardBackground,
@@ -800,29 +850,29 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 'Proposed Changes:',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               const SizedBox(height: 4),
               Text(
                 changeRequest.proposedChange,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
-                ),
+                      color: Colors.black54,
+                    ),
               ),
               const SizedBox(height: 12),
               Text(
                 'Reason:',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               const SizedBox(height: 4),
               Text(
                 changeRequest.reason,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
-                ),
+                      color: Colors.black54,
+                    ),
               ),
             ],
           ),
@@ -830,7 +880,6 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       ],
     );
   }
-
 
   /// Helper to build info rows
   Widget _buildInfoRow(String label, String value) {
@@ -842,16 +891,16 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
           child: Text(
             '$label:',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
         Expanded(
           child: Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.black54,
-            ),
+                  color: Colors.black54,
+                ),
           ),
         ),
       ],

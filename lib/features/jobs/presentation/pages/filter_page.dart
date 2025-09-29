@@ -81,16 +81,14 @@ class _FilterPageState extends State<FilterPage> {
       builder: (c) {
         String query = '';
         return StatefulBuilder(builder: (context, setModalState) {
-          final filtered = lgas
-              .where((l) => l.toLowerCase().contains(query.toLowerCase()))
-              .toList();
+          final filtered =
+              lgas.where((l) => l.toLowerCase().contains(query.toLowerCase())).toList();
           return SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
                   child: Row(
                     children: [
                       Expanded(
@@ -112,8 +110,7 @@ class _FilterPageState extends State<FilterPage> {
                       filled: true,
                       fillColor: AppColors.cardBackground,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                     ),
                     onChanged: (v) => setModalState(() => query = v),
                   ),
@@ -151,13 +148,10 @@ class _FilterPageState extends State<FilterPage> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF213447),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                     child: const SizedBox(
                         width: double.infinity,
-                        child: Center(
-                            child: Text('Done',
-                                style: TextStyle(color: Colors.white)))),
+                        child: Center(child: Text('Done', style: TextStyle(color: Colors.white)))),
                   ),
                 )
               ],
@@ -183,8 +177,7 @@ class _FilterPageState extends State<FilterPage> {
     final selectedLgasChips = _selectedLgas
         .map((e) => Padding(
             padding: const EdgeInsets.only(right: 6.0),
-            child: Chip(
-                label: Text(e), backgroundColor: AppColors.cardBackground)))
+            child: Chip(label: Text(e), backgroundColor: AppColors.cardBackground)))
         .toList();
 
     return Scaffold(
@@ -194,9 +187,8 @@ class _FilterPageState extends State<FilterPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
+            decoration:
+                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
             child: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black54),
                 onPressed: () => Navigator.of(context).pop()),
@@ -218,11 +210,9 @@ class _FilterPageState extends State<FilterPage> {
             DropdownButtonFormField<String>(
               initialValue: _selectedCategory,
               items: const [
-                DropdownMenuItem(
-                    value: 'all', child: Text('Select Categories')),
+                DropdownMenuItem(value: 'all', child: Text('Select Categories')),
                 DropdownMenuItem(value: 'design', child: Text('Design')),
-                DropdownMenuItem(
-                    value: 'electrical', child: Text('Electrical')),
+                DropdownMenuItem(value: 'electrical', child: Text('Electrical')),
                 DropdownMenuItem(value: 'carpentry', child: Text('Carpentry')),
               ],
               onChanged: (v) => setState(() => _selectedCategory = v),
@@ -230,10 +220,8 @@ class _FilterPageState extends State<FilterPage> {
                 filled: true,
                 fillColor: AppColors.cardBackground,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               ),
             ),
             const SizedBox(height: 14),
@@ -259,9 +247,8 @@ class _FilterPageState extends State<FilterPage> {
             const SizedBox(height: 6),
             DropdownButtonFormField<String>(
               initialValue: _selectedState,
-              items: _lgasByState.keys
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                  .toList(),
+              items:
+                  _lgasByState.keys.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
               onChanged: (v) => setState(() {
                 _selectedState = v;
                 _selectedLgas.clear();
@@ -270,21 +257,17 @@ class _FilterPageState extends State<FilterPage> {
                 filled: true,
                 fillColor: AppColors.cardBackground,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               ),
             ),
             const SizedBox(height: 12),
-            const Text('Local Government',
-                style: TextStyle(color: Colors.black54)),
+            const Text('Local Government', style: TextStyle(color: Colors.black54)),
             const SizedBox(height: 6),
             GestureDetector(
               onTap: _openLgaSelector,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                 decoration: BoxDecoration(
                     color: AppColors.cardBackground,
                     borderRadius: BorderRadius.circular(8),
@@ -312,8 +295,7 @@ class _FilterPageState extends State<FilterPage> {
             _buildSectionTitle('Project Duration'),
             ..._projectDuration.keys.map((k) => CheckboxListTile(
                   value: _projectDuration[k],
-                  onChanged: (v) =>
-                      setState(() => _projectDuration[k] = v ?? false),
+                  onChanged: (v) => setState(() => _projectDuration[k] = v ?? false),
                   title: Text(k),
                   controlAffinity: ListTileControlAffinity.leading,
                 )),
@@ -337,11 +319,10 @@ class _FilterPageState extends State<FilterPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF213447),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Apply Filter',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
+                child:
+                    const Text('Apply Filter', style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ),
             const SizedBox(height: 24),

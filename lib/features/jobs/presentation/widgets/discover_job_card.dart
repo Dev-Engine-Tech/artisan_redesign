@@ -19,8 +19,8 @@ class DiscoverJobCard extends StatelessWidget {
   final VoidCallback? onSave;
 
   const DiscoverJobCard({
-    super.key, 
-    required this.job, 
+    super.key,
+    required this.job,
     this.onTap,
     this.showShareButton = true,
     this.onShare,
@@ -30,12 +30,9 @@ class DiscoverJobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = Theme.of(context)
-        .textTheme
-        .titleLarge
-        ?.copyWith(fontWeight: FontWeight.w700, fontSize: 20);
-    final subtitleStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45);
+    final titleStyle =
+        Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700, fontSize: 20);
+    final subtitleStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45);
     final priceStyle = Theme.of(context)
         .textTheme
         .bodyLarge
@@ -66,24 +63,16 @@ class DiscoverJobCard extends StatelessWidget {
                         topRight: Radius.circular(16),
                       ),
                       child: job.thumbnailUrl.isNotEmpty
-                          ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
+                          ? Image.network(
+                              sanitizeImageUrl(job.thumbnailUrl),
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: 180,
-                              errorBuilder: (c, e, s) => Container(
-                                  color: Colors.black12,
-                                  child: const Icon(Icons.image_not_supported)))
-                          : Container(
-                              width: double.infinity,
-                              height: 180,
-                              color: AppColors.softPink,
-                              child: const Center(
-                                child: Icon(Icons.home_repair_service_outlined,
-                                    size: 48, color: AppColors.orange),
-                              ),
-                            ),
+                              errorBuilder: (c, e, s) => _buildSubtlePlaceholder(context),
+                            )
+                          : _buildSubtlePlaceholder(context),
                     ),
-                    
+
                     // Top right actions
                     Positioned(
                       top: 12,
@@ -112,7 +101,7 @@ class DiscoverJobCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    
+
                     // Posted time badge
                     Positioned(
                       top: 12,
@@ -138,8 +127,7 @@ class DiscoverJobCard extends StatelessWidget {
 
                 // content area
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -150,14 +138,13 @@ class DiscoverJobCard extends StatelessWidget {
                           Expanded(child: Text(job.title, style: titleStyle)),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
                               color: AppColors.softPeach,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                                job.minBudget == job.maxBudget 
+                                job.minBudget == job.maxBudget
                                     ? 'Price\n₦${job.maxBudget.toStringAsFixed(0)}'
                                     : 'Price Range\n₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}',
                                 textAlign: TextAlign.right,
@@ -172,8 +159,7 @@ class DiscoverJobCard extends StatelessWidget {
                       // Duration pill that spans full width
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                         decoration: BoxDecoration(
                           color: AppColors.cardBackground,
                           borderRadius: BorderRadius.circular(10),
@@ -230,5 +216,35 @@ class DiscoverJobCard extends StatelessWidget {
     // we'll return a placeholder for now
     // In a real implementation, this would calculate time difference
     return 'Posted recently';
+  }
+
+  // Subtle avatar placeholder for when there's no thumbnail
+  Widget _buildSubtlePlaceholder(BuildContext context) {
+    final bg = Colors.grey.shade200;
+    final avatarBg = Colors.grey.shade400;
+    String initial = 'J';
+    final trimmed = job.title.trim();
+    if (trimmed.isNotEmpty) {
+      initial = trimmed[0].toUpperCase();
+    }
+    return Container(
+      width: double.infinity,
+      height: 180,
+      color: bg,
+      child: Center(
+        child: CircleAvatar(
+          radius: 32,
+          backgroundColor: avatarBg,
+          child: Text(
+            initial,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

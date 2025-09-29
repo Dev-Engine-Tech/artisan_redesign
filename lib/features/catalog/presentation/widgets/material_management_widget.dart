@@ -82,8 +82,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
         .toList();
 
     context.read<CatalogRequestsBloc>().add(
-      UpdateRequestMaterials(widget.requestId, catalogMaterials),
-    );
+          UpdateRequestMaterials(widget.requestId, catalogMaterials),
+        );
 
     setState(() {
       _hasChanges = false;
@@ -101,8 +101,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
         .toList();
 
     context.read<CatalogRequestsBloc>().add(
-      SendMaterialModification(widget.requestId, catalogMaterials),
-    );
+          SendMaterialModification(widget.requestId, catalogMaterials),
+        );
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Material modifications sent to client')),
@@ -121,8 +121,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
               child: Text(
                 'Materials (${_materials.length})',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
             ),
             if (widget.isEditable) ...[
@@ -150,9 +150,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
         else
           Column(
             children: [
-              for (int i = 0; i < _materials.length; i++)
-                _buildMaterialItem(i),
-              
+              for (int i = 0; i < _materials.length; i++) _buildMaterialItem(i),
+
               // Total calculation
               if (_materials.isNotEmpty) _buildTotalSection(),
             ],
@@ -187,8 +186,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
           Text(
             'No materials added yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.grey.shade600,
-            ),
+                  color: Colors.grey.shade600,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -196,8 +195,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                 ? 'Tap the + button to add materials'
                 : 'Materials will appear here once added',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey.shade500,
-            ),
+                  color: Colors.grey.shade500,
+                ),
           ),
         ],
       ),
@@ -206,7 +205,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
 
   Widget _buildMaterialItem(int index) {
     final material = _materials[index];
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -225,9 +224,9 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                 child: Text(
                   'Material ${index + 1}',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.brownHeader,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.brownHeader,
+                      ),
                 ),
               ),
               if (widget.isEditable)
@@ -337,15 +336,15 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
           Text(
             'Total Materials Cost',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           Text(
             '₦${totalPrice.toStringAsFixed(0)}',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: Colors.green.shade700,
-            ),
+                  fontWeight: FontWeight.w700,
+                  color: Colors.green.shade700,
+                ),
           ),
         ],
       ),

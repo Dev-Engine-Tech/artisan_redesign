@@ -13,9 +13,7 @@ class AgreementModel extends Agreement {
   factory AgreementModel.fromJson(Map<String, dynamic> json) {
     return AgreementModel(
       id: json['id'] ?? 0,
-      startDate: json['start_date'] != null 
-          ? DateTime.parse(json['start_date']) 
-          : null,
+      startDate: json['start_date'] != null ? DateTime.parse(json['start_date']) : null,
       deliveryDate: DateTime.parse(json['delivery_date']),
       agreedPayment: (json['agreed_payment'] ?? 0.0).toDouble(),
       comment: json['comment'] ?? '',

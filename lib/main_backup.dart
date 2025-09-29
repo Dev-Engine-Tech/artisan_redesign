@@ -15,8 +15,7 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 
 // Use real backend data to test API integration
 const bool kUseFake = bool.fromEnvironment('USE_FAKE', defaultValue: false);
-const String kBaseUrl =
-    String.fromEnvironment('BASE_URL', defaultValue: ApiEndpoints.baseUrl);
+const String kBaseUrl = String.fromEnvironment('BASE_URL', defaultValue: ApiEndpoints.baseUrl);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,12 +28,12 @@ Future<void> main() async {
   //   // If initialization fails (e.g., web/macos not configured), continue for in-memory fallback
   // }
   await setupDependencies(useFake: kUseFake, baseUrl: kBaseUrl);
-  
+
   // Initialize Firebase Analytics
   // try {
   //   final analyticsService = getIt<AnalyticsService>();
   //   await (analyticsService as FirebaseAnalyticsService).initialize();
-  //   
+  //
   //   // Initialize Performance Monitor
   //   final performanceMonitor = getIt<PerformanceMonitor>();
   //   (performanceMonitor as DefaultPerformanceMonitor).enable();
@@ -43,7 +42,7 @@ Future<void> main() async {
   //     print('Analytics initialization error: $e');
   //   }
   // }
-  
+
   // Attempt Firebase Auth sign-in using saved custom token from backend (if any)
   // try {
   //   final secureStorage = getIt<SecureStorage>();

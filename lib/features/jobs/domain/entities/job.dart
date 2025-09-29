@@ -24,22 +24,22 @@ class Job extends Equatable {
   final DateTime? dateCreated;
   final JobStatus status;
   final AppliedProjectStatus projectStatus;
-  
+
   // Agreement and change request flows
   final Agreement? agreement;
   final ChangeRequest? changeRequest;
-  
+
   // Materials for job applications
   final List<Material> materials;
-  
+
   // Progress tracking
   final double? progress;
   final List<Map<String, dynamic>>? progressUpdates;
-  
+
   // Additional job details
   final String? expertise;
   final String? workMode;
-  
+
   // Completion and payment tracking
   final String? paymentStatus;
   final String? clientReview;

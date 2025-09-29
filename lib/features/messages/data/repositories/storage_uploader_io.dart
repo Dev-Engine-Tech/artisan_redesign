@@ -12,4 +12,3 @@ Future<String?> uploadFile(
   final task = await ref.putFile(file, SettableMetadata(contentType: contentType));
   return task.ref.getDownloadURL();
 }
-

@@ -54,7 +54,7 @@ class ProfileActionButtons extends StatelessWidget {
               ),
             ),
           ),
-        
+
         // Verification banner
         if (!isVerified)
           Container(

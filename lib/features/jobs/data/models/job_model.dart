@@ -73,32 +73,36 @@ class JobModel extends Job {
       // Enhanced budget parsing for applications and jobs
       // Applications use 'pay' field, jobs use 'min_budget'/'max_budget'
       final payValue = toInt(json['pay']);
-      final minBudget = toInt(json['min_budget'] ?? json['minBudget']) == 0 ? payValue : toInt(json['min_budget'] ?? json['minBudget']);
-      final maxBudget = toInt(json['max_budget'] ?? json['maxBudget']) == 0 ? payValue : toInt(json['max_budget'] ?? json['maxBudget']);
+      final minBudget = toInt(json['min_budget'] ?? json['minBudget']) == 0
+          ? payValue
+          : toInt(json['min_budget'] ?? json['minBudget']);
+      final maxBudget = toInt(json['max_budget'] ?? json['maxBudget']) == 0
+          ? payValue
+          : toInt(json['max_budget'] ?? json['maxBudget']);
 
-    // Thumbnail: prefer job thumbnail, else client's profile picture
-    String resolveThumb(Map<String, dynamic> m) {
-      final t = m['thumbnail_url'] ?? m['thumbnail'];
-      if (t != null && t.toString().isNotEmpty) {
-        return t.toString();
+      // Thumbnail: prefer job thumbnail, else client's profile picture
+      String resolveThumb(Map<String, dynamic> m) {
+        final t = m['thumbnail_url'] ?? m['thumbnail'];
+        if (t != null && t.toString().isNotEmpty) {
+          return t.toString();
+        }
+        final client = m['client'];
+        if (client is Map && client['profile_pic'] != null) {
+          return client['profile_pic'].toString();
+        }
+        return '';
       }
-      final client = m['client'];
-      if (client is Map && client['profile_pic'] != null) {
-        return client['profile_pic'].toString();
-      }
-      return '';
-    }
 
-    // Parse materials list
-    List<MaterialModel> parseMaterials(dynamic materialsJson) {
-      if (materialsJson is List) {
-        return materialsJson
-            .map((m) => MaterialModel.fromJson(m as Map<String, dynamic>))
-            .toList();
+      // Parse materials list
+      List<MaterialModel> parseMaterials(dynamic materialsJson) {
+        if (materialsJson is List) {
+          return materialsJson
+              .map((m) => MaterialModel.fromJson(m as Map<String, dynamic>))
+              .toList();
+        }
+        return [];
       }
-      return [];
-    }
-      
+
       return JobModel(
         id: (json['id'] ?? json['job_id'] ?? '').toString(),
         title: (json['title'] ?? json['job_title'] ?? '').toString(),
@@ -114,15 +118,11 @@ class JobModel extends Job {
         proposal: json['proposal']?.toString(),
         paymentType: json['payment_type']?.toString(),
         desiredPay: json['desired_pay']?.toString(),
-        dateCreated: json['date_created'] != null 
-            ? DateTime.tryParse(json['date_created']) 
-            : null,
+        dateCreated: json['date_created'] != null ? DateTime.tryParse(json['date_created']) : null,
         status: JobStatusExtension.fromString(json['status'] ?? 'pending'),
-        projectStatus: AppliedProjectStatusExtension.fromString(
-            json['project_status'] ?? 'ongoing'),
-        agreement: json['agreement'] != null
-            ? AgreementModel.fromJson(json['agreement'])
-            : null,
+        projectStatus:
+            AppliedProjectStatusExtension.fromString(json['project_status'] ?? 'ongoing'),
+        agreement: json['agreement'] != null ? AgreementModel.fromJson(json['agreement']) : null,
         changeRequest: json['change_request'] != null
             ? ChangeRequestModel.fromJson(json['change_request'])
             : null,
@@ -165,12 +165,9 @@ class JobModel extends Job {
       'date_created': dateCreated?.toIso8601String(),
       'status': status.name,
       'project_status': projectStatus.name,
-      'agreement': agreement != null 
-          ? (agreement! as AgreementModel).toJson() 
-          : null,
-      'change_request': changeRequest != null
-          ? (changeRequest! as ChangeRequestModel).toJson()
-          : null,
+      'agreement': agreement != null ? (agreement! as AgreementModel).toJson() : null,
+      'change_request':
+          changeRequest != null ? (changeRequest! as ChangeRequestModel).toJson() : null,
       'materials': materials.map((m) => (m as MaterialModel).toJson()).toList(),
       'expertise': expertise,
       'work_mode': workMode,

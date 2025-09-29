@@ -23,4 +23,3 @@ class ImagePreviewPage extends StatelessWidget {
     );
   }
 }
-

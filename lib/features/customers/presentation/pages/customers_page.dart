@@ -47,9 +47,9 @@ class _CustomersPageState extends State<CustomersPage> {
       final query = _searchQuery.toLowerCase();
       _filteredCustomers = _customers.where((customer) {
         return customer.name.toLowerCase().contains(query) ||
-               customer.email.toLowerCase().contains(query) ||
-               (customer.company?.toLowerCase().contains(query) ?? false) ||
-               (customer.phone?.contains(query) ?? false);
+            customer.email.toLowerCase().contains(query) ||
+            (customer.company?.toLowerCase().contains(query) ?? false) ||
+            (customer.phone?.contains(query) ?? false);
       }).toList();
     }
   }
@@ -78,22 +78,22 @@ class _CustomersPageState extends State<CustomersPage> {
 
   String _formatCurrency(double amount) {
     return 'NGN ${amount.toStringAsFixed(0).replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-      (match) => '${match[1]},',
-    )}';
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )}';
   }
 
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
-    
+
     if (difference == 0) return 'Today';
     if (difference == 1) return 'Yesterday';
     if (difference < 30) return '${difference}d ago';
-    
+
     final months = difference ~/ 30;
     if (months < 12) return '${months}mo ago';
-    
+
     final years = months ~/ 12;
     return '${years}y ago';
   }
@@ -149,9 +149,9 @@ class _CustomersPageState extends State<CustomersPage> {
                   ),
                 ),
               ),
-              
+
               const SizedBox(width: 16),
-              
+
               // Customer Info
               Expanded(
                 child: Column(
@@ -193,9 +193,7 @@ class _CustomersPageState extends State<CustomersPage> {
                         ),
                       ],
                     ),
-                    
                     const SizedBox(height: 4),
-                    
                     if (customer.company?.isNotEmpty == true) ...[
                       Text(
                         customer.company!,
@@ -207,7 +205,6 @@ class _CustomersPageState extends State<CustomersPage> {
                       ),
                       const SizedBox(height: 2),
                     ],
-                    
                     Text(
                       customer.email,
                       style: TextStyle(
@@ -215,9 +212,7 @@ class _CustomersPageState extends State<CustomersPage> {
                         color: Colors.grey.shade600,
                       ),
                     ),
-                    
                     const SizedBox(height: 8),
-                    
                     Row(
                       children: [
                         Icon(
@@ -242,9 +237,9 @@ class _CustomersPageState extends State<CustomersPage> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          customer.lastInvoiceDate != null 
-                            ? _formatDate(customer.lastInvoiceDate!)
-                            : 'No invoices',
+                          customer.lastInvoiceDate != null
+                              ? _formatDate(customer.lastInvoiceDate!)
+                              : 'No invoices',
                           style: TextStyle(
                             fontSize: 13,
                             color: Colors.grey.shade600,
@@ -255,9 +250,9 @@ class _CustomersPageState extends State<CustomersPage> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(width: 8),
-              
+
               // Chevron
               Icon(
                 Icons.chevron_right,
@@ -330,7 +325,7 @@ class _CustomersPageState extends State<CustomersPage> {
               ),
             ),
           ),
-          
+
           // Search Bar
           SliverToBoxAdapter(
             child: Padding(
@@ -359,52 +354,50 @@ class _CustomersPageState extends State<CustomersPage> {
               ),
             ),
           ),
-          
+
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
-          
+
           // Customer List
           _isLoading
-            ? const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : _filteredCustomers.isEmpty
-                ? SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.people_outline,
-                            size: 64,
-                            color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            _searchQuery.isEmpty 
-                              ? 'No customers yet'
-                              : 'No customers found',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _searchQuery.isEmpty
-                              ? 'Create your first customer to get started'
-                              : 'Try adjusting your search criteria',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+              ? const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              : _filteredCustomers.isEmpty
+                  ? SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.people_outline,
+                              size: 64,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              _searchQuery.isEmpty ? 'No customers yet' : 'No customers found',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _searchQuery.isEmpty
+                                  ? 'Create your first customer to get started'
+                                  : 'Try adjusting your search criteria',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return _buildCustomerCard(_filteredCustomers[index]);
+                        },
+                        childCount: _filteredCustomers.length,
                       ),
                     ),
-                  )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        return _buildCustomerCard(_filteredCustomers[index]);
-                      },
-                      childCount: _filteredCustomers.length,
-                    ),
-                  ),
-          
+
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),

@@ -75,16 +75,14 @@ class _FilterInlineState extends State<FilterInline> {
       builder: (c) {
         String query = '';
         return StatefulBuilder(builder: (context, setModalState) {
-          final filtered = lgas
-              .where((l) => l.toLowerCase().contains(query.toLowerCase()))
-              .toList();
+          final filtered =
+              lgas.where((l) => l.toLowerCase().contains(query.toLowerCase())).toList();
           return SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
                   child: Row(
                     children: [
                       Expanded(
@@ -106,8 +104,7 @@ class _FilterInlineState extends State<FilterInline> {
                       filled: true,
                       fillColor: AppColors.cardBackground,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                     ),
                     onChanged: (v) => setModalState(() => query = v),
                   ),
@@ -145,13 +142,10 @@ class _FilterInlineState extends State<FilterInline> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF213447),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                     child: const SizedBox(
                         width: double.infinity,
-                        child: Center(
-                            child: Text('Done',
-                                style: TextStyle(color: Colors.white)))),
+                        child: Center(child: Text('Done', style: TextStyle(color: Colors.white)))),
                   ),
                 )
               ],
@@ -176,8 +170,7 @@ class _FilterInlineState extends State<FilterInline> {
     final selectedLgasChips = _selectedLgas
         .map((e) => Padding(
             padding: const EdgeInsets.only(right: 6.0),
-            child: Chip(
-                label: Text(e), backgroundColor: AppColors.cardBackground)))
+            child: Chip(label: Text(e), backgroundColor: AppColors.cardBackground)))
         .toList();
 
     return Container(
@@ -200,10 +193,8 @@ class _FilterInlineState extends State<FilterInline> {
               filled: true,
               fillColor: AppColors.cardBackground,
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             ),
           ),
           const SizedBox(height: 14),
@@ -229,9 +220,8 @@ class _FilterInlineState extends State<FilterInline> {
           const SizedBox(height: 6),
           DropdownButtonFormField<String>(
             initialValue: _selectedState,
-            items: _lgasByState.keys
-                .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                .toList(),
+            items:
+                _lgasByState.keys.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
             onChanged: (v) => setState(() {
               _selectedState = v;
               _selectedLgas.clear();
@@ -240,15 +230,12 @@ class _FilterInlineState extends State<FilterInline> {
               filled: true,
               fillColor: AppColors.cardBackground,
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             ),
           ),
           const SizedBox(height: 12),
-          const Text('Local Government',
-              style: TextStyle(color: Colors.black54)),
+          const Text('Local Government', style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           GestureDetector(
             onTap: _openLgaSelector,
@@ -281,8 +268,7 @@ class _FilterInlineState extends State<FilterInline> {
           _buildSectionTitle('Project Duration'),
           ..._projectDuration.keys.map((k) => CheckboxListTile(
                 value: _projectDuration[k],
-                onChanged: (v) =>
-                    setState(() => _projectDuration[k] = v ?? false),
+                onChanged: (v) => setState(() => _projectDuration[k] = v ?? false),
                 title: Text(k),
                 controlAffinity: ListTileControlAffinity.leading,
               )),
@@ -305,11 +291,10 @@ class _FilterInlineState extends State<FilterInline> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF213447),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Apply Filter',
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
+              child:
+                  const Text('Apply Filter', style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ),
           const SizedBox(height: 12),

@@ -15,7 +15,7 @@ class MessageIcon extends StatelessWidget {
     // Simplified version to avoid performance issues with ConversationsBloc
     // In a real app, you'd want to get this from a global state or cache
     const int unreadCount = 3; // Mock unread count for now
-    
+
     return Stack(
       children: [
         Container(

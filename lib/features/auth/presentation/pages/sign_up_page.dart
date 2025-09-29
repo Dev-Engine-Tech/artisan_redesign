@@ -141,8 +141,7 @@ class _SignUpViewState extends State<_SignUpView> {
     return BlocConsumer<SignUpCubit, SignUpState>(
       listener: (context, state) {
         if (state.error != null) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.error!)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error!)));
         }
       },
       builder: (context, state) {
@@ -156,8 +155,7 @@ class _SignUpViewState extends State<_SignUpView> {
               padding: const EdgeInsets.only(left: 12.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: AppColors.softPink,
-                    borderRadius: BorderRadius.circular(10)),
+                    color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.black54),
                   onPressed: () {
@@ -180,9 +178,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 if (state.step == 0) ...[
                   const Text('Create an account',
                       style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2E3A59))),
+                          fontSize: 28, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
                   const SizedBox(height: 8),
                   const Text('Sign up now to get started with an account',
                       style: TextStyle(color: Colors.black54)),
@@ -193,29 +189,24 @@ class _SignUpViewState extends State<_SignUpView> {
                       children: [
                         TextFormField(
                           controller: _firstController,
-                          decoration: _inputDecoration(
-                              hint: 'Enter your first name',
-                              label: 'First name'),
-                          validator: (v) => (v == null || v.trim().isEmpty)
-                              ? 'Please enter first name'
-                              : null,
+                          decoration:
+                              _inputDecoration(hint: 'Enter your first name', label: 'First name'),
+                          validator: (v) =>
+                              (v == null || v.trim().isEmpty) ? 'Please enter first name' : null,
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _lastController,
                           decoration: _inputDecoration(
-                              hint: 'Enter your last name / surname',
-                              label: 'Last name'),
-                          validator: (v) => (v == null || v.trim().isEmpty)
-                              ? 'Please enter last name'
-                              : null,
+                              hint: 'Enter your last name / surname', label: 'Last name'),
+                          validator: (v) =>
+                              (v == null || v.trim().isEmpty) ? 'Please enter last name' : null,
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _identifierController,
                           decoration: _inputDecoration(
-                              hint: 'Enter your email or phone',
-                              label: 'Email / Phone'),
+                              hint: 'Enter your email or phone', label: 'Email / Phone'),
                           validator: (v) => (v == null || v.trim().isEmpty)
                               ? 'Please enter email or phone'
                               : null,
@@ -233,8 +224,7 @@ class _SignUpViewState extends State<_SignUpView> {
                             Checkbox(
                               value: state.termsAccepted,
                               onChanged: (v) => cubit.toggleTerms(v ?? false),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                               activeColor: const Color(0xFF6B4CD6),
                             ),
                             Expanded(
@@ -244,8 +234,7 @@ class _SignUpViewState extends State<_SignUpView> {
                                   children: [
                                     TextSpan(
                                         text: 'terms and conditions',
-                                        style:
-                                            TextStyle(color: AppColors.orange)),
+                                        style: TextStyle(color: AppColors.orange)),
                                     const TextSpan(text: ' of ArtisanBridge'),
                                   ],
                                 ),
@@ -260,25 +249,20 @@ class _SignUpViewState extends State<_SignUpView> {
                           height: 54,
                           child: ElevatedButton(
                             onPressed: () {
-                              if (_formKeyStep0.currentState!.validate() &&
-                                  state.termsAccepted) {
+                              if (_formKeyStep0.currentState!.validate() && state.termsAccepted) {
                                 cubit.updateName(
                                     firstName: _firstController.text.trim(),
                                     lastName: _lastController.text.trim());
-                                cubit.updateIdentifier(
-                                    _identifierController.text.trim());
-                                cubit.updateReferral(
-                                    _referralController.text.trim());
+                                cubit.updateIdentifier(_identifierController.text.trim());
+                                cubit.updateReferral(_referralController.text.trim());
                                 cubit.nextStep();
                               } else if (!state.termsAccepted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('Please accept terms')));
+                                    const SnackBar(content: Text('Please accept terms')));
                               }
                             },
                             style: _primaryButtonStyle(),
-                            child: const Text('Continue',
-                                style: TextStyle(fontSize: 18)),
+                            child: const Text('Continue', style: TextStyle(fontSize: 18)),
                           ),
                         ),
                       ],
@@ -288,9 +272,7 @@ class _SignUpViewState extends State<_SignUpView> {
                   const SizedBox(height: 18),
                   Row(children: const [
                     Expanded(child: Divider()),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Text('OR')),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('OR')),
                     Expanded(child: Divider())
                   ]),
                   const SizedBox(height: 12),
@@ -300,9 +282,8 @@ class _SignUpViewState extends State<_SignUpView> {
                       SizedBox(
                         height: 52,
                         child: OutlinedButton.icon(
-                          onPressed: () => context
-                              .read<AuthBloc>()
-                              .add(AuthSignInWithGoogleRequested()),
+                          onPressed: () =>
+                              context.read<AuthBloc>().add(AuthSignInWithGoogleRequested()),
                           icon: Image.asset(
                             'assets/google_logo.png',
                             width: 22,
@@ -314,8 +295,7 @@ class _SignUpViewState extends State<_SignUpView> {
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: Colors.black87,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             side: const BorderSide(color: Color(0xFFE6E6E6)),
                           ),
                         ),
@@ -324,16 +304,14 @@ class _SignUpViewState extends State<_SignUpView> {
                       SizedBox(
                         height: 52,
                         child: OutlinedButton.icon(
-                          onPressed: () => context
-                              .read<AuthBloc>()
-                              .add(AuthSignInWithAppleRequested()),
+                          onPressed: () =>
+                              context.read<AuthBloc>().add(AuthSignInWithAppleRequested()),
                           icon: const Icon(Icons.apple, size: 22),
                           label: const Text('Continue with Apple'),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: Colors.black87,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             side: const BorderSide(color: Color(0xFFE6E6E6)),
                           ),
                         ),
@@ -344,9 +322,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 ] else if (state.step == 1) ...[
                   const Text('Create password',
                       style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2E3A59))),
+                          fontSize: 28, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
                   const SizedBox(height: 8),
                   const Text('Create password to protect your account',
                       style: TextStyle(color: Colors.black54)),
@@ -358,22 +334,19 @@ class _SignUpViewState extends State<_SignUpView> {
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
-                          decoration: _inputDecoration(
-                              hint: 'Enter your password', label: 'Password'),
-                          validator: (v) => (v == null || v.length < 6)
-                              ? 'Enter at least 6 characters'
-                              : null,
+                          decoration:
+                              _inputDecoration(hint: 'Enter your password', label: 'Password'),
+                          validator: (v) =>
+                              (v == null || v.length < 6) ? 'Enter at least 6 characters' : null,
                         ),
                         const SizedBox(height: 12),
                         TextFormField(
                           controller: _confirmController,
                           obscureText: true,
                           decoration: _inputDecoration(
-                              hint: 'Confirm your password',
-                              label: 'Confirm password'),
-                          validator: (v) => (v != _passwordController.text)
-                              ? 'Passwords do not match'
-                              : null,
+                              hint: 'Confirm your password', label: 'Confirm password'),
+                          validator: (v) =>
+                              (v != _passwordController.text) ? 'Passwords do not match' : null,
                         ),
                         const SizedBox(height: 18),
                         SizedBox(
@@ -387,8 +360,7 @@ class _SignUpViewState extends State<_SignUpView> {
                               }
                             },
                             style: _primaryButtonStyle(),
-                            child: const Text('Continue',
-                                style: TextStyle(fontSize: 18)),
+                            child: const Text('Continue', style: TextStyle(fontSize: 18)),
                           ),
                         ),
                       ],
@@ -397,18 +369,14 @@ class _SignUpViewState extends State<_SignUpView> {
                 ] else if (state.step == 2) ...[
                   const Text('Phone Verification',
                       style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2E3A59))),
+                          fontSize: 28, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
                   const SizedBox(height: 8),
-                  const Text(
-                      'We need to register your phone number before getting started',
+                  const Text('We need to register your phone number before getting started',
                       style: TextStyle(color: Colors.black54)),
                   const SizedBox(height: 18),
                   TextFormField(
                     controller: _phoneController,
-                    decoration: _inputDecoration(
-                        hint: '+234 7039193613', label: 'Phone Number'),
+                    decoration: _inputDecoration(hint: '+234 7039193613', label: 'Phone Number'),
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 12),
@@ -422,28 +390,24 @@ class _SignUpViewState extends State<_SignUpView> {
                           final phoneOk = _isValidPhone(phone);
                           if (!phoneOk) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Enter a valid phone number')));
+                                const SnackBar(content: Text('Enter a valid phone number')));
                             return;
                           }
                           await cubit.sendOtp(phone);
                           // For demo/testing show generated OTP (in real app don't show)
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content:
-                                  Text('OTP: ${cubit.state.generatedOtp}')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('OTP: ${cubit.state.generatedOtp}')));
                         },
                         style: _primaryButtonStyle(),
-                        child: const Text('Get Code',
-                            style: TextStyle(fontSize: 18)),
+                        child: const Text('Get Code', style: TextStyle(fontSize: 18)),
                       ),
                     )
                   else ...[
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _otpController,
-                      decoration: _inputDecoration(
-                          hint: '4-digit code', label: 'Enter code'),
+                      decoration: _inputDecoration(hint: '4-digit code', label: 'Enter code'),
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 12),
@@ -460,30 +424,25 @@ class _SignUpViewState extends State<_SignUpView> {
                           }
                         },
                         style: _primaryButtonStyle(),
-                        child: const Text('Verify Phone Number',
-                            style: TextStyle(fontSize: 18)),
+                        child: const Text('Verify Phone Number', style: TextStyle(fontSize: 18)),
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextButton(
-                        onPressed: () =>
-                            cubit.sendOtp(_phoneController.text.trim()),
+                        onPressed: () => cubit.sendOtp(_phoneController.text.trim()),
                         child: const Text('Resend Code')),
                   ]
                 ] else if (state.step == 3) ...[
                   const Text('Set withdrawal PIN',
                       style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF2E3A59))),
+                          fontSize: 28, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
                   const SizedBox(height: 8),
                   const Text('Setup a 4 digit withdrawal pin for your account',
                       style: TextStyle(color: Colors.black54)),
                   const SizedBox(height: 18),
                   TextFormField(
                     controller: _pinController,
-                    decoration: _inputDecoration(
-                        hint: 'Enter 4 digit pin', label: 'PIN'),
+                    decoration: _inputDecoration(hint: 'Enter 4 digit pin', label: 'PIN'),
                     keyboardType: TextInputType.number,
                     maxLength: 4,
                   ),
@@ -495,9 +454,8 @@ class _SignUpViewState extends State<_SignUpView> {
                       onPressed: () async {
                         final pin = _pinController.text.trim();
                         if (pin.length != 4) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Enter 4 digit PIN')));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(content: Text('Enter 4 digit PIN')));
                           return;
                         }
                         cubit.setPin(pin);
@@ -513,8 +471,7 @@ class _SignUpViewState extends State<_SignUpView> {
                         }
                       },
                       style: _primaryButtonStyle(),
-                      child: const Text('Continue',
-                          style: TextStyle(fontSize: 18)),
+                      child: const Text('Continue', style: TextStyle(fontSize: 18)),
                     ),
                   ),
                 ] else ...[
@@ -530,8 +487,7 @@ class _SignUpViewState extends State<_SignUpView> {
                           width: 180,
                           height: 80,
                           fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
+                          errorBuilder: (context, error, stackTrace) => Container(
                             width: 180,
                             height: 80,
                             alignment: Alignment.center,
@@ -543,14 +499,12 @@ class _SignUpViewState extends State<_SignUpView> {
                         const Align(
                           alignment: Alignment.centerLeft,
                           child: Text('Account Created',
-                              style: TextStyle(
-                                  fontSize: 26, fontWeight: FontWeight.w700)),
+                              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
                         ),
                         const SizedBox(height: 8),
                         const Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(
-                              'Verify your identification to continue using this app.',
+                          child: Text('Verify your identification to continue using this app.',
                               style: TextStyle(color: Colors.black54)),
                         ),
                         const SizedBox(height: 18),
@@ -570,8 +524,7 @@ class _SignUpViewState extends State<_SignUpView> {
                                 decoration: BoxDecoration(
                                     color: const Color(0xFF2DE0B8),
                                     borderRadius: BorderRadius.circular(22)),
-                                child: const Icon(Icons.check,
-                                    color: Colors.white),
+                                child: const Icon(Icons.check, color: Colors.white),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -579,12 +532,10 @@ class _SignUpViewState extends State<_SignUpView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
                                     Text('Create Account',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700)),
+                                        style: TextStyle(fontWeight: FontWeight.w700)),
                                     SizedBox(height: 4),
                                     Text('You have completed the registration',
-                                        style:
-                                            TextStyle(color: Colors.black54)),
+                                        style: TextStyle(color: Colors.black54)),
                                   ],
                                 ),
                               ),
@@ -606,8 +557,7 @@ class _SignUpViewState extends State<_SignUpView> {
                                 decoration: BoxDecoration(
                                     color: const Color(0xFFE14D4D),
                                     borderRadius: BorderRadius.circular(22)),
-                                child: const Icon(Icons.close,
-                                    color: Colors.white),
+                                child: const Icon(Icons.close, color: Colors.white),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -615,12 +565,10 @@ class _SignUpViewState extends State<_SignUpView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
                                     Text('Account Verification',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w700)),
+                                        style: TextStyle(fontWeight: FontWeight.w700)),
                                     SizedBox(height: 4),
                                     Text('Verify your account to continue',
-                                        style:
-                                            TextStyle(color: Colors.black54)),
+                                        style: TextStyle(color: Colors.black54)),
                                   ],
                                 ),
                               ),
@@ -642,11 +590,10 @@ class _SignUpViewState extends State<_SignUpView> {
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2E3A59),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
+                              shape:
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: const Text('Verify Now',
-                                style: TextStyle(fontSize: 18)),
+                            child: const Text('Verify Now', style: TextStyle(fontSize: 18)),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -656,17 +603,15 @@ class _SignUpViewState extends State<_SignUpView> {
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (_) => const AppShell()));
+                                  MaterialPageRoute(builder: (_) => const AppShell()));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFEDEFF1),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
+                              shape:
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                             child: const Text('Continue',
-                                style: TextStyle(
-                                    fontSize: 18, color: Color(0xFF2E3A59))),
+                                style: TextStyle(fontSize: 18, color: Color(0xFF2E3A59))),
                           ),
                         ),
                       ],

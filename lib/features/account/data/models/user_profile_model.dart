@@ -36,13 +36,11 @@ class UserProfileModel extends UserProfile {
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
       id: json['id']?.toString() ?? json['user_id']?.toString() ?? '',
-      firstName:
-          json['first_name']?.toString() ?? json['firstName']?.toString(),
+      firstName: json['first_name']?.toString() ?? json['firstName']?.toString(),
       lastName: json['last_name']?.toString() ?? json['lastName']?.toString(),
       email: json['email']?.toString(),
       phone: json['phone']?.toString(),
-      profileImage:
-          json['profile_image']?.toString() ?? json['profilePic']?.toString(),
+      profileImage: json['profile_image']?.toString() ?? json['profilePic']?.toString(),
       jobTitle: json['job_title']?.toString() ?? json['occupation']?.toString(),
       bio: json['bio']?.toString(),
       location: json['location']?.toString(),
@@ -55,7 +53,8 @@ class UserProfileModel extends UserProfile {
               ?.map((e) => EducationModel.fromJson(Map<String, dynamic>.from(e)))
               .toList() ??
           const [],
-      yearsOfExperience: (json['years_of_experience'] as num?)?.toInt() ?? json['yearsOfExperience'] as int?,
+      yearsOfExperience:
+          (json['years_of_experience'] as num?)?.toInt() ?? json['yearsOfExperience'] as int?,
       isVerified: json['is_verified'] == true || json['isVerified'] == true,
     );
   }

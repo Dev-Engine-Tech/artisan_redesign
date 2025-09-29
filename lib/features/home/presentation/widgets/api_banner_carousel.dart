@@ -3,7 +3,8 @@ import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/models/banner_model.dart';
 import 'package:artisans_circle/core/services/banner_service.dart';
 import 'package:artisans_circle/core/di.dart';
-import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart' as original;
+import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart'
+    as original;
 
 class ApiBannerCarousel extends StatefulWidget {
   final BannerCategory category;
@@ -46,7 +47,7 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
       });
 
       final apiResponse = await _bannerService.getBanners(category: widget.category);
-      
+
       print('🎯 BANNER CAROUSEL: Received ${apiResponse.banners.length} banners');
       // Convert API banners to UI banners
       final uiBanners = apiResponse.banners
@@ -141,7 +142,7 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
   List<original.BannerModel> _getDefaultBannersForCategory(BannerCategory category) {
     // FORCE API BANNERS TO SHOW - NO FALLBACK TO DEFAULTS
     print('🔥 FORCE: Creating API banners instead of defaults for $category');
-    
+
     // Create banners that clearly show they are from API
     switch (category) {
       case BannerCategory.homepage:

@@ -41,20 +41,18 @@ class AccountRepositoryImpl implements AccountRepository {
       // Return test data as fallback
       return const Earnings(
         total: 156800.0,
-        available: 156800.0, 
+        available: 156800.0,
         pending: 0.0,
       );
     }
   }
 
   @override
-  Future<List<TransactionItem>> getTransactions(
-          {int page = 1, int limit = 20}) =>
+  Future<List<TransactionItem>> getTransactions({int page = 1, int limit = 20}) =>
       remote.getTransactions(page: page, limit: limit);
 
   @override
-  Future<void> requestWithdrawal(double amount) =>
-      remote.requestWithdrawal(amount);
+  Future<void> requestWithdrawal(double amount) => remote.requestWithdrawal(amount);
 
   @override
   Future<List<BankAccount>> getBankAccounts() => remote.getBankAccounts();
@@ -81,8 +79,7 @@ class AccountRepositoryImpl implements AccountRepository {
       remote.getBankList(forceRefresh: forceRefresh);
 
   @override
-  Future<String> verifyBankAccount(
-          {required String bankCode, required String accountNumber}) =>
+  Future<String> verifyBankAccount({required String bankCode, required String accountNumber}) =>
       remote.verifyBankAccount(bankCode: bankCode, accountNumber: accountNumber);
 
   @override
@@ -96,16 +93,14 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<void> changePassword(
-          {required String oldPassword, required String newPassword}) =>
+  Future<void> changePassword({required String oldPassword, required String newPassword}) =>
       remote.changePassword(oldPassword: oldPassword, newPassword: newPassword);
 
   @override
   Future<void> deleteAccount({String? otp}) => remote.deleteAccount(otp: otp);
 
   @override
-  Future<String> uploadProfileImage(String imagePath) =>
-      remote.uploadProfileImage(imagePath);
+  Future<String> uploadProfileImage(String imagePath) => remote.uploadProfileImage(imagePath);
 
   // Work Experience
   @override
@@ -135,8 +130,7 @@ class AccountRepositoryImpl implements AccountRepository {
       ));
 
   @override
-  Future<UserProfile> deleteWorkExperience(String id) =>
-      remote.deleteWorkExperience(id);
+  Future<UserProfile> deleteWorkExperience(String id) => remote.deleteWorkExperience(id);
 
   // Education
   @override

@@ -26,16 +26,16 @@ class Agreement extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    startDate,
-    deliveryDate,
-    agreedPayment,
-    comment,
-    status,
-    amount,
-    description,
-    deadline,
-  ];
+        id,
+        startDate,
+        deliveryDate,
+        agreedPayment,
+        comment,
+        status,
+        amount,
+        description,
+        deadline,
+      ];
 
   Agreement copyWith({
     int? id,

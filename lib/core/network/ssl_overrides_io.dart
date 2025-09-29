@@ -12,17 +12,17 @@ void configureBadCertificate(Dio dio, {required String host}) {
     dio.httpClientAdapter = IOHttpClientAdapter()
       ..createHttpClient = () {
         final client = HttpClient();
-        
+
         // Accept ALL certificates without any validation
         client.badCertificateCallback = (cert, host, port) => true;
-        
+
         // Remove user agent to avoid server detection
         client.userAgent = null;
-        
+
         // Set generous timeouts
         client.connectionTimeout = const Duration(seconds: 30);
         client.idleTimeout = const Duration(seconds: 30);
-        
+
         return client;
       };
   } else {

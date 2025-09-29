@@ -9,7 +9,7 @@ class SendInvoice {
   Future<Invoice> call(String invoiceId) async {
     return await repository.sendInvoice(invoiceId);
   }
-  
+
   Future<Invoice> execute(String invoiceId) async {
     return await repository.sendInvoice(invoiceId);
   }

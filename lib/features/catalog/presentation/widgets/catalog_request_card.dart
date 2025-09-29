@@ -23,13 +23,14 @@ class CatalogRequestCard extends StatelessWidget {
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
-          onTap: onTap ?? () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => CatalogRequestViewPage(requestId: request.id),
-              ),
-            );
-          },
+          onTap: onTap ??
+              () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CatalogRequestViewPage(requestId: request.id),
+                  ),
+                );
+              },
           borderRadius: BorderRadius.circular(14),
           child: Container(
             decoration: BoxDecoration(

@@ -1,4 +1,3 @@
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,13 +32,10 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
       // Prefer a front-facing camera if available
       _frontCamera = cameras.firstWhere(
         (c) => c.lensDirection == CameraLensDirection.front,
-        orElse: () => cameras.isNotEmpty
-            ? cameras.first
-            : throw Exception('No cameras found'),
+        orElse: () => cameras.isNotEmpty ? cameras.first : throw Exception('No cameras found'),
       );
 
-      _controller = CameraController(_frontCamera!, ResolutionPreset.medium,
-          enableAudio: false);
+      _controller = CameraController(_frontCamera!, ResolutionPreset.medium, enableAudio: false);
       await _controller!.initialize();
       if (!mounted) return;
       setState(() {
@@ -65,9 +61,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
   Future<void> _capture() async {
     final verificationCubit = context.read<VerificationCubit>();
 
-    if (_cameraAvailable &&
-        _controller != null &&
-        _controller!.value.isInitialized) {
+    if (_cameraAvailable && _controller != null && _controller!.value.isInitialized) {
       try {
         final file = await _controller!.takePicture();
         // Submit selfie to cubit (in real app you'd upload)
@@ -75,14 +69,12 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
         if (mounted) Navigator.of(context).pop(file.path);
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Capture failed: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Capture failed: $e')));
         }
       }
     } else {
       // Simulate capture by returning a fake local path
-      final fakePath =
-          'local://selfie_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fakePath = 'local://selfie_${DateTime.now().millisecondsSinceEpoch}.jpg';
       await verificationCubit.submitSelfie(selfiePath: fakePath);
       if (mounted) Navigator.of(context).pop(fakePath);
     }
@@ -96,8 +88,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: BackButton(color: Colors.black87),
-        title: const Text('Take a selfie',
-            style: TextStyle(color: Colors.black87)),
+        title: const Text('Take a selfie', style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
         child: _initializing
@@ -128,13 +119,11 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                       color: const Color(0xFFF0F0F0),
                                       borderRadius: BorderRadius.circular(110),
                                     ),
-                                    child: const Icon(Icons.person,
-                                        size: 64, color: Colors.brown),
+                                    child: const Icon(Icons.person, size: 64, color: Colors.brown),
                                   ),
                                   const SizedBox(height: 16),
                                   const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 24.0),
+                                    padding: EdgeInsets.symmetric(horizontal: 24.0),
                                     child: Text(
                                       'Camera not available. Use simulated capture for tests/emulator.',
                                       textAlign: TextAlign.center,
@@ -144,8 +133,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                   if (_error != null) ...[
                                     const SizedBox(height: 8),
                                     Text(_error!,
-                                        style: const TextStyle(
-                                            color: Colors.red, fontSize: 12)),
+                                        style: const TextStyle(color: Colors.red, fontSize: 12)),
                                   ],
                                 ],
                               ),
@@ -158,12 +146,10 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                       child: ElevatedButton.icon(
                         onPressed: _capture,
                         icon: const Icon(Icons.camera_alt),
-                        label: const Text('Capture',
-                            style: TextStyle(fontSize: 16)),
+                        label: const Text('Capture', style: TextStyle(fontSize: 16)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2E3A59),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -175,8 +161,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                         onPressed: () => Navigator.of(context).pop(),
                         style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: const Text('Cancel'),
                       ),

@@ -20,13 +20,13 @@ class Material extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    description,
-    quantity,
-    price,
-    unit,
-  ];
+        id,
+        name,
+        description,
+        quantity,
+        price,
+        unit,
+      ];
 
   /// Calculate total price for this material
   double get totalPrice => quantity * price;

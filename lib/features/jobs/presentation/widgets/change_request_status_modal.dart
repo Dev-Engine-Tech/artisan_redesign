@@ -45,8 +45,8 @@ class ChangeRequestStatusModal extends StatelessWidget {
                   child: Text(
                     'Change Request Status',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ),
                 IconButton(
@@ -96,15 +96,15 @@ class ChangeRequestStatusModal extends StatelessWidget {
                             Text(
                               'Request Submitted',
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.blue.shade700,
-                              ),
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.blue.shade700,
+                                  ),
                             ),
                             Text(
                               'Waiting for client response',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.blue.shade600,
-                              ),
+                                    color: Colors.blue.shade600,
+                                  ),
                             ),
                           ],
                         ),
@@ -119,16 +119,16 @@ class ChangeRequestStatusModal extends StatelessWidget {
                 Text(
                   'Project',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   job.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
 
                 const SizedBox(height: 16),
@@ -137,9 +137,9 @@ class ChangeRequestStatusModal extends StatelessWidget {
                 Text(
                   'Requested Changes',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Container(
@@ -162,9 +162,9 @@ class ChangeRequestStatusModal extends StatelessWidget {
                 Text(
                   'Reason',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Container(

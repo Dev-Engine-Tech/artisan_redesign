@@ -18,8 +18,7 @@ abstract class AccountRemoteDataSource {
   });
 
   Future<EarningsModel> getEarnings();
-  Future<List<TransactionModel>> getTransactions(
-      {int page = 1, int limit = 20});
+  Future<List<TransactionModel>> getTransactions({int page = 1, int limit = 20});
   Future<void> requestWithdrawal(double amount);
 
   // Work Experience
@@ -47,8 +46,7 @@ abstract class AccountRemoteDataSource {
   });
   Future<void> deleteBankAccount(String id);
 
-  Future<void> changePassword(
-      {required String oldPassword, required String newPassword});
+  Future<void> changePassword({required String oldPassword, required String newPassword});
   Future<void> deleteAccount({String? otp});
 
   Future<String> uploadProfileImage(String imagePath);
@@ -71,9 +69,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -107,9 +103,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -124,9 +118,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return EarningsModel.fromJson(data);
     }
     throw DioException(
@@ -136,8 +128,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   }
 
   @override
-  Future<List<TransactionModel>> getTransactions(
-      {int page = 1, int limit = 20}) async {
+  Future<List<TransactionModel>> getTransactions({int page = 1, int limit = 20}) async {
     final response = await dio.get(
       ApiEndpoints.transactionHistory,
       queryParameters: {'page': page, 'limit': limit},
@@ -147,9 +138,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       final List list = data is Map && data['transactions'] is List
           ? (data['transactions'] as List)
           : (data is List ? data : <dynamic>[]);
-      return list
-          .map((e) => TransactionModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+      return list.map((e) => TransactionModel.fromJson(Map<String, dynamic>.from(e))).toList();
     }
     throw DioException(
         requestOptions: response.requestOptions,
@@ -159,8 +148,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
   @override
   Future<void> requestWithdrawal(double amount) async {
-    final response = await dio.post(ApiEndpoints.withdrawEarnings,
-        data: {'amount': amount});
+    final response = await dio.post(ApiEndpoints.withdrawEarnings, data: {'amount': amount});
     if (_ok(response.statusCode)) return;
     throw DioException(
         requestOptions: response.requestOptions,
@@ -174,9 +162,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -191,9 +177,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -208,9 +192,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -225,9 +207,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -242,9 +222,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -259,9 +237,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -276,9 +252,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -293,9 +267,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return UserProfileModel.fromJson(data);
     }
     throw DioException(
@@ -312,9 +284,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       final List list = data is Map && data['results'] is List
           ? (data['results'] as List)
           : (data is List ? data : <dynamic>[]);
-      return list
-          .map((e) => BankAccountModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+      return list.map((e) => BankAccountModel.fromJson(Map<String, dynamic>.from(e))).toList();
     }
     throw DioException(
         requestOptions: response.requestOptions,
@@ -340,9 +310,8 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
         final List list = data is List
             ? data
             : (data is Map && data['banks'] is List ? data['banks'] : <dynamic>[]);
-        final banks = list
-            .map((e) => BankInfoModel.fromJson(Map<String, dynamic>.from(e)))
-            .toList();
+        final banks =
+            list.map((e) => BankInfoModel.fromJson(Map<String, dynamic>.from(e))).toList();
         _bankListCache = banks;
         _bankListFetchedAt = now;
         return banks;
@@ -419,9 +388,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (_ok(response.statusCode)) {
       final data = response.data is Map<String, dynamic>
           ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
+          : (response.data is Map ? Map<String, dynamic>.from(response.data) : <String, dynamic>{});
       return BankAccountModel.fromJson(data);
     }
     throw DioException(
@@ -442,8 +409,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   }
 
   @override
-  Future<void> changePassword(
-      {required String oldPassword, required String newPassword}) async {
+  Future<void> changePassword({required String oldPassword, required String newPassword}) async {
     final response = await dio.post(ApiEndpoints.changePassword, data: {
       'old_password': oldPassword,
       'new_password': newPassword,
@@ -488,15 +454,13 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
   @override
   Future<bool> setWithdrawalPin(String pin) async {
-    final response =
-        await dio.post(ApiEndpoints.setWithdrawalPin, data: {'pin': pin});
+    final response = await dio.post(ApiEndpoints.setWithdrawalPin, data: {'pin': pin});
     return _ok(response.statusCode);
   }
 
   @override
   Future<bool> verifyWithdrawalPin(String pin) async {
-    final response = await dio
-        .post(ApiEndpoints.validateWithdrawalPin, data: {'pin': pin});
+    final response = await dio.post(ApiEndpoints.validateWithdrawalPin, data: {'pin': pin});
     return _ok(response.statusCode);
   }
 

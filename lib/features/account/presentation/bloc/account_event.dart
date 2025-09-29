@@ -86,8 +86,7 @@ class AccountDeleteBankAccount extends AccountEvent {
 class AccountChangePassword extends AccountEvent {
   final String oldPassword;
   final String newPassword;
-  const AccountChangePassword(
-      {required this.oldPassword, required this.newPassword});
+  const AccountChangePassword({required this.oldPassword, required this.newPassword});
 }
 
 class AccountDeleteAccount extends AccountEvent {

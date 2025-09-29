@@ -134,15 +134,15 @@ class CustomerRepositoryFake implements CustomerRepository {
     String? searchQuery,
   }) async {
     await Future.delayed(const Duration(milliseconds: 300)); // Simulate network delay
-    
+
     var filteredCustomers = _customers.where((customer) {
       if (searchQuery?.isEmpty ?? true) return true;
-      
+
       final query = searchQuery!.toLowerCase();
       return customer.name.toLowerCase().contains(query) ||
-             customer.email.toLowerCase().contains(query) ||
-             (customer.company?.toLowerCase().contains(query) ?? false) ||
-             (customer.phone?.contains(query) ?? false);
+          customer.email.toLowerCase().contains(query) ||
+          (customer.company?.toLowerCase().contains(query) ?? false) ||
+          (customer.phone?.contains(query) ?? false);
     }).toList();
 
     // Sort by last updated (newest first)
@@ -151,11 +151,11 @@ class CustomerRepositoryFake implements CustomerRepository {
     // Pagination
     final startIndex = (page - 1) * limit;
     final endIndex = startIndex + limit;
-    
+
     if (startIndex >= filteredCustomers.length) {
       return [];
     }
-    
+
     return filteredCustomers.sublist(
       startIndex,
       endIndex > filteredCustomers.length ? filteredCustomers.length : endIndex,
@@ -165,54 +165,54 @@ class CustomerRepositoryFake implements CustomerRepository {
   @override
   Future<Customer> getCustomerById(String id) async {
     await Future.delayed(const Duration(milliseconds: 200));
-    
+
     final customer = _customers.firstWhere(
       (customer) => customer.id == id,
       orElse: () => throw Exception('Customer not found'),
     );
-    
+
     return customer;
   }
 
   @override
   Future<Customer> createCustomer(Customer customer) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     final newCustomer = customer.copyWith(
       id: 'CUST_${DateTime.now().millisecondsSinceEpoch}',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
-    
+
     _customers.add(newCustomer);
     _streamController.add(_customers);
-    
+
     return newCustomer;
   }
 
   @override
   Future<Customer> updateCustomer(Customer customer) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final index = _customers.indexWhere((c) => c.id == customer.id);
     if (index == -1) {
       throw Exception('Customer not found');
     }
-    
+
     final updatedCustomer = customer.copyWith(
       updatedAt: DateTime.now(),
     );
-    
+
     _customers[index] = updatedCustomer;
     _streamController.add(_customers);
-    
+
     return updatedCustomer;
   }
 
   @override
   Future<void> deleteCustomer(String id) async {
     await Future.delayed(const Duration(milliseconds: 200));
-    
+
     _customers.removeWhere((customer) => customer.id == id);
     _streamController.add(_customers);
   }
