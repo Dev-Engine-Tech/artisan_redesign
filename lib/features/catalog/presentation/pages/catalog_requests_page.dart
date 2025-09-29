@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/core/theme.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';
-import 'catalog_request_view_page.dart';
+import '../widgets/catalog_request_card.dart';
 
 class CatalogRequestsPage extends StatefulWidget {
   const CatalogRequestsPage({super.key});
@@ -33,7 +34,12 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
     return BlocProvider.value(
       value: bloc,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Catalog Requests')),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          title: const Text('Catalog Requests'),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
         body: BlocConsumer<CatalogRequestsBloc, CatalogRequestsState>(
           listener: (context, state) {
             if (state is CatalogRequestsLoaded) _next = state.next;
@@ -48,8 +54,9 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
             }
             if (state is CatalogRequestsLoaded) {
               final items = state.items;
-              if (items.isEmpty)
+              if (items.isEmpty) {
                 return const Center(child: Text('No catalog requests'));
+              }
               return RefreshIndicator(
                 onRefresh: () async => bloc.add(RefreshCatalogRequests()),
                 child: ListView.builder(
@@ -79,15 +86,6 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
   }
 
   Widget _tile(CatalogRequest r) {
-    final subtitle = [r.clientName ?? '', r.clientPhone ?? '']
-        .where((e) => e.isNotEmpty)
-        .join(' • ');
-    return ListTile(
-      title: Text(r.title),
-      subtitle: Text(subtitle),
-      trailing: Text(r.status ?? ''),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => CatalogRequestViewPage(requestId: r.id))),
-    );
+    return CatalogRequestCard(request: r);
   }
 }

@@ -115,11 +115,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User?> verifyOtp({required String otp, String? pinId}) async {
-    // For non-fake implementation, delegate to remote data source
-    // Try to cast to implementation to access OTP methods
     try {
-      final impl = remote as dynamic;
-      final user = await impl.verifyOtp(otp: otp, pinId: pinId);
+      final user = await remote.verifyOtp(otp: otp, pinId: pinId);
       _currentUser = user;
       return user;
     } catch (e) {
@@ -130,8 +127,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<bool> resendOtp({String? phone}) async {
     try {
-      final impl = remote as dynamic;
-      return await impl.resendOtp(phone: phone);
+      return await remote.resendOtp(phone: phone);
     } catch (e) {
       return false;
     }
@@ -140,10 +136,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> forgotPassword({required String email}) async {
     try {
-      final impl = remote as dynamic;
-      await impl.forgotPassword(email: email);
+      await remote.forgotPassword(email: email);
     } catch (e) {
-      // Ignore errors for now
+      // Rethrow the exception to let the caller handle it
+      throw Exception('Failed to initiate password reset: ${e.toString()}');
     }
   }
 
@@ -151,8 +147,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> resetPassword(
       {required String token, required String newPassword}) async {
     try {
-      final impl = remote as dynamic;
-      return await impl.resetPassword(token: token, newPassword: newPassword);
+      return await remote.resetPassword(token: token, newPassword: newPassword);
     } catch (e) {
       return false;
     }
@@ -162,8 +157,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> changePassword(
       {required String currentPassword, required String newPassword}) async {
     try {
-      final impl = remote as dynamic;
-      return await impl.changePassword(
+      return await remote.changePassword(
           currentPassword: currentPassword, newPassword: newPassword);
     } catch (e) {
       return false;

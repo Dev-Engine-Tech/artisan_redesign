@@ -1,4 +1,5 @@
 import '../../domain/entities/catalog_request.dart';
+import '../../domain/entities/catalog_request_status.dart';
 
 class CatalogRequestModel extends CatalogRequest {
   const CatalogRequestModel({
@@ -17,6 +18,13 @@ class CatalogRequestModel extends CatalogRequest {
     super.catalogPictures = const [],
     super.deliveryDate,
     super.projectStatus,
+    // New comprehensive fields
+    super.catalog,
+    super.client,
+    super.deliveryDateTime,
+    super.requestStatus,
+    super.isArtisanApproved,
+    super.isClientApproved,
   });
 
   static CatalogMaterial _materialFrom(Map<String, dynamic> m) {
@@ -58,6 +66,32 @@ class CatalogRequestModel extends CatalogRequest {
           .toList();
     }
 
+    // Parse client object
+    CatalogClient? parseClient(Map? clientMap) {
+      if (clientMap == null) return null;
+      return CatalogClient(
+        id: clientMap['id'] ?? 0,
+        firstName: clientMap['first_name']?.toString() ?? '',
+        lastName: clientMap['last_name']?.toString() ?? '',
+        email: clientMap['email']?.toString(),
+        phone: clientMap['phone']?.toString(),
+        homeAddress: clientMap['home_address']?.toString(),
+        profilePic: clientMap['profile_pic']?.toString(),
+        stateName: clientMap['state']?['name']?.toString(),
+      );
+    }
+
+    // Parse catalog product object
+    CatalogProduct? parseCatalog(Map? catalogMap) {
+      if (catalogMap == null || catalogMap.isEmpty) return null;
+      return CatalogProduct(
+        id: catalogMap['id'] ?? 0,
+        title: catalogMap['title']?.toString() ?? '',
+        description: catalogMap['description']?.toString() ?? '',
+        pictures: extractPictures(catalogMap),
+      );
+    }
+
     return CatalogRequestModel(
       id: (json['id'] ?? json['request_id'] ?? '').toString(),
       title: (json['title'] ?? json['product_title'] ?? json['name'] ?? '')
@@ -86,6 +120,14 @@ class CatalogRequestModel extends CatalogRequest {
       catalogPictures: extractPictures(catalog),
       deliveryDate: json['delivery_date']?.toString(),
       projectStatus: json['project_status']?.toString(),
+
+      // New comprehensive fields from artisan_app analysis
+      catalog: parseCatalog(catalog),
+      client: parseClient(client),
+      deliveryDateTime: parseDate(json['delivery_date']),
+      requestStatus: CatalogRequestStatusExtension.fromString(json['status']?.toString() ?? 'pending'),
+      isArtisanApproved: json['is_artisan_approved'] == true,
+      isClientApproved: json['is_client_approved'] == true,
     );
   }
 
@@ -105,5 +147,12 @@ class CatalogRequestModel extends CatalogRequest {
         catalogPictures: catalogPictures,
         deliveryDate: deliveryDate,
         projectStatus: projectStatus,
+        // New comprehensive fields
+        catalog: catalog,
+        client: client,
+        deliveryDateTime: deliveryDateTime,
+        requestStatus: requestStatus,
+        isArtisanApproved: isArtisanApproved,
+        isClientApproved: isClientApproved,
       );
 }

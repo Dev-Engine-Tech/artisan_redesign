@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:artisans_circle/core/network/api_client.dart';
-import 'package:artisans_circle/core/network/api_endpoints.dart';
+import 'package:artisans_circle/core/api/endpoints.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
 
@@ -76,7 +76,7 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
     };
 
     final response = await apiClient.get(
-      ApiEndpoints.jobApplications,
+      ApiEndpoints.appliedJobs,
       queryParams: queryParams,
     );
 
@@ -132,7 +132,7 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
   @override
   Future<bool> acceptAgreement(String jobId) async {
     final response = await apiClient.post(
-      ApiEndpoints.acceptAgreement(int.parse(jobId)),
+      ApiEndpoints.acceptAgreementByProjectId(jobId),
     );
 
     return response.statusCode == 200 || response.statusCode == 201;
@@ -160,7 +160,7 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
   @override
   Future<bool> saveJob(String jobId) async {
     final response = await apiClient.patch(
-      ApiEndpoints.saveJob(int.parse(jobId)),
+      ApiEndpoints.saveOrUnsaveJobById(jobId),
     );
 
     return response.statusCode == 200 || response.statusCode == 201;

@@ -122,4 +122,49 @@ class AuthRemoteDataSourceFake implements AuthRemoteDataSource {
     }
     return _withDelay(_users[identifier]);
   }
+
+  @override
+  Future<User?> verifyOtp({required String otp, String? pinId}) async {
+    // For fake implementation, always succeed with a simple check
+    if (otp == '123456' || otp == '000000') {
+      // Return a verified fake user
+      final user = User(
+        id: int.parse(_nextId()),
+        phone: '+1234567890',
+        firstName: 'Verified',
+        lastName: 'User',
+        email: 'verified@example.com',
+        isArtisan: true,
+        isVerified: true,
+        isPhoneVerified: true,
+        isEmailVerified: true,
+      );
+      return _withDelay(user);
+    }
+    return _withDelay(null);
+  }
+
+  @override
+  Future<bool> resendOtp({String? phone}) async {
+    // For fake implementation, always succeed
+    return _withDelay(true);
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    // For fake implementation, just simulate delay
+    await _withDelay(null);
+  }
+
+  @override
+  Future<bool> resetPassword({required String token, required String newPassword}) async {
+    // For fake implementation, always succeed
+    return _withDelay(true);
+  }
+
+  @override
+  Future<bool> changePassword({required String currentPassword, required String newPassword}) async {
+    // For fake implementation, always succeed
+    return _withDelay(true);
+  }
 }

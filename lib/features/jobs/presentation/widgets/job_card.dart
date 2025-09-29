@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_details_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/agreement_modal.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/change_request_status_modal.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/services/job_share_service.dart';
 
 /// Polished job card aiming to match the provided designs:
 /// - soft rounded container with subtle border
@@ -31,8 +35,9 @@ class JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final budgetText =
-        '₦${job.minBudget.toString()} - ₦${job.maxBudget.toString()}';
+    final budgetText = job.minBudget == job.maxBudget 
+        ? '₦${job.maxBudget.toString()}'
+        : '₦${job.minBudget.toString()} - ₦${job.maxBudget.toString()}';
     final titleStyle = Theme.of(context)
         .textTheme
         .titleLarge
@@ -82,14 +87,23 @@ class JobCard extends StatelessWidget {
                           : null,
                     ),
                     const SizedBox(width: 12),
-                    // Title + category + address
+                    // Title + category + address + status
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(job.title, style: titleStyle),
+                          Row(
+                            children: [
+                              Expanded(child: Text(job.title, style: titleStyle)),
+                              if (job.applied) _buildStatusIndicator(),
+                            ],
+                          ),
                           const SizedBox(height: 4),
                           Text(job.category, style: subtitleStyle),
+                          if (job.applied) ...[
+                            const SizedBox(height: 4),
+                            _buildApplicationStatus(),
+                          ],
                           const SizedBox(height: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -112,11 +126,22 @@ class JobCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // menu icon
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.more_vert,
-                          size: 20, color: Colors.black54),
+                    // share and menu icons
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => JobShareService.shareJob(job),
+                          icon: const Icon(Icons.share_outlined,
+                              size: 20, color: Colors.black54),
+                          tooltip: 'Share Job',
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.more_vert,
+                              size: 20, color: Colors.black54),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -166,30 +191,9 @@ class JobCard extends StatelessWidget {
                       child: SizedBox(
                         height: 48,
                         child: ElevatedButton(
-                          onPressed: primaryAction ??
-                              (job.applied
-                                  ? null
-                                  : () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (ctx) {
-                                        // Ensure pushed route has access to the same JobBloc instance.
-                                        JobBloc bloc;
-                                        try {
-                                          bloc =
-                                              BlocProvider.of<JobBloc>(context);
-                                        } catch (_) {
-                                          bloc = getIt<JobBloc>();
-                                        }
-                                        return BlocProvider.value(
-                                          value: bloc,
-                                          child: JobDetailsPage(job: job),
-                                        );
-                                      }));
-                                    }),
+                          onPressed: primaryAction ?? _getPrimaryAction(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: job.applied
-                                ? AppColors.darkBlue
-                                : AppColors.orange,
+                            backgroundColor: _getPrimaryButtonColor(),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 12),
@@ -197,8 +201,7 @@ class JobCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12)),
                           ),
                           child: Text(
-                              primaryLabel ??
-                                  (job.applied ? 'Applied' : 'Apply'),
+                              primaryLabel ?? _getPrimaryLabel(),
                               style: const TextStyle(fontSize: 16)),
                         ),
                       ),
@@ -209,7 +212,7 @@ class JobCard extends StatelessWidget {
                       child: SizedBox(
                         height: 48,
                         child: OutlinedButton(
-                          onPressed: secondaryAction ?? () {},
+                          onPressed: secondaryAction ?? _getSecondaryAction(context),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: AppColors.softPeach,
                             side: BorderSide.none,
@@ -225,7 +228,7 @@ class JobCard extends StatelessWidget {
                               const Icon(Icons.reviews,
                                   size: 16, color: AppColors.orange),
                               const SizedBox(width: 6),
-                              Text(secondaryLabel ?? 'Reviews',
+                              Text(secondaryLabel ?? _getSecondaryLabel(),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -243,5 +246,210 @@ class JobCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Builds a small circular status indicator based on application status
+  Widget _buildStatusIndicator() {
+    Color statusColor;
+    IconData statusIcon;
+    
+    if (job.status == JobStatus.accepted) {
+      statusColor = Colors.green;
+      statusIcon = Icons.check_circle;
+    } else if (job.agreement != null) {
+      statusColor = Colors.orange;
+      statusIcon = Icons.assignment;
+    } else if (job.changeRequest != null) {
+      statusColor = Colors.blue;
+      statusIcon = Icons.change_circle;
+    } else {
+      statusColor = Colors.grey;
+      statusIcon = Icons.pending;
+    }
+
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.1),
+        shape: BoxShape.circle,
+        border: Border.all(color: statusColor, width: 1.5),
+      ),
+      child: Icon(
+        statusIcon,
+        size: 14,
+        color: statusColor,
+      ),
+    );
+  }
+
+  /// Builds the application status text
+  Widget _buildApplicationStatus() {
+    final status = job.applicationStatus;
+    Color statusColor;
+    
+    if (status == 'Accepted') {
+      statusColor = Colors.green;
+    } else if (status == 'Review Agreement') {
+      statusColor = Colors.orange;
+    } else if (status == 'Change request sent') {
+      statusColor = Colors.blue;
+    } else {
+      statusColor = Colors.grey;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          fontSize: 11,
+          color: statusColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  /// Gets the primary action based on application status
+  VoidCallback? _getPrimaryAction(BuildContext context) {
+    if (!job.applied) {
+      return () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+          // Ensure pushed route has access to the same JobBloc instance.
+          JobBloc bloc;
+          try {
+            bloc = BlocProvider.of<JobBloc>(context);
+          } catch (_) {
+            bloc = getIt<JobBloc>();
+          }
+          return BlocProvider.value(
+            value: bloc,
+            child: JobDetailsPage(job: job),
+          );
+        }));
+      };
+    }
+    
+    // If there's an agreement, show agreement modal directly
+    if (job.agreement != null) {
+      return () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => DraggableScrollableSheet(
+            expand: false,
+            initialChildSize: 0.9,
+            minChildSize: 0.5,
+            maxChildSize: 0.95,
+            builder: (context, controller) => AgreementModal(
+              job: job,
+              agreement: job.agreement!,
+            ),
+          ),
+        );
+      };
+    }
+    
+    // If there's a change request, show change request status modal
+    if (job.changeRequest != null) {
+      return () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => ChangeRequestStatusModal(
+            job: job,
+            changeRequest: job.changeRequest!,
+          ),
+        );
+      };
+    }
+    
+    // No agreement yet - waiting state, button should be disabled
+    return null;
+  }
+
+  /// Gets the primary button label based on application status
+  String _getPrimaryLabel() {
+    if (!job.applied) {
+      return 'Apply';
+    }
+    
+    if (job.status == JobStatus.accepted) {
+      return 'View Project';
+    } else if (job.agreement != null) {
+      return 'Accept Agreement';
+    } else if (job.changeRequest != null) {
+      return 'View Changes';
+    } else {
+      // No agreement yet - waiting
+      return 'Waiting Agreement';
+    }
+  }
+
+  /// Gets the primary button color based on application status
+  Color _getPrimaryButtonColor() {
+    if (!job.applied) {
+      return AppColors.orange;
+    }
+    
+    if (job.status == JobStatus.accepted) {
+      return Colors.green;
+    } else if (job.agreement != null) {
+      return Colors.orange;
+    } else if (job.changeRequest != null) {
+      return Colors.blue;
+    } else {
+      // No agreement yet - grayed out
+      return Colors.grey;
+    }
+  }
+
+  /// Gets the secondary button label based on application status
+  String _getSecondaryLabel() {
+    if (job.applied && job.agreement != null) {
+      return 'Reject';
+    }
+    return 'Reviews';
+  }
+
+  /// Gets the secondary button action based on application status
+  VoidCallback? _getSecondaryAction(BuildContext context) {
+    if (job.applied && job.agreement != null) {
+      // Return reject action - could show confirmation dialog
+      return () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Reject Agreement'),
+            content: const Text('Are you sure you want to reject this agreement?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // TODO: Implement reject agreement logic
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Agreement rejected')),
+                  );
+                },
+                child: const Text('Reject'),
+              ),
+            ],
+          ),
+        );
+      };
+    }
+    return () {}; // Default empty action for reviews
   }
 }

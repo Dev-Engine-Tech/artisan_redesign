@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/services/job_share_service.dart';
 
 /// Discover-specific job card updated to closely match the provided design:
 /// - large image banner with rounded corners
@@ -12,8 +13,20 @@ import 'package:artisans_circle/core/theme.dart';
 class DiscoverJobCard extends StatelessWidget {
   final Job job;
   final VoidCallback? onTap;
+  final bool showShareButton;
+  final VoidCallback? onShare;
+  final bool showSaveButton;
+  final VoidCallback? onSave;
 
-  const DiscoverJobCard({super.key, required this.job, this.onTap});
+  const DiscoverJobCard({
+    super.key, 
+    required this.job, 
+    this.onTap,
+    this.showShareButton = true,
+    this.onShare,
+    this.showSaveButton = true,
+    this.onSave,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,29 +57,83 @@ class DiscoverJobCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image banner
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                  child: job.thumbnailUrl.isNotEmpty
-                      ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: 180,
-                          errorBuilder: (c, e, s) => Container(
-                              color: Colors.black12,
-                              child: const Icon(Icons.image_not_supported)))
-                      : Container(
-                          width: double.infinity,
-                          height: 180,
-                          color: AppColors.softPink,
-                          child: const Center(
-                            child: Icon(Icons.home_repair_service_outlined,
-                                size: 48, color: AppColors.orange),
+                // Image banner with overlay actions
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
+                      child: job.thumbnailUrl.isNotEmpty
+                          ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 180,
+                              errorBuilder: (c, e, s) => Container(
+                                  color: Colors.black12,
+                                  child: const Icon(Icons.image_not_supported)))
+                          : Container(
+                              width: double.infinity,
+                              height: 180,
+                              color: AppColors.softPink,
+                              child: const Center(
+                                child: Icon(Icons.home_repair_service_outlined,
+                                    size: 48, color: AppColors.orange),
+                              ),
+                            ),
+                    ),
+                    
+                    // Top right actions
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (showShareButton) ...[
+                            _buildActionButton(
+                              icon: Icons.share_outlined,
+                              onTap: () {
+                                if (onShare != null) {
+                                  onShare!();
+                                } else {
+                                  JobShareService.shareJob(job);
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          if (showSaveButton)
+                            _buildActionButton(
+                              icon: Icons.bookmark_border,
+                              onTap: onSave,
+                            ),
+                        ],
+                      ),
+                    ),
+                    
+                    // Posted time badge
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.7),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          _getTimeAgo(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
+                      ),
+                    ),
+                  ],
                 ),
 
                 // content area
@@ -90,7 +157,9 @@ class DiscoverJobCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                                'Price Range\n₦${job.minBudget}k - ₦${job.maxBudget}k',
+                                job.minBudget == job.maxBudget 
+                                    ? 'Price\n₦${job.maxBudget.toStringAsFixed(0)}'
+                                    : 'Price Range\n₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}',
                                 textAlign: TextAlign.right,
                                 style: priceStyle),
                           ),
@@ -125,5 +194,41 @@ class DiscoverJobCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.9),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: AppColors.brownHeader,
+        ),
+      ),
+    );
+  }
+
+  String _getTimeAgo() {
+    // Since the Job entity doesn't have a createdAt field,
+    // we'll return a placeholder for now
+    // In a real implementation, this would calculate time difference
+    return 'Posted recently';
   }
 }

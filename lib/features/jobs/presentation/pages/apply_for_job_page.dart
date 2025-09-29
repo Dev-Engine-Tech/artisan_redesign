@@ -5,6 +5,7 @@ import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/job_material_management_widget.dart';
 import 'package:artisans_circle/core/di.dart';
 
 enum PaymentMethod { byProject, byMilestone }

@@ -98,7 +98,7 @@ class CatalogItemDetailsPage extends StatelessWidget {
                 // Open edit flow
                 final changed = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(
-                      builder: (_) => UploadCataloguePage(item: item)),
+                      builder: (_) => const UploadCataloguePage()),
                 );
                 if (changed == true && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(

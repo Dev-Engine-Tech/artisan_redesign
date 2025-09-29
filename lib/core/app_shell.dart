@@ -4,15 +4,15 @@ import 'package:artisans_circle/features/home/presentation/pages/home_page.dart'
 import 'package:artisans_circle/features/jobs/presentation/pages/discover_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/projects_page.dart';
 import 'package:artisans_circle/core/theme.dart';
-import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
-import 'package:artisans_circle/features/messages/presentation/bloc/conversations_bloc.dart';
-import 'package:artisans_circle/features/messages/domain/repositories/messages_repository.dart';
 import 'package:artisans_circle/features/account/presentation/pages/account_page.dart';
+import 'package:artisans_circle/features/invoices/presentation/pages/invoice_menu_page.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
+import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
+import 'package:artisans_circle/core/performance/performance_monitor.dart';
+// import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -23,34 +23,33 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
-  JobBloc? _jobBloc;
+  late final JobBloc _jobBloc;
+  late final AuthBloc _authBloc;
+  late final AccountBloc _accountBloc;
+  late final CatalogRequestsBloc _catalogRequestsBloc;
 
   // Pages will be created dynamically to provide proper context
   Widget _getPage(int index, BuildContext context) {
+    print('DEBUG: AppShell - _getPage called with index: $index');
     switch (index) {
       case 0:
+        print('DEBUG: AppShell - Returning HomePage');
         return const HomePage();
       case 1:
+        print('DEBUG: AppShell - Returning DiscoverPage');
         return const DiscoverPage();
       case 2:
+        print('DEBUG: AppShell - Returning CatalogPage');
         return const CatalogPage();
       case 3:
-        // Provide ConversationsBloc for MessagesListPage
-        final authBloc = context.read<AuthBloc>();
-        final authState = authBloc.state;
-        final currentUserId = authState is AuthAuthenticated && authState.user.id != null ? authState.user.id! : 1;
-        final messagesRepository = getIt<MessagesRepository>();
-        
-        return BlocProvider(
-          create: (_) => ConversationsBloc(
-            repository: messagesRepository,
-            currentUserId: currentUserId,
-          ),
-          child: MessagesListPage(),
-        );
+        print('DEBUG: AppShell - Returning InvoiceMenuPage');
+        // Modern Invoice Menu Page
+        return const InvoiceMenuPage();
       case 4:
+        print('DEBUG: AppShell - Returning SupportAccountPage');
         return const SupportAccountPage();
       default:
+        print('DEBUG: AppShell - Returning default HomePage');
         return const HomePage();
     }
   }
@@ -58,13 +57,33 @@ class _AppShellState extends State<AppShell> {
   @override
   void initState() {
     super.initState();
-    // debug log removed for production analyzer cleanliness
+    // Initialize performance monitoring
+    Performance.enable();
+    
+    // Initialize BLoCs once in initState for better performance
     _jobBloc = getIt<JobBloc>();
+    _authBloc = getIt<AuthBloc>();
+    _accountBloc = getIt<AccountBloc>();
+    _catalogRequestsBloc = getIt<CatalogRequestsBloc>();
+    
+    // Track app launch analytics
+    // try {
+    //   final analyticsService = getIt<AnalyticsService>();
+    //   analyticsService.logEvent('app_launched', {
+    //     'platform': 'mobile',
+    //     'timestamp': DateTime.now().toIso8601String(),
+    //   });
+    // } catch (e) {
+    //   // Analytics failure shouldn't crash the app
+    // }
   }
 
   @override
   void dispose() {
-    _jobBloc?.close();
+    _jobBloc.close();
+    _authBloc.close();
+    _accountBloc.close();
+    _catalogRequestsBloc.close();
     super.dispose();
   }
 
@@ -76,17 +95,16 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final jobBloc = _jobBloc ??= getIt<JobBloc>();
-    final authBloc = getIt<AuthBloc>();
-    final accountBloc = getIt<AccountBloc>();
-    // debug log removed for production analyzer cleanliness
+    Performance.trackRebuild('AppShell');
+    
     return Scaffold(
       // Provide AuthBloc, JobBloc, and AccountBloc to descendant pages.
       body: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthBloc>.value(value: authBloc),
-          BlocProvider<JobBloc>.value(value: jobBloc),
-          BlocProvider<AccountBloc>.value(value: accountBloc),
+          BlocProvider<AuthBloc>.value(value: _authBloc),
+          BlocProvider<JobBloc>.value(value: _jobBloc),
+          BlocProvider<AccountBloc>.value(value: _accountBloc),
+          BlocProvider<CatalogRequestsBloc>.value(value: _catalogRequestsBloc),
         ],
         child: Builder(
           builder: (context) => IndexedStack(
@@ -151,16 +169,16 @@ class _AppShellState extends State<AppShell> {
                   label: 'Catalogue',
                 ),
                 BottomNavigationBarItem(
-                  icon: const Icon(Icons.chat_bubble_outline),
+                  icon: const Icon(Icons.receipt_long_outlined),
                   activeIcon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                         color: AppColors.softPink,
                         borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.chat_bubble_outline,
+                    child: const Icon(Icons.receipt_long_outlined,
                         color: AppColors.orange),
                   ),
-                  label: 'Message',
+                  label: 'Invoice',
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.person_outline),

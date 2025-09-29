@@ -13,9 +13,9 @@ import 'my_profile_page.dart';
 import 'my_earnings_page.dart';
 import 'add_bank_page.dart';
 import 'contact_us_page.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
+// import 'package:url_launcher/url_launcher.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:image_cropper/image_cropper.dart';
 import '../widgets/image_preview_page.dart';
 import 'raise_ticket_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -150,9 +150,10 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
       final storeUrl = const String.fromEnvironment('APP_UPDATE_URL', defaultValue: 'https://artisansbridge.com');
       if (latest.isNotEmpty && latest != current) {
         final uri = Uri.parse(storeUrl);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
+        // TODO: URL launcher functionality temporarily disabled
+        // if (await canLaunchUrl(uri)) {
+        //   await launchUrl(uri, mode: LaunchMode.externalApplication);
+        // }
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Update available: $latest (current $current)')),
@@ -295,36 +296,37 @@ class _HeaderCard extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () async {
-                      final picker = ImagePicker();
-                      final XFile? file = await picker.pickImage(
-                          source: ImageSource.gallery, maxWidth: 2048, imageQuality: 92);
-                      String? path = file?.path;
-                      if (path != null) {
-                        final cropped = await ImageCropper().cropImage(
-                          sourcePath: path,
-                          aspectRatioPresets: const [
-                            CropAspectRatioPreset.square,
-                            CropAspectRatioPreset.ratio4x3,
-                            CropAspectRatioPreset.original,
-                          ],
-                          uiSettings: [
-                            AndroidUiSettings(
-                              toolbarTitle: 'Crop Photo',
-                              toolbarColor: Colors.black,
-                              toolbarWidgetColor: Colors.white,
-                              hideBottomControls: false,
-                              lockAspectRatio: false,
-                            ),
-                            IOSUiSettings(title: 'Crop Photo'),
-                          ],
-                        );
-                        path = cropped?.path ?? path;
-                      }
-                      if (path != null && context.mounted) {
-                        context
-                            .read<AccountBloc>()
-                            .add(AccountUploadProfileImage(path));
-                      }
+                      // TODO: Image picker functionality temporarily disabled
+                      // final picker = ImagePicker();
+                      // final XFile? file = await picker.pickImage(
+                      //     source: ImageSource.gallery, maxWidth: 2048, imageQuality: 92);
+                      // String? path = file?.path;
+                      // if (path != null) {
+                      //   final cropped = await ImageCropper().cropImage(
+                      //     sourcePath: path,
+                      //     aspectRatioPresets: const [
+                      //       CropAspectRatioPreset.square,
+                      //       CropAspectRatioPreset.ratio4x3,
+                      //       CropAspectRatioPreset.original,
+                      //     ],
+                      //     uiSettings: [
+                      //       AndroidUiSettings(
+                      //         toolbarTitle: 'Crop Photo',
+                      //         toolbarColor: Colors.black,
+                      //         toolbarWidgetColor: Colors.white,
+                      //         hideBottomControls: false,
+                      //         lockAspectRatio: false,
+                      //       ),
+                      //       IOSUiSettings(title: 'Crop Photo'),
+                      //     ],
+                      //   );
+                      //   path = cropped?.path ?? path;
+                      // }
+                      // if (path != null && context.mounted) {
+                      //   context
+                      //       .read<AccountBloc>()
+                      //       .add(AccountUploadProfileImage(path));
+                      // }
                     },
                     child: const CircleAvatar(
                       radius: 10,

@@ -9,4 +9,13 @@ abstract class AuthRemoteDataSource {
   Future<void> signOut();
   Future<User?> signInWithGoogle();
   Future<User?> signInWithApple();
+  
+  // OTP verification methods
+  Future<User?> verifyOtp({required String otp, String? pinId});
+  Future<bool> resendOtp({String? phone});
+  
+  // Password management methods
+  Future<void> forgotPassword({required String email});
+  Future<bool> resetPassword({required String token, required String newPassword});
+  Future<bool> changePassword({required String currentPassword, required String newPassword});
 }

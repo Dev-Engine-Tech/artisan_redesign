@@ -35,8 +35,6 @@ void main() {
     maxBudget: 200,
     duration: '2 days',
     applied: false,
-    agreementSent: false,
-    agreementAccepted: false,
     thumbnailUrl: '',
   );
 

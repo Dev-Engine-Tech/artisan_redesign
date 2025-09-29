@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_jobs.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_applications.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
@@ -14,6 +15,8 @@ import 'package:artisans_circle/features/jobs/presentation/pages/change_request_
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
 
 class MockGetJobs extends Mock implements GetJobs {}
+
+class MockGetApplications extends Mock implements GetApplications {}
 
 class MockApplyToJob extends Mock implements ApplyToJob {}
 
@@ -26,6 +29,7 @@ class MockJobBloc extends MockBloc<JobEvent, JobState> implements JobBloc {}
 
 void main() {
   late MockGetJobs mockGetJobs;
+  late MockGetApplications mockGetApplications;
   late MockApplyToJob mockApplyToJob;
   late MockAcceptAgreement mockAcceptAgreement;
   late MockRequestChange mockRequestChange;
@@ -41,8 +45,6 @@ void main() {
     maxBudget: 200,
     duration: '2 days',
     applied: true,
-    agreementSent: true,
-    agreementAccepted: false,
     thumbnailUrl: '',
   );
 
@@ -64,6 +66,7 @@ void main() {
 
   setUp(() {
     mockGetJobs = MockGetJobs();
+    mockGetApplications = MockGetApplications();
     mockApplyToJob = MockApplyToJob();
     mockAcceptAgreement = MockAcceptAgreement();
     mockRequestChange = MockRequestChange();
@@ -74,6 +77,7 @@ void main() {
 
     bloc = JobBloc(
       getJobs: mockGetJobs,
+      getApplications: mockGetApplications,
       applyToJob: mockApplyToJob,
       acceptAgreement: mockAcceptAgreement,
       requestChange: mockRequestChange,

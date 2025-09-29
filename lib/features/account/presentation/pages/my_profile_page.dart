@@ -12,9 +12,9 @@ import 'work_experience_page.dart';
 import 'education_page.dart';
 import 'skills_page.dart';
 import 'years_of_experience_page.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import '../widgets/image_preview_page.dart';
-import 'package:image_cropper/image_cropper.dart';
+// import 'package:image_cropper/image_cropper.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({super.key});
@@ -76,29 +76,31 @@ class _ProfileView extends StatelessWidget {
 
   Future<String?> _pickImagePath() async {
     try {
-      final picker = ImagePicker();
-      final XFile? file = await picker.pickImage(
-          source: ImageSource.gallery, maxWidth: 2048, imageQuality: 92);
-      if (file == null) return null;
-      final cropped = await ImageCropper().cropImage(
-        sourcePath: file.path,
-        aspectRatioPresets: const [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.original,
-        ],
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Crop Photo',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white,
-            hideBottomControls: false,
-            lockAspectRatio: false,
-          ),
-          IOSUiSettings(title: 'Crop Photo'),
-        ],
-      );
-      return cropped?.path ?? file.path;
+      // TODO: Image picker functionality temporarily disabled
+      // final picker = ImagePicker();
+      // final XFile? file = await picker.pickImage(
+      //     source: ImageSource.gallery, maxWidth: 2048, imageQuality: 92);
+      // if (file == null) return null;
+      // final cropped = await ImageCropper().cropImage(
+      //   sourcePath: file.path,
+      //   aspectRatioPresets: const [
+      //     CropAspectRatioPreset.square,
+      //     CropAspectRatioPreset.ratio4x3,
+      //     CropAspectRatioPreset.original,
+      //   ],
+      //   uiSettings: [
+      //     AndroidUiSettings(
+      //       toolbarTitle: 'Crop Photo',
+      //       toolbarColor: Colors.black,
+      //       toolbarWidgetColor: Colors.white,
+      //       hideBottomControls: false,
+      //       lockAspectRatio: false,
+      //     ),
+      //     IOSUiSettings(title: 'Crop Photo'),
+      //   ],
+      // );
+      // return cropped?.path ?? file.path;
+      return null;
     } catch (_) {
       return null;
     }

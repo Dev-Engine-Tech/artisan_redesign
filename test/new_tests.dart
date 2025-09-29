@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/messages/domain/entities/conversation.dart';
 import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
 import 'package:artisans_circle/features/home/presentation/pages/home_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_invite_details_page.dart';
@@ -77,8 +78,8 @@ void main() {
         name: 'Client Test',
         jobTitle: 'Test Project',
         lastMessage: 'Hello world',
-        unread: 0,
-        thumbnail: '',
+        unreadCount: 0,
+        avatarUrl: '',
         online: true,
       );
 

@@ -1,6 +1,6 @@
 class ApiEndpoints {
   // Base URLs
-  static const String baseUrl = 'https://apistaging.artisansbridge.com';
+  static const String baseUrl = 'https://artisansbridge.azurewebsites.net';
 
   // Auth endpoints
   static const String login = '/auth/login/';
@@ -47,7 +47,7 @@ class ApiEndpoints {
   static const String respondToInvitation = '/job/api/respond-to-invitation/';
   static const String saveJob = '/job/api/jobs/{id}/save-or-unsave/';
   static const String savedJobs = '/job/api/jobs/saved/';
-  static const String appliedJobs = '/job/api/applied-jobs/';
+  static const String appliedJobs = '/job/api/jobs/applications/';
   static const String myJobs = '/job/api/project/';
   static const String jobDetails = '/job/api/job-details/';
   static const String inviteArtisan = '/job/api/invite-artisan/';
@@ -95,6 +95,10 @@ class ApiEndpoints {
   static const String uploadDocument = '/upload/document/';
   static const String uploadVideo = '/upload/video/';
 
+  // Banner endpoints
+  static const String banners = '/banners/';
+  static const String bannersByCategory = '/banners/category/';
+
   // Miscellaneous endpoints
   static const String reportUser = '/user/report-user/';
   static const String blockUser = '/user/block-user/';
@@ -117,4 +121,8 @@ class ApiEndpoints {
   static String notificationById(int notificationId) =>
       '/notifications/$notificationId/';
   static String lgasByState(int stateId) => '/location/lgas/$stateId/';
+  static String getBannersByCategory(String category) => '/banners/category/$category/';
+  
+  // Banner endpoints with category support
+  static String getBanners(String category) => '/auth/get/banners/$category/';
 }

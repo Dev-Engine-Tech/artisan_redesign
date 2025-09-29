@@ -2,12 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:artisans_circle/core/storage/secure_storage.dart';
 
 import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source.dart';
 import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source_fake.dart';
 import 'package:artisans_circle/features/jobs/data/repositories/job_repository_impl.dart';
 import 'package:artisans_circle/features/jobs/domain/repositories/job_repository.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_jobs.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_applications.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
@@ -31,6 +33,7 @@ import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dar
 import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
     if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart'
     as ssl;
+import 'package:artisans_circle/core/services/banner_service.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
@@ -83,16 +86,26 @@ import 'package:artisans_circle/features/account/domain/usecases/verify_withdraw
 // Messages feature
 import 'package:artisans_circle/features/messages/data/datasources/messages_in_memory_data_source.dart';
 import 'package:artisans_circle/features/messages/data/repositories/messages_repository_impl.dart';
-import 'package:artisans_circle/features/messages/data/repositories/messages_repository_firebase.dart';
+// import 'package:artisans_circle/features/messages/data/repositories/messages_repository_firebase.dart';
 import 'package:artisans_circle/features/messages/domain/repositories/messages_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart' as fb;
-import 'package:firebase_auth/firebase_auth.dart' as fba;
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_core/firebase_core.dart' as fb;
+// import 'package:firebase_auth/firebase_auth.dart' as fba;
 // Notifications feature
 import 'package:artisans_circle/features/notifications/data/datasources/notification_remote_data_source.dart';
 import 'package:artisans_circle/features/notifications/data/datasources/notification_remote_data_source_impl.dart';
 import 'package:artisans_circle/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:artisans_circle/features/notifications/domain/repositories/notification_repository.dart';
+// Invoice feature
+import 'package:artisans_circle/features/invoices/data/repositories/invoice_repository_fake.dart';
+import 'package:artisans_circle/features/invoices/domain/repositories/invoice_repository.dart';
+import 'package:artisans_circle/features/invoices/domain/usecases/get_invoices.dart' as invoice_usecases;
+import 'package:artisans_circle/features/invoices/domain/usecases/create_invoice.dart' as invoice_usecases;
+import 'package:artisans_circle/features/invoices/domain/usecases/send_invoice.dart' as invoice_usecases;
+import 'package:artisans_circle/features/invoices/presentation/bloc/invoice_bloc.dart';
+import 'package:artisans_circle/core/network/http_service.dart';
+// import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
+// import 'package:artisans_circle/core/performance/performance_monitor.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -111,6 +124,9 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   // External / 3rd party
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+  
+  // Register secure storage for sensitive data
+  getIt.registerLazySingleton<SecureStorage>(() => SecureStorage());
 
   getIt.registerLazySingleton<Dio>(() {
     final dio = Dio(
@@ -120,12 +136,12 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
         receiveTimeout: const Duration(seconds: 10),
       ),
     );
-    // Attach Authorization header from SharedPreferences for all requests.
+    // Attach Authorization header from SecureStorage for all requests.
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         try {
-          final prefs = getIt<SharedPreferences>();
-          final token = prefs.getString('access_token');
+          final secureStorage = getIt<SecureStorage>();
+          final token = await secureStorage.getAccessToken();
           options.headers.addAll({
             'Accept': 'application/json',
             'Content-Type':
@@ -149,13 +165,46 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     if (kAllowInsecure) {
       try {
         final host = Uri.parse(baseUrl ?? ApiEndpoints.baseUrl).host;
+        print('🔒 SSL: Applying insecure certificate bypass for host: $host');
         ssl.configureBadCertificate(dio, host: host);
-      } catch (_) {
+        print('🔒 SSL: Certificate bypass configured successfully');
+      } catch (e) {
+        print('🔒 SSL: Failed to configure certificate bypass: $e');
         // ignore: any issues configuring insecure mode should not crash app
       }
+    } else {
+      print('🔒 SSL: Certificate bypass is DISABLED');
     }
     return dio;
   });
+
+  // Register optimized HTTP service for better performance
+  getIt.registerLazySingleton<HttpService>(
+    () => HttpServiceFactory.create(
+      baseUrl: baseUrl ?? ApiEndpoints.baseUrl,
+      cacheDuration: const Duration(minutes: 5),
+      maxCacheSize: 100,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+    ),
+  );
+
+  // Register Banner Service
+  getIt.registerLazySingleton<BannerService>(
+    () => BannerService(),
+  );
+
+  // Register Firebase Analytics service
+  // getIt.registerLazySingleton<AnalyticsService>(
+  //   () => FirebaseAnalyticsService(),
+  // );
+
+  // Register Performance Monitor with Analytics integration
+  // getIt.registerLazySingleton<PerformanceMonitor>(() {
+  //   final monitor = DefaultPerformanceMonitor();
+  //   monitor.setAnalyticsService(getIt<AnalyticsService>());
+  //   return monitor;
+  // });
 
   // Core / infrastructure - feature registrations
   // Jobs feature
@@ -175,6 +224,10 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
 
   getIt.registerLazySingleton<GetJobs>(
     () => GetJobs(getIt<JobRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetApplications>(
+    () => GetApplications(getIt<JobRepository>()),
   );
 
   // Register additional usecases
@@ -198,7 +251,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     );
   } else {
     getIt.registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(getIt<Dio>(), getIt<SharedPreferences>()),
+      () => AuthRemoteDataSourceImpl(getIt<Dio>(), getIt<SharedPreferences>(), getIt<SecureStorage>()),
     );
   }
 
@@ -247,6 +300,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   getIt.registerFactory<JobBloc>(
     () => JobBloc(
       getJobs: getIt<GetJobs>(),
+      getApplications: getIt<GetApplications>(),
       applyToJob: getIt<ApplyToJob>(),
       acceptAgreement: getIt<AcceptAgreement>(),
       requestChange: getIt<RequestChange>(),
@@ -378,21 +432,22 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
         uploadProfileImage: getIt<UploadProfileImage>(),
       ));
 
-  // Messages feature
-  final bool hasFirebase = fb.Firebase.apps.isNotEmpty;
-  final bool hasFirebaseAuthUser = hasFirebase && (fba.FirebaseAuth.instance.currentUser != null);
-  final bool hasCustomToken = getIt<SharedPreferences>().getString('firebase_token') != null;
-  if (kUseFirebaseMessages && hasFirebase && (hasFirebaseAuthUser || hasCustomToken)) {
-    // Firebase-backed
-    getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
-    getIt.registerLazySingleton<MessagesRepository>(
-        () => MessagesRepositoryFirebase(getIt<FirebaseFirestore>()));
-  } else {
+  // Messages feature - using in-memory fallback since Firebase is disabled
+  // final bool hasFirebase = fb.Firebase.apps.isNotEmpty;
+  // final bool hasFirebaseAuthUser = hasFirebase && (fba.FirebaseAuth.instance.currentUser != null);
+  // final String? customToken = await getIt<SecureStorage>().getFirebaseToken();
+  // final bool hasCustomToken = customToken != null;
+  // if (kUseFirebaseMessages && hasFirebase && (hasFirebaseAuthUser || hasCustomToken)) {
+  //   // Firebase-backed
+  //   getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+  //   getIt.registerLazySingleton<MessagesRepository>(
+  //       () => MessagesRepositoryFirebase(getIt<FirebaseFirestore>()));
+  // } else {
     // In-memory fallback
     getIt.registerLazySingleton<InMemoryMessagesStore>(() => InMemoryMessagesStore());
     getIt.registerLazySingleton<MessagesRepository>(
         () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
-  }
+  // }
 
   // Notifications feature
   getIt.registerLazySingleton<NotificationRemoteDataSource>(
@@ -400,6 +455,28 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   );
   getIt.registerLazySingleton<NotificationRepository>(
     () => NotificationRepositoryImpl(remoteDataSource: getIt<NotificationRemoteDataSource>()),
+  );
+
+  // Invoice feature
+  getIt.registerLazySingleton<InvoiceRepository>(
+    () => InvoiceRepositoryFake(),
+  );
+  getIt.registerLazySingleton<invoice_usecases.GetInvoices>(
+    () => invoice_usecases.GetInvoices(getIt<InvoiceRepository>()),
+  );
+  getIt.registerLazySingleton<invoice_usecases.CreateInvoice>(
+    () => invoice_usecases.CreateInvoice(getIt<InvoiceRepository>()),
+  );
+  getIt.registerLazySingleton<invoice_usecases.SendInvoice>(
+    () => invoice_usecases.SendInvoice(getIt<InvoiceRepository>()),
+  );
+  getIt.registerFactory<InvoiceBloc>(
+    () => InvoiceBloc(
+      getInvoices: getIt<invoice_usecases.GetInvoices>(),
+      createInvoice: getIt<invoice_usecases.CreateInvoice>(),
+      sendInvoice: getIt<invoice_usecases.SendInvoice>(),
+      repository: getIt<InvoiceRepository>(),
+    ),
   );
 
 }

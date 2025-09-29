@@ -26,6 +26,10 @@ import 'package:artisans_circle/features/account/presentation/pages/transactions
 import 'package:artisans_circle/features/home/presentation/widgets/profile_action_buttons.dart';
 import 'package:artisans_circle/features/home/utils/profile_utils.dart';
 import 'package:artisans_circle/features/notifications/presentation/widgets/notification_icon.dart';
+import 'package:artisans_circle/features/messages/presentation/widgets/message_icon.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/home_tab_section.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart';
+import 'package:artisans_circle/core/performance/performance_monitor.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,7 +38,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
+  @override
+  Widget buildWithTracking(BuildContext context) => _buildHome(context);
   int _selectedIndex = 0;
   final PageController _heroController = PageController(viewportFraction: 0.98);
   final ScrollController _scrollController = ScrollController();
@@ -78,7 +84,9 @@ class _HomePageState extends State<HomePage> {
   void _loadJobsData() {
     try {
       final jobBloc = BlocProvider.of<JobBloc>(context);
-      jobBloc.add(LoadJobs(page: 1, limit: 10));
+      // Load applications first (for Applications tab)
+      // Jobs will be loaded when user switches to Jobs tab to avoid race condition
+      jobBloc.add(LoadApplications(page: 1, limit: 10));
     } catch (e) {
       // JobBloc not available in context, will use sample data
     }
@@ -148,9 +156,6 @@ class _HomePageState extends State<HomePage> {
           maxBudget: 200000,
           duration: 'Less than a month',
           applied: true,
-          // mark one sample application as having an agreement sent
-          agreementSent: i == 1,
-          agreementAccepted: false,
         ),
       );
     }
@@ -177,52 +182,54 @@ class _HomePageState extends State<HomePage> {
   // Removed unused _sampleOrders() helper to satisfy analyzer
 
   List<JobModel> _getJobsForTab(int index, JobState jobState) {
-    // Use the provided jobState from BlocBuilder
+    // Use different data sources for different tabs
     try {
-      
-      // Handle multiple JobBloc states that contain jobs
-      List<Job>? realJobsData;
-      if (jobState is JobStateLoaded) {
-        realJobsData = jobState.jobs;
-      } else if (jobState is JobStateAppliedSuccess) {
-        realJobsData = jobState.jobs;
-      } else if (jobState is JobStateAgreementAccepted) {
-        realJobsData = jobState.jobs;
-      } else if (jobState is JobStateChangeRequested) {
-        realJobsData = jobState.jobs;
-      }
-      
-      if (realJobsData != null && realJobsData.isNotEmpty) {
-        final realJobs = realJobsData.map((job) => JobModel(
-          id: job.id,
-          title: job.title,
-          category: job.category,
-          description: job.description,
-          address: job.address,
-          minBudget: job.minBudget,
-          maxBudget: job.maxBudget,
-          duration: job.duration,
-          applied: job.applied,
-          agreementSent: job.agreementSent,
-          agreementAccepted: job.agreementAccepted,
-          thumbnailUrl: job.thumbnailUrl,
-        )).toList();
-        
-        switch (index) {
-          case 1:
-            // Applications tab - filter applied jobs
-            return realJobs.where((job) => job.applied).toList();
-          case 2:
-            // Job invites - for now use sample data
-            return _sampleInvites();
-          case 3:
-            // Orders tab will handle catalog requests separately
-            return [];
-          case 0:
-          default:
-            // Jobs tab - show all available jobs
-            return realJobs;
-        }
+      switch (index) {
+        case 1:
+          // Applications tab - use applied jobs data only
+          if (jobState is JobStateAppliedSuccess) {
+            return jobState.jobs.map((job) => JobModel(
+              id: job.id,
+              title: job.title,
+              category: job.category,
+              description: job.description,
+              address: job.address,
+              minBudget: job.minBudget,
+              maxBudget: job.maxBudget,
+              duration: job.duration,
+              applied: true, // These are from applied jobs endpoint
+              thumbnailUrl: job.thumbnailUrl,
+              status: job.status,
+              agreement: job.agreement,
+              changeRequest: job.changeRequest,
+              materials: job.materials,
+            )).toList();
+          }
+          return [];
+        case 2:
+          // Job invites - for now use sample data
+          return _sampleInvites();
+        case 3:
+          // Orders tab will handle catalog requests separately
+          return [];
+        case 0:
+        default:
+          // Jobs tab - use general jobs data only
+          if (jobState is JobStateLoaded) {
+            return jobState.jobs.map((job) => JobModel(
+              id: job.id,
+              title: job.title,
+              category: job.category,
+              description: job.description,
+              address: job.address,
+              minBudget: job.minBudget,
+              maxBudget: job.maxBudget,
+              duration: job.duration,
+              applied: false, // These are from general jobs endpoint
+              thumbnailUrl: job.thumbnailUrl,
+            )).toList();
+          }
+          return [];
       }
     } catch (e) {
       // JobBloc not available, fall back to sample data
@@ -364,8 +371,6 @@ class _HomePageState extends State<HomePage> {
         maxBudget: old.maxBudget,
         duration: old.duration,
         applied: true,
-        agreementSent: true,
-        agreementAccepted: true,
         thumbnailUrl: old.thumbnailUrl,
       );
     });
@@ -387,8 +392,6 @@ class _HomePageState extends State<HomePage> {
         maxBudget: old.maxBudget,
         duration: old.duration,
         applied: true,
-        agreementSent: false,
-        agreementAccepted: false,
         thumbnailUrl: old.thumbnailUrl,
       );
     });
@@ -528,10 +531,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
+  Widget _buildHome(BuildContext context) {
+    return BlocListener<JobBloc, JobState>(
+      listener: (context, state) {
+        print('DEBUG: HomePage - BlocListener received state: ${state.runtimeType}');
+        if (state is JobStateAppliedSuccess) {
+          print('DEBUG: HomePage - Updating _applications with ${state.jobs.length} applications');
+          _updateApplications(state.jobs.cast<JobModel>());
+        }
+      },
+      child: Performance.timeSync('HomePage_build', () {
+        return _buildOptimizedHomePage(context);
+      }) ?? _buildOptimizedHomePage(context),
+    );
+  }
+  
+  Widget _buildOptimizedHomePage(BuildContext context) {
+    print('DEBUG: HomePage - _buildOptimizedHomePage called, _applications.length: ${_applications.length}');
     return Scaffold(
       backgroundColor: AppColors.lightPeach,
       body: SafeArea(
@@ -539,475 +555,267 @@ class _HomePageState extends State<HomePage> {
           controller: _scrollController,
           padding: EdgeInsets.zero,
           children: [
-            // Brown header (rounded bottom corners to match design)
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(28)),
-              child: Container(
-                width: double.infinity,
-                color: AppColors.brownHeader,
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // top row: avatar + greeting + bell
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            // avatar circle with subtle white border
-                            Container(
-                              width: 46,
-                              height: 46,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white24),
-                                color: Colors.white24,
-                              ),
-                              child: const CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.transparent,
-                                  child:
-                                      Icon(Icons.person, color: Colors.white)),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Text('Hey, Uwak Daniel',
-                                      style: textTheme.titleLarge?.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 18),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                                Flexible(
-                                  child: Text('Welcome back!',
-                                      style: textTheme.bodyMedium?.copyWith(
-                                          color: Colors.white70, fontSize: 12),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        // notification icon with dynamic badge
-                        const NotificationIcon(
-                          unreadCount: 2, // TODO: Replace with actual count from repository
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // Available balance label
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                          color: Colors.white24,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Text('Available Balance',
-                          style: textTheme.bodySmall
-                              ?.copyWith(color: Colors.white70)),
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Big balance amount row (made responsive to avoid overflow)
-                    BlocBuilder<AccountBloc, AccountState>(
-                      builder: (context, accountState) {
-                        String balanceText = '0';
-                        
-                        if (accountState is AccountEarningsLoaded) {
-                          final available = accountState.earnings.available;
-                          balanceText = available.toStringAsFixed(0).replaceAllMapped(
-                            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                            (match) => '${match[1]},',
-                          );
-                        } else if (accountState is AccountLoading) {
-                          balanceText = '...';
-                        } else if (accountState is AccountError) {
-                          // API error - show loading indicator
-                          balanceText = '0';
-                        } else {
-                          // Initial state - show loading indicator
-                          balanceText = '...';
-                        }
-                        
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('NGN',
-                                style: textTheme.titleLarge?.copyWith(
-                                    color: Colors.white70, fontSize: 20)),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: Text(balanceText,
-                                    style: textTheme.headlineLarge?.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.w800)),
-                              ),
-                            ),
-                        const SizedBox(width: 12),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white24,
-                              borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6),
-                          child: const Icon(Icons.visibility,
-                              color: Colors.white70, size: 18),
-                        ),
-                      ],
-                    );
-                      },
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // Rounded outline buttons (Withdraw / Transactions) matching screenshot
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              // Get real earnings amount from AccountBloc
-                              final accountBloc = BlocProvider.of<AccountBloc>(context);
-                              final state = accountBloc.state;
-                              double earnings = 300000; // Default fallback
-                              
-                              if (state is AccountEarningsLoaded) {
-                                earnings = state.earnings.available;
-                              }
-                              
-                              showWithdrawFlow(context, earnings: earnings);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              side: const BorderSide(color: Colors.white24),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              elevation: 0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(Icons.arrow_upward, color: Colors.white),
-                                SizedBox(width: 8),
-                                Text('Withdraw',
-                                    style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider.value(
-                                    value: BlocProvider.of<AccountBloc>(context),
-                                    child: const TransactionsPage(),
-                                  ),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              side: const BorderSide(color: Colors.white24),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              elevation: 0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(Icons.receipt_long, color: Colors.white),
-                                SizedBox(width: 8),
-                                Text('Transactions',
-                                    style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
+            _buildHeader(context),
             const SizedBox(height: 18),
-            // Profile action banners (verification and profile completion)
-            BlocBuilder<AuthBloc, AuthState>(builder: (context, authState) {
-              if (authState is AuthAuthenticated) {
-                final user = authState.user;
-                final profileProgress = ProfileUtils.calculateProfileProgress(user);
-                final isVerified = user.isVerified;
-                
-                return ProfileActionButtons(
-                  profileProgress: profileProgress,
-                  isVerified: isVerified,
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            }),
-
-            // Hero (dynamic by selected tab)
-            _buildHero(context),
-
-            const SizedBox(height: 8),
-
-            // Tabs (Jobs selected)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: SizedBox(
-                // reduced height to better fit smaller emulator screens
-                height: 50,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: List.generate(
-                      _tabs.length, (i) => _buildTabChip(_tabs[i], index: i)),
-                ),
-              ),
+            _buildProfileActions(context),
+            BannerCarousel(
+              banners: DefaultBanners.defaultBanners,
+              height: 140,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
             ),
-
-            const SizedBox(height: 12),
-
-            // Content per tab: Orders uses API data, others use sample data
-            if (_selectedIndex == 3) ...[
-              // Orders tab - use BlocBuilder for catalog requests
-              BlocBuilder<CatalogRequestsBloc, CatalogRequestsState>(
-                bloc: _ordersBloc,
-                builder: (context, state) {
-                  if (state is CatalogRequestsLoading ||
-                      state is CatalogRequestsInitial) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  if (state is CatalogRequestsError) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(child: Text('Error: ${state.message}')),
-                    );
-                  }
-                  if (state is CatalogRequestsLoaded) {
-                    _ordersNext = state.next;
-                    _loadingMoreOrders = false;
-                    final requests = state.items;
-                    if (requests.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: Center(child: Text('No orders yet')),
-                      );
-                    }
-
-                    return Column(
-                      children: [
-                        ...requests.map((request) {
-                          final job = _catalogRequestToJob(request);
-                          final jobEntity = job.toEntity();
-
-                          return JobCard(
-                            job: jobEntity,
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        OrderDetailsPage(job: jobEntity))),
-                            primaryLabel: 'View Order',
-                            primaryAction: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        OrderDetailsPage(job: jobEntity))),
-                            secondaryLabel: 'Contact',
-                            secondaryAction: () {
-                              // Open chat with client
-                              final conv = domain.Conversation(
-                                id: 'client_${request.id}',
-                                name: request.clientName ?? 'Client',
-                                jobTitle: request.title,
-                                lastMessage: '',
-                                lastTimestamp: DateTime.now(),
-                                unreadCount: 0,
-                                online: false,
-                              );
-                              ChatManager().goToChatScreen(
-                                context: context,
-                                conversation: conv,
-                                job: jobEntity,
-                              );
-                            },
-                          );
-                        }),
-                        if (state.next != null && _loadingMoreOrders)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        const SizedBox(height: 12),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ] else
-              BlocBuilder<JobBloc, JobState>(
-                builder: (context, jobState) {
-                  // Handle loading state
-                  if (jobState is JobStateLoading) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                  
-                  // Handle error state
-                  if (jobState is JobStateError) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.grey),
-                            const SizedBox(height: 8),
-                            Text('Error loading jobs', style: textTheme.titleMedium),
-                            const SizedBox(height: 4),
-                            Text(jobState.message, style: textTheme.bodySmall),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  
-                  final currentJobs = _getJobsForTab(_selectedIndex, jobState);
-                  
-                  if (currentJobs.isEmpty) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            const Icon(Icons.work_outline, size: 48, color: Colors.grey),
-                            const SizedBox(height: 8),
-                            Text('No jobs available', style: textTheme.titleMedium),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  
-                  return Column(
-                    children: currentJobs.map((j) {
-                final jobEntity = j.toEntity();
-                // determine labels/actions depending on selected tab
-                String? primaryLabel;
-                VoidCallback? primaryAction;
-                String? secondaryLabel = 'Reviews';
-                VoidCallback? secondaryAction;
-
-                if (_selectedIndex == 0) {
-                  // Jobs
-                  primaryLabel = jobEntity.applied ? 'Applied' : 'Apply';
-                  primaryAction = jobEntity.applied
-                      ? null
-                      : () => Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (ctx) {
-                            // Ensure pushed JobDetailsPage gets access to the JobBloc instance.
-                            JobBloc bloc;
-                            try {
-                              bloc = BlocProvider.of<JobBloc>(context);
-                            } catch (_) {
-                              bloc = getIt<JobBloc>();
-                            }
-                            return BlocProvider.value(
-                              value: bloc,
-                              child: JobDetailsPage(job: jobEntity),
-                            );
-                          }));
-                } else if (_selectedIndex == 1) {
-                  // Applications
-                  // For testing: always show "Accept Agreement" so flow can be exercised
-                  primaryLabel = 'Accept Agreement';
-                  primaryAction = () => _openAgreementFlow(j);
-                  secondaryLabel = 'Reject';
-                  secondaryAction = () => _rejectApplication(j.id);
-                } else if (_selectedIndex == 2) {
-                  // Job Invites
-                  primaryLabel = 'Accept Invite';
-                  primaryAction = () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Invite accepted')));
-                  };
-                } else {
-                  // Orders
-                  primaryLabel = 'Order Details';
-                  primaryAction = () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (_) => OrderDetailsPage(job: jobEntity)));
-                }
-
-                return JobCard(
-                  job: jobEntity,
-                  onTap: () {
-                    if (_selectedIndex == 1) {
-                      // Use the adaptive agreement flow which returns a result.
-                      // This allows us to navigate to the Change Request page when the user selects "Request Changes".
-                      _openAgreementFlow(j);
-                    } else if (_selectedIndex == 2) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) =>
-                              JobInviteDetailsPage(job: jobEntity)));
-                    } else if (_selectedIndex == 3) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => OrderDetailsPage(job: jobEntity)));
-                    } else {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (ctx) {
-                        JobBloc bloc;
-                        try {
-                          bloc = BlocProvider.of<JobBloc>(context);
-                        } catch (_) {
-                          bloc = getIt<JobBloc>();
-                        }
-                        return BlocProvider.value(
-                          value: bloc,
-                          child: JobDetailsPage(job: jobEntity),
-                        );
-                      }));
-                    }
-                  },
-                  primaryLabel: primaryLabel,
-                  primaryAction: primaryAction,
-                  secondaryLabel: secondaryLabel,
-                  secondaryAction: secondaryAction,
-                );
-                    }).toList(),
-                  );
-                },
-              ),
-
+            const SizedBox(height: 8),
+            () {
+              print('DEBUG: HomePage - About to create HomeTabSection with ${_applications.length} applications');
+              return HomeTabSection(
+                onJobTap: _handleJobTap,
+                onRequestTap: _handleOrderTap,
+                applications: _applications,
+                onApplicationUpdate: _updateApplications,
+              );
+            }(),
             const SizedBox(height: 120),
           ],
         ),
       ),
     );
+  }
+  
+  Widget _buildHeader(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
+      child: Container(
+        width: double.infinity,
+        color: AppColors.brownHeader,
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white24),
+                        color: Colors.white24,
+                      ),
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.transparent,
+                        child: Icon(Icons.person, color: Colors.white)),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Hey, Uwak Daniel',
+                            style: textTheme.titleLarge?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        Text('Welcome back!',
+                            style: textTheme.bodyMedium?.copyWith(
+                                color: Colors.white70, fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
+                  ],
+                ),
+                const Row(
+                  children: [
+                    MessageIcon(),
+                    SizedBox(width: 12),
+                    NotificationIcon(unreadCount: 2),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(16)),
+              child: Text('Available Balance',
+                  style: textTheme.bodySmall?.copyWith(color: Colors.white70)),
+            ),
+            const SizedBox(height: 8),
+            BlocBuilder<AccountBloc, AccountState>(
+              builder: (context, accountState) {
+                String balanceText = '0';
+                if (accountState is AccountEarningsLoaded) {
+                  final available = accountState.earnings.available;
+                  balanceText = available.toStringAsFixed(0).replaceAllMapped(
+                    RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+                    (match) => '${match[1]},',
+                  );
+                } else if (accountState is AccountLoading) {
+                  balanceText = '...';
+                } else if (accountState is AccountError) {
+                  balanceText = '0';
+                } else {
+                  balanceText = '...';
+                }
+                
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('NGN',
+                        style: textTheme.titleLarge?.copyWith(
+                            color: Colors.white70, fontSize: 20)),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(balanceText,
+                            style: textTheme.headlineLarge?.copyWith(
+                                color: Colors.white,
+                                fontSize: 36,
+                                fontWeight: FontWeight.w800)),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white24,
+                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 6),
+                      child: const Icon(Icons.visibility,
+                          color: Colors.white70, size: 18),
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final accountBloc = BlocProvider.of<AccountBloc>(context);
+                      final state = accountBloc.state;
+                      double earnings = 300000;
+                      
+                      if (state is AccountEarningsLoaded) {
+                        earnings = state.earnings.available;
+                      }
+                      
+                      showWithdrawFlow(context, earnings: earnings);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      side: const BorderSide(color: Colors.white24),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      elevation: 0,
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_upward, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text('Withdraw', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: BlocProvider.of<AccountBloc>(context),
+                            child: const TransactionsPage(),
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      side: const BorderSide(color: Colors.white24),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      elevation: 0,
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.receipt_long, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text('Transactions', style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildProfileActions(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        if (authState is AuthAuthenticated) {
+          final user = authState.user;
+          final profileProgress = ProfileUtils.calculateProfileProgress(user);
+          final isVerified = user.isVerified;
+          
+          return ProfileActionButtons(
+            profileProgress: profileProgress,
+            isVerified: isVerified,
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+  
+  void _handleJobTap(Job job) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+      JobBloc bloc;
+      try {
+        bloc = BlocProvider.of<JobBloc>(context);
+      } catch (_) {
+        bloc = getIt<JobBloc>();
+      }
+      return BlocProvider.value(
+        value: bloc,
+        child: JobDetailsPage(job: job),
+      );
+    }));
+  }
+  
+  void _handleOrderTap(CatalogRequest request) {
+    final job = _catalogRequestToJob(request).toEntity();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => OrderDetailsPage(job: job),
+    ));
+  }
+  
+  void _updateApplications(List<JobModel> applications) {
+    setState(() {
+      _applications = applications;
+    });
   }
 }

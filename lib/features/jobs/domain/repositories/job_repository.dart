@@ -6,6 +6,9 @@ abstract class JobRepository {
   /// Implementations may throw exceptions on network or parsing failures.
   Future<List<Job>> getJobs({int page = 1, int limit = 20});
 
+  /// Fetches applied jobs/applications from the API.
+  Future<List<Job>> getApplications({int page = 1, int limit = 20});
+
   /// Apply to a job with full payload (returns true on success).
   Future<bool> applyToJob(JobApplication application);
 

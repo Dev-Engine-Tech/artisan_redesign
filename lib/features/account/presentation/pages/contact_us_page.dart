@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
@@ -43,9 +43,10 @@ class ContactUsPage extends StatelessWidget {
       default:
         url = Uri.parse(handle);
     }
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
+    // TODO: URL launcher functionality temporarily disabled
+    // if (await canLaunchUrl(url)) {
+    //   await launchUrl(url, mode: LaunchMode.externalApplication);
+    // }
   }
 
   @override

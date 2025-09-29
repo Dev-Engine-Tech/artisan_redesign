@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/features/catalog/presentation/pages/catalog_item_details_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/upload_catalogue_page.dart';
+import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_page.dart';
+import 'package:artisans_circle/features/jobs/presentation/pages/completed_jobs_page.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_bloc.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
 
-/// Projects page (catalogue) — matches the "Projects" design shared:
-/// - AppBar shows "Projects"
-/// - Search bar
-/// - Orange hero/banner
-/// - Upload Projects rounded panel with Upload Projects button
-/// - List of project cards (large image banner with title, vendor, price badge, duration pill)
+/// Projects page (catalogue) with tabbed interface:
+/// - Catalog: Upload and manage catalog items
+/// - Ongoing Jobs: Track active projects and submit progress
+/// - Completed Jobs: View completed projects, payments, and reviews
 class CatalogPage extends StatefulWidget {
   const CatalogPage({super.key});
 
@@ -21,18 +21,21 @@ class CatalogPage extends StatefulWidget {
   State<CatalogPage> createState() => _CatalogPageState();
 }
 
-class _CatalogPageState extends State<CatalogPage> {
+class _CatalogPageState extends State<CatalogPage> with TickerProviderStateMixin {
   late final CatalogBloc bloc;
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     bloc = getIt<CatalogBloc>();
     bloc.add(LoadMyCatalog());
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     bloc.close();
     super.dispose();
   }
@@ -164,7 +167,7 @@ class _CatalogPageState extends State<CatalogPage> {
     return BlocProvider<CatalogBloc>.value(
       value: bloc,
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: AppColors.lightPeach,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -180,86 +183,132 @@ class _CatalogPageState extends State<CatalogPage> {
               ),
             ),
           ),
-          title: const Text('Catalogue',
+          title: const Text('Projects',
               style: TextStyle(
                   color: Colors.black87,
                   fontSize: 20,
                   fontWeight: FontWeight.w600)),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.softBorder),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  color: AppColors.orange,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.black54,
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+                tabs: const [
+                  Tab(text: 'Catalogue'),
+                  Tab(text: 'Ongoing'),
+                  Tab(text: 'Completed'),
+                ],
+              ),
+            ),
+          ),
         ),
         body: SafeArea(
-          child: BlocBuilder<CatalogBloc, CatalogState>(
-            builder: (context, state) {
-              final header = <Widget>[
-                const SizedBox(height: 8),
-                _searchBar(context),
-                const SizedBox(height: 14),
-                _hero(context),
-                const SizedBox(height: 14),
-                _uploadPanel(context),
-                const SizedBox(height: 16),
-              ];
-
-              if (state is CatalogLoading || state is CatalogInitial) {
-                return ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    ...header,
-                    const SizedBox(height: 40),
-                    const Center(child: CircularProgressIndicator()),
-                    const SizedBox(height: 200),
-                  ],
-                );
-              }
-
-              if (state is CatalogError) {
-                return ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    ...header,
-                    Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Center(child: Text('Error: ${state.message}'))),
-                  ],
-                );
-              }
-
-              if (state is CatalogLoaded) {
-                final items = state.items;
-                if (items.isEmpty) {
-                  return RefreshIndicator(
-                    onRefresh: () async =>
-                        context.read<CatalogBloc>().add(RefreshMyCatalog()),
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      children: [
-                        ...header,
-                        const SizedBox(height: 40),
-                        const Center(child: Text('No projects found')),
-                      ],
-                    ),
-                  );
-                }
-
-                return RefreshIndicator(
-                  onRefresh: () async =>
-                      context.read<CatalogBloc>().add(RefreshMyCatalog()),
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: header.length + items.length,
-                    itemBuilder: (context, index) {
-                      if (index < header.length) return header[index];
-                      final item = items[index - header.length];
-                      return _catalogTile(item);
-                    },
-                  ),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildCatalogTab(),
+              const OngoingJobsPage(),
+              const CompletedJobsPage(),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCatalogTab() {
+    return BlocBuilder<CatalogBloc, CatalogState>(
+      builder: (context, state) {
+        final header = <Widget>[
+          const SizedBox(height: 8),
+          _searchBar(context),
+          const SizedBox(height: 14),
+          _hero(context),
+          const SizedBox(height: 14),
+          _uploadPanel(context),
+          const SizedBox(height: 16),
+        ];
+
+        if (state is CatalogLoading || state is CatalogInitial) {
+          return ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              ...header,
+              const SizedBox(height: 40),
+              const Center(child: CircularProgressIndicator()),
+              const SizedBox(height: 200),
+            ],
+          );
+        }
+
+        if (state is CatalogError) {
+          return ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              ...header,
+              Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(child: Text('Error: ${state.message}'))),
+            ],
+          );
+        }
+
+        if (state is CatalogLoaded) {
+          final items = state.items;
+          if (items.isEmpty) {
+            return RefreshIndicator(
+              onRefresh: () async =>
+                  context.read<CatalogBloc>().add(RefreshMyCatalog()),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  ...header,
+                  const SizedBox(height: 40),
+                  const Center(child: Text('No projects found')),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async =>
+                context.read<CatalogBloc>().add(RefreshMyCatalog()),
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: header.length + items.length,
+              itemBuilder: (context, index) {
+                if (index < header.length) return header[index];
+                final item = items[index - header.length];
+                return _catalogTile(item);
+              },
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 

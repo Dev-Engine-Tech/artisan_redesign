@@ -429,7 +429,7 @@ class AgreementContent extends StatelessWidget {
                           color: AppColors.softPeach,
                           borderRadius: BorderRadius.circular(6)),
                       child: Text(
-                          job.agreementAccepted ? 'Accepted' : 'Pending',
+                          job.status.name == 'accepted' ? 'Accepted' : 'Pending',
                           style: const TextStyle(fontSize: 12)),
                     )
                   ],

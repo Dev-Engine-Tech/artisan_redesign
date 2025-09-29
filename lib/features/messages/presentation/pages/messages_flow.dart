@@ -10,8 +10,8 @@ import 'package:artisans_circle/features/messages/domain/repositories/messages_r
 import 'package:artisans_circle/features/messages/presentation/bloc/conversations_bloc.dart';
 import 'package:artisans_circle/features/messages/presentation/bloc/chat_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 
 /// Helper function to safely get current user ID as int with proper fallback
@@ -235,7 +235,7 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
   bool _showScrollToBottom = false;
   domain.Message? _replyTo;
-  FlutterSoundRecorder? _recorder;
+  // FlutterSoundRecorder? _recorder;
   bool _isRecording = false;
   String? _recordPath;
 
@@ -243,7 +243,7 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
-    _recorder?.closeRecorder();
+    // _recorder?.closeRecorder();
     super.dispose();
   }
 
@@ -1012,17 +1012,18 @@ class _ChatPageState extends State<ChatPage> {
                               onPressed: () {},
                               icon: const Icon(Icons.attach_file)),
                           IconButton(
-                              onPressed: () async {
-                                final picker = ImagePicker();
-                                final img = await picker.pickImage(
-                                    source: ImageSource.gallery,
-                                    imageQuality: 70);
-                                if (img != null && mounted) {
-                                  context
-                                      .read<ChatBloc>()
-                                      .add(ChatSendImage(img.path, replySource: _replyTo));
-                                  setState(() => _replyTo = null);
-                                }
+                              onPressed: () {
+                                // TODO: Image picker functionality temporarily disabled
+                                // final picker = ImagePicker();
+                                // final img = await picker.pickImage(
+                                //     source: ImageSource.gallery,
+                                //     imageQuality: 70);
+                                // if (img != null && mounted) {
+                                //   context
+                                //       .read<ChatBloc>()
+                                //       .add(ChatSendImage(img.path, replySource: _replyTo));
+                                //   setState(() => _replyTo = null);
+                                // }
                               },
                               icon: const Icon(Icons.camera_alt_outlined)),
                         ],
@@ -1036,26 +1037,29 @@ class _ChatPageState extends State<ChatPage> {
                       return GestureDetector(
                         onLongPressStart: (_) async {
                           if (showSend) return;
-                          try {
-                            _recorder ??= FlutterSoundRecorder();
-                            if (!_recorder!.isPaused && !_recorder!.isRecording) {
-                              await _recorder!.openRecorder();
-                            }
-                            _recordPath = null;
-                            await _recorder!.startRecorder(toFile: 'voice_${DateTime.now().millisecondsSinceEpoch}.m4a');
-                            setState(() => _isRecording = true);
-                          } catch (_) {}
+                          // Recording functionality temporarily disabled
+                          // try {
+                          //   _recorder ??= FlutterSoundRecorder();
+                          //   if (!_recorder!.isPaused && !_recorder!.isRecording) {
+                          //     await _recorder!.openRecorder();
+                          //   }
+                          //   _recordPath = null;
+                          //   await _recorder!.startRecorder(toFile: 'voice_${DateTime.now().millisecondsSinceEpoch}.m4a');
+                          //   setState(() => _isRecording = true);
+                          // } catch (_) {}
                         },
                         onLongPressEnd: (_) async {
                           if (!_isRecording) return;
-                          try {
-                            final path = await _recorder!.stopRecorder();
-                            setState(() => _isRecording = false);
-                            if (path != null && mounted) {
-                              context.read<ChatBloc>().add(ChatSendAudio(path, replySource: _replyTo));
-                              setState(() => _replyTo = null);
-                            }
-                          } catch (_) {}
+                          // Recording functionality temporarily disabled
+                          // try {
+                          //   final path = await _recorder!.stopRecorder();
+                          //   setState(() => _isRecording = false);
+                          //   if (path != null && mounted) {
+                          //     context.read<ChatBloc>().add(ChatSendAudio(path, replySource: _replyTo));
+                          //     setState(() => _replyTo = null);
+                          //   }
+                          // } catch (_) {}
+                          setState(() => _isRecording = false);
                         },
                         child: Container(
                           decoration: BoxDecoration(

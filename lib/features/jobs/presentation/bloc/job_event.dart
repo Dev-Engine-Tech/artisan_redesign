@@ -17,6 +17,13 @@ class RefreshJobs extends JobEvent {
   RefreshJobs({this.limit = 20});
 }
 
+class LoadApplications extends JobEvent {
+  final int page;
+  final int limit;
+
+  LoadApplications({this.page = 1, this.limit = 20});
+}
+
 class ApplyToJobEvent extends JobEvent {
   final JobApplication application;
 
@@ -36,4 +43,49 @@ class RequestChangeEvent extends JobEvent {
   final String reason;
 
   RequestChangeEvent({required this.jobId, required this.reason});
+}
+
+/// Event to load completed jobs
+class LoadCompletedJobs extends JobEvent {
+  final int page;
+  final int limit;
+
+  LoadCompletedJobs({this.page = 1, this.limit = 20});
+}
+
+/// Event to load ongoing jobs
+class LoadOngoingJobs extends JobEvent {
+  final int page;
+  final int limit;
+
+  LoadOngoingJobs({this.page = 1, this.limit = 20});
+}
+
+/// Event to pause a job
+class PauseJobEvent extends JobEvent {
+  final String jobId;
+
+  PauseJobEvent({required this.jobId});
+}
+
+/// Event to complete a job
+class CompleteJobEvent extends JobEvent {
+  final String jobId;
+
+  CompleteJobEvent({required this.jobId});
+}
+
+/// Event to submit progress update
+class SubmitProgressEvent extends JobEvent {
+  final String jobId;
+  final String description;
+  final int progressPercentage;
+  final List<String>? images;
+
+  SubmitProgressEvent({
+    required this.jobId,
+    required this.description,
+    required this.progressPercentage,
+    this.images,
+  });
 }

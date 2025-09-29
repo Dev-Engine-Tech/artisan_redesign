@@ -40,13 +40,13 @@ class _SignInPageState extends State<SignInPage> {
           borderSide: BorderSide(color: AppColors.subtleBorder)),
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF6B4CD6))),
+          borderSide: const BorderSide(color: Color(0xFF654321))),
     );
   }
 
   ButtonStyle _primaryButtonStyle() {
     return ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF6B4CD6),
+      backgroundColor: const Color(0xFF654321),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
     );
@@ -166,7 +166,7 @@ class _SignInPageState extends State<SignInPage> {
                               setState(() => _remember = v ?? true),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4)),
-                          activeColor: const Color(0xFF6B4CD6),
+                          activeColor: const Color(0xFF654321),
                         ),
                         const SizedBox(width: 4),
                         const Text('Remember me'),

@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/agreement.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/change_request.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/material.dart' as job_entities;
 import 'package:artisans_circle/features/messages/domain/entities/conversation.dart' as domain;
 import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/apply_for_job_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/agreement_modal.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/job_material_management_widget.dart';
 import 'package:artisans_circle/core/di.dart';
 
 class JobDetailsPage extends StatefulWidget {
@@ -292,6 +298,42 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
 
             const SizedBox(height: 22),
 
+            // Application Status Section (if applied)
+            if (job.applied) ...[
+              _buildApplicationStatusSection(job),
+              const SizedBox(height: 18),
+            ],
+
+            // Agreement Section (if exists)
+            if (job.agreement != null) ...[
+              _buildAgreementSection(job.agreement!),
+              const SizedBox(height: 18),
+            ],
+
+            // Change Request Section (if exists)
+            if (job.changeRequest != null) ...[
+              _buildChangeRequestSection(job.changeRequest!),
+              const SizedBox(height: 18),
+            ],
+
+            // Materials Section (if applied)
+            if (job.applied) ...[
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.cardBackground,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.subtleBorder),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: JobMaterialManagementWidget(
+                  materials: job.materials,
+                  readOnly: job.agreement != null || job.status == JobStatus.accepted,
+                  title: 'Project Materials',
+                ),
+              ),
+              const SizedBox(height: 18),
+            ],
+
             // Primary job actions
             ElevatedButton(
               onPressed: () {
@@ -427,6 +469,274 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
 
             const SizedBox(height: 40),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the application status section
+  Widget _buildApplicationStatusSection(Job job) {
+    return ExpansionTile(
+      title: Text(
+        'Application Status',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      backgroundColor: AppColors.cardBackground,
+      collapsedBackgroundColor: AppColors.cardBackground,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.softBorder),
+      ),
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.softBorder),
+      ),
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(job.applicationStatus).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                        color: _getStatusColor(job.applicationStatus).withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      job.applicationStatus,
+                      style: TextStyle(
+                        color: _getStatusColor(job.applicationStatus),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (job.proposal != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Your Proposal:',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  job.proposal!,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Builds the agreement section
+  Widget _buildAgreementSection(Agreement agreement) {
+    return ExpansionTile(
+      title: Text(
+        'Project Agreement',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      backgroundColor: AppColors.cardBackground,
+      collapsedBackgroundColor: AppColors.cardBackground,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.softBorder),
+      ),
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.softBorder),
+      ),
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildInfoRow('Payment', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
+              const SizedBox(height: 8),
+              _buildInfoRow('Delivery Date', _formatDate(agreement.deliveryDate)),
+              if (agreement.startDate != null) ...[
+                const SizedBox(height: 8),
+                _buildInfoRow('Start Date', _formatDate(agreement.startDate!)),
+              ],
+              const SizedBox(height: 12),
+              Text(
+                'Comments:',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                agreement.comment,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Open full agreement modal
+                    _showAgreementModal(context, agreement);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('Review Agreement'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Builds the change request section
+  Widget _buildChangeRequestSection(ChangeRequest changeRequest) {
+    return ExpansionTile(
+      title: Text(
+        'Change Request',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      backgroundColor: AppColors.cardBackground,
+      collapsedBackgroundColor: AppColors.cardBackground,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.softBorder),
+      ),
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.softBorder),
+      ),
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Proposed Changes:',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                changeRequest.proposedChange,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Reason:',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                changeRequest.reason,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black54,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  /// Helper to build info rows
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            '$label:',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.black54,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Helper to get status color
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Accepted':
+        return Colors.green;
+      case 'Review Agreement':
+        return Colors.orange;
+      case 'Change request sent':
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  /// Helper to format dates
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  /// Shows the agreement modal
+  void _showAgreementModal(BuildContext context, Agreement agreement) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, controller) => AgreementModal(
+          job: widget.job,
+          agreement: agreement,
         ),
       ),
     );

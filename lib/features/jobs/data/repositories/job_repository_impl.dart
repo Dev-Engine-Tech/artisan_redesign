@@ -28,6 +28,16 @@ class JobRepositoryImpl implements JobRepository {
   }
 
   @override
+  Future<List<Job>> getApplications({int page = 1, int limit = 20}) async {
+    try {
+      final models = await remoteDataSource.loadApplications(page: page, limit: limit);
+      return models.map((m) => m.toEntity()).toList();
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<bool> requestChange(String jobId, {required String reason}) async {
     try {
       return await remoteDataSource.requestChange(jobId, reason: reason);

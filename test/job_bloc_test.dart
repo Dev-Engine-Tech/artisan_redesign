@@ -4,12 +4,15 @@ import 'package:mocktail/mocktail.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_jobs.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_applications.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
 
 class MockGetJobs extends Mock implements GetJobs {}
+
+class MockGetApplications extends Mock implements GetApplications {}
 
 class MockApplyToJob extends Mock implements ApplyToJob {}
 
@@ -19,8 +22,10 @@ class MockRequestChange extends Mock implements RequestChange {}
 
 void main() {
   late MockGetJobs mockGetJobs;
+  late MockGetApplications mockGetApplications;
   late MockApplyToJob mockApplyToJob;
   late MockAcceptAgreement mockAcceptAgreement;
+  late MockRequestChange mockRequestChange;
   late JobBloc bloc;
 
   final sampleJob = Job(
@@ -33,8 +38,6 @@ void main() {
     maxBudget: 200,
     duration: '2 days',
     applied: false,
-    agreementSent: false,
-    agreementAccepted: false,
     thumbnailUrl: '',
   );
 
@@ -56,14 +59,14 @@ void main() {
 
   setUp(() {
     mockGetJobs = MockGetJobs();
+    mockGetApplications = MockGetApplications();
     mockApplyToJob = MockApplyToJob();
     mockAcceptAgreement = MockAcceptAgreement();
-    // new mock for request change
-    // ignore: unused_local_variable
-    var mockRequestChange = MockRequestChange();
+    mockRequestChange = MockRequestChange();
 
     bloc = JobBloc(
       getJobs: mockGetJobs,
+      getApplications: mockGetApplications,
       applyToJob: mockApplyToJob,
       acceptAgreement: mockAcceptAgreement,
       requestChange: mockRequestChange,
