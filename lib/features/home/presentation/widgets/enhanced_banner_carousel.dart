@@ -141,7 +141,6 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   }
 
   void _handleBannerTap(api.ApiBannerItem banner) {
-    print('🎯 ENHANCED BANNER: Tapped banner ${banner.title}');
     // Handle banner tap based on category
   }
 

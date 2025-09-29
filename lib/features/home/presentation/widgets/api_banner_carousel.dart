@@ -34,34 +34,33 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
   @override
   void initState() {
     super.initState();
-    print('🎯 🎯 🎯 API BANNER WIDGET FOUND!!! Category: ${widget.category}');
-    print('🎯 BANNER CAROUSEL: Initializing for category ${widget.category}');
+    // init
     _loadBanners();
   }
 
   Future<void> _loadBanners() async {
     try {
-      print('🎯 BANNER CAROUSEL: Starting to load banners for ${widget.category}');
+      // start loading
       setState(() {
         _isLoading = true;
       });
 
       final apiResponse = await _bannerService.getBanners(category: widget.category);
 
-      print('🎯 BANNER CAROUSEL: Received ${apiResponse.banners.length} banners');
+      
       // Convert API banners to UI banners
       final uiBanners = apiResponse.banners
           .where((banner) => banner.isActive)
           .map((apiBanner) => _convertApiBannerToUiBanner(apiBanner))
           .toList();
 
-      print('🎯 BANNER CAROUSEL: Converted to ${uiBanners.length} UI banners');
+      
       setState(() {
         _banners = uiBanners;
         _isLoading = false;
       });
     } catch (e) {
-      print('🎯 BANNER CAROUSEL: Error loading banners: $e');
+      
       setState(() {
         _isLoading = false;
         // Fallback to default banners on error
@@ -141,7 +140,7 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
 
   List<original.BannerModel> _getDefaultBannersForCategory(BannerCategory category) {
     // FORCE API BANNERS TO SHOW - NO FALLBACK TO DEFAULTS
-    print('🔥 FORCE: Creating API banners instead of defaults for $category');
+    
 
     // Create banners that clearly show they are from API
     switch (category) {

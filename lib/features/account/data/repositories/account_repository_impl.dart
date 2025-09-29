@@ -37,7 +37,7 @@ class AccountRepositoryImpl implements AccountRepository {
     try {
       return await remote.getEarnings();
     } catch (e) {
-      print('DEBUG: AccountRepository - getEarnings failed: $e');
+      
       // Return test data as fallback
       return const Earnings(
         total: 156800.0,

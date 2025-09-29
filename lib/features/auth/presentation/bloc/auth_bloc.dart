@@ -45,15 +45,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onAuthCheckRequested(AuthCheckRequested event, Emitter<AuthState> emit) async {
-    if (kDebugMode) {
-      print('🔐 AuthBloc: Checking authentication status');
-    }
+    
     emit(const AuthLoading());
     try {
       final signedIn = await isSignedIn.call();
-      if (kDebugMode) {
-        print('🔐 AuthBloc: Is signed in: $signedIn');
-      }
+      
 
       if (!signedIn) {
         emit(const AuthUnauthenticated());
@@ -61,9 +57,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
 
       final user = await getCurrentUser.call();
-      if (kDebugMode) {
-        print('🔐 AuthBloc: Current user: ${user?.firstName} ${user?.lastName}');
-      }
+      
 
       if (user != null) {
         emit(AuthAuthenticated(user: user));
@@ -72,23 +66,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthUnauthenticated());
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('🔐 AuthBloc: Auth check error: $e');
-      }
+      
       emit(AuthError(message: e.toString()));
     }
   }
 
   Future<void> _onSignInRequested(AuthSignInRequested event, Emitter<AuthState> emit) async {
-    if (kDebugMode) {
-      print('🔐 AuthBloc: Sign in requested for: ${event.identifier}');
-    }
+    
     emit(const AuthLoading());
     try {
       final user = await signIn.call(identifier: event.identifier, password: event.password);
-      if (kDebugMode) {
-        print('🔐 AuthBloc: Sign in result - user: ${user?.firstName} ${user?.lastName}');
-      }
+      
 
       if (user != null) {
         emit(AuthAuthenticated(user: user));
@@ -96,9 +84,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(const AuthUnauthenticated());
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('🔐 AuthBloc: Sign in error: $e');
-      }
+      
       emit(AuthError(message: e.toString()));
     }
   }

@@ -518,9 +518,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   Widget _buildHome(BuildContext context) {
     return BlocListener<JobBloc, JobState>(
       listener: (context, state) {
-        print('DEBUG: HomePage - BlocListener received state: ${state.runtimeType}');
         if (state is JobStateAppliedSuccess) {
-          print('DEBUG: HomePage - Updating _applications with ${state.jobs.length} applications');
           // Convert domain Jobs to JobModel for local state storage
           final converted = state.jobs
               .map((j) => JobModel(

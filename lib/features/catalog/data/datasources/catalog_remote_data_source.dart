@@ -37,7 +37,7 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
   List<CatalogItemModel> _parseList(dynamic data) {
     // Print structure for debugging
     // ignore: avoid_print
-    print('CatalogRemoteDataSource: parsing response type=${data.runtimeType}');
+    
     if (data is List) {
       return data
           .map((e) => CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))

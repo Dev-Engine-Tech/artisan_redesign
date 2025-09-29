@@ -20,10 +20,7 @@ class HomeTabSection extends StatefulWidget {
     required this.onRequestTap,
     required this.applications,
     required this.onApplicationUpdate,
-  }) {
-    print(
-        'DEBUG: HomeTabSection - Constructor called with ${applications.length} applications');
-  }
+  });
 
   final Function(Job) onJobTap;
   final Function(CatalogRequest) onRequestTap;
@@ -192,11 +189,10 @@ class JobsTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<JobBloc, JobState>(
       builder: (context, state) {
-        print('DEBUG: JobsTabContent - Current state: ${state.runtimeType}');
-        print('DEBUG: JobsTabContent - Widget building with state: $state');
+        
 
         if (state is JobStateLoading) {
-          print('DEBUG: JobsTabContent - Showing loading indicator');
+          
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -290,10 +286,7 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
   Widget build(BuildContext context) {
     return BlocBuilder<JobBloc, JobState>(
       builder: (context, state) {
-        print(
-            'DEBUG: ApplicationsTabContent - Current state: ${state.runtimeType}');
-        print(
-            'DEBUG: ApplicationsTabContent - Widget building with state: $state');
+        
 
         bool isLoading = state is JobStateLoading;
         String? errorMessage;
@@ -322,10 +315,7 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
                   ))
               .toList();
 
-          print(
-              'DEBUG: ApplicationsTabContent - JobStateAppliedSuccess received with ${applications.length} applications');
-          print(
-              'DEBUG: ApplicationsTabContent - First application: ${applications.isNotEmpty ? applications.first.title : 'none'}');
+          
         } else {
           // Fallback to applications provided by parent when bloc doesn't currently hold applications
           applications = widget.applications

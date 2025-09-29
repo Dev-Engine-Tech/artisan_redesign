@@ -20,7 +20,7 @@ class JobShareService {
       );
     } catch (e) {
       // Log error but don't throw to avoid breaking the UI
-      print('Error sharing job: $e');
+      // ignore: avoid_print
     }
   }
 
@@ -34,7 +34,7 @@ class JobShareService {
         subject: 'Job Opportunity Referral - $_appName',
       );
     } catch (e) {
-      print('Error sharing job referral: $e');
+      // ignore: avoid_print
     }
   }
 
@@ -48,7 +48,7 @@ class JobShareService {
         subject: '$collectionName - $_appName',
       );
     } catch (e) {
-      print('Error sharing job collection: $e');
+      // ignore: avoid_print
     }
   }
 
@@ -58,7 +58,7 @@ class JobShareService {
       final jobText = _formatJobShareText(job);
       await Clipboard.setData(ClipboardData(text: jobText));
     } catch (e) {
-      print('Error copying job to clipboard: $e');
+      // ignore: avoid_print
     }
   }
 
@@ -72,7 +72,7 @@ class JobShareService {
         subject: 'Join me on $_appName - Find Your Next Project',
       );
     } catch (e) {
-      print('Error sharing app: $e');
+      // ignore: avoid_print
     }
   }
 
@@ -187,7 +187,7 @@ Web: $_webUrl
 
       return result;
     } catch (e) {
-      print('Error sharing job with result: $e');
+      // ignore: avoid_print
       return null;
     }
   }

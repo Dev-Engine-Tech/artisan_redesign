@@ -81,9 +81,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<User?> signIn({required String identifier, required String password}) async {
     final loginId = _normalizeIdentifier(identifier);
     if (kDebugMode) {
-      print('🔐 SignIn: Attempting login with identifier: $identifier');
-      print('🔐 SignIn: Normalized to: $loginId');
-      print('🔐 SignIn: Endpoint: ${ApiEndpoints.baseUrl}${ApiEndpoints.login}');
+      
     }
 
     final response = await dio.post(
@@ -97,8 +95,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
 
     if (kDebugMode) {
-      print('🔐 SignIn: Response status: ${response.statusCode}');
-      print('🔐 SignIn: Response data: ${response.data}');
+      
     }
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -106,7 +103,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final loginResponse = LoginResponse.fromJson(data);
 
       if (kDebugMode) {
-        print('🔐 SignIn: Access token received: ${loginResponse.accessToken.substring(0, 20)}...');
+          
       }
 
       await _saveTokens(
@@ -116,14 +113,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (kDebugMode) {
-        print('🔐 SignIn: Tokens saved, fetching user profile');
+          
       }
 
       final user = await fetchUser(identifier);
       if (user != null) {
         await _saveUser(user);
         if (kDebugMode) {
-          print('🔐 SignIn: User profile saved: ${user.firstName} ${user.lastName}');
+            
         }
       }
       return user;
@@ -131,12 +128,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final data = response.data;
     if (data is Map && data['detail'] != null) {
       if (kDebugMode) {
-        print('🔐 SignIn: Login failed with detail: ${data['detail']}');
+        
       }
       throw Exception(data['detail'].toString());
     }
     if (kDebugMode) {
-      print('🔐 SignIn: Login failed with status ${response.statusCode}, data: $data');
+      
     }
     throw Exception('Login failed with status ${response.statusCode}');
   }
@@ -232,9 +229,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final token = await secureStorage.getAccessToken();
       if (kDebugMode) {
-        print('🔐 IsSignedIn: Token exists: ${token != null}');
+        
         if (token != null) {
-          print('🔐 IsSignedIn: Token preview: ${token.substring(0, 20)}...');
+          
         }
       }
 
@@ -246,13 +243,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (kDebugMode) {
-        print('🔐 IsSignedIn: Profile check status: ${response.statusCode}');
+        
       }
 
       return response.statusCode == 200;
     } catch (e) {
       if (kDebugMode) {
-        print('🔐 IsSignedIn: Error checking sign-in status: $e');
+        
       }
       return false;
     }
@@ -263,8 +260,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final headers = await _authHeaders;
       if (kDebugMode) {
-        print('🔐 FetchUser: Headers: ${headers.keys.toList()}');
-        print('🔐 FetchUser: Endpoint: ${ApiEndpoints.baseUrl}${ApiEndpoints.userProfile}');
+        
       }
 
       final response = await dio.get(
@@ -273,8 +269,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (kDebugMode) {
-        print('🔐 FetchUser: Response status: ${response.statusCode}');
-        print('🔐 FetchUser: Response data: ${response.data}');
+        
       }
 
       if (response.statusCode == 200) {
@@ -301,7 +296,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           );
 
           if (kDebugMode) {
-            print('🔐 FetchUser: User created: ${user.firstName} ${user.lastName}');
+            
           }
 
           return user;
@@ -310,7 +305,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return null;
     } catch (e) {
       if (kDebugMode) {
-        print('🔐 FetchUser: Error fetching user: $e');
+        
       }
       return null;
     }

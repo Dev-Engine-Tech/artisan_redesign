@@ -469,13 +469,13 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
   void _shareInvoice() {
     // TODO: Implement share functionality
     // This would share the invoice via email, PDF, etc.
-    print('Share invoice functionality');
+    // TODO: implement share invoice
   }
 
   void _createJob() {
     // TODO: Implement create job functionality
     // This would create a new job based on the invoice
-    print('Create job functionality');
+    // TODO: implement create job
   }
 
   void _confirmInvoice() {

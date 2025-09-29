@@ -314,14 +314,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   }
 
   Future<void> _onLoadEarnings(AccountLoadEarnings event, Emitter<AccountState> emit) async {
-    print('DEBUG: AccountBloc - Loading earnings...');
     emit(AccountLoading());
     try {
       final earnings = await getEarnings.call();
-      print('DEBUG: AccountBloc - Earnings loaded successfully: ${earnings.available}');
       emit(AccountEarningsLoaded(earnings));
     } catch (e) {
-      print('DEBUG: AccountBloc - Error loading earnings: $e');
       emit(AccountError(e.toString()));
     }
   }

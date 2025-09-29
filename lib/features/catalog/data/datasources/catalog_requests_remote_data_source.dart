@@ -15,12 +15,12 @@ class CatalogRequestsRemoteDataSourceImpl implements CatalogRequestsRemoteDataSo
   @override
   Future<(List<CatalogRequestModel>, String?)> fetchRequests({String? next}) async {
     final url = next ?? ApiEndpoints.catalogRequests;
-    // debug: print('CatalogRequestsRemote: Making API call to $url');
+    
     final resp = await dio.get(url);
     if (resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300) {
       final data = resp.data;
       // ignore: avoid_print
-      // debug: print('CatalogRequestsRemote: list response type=
+      
       // ${data.runtimeType} keys=${data is Map ? data.keys.toList() : []}');
       List list;
       String? nextUrl;
@@ -63,7 +63,7 @@ class CatalogRequestsRemoteDataSourceImpl implements CatalogRequestsRemoteDataSo
     if (resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300) {
       final data = resp.data is Map ? Map<String, dynamic>.from(resp.data) : <String, dynamic>{};
       // ignore: avoid_print
-      // debug: print('CatalogRequestsRemote: details response keys=${data.keys.toList()}');
+      
       return CatalogRequestModel.fromJson(data);
     }
     throw DioException(

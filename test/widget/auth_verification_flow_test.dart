@@ -56,7 +56,7 @@ void main() {
         ),
       );
       // Debug trace
-      print('TEST: widget pumped');
+      
 
       // Verify page shows heading
       expect(find.text('Identity Verification'), findsOneWidget);
@@ -69,20 +69,20 @@ void main() {
       await tester.ensureVisible(uploadButtonText);
       await tester.pumpAndSettle();
       await tester.tap(uploadButtonText);
-      print('TEST: tapped Upload Document');
+      
 
       // allow cubit simulated delay to complete
       await tester.pumpAndSettle(const Duration(milliseconds: 600));
 
       // The cubit should now have identitySubmitted true
       expect(verificationCubit.state.identitySubmitted, isTrue);
-      print('TEST: identitySubmitted true');
+      
 
       // Simulate selfie capture by directly calling cubit (the real SelfieCapturePage would also call this)
       await verificationCubit.submitSelfie(selfiePath: 'local://selfie_test.jpg');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       expect(verificationCubit.state.selfieCaptured, isTrue);
-      print('TEST: selfieCaptured true');
+      
 
       // Fill required form fields so form validation passes (document number + country)
       final docField = find.byType(TextFormField);
@@ -96,7 +96,7 @@ void main() {
         final state = tester.state<FormFieldState<String>>(dropdown);
         state.didChange('NG'); // Nigeria
         await tester.pumpAndSettle();
-        print('TEST: country set to NG');
+        
       }
 
       // Tap Verify Now button
@@ -105,9 +105,9 @@ void main() {
       // Ensure the verify button is visible (page scrollable)
       await tester.ensureVisible(verifyNowButton);
       await tester.pumpAndSettle();
-      print('TEST: about to tap Verify Now');
+      
       await tester.tap(verifyNowButton);
-      print('TEST: tapped Verify Now');
+      
 
       // finalizeVerification has a delay; pump in short increments until the submitted page appears
       // This avoids hanging if there are continuous frames (pumpAndSettle can wait forever in that case).

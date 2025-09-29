@@ -164,15 +164,12 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     if (kAllowInsecure) {
       try {
         final host = Uri.parse(baseUrl ?? ApiEndpoints.baseUrl).host;
-        print('🔒 SSL: Applying insecure certificate bypass for host: $host');
         ssl.configureBadCertificate(dio, host: host);
-        print('🔒 SSL: Certificate bypass configured successfully');
       } catch (e) {
-        print('🔒 SSL: Failed to configure certificate bypass: $e');
         // ignore: any issues configuring insecure mode should not crash app
       }
     } else {
-      print('🔒 SSL: Certificate bypass is DISABLED');
+      // certificate bypass disabled
     }
     return dio;
   });

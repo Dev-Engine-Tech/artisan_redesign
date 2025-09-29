@@ -30,26 +30,19 @@ class _AppShellState extends State<AppShell> {
 
   // Pages will be created dynamically to provide proper context
   Widget _getPage(int index, BuildContext context) {
-    print('DEBUG: AppShell - _getPage called with index: $index');
     switch (index) {
       case 0:
-        print('DEBUG: AppShell - Returning HomePage');
         return const HomePage();
       case 1:
-        print('DEBUG: AppShell - Returning DiscoverPage');
         return const DiscoverPage();
       case 2:
-        print('DEBUG: AppShell - Returning CatalogPage');
         return const CatalogPage();
       case 3:
-        print('DEBUG: AppShell - Returning InvoiceMenuPage');
         // Modern Invoice Menu Page
         return const InvoiceMenuPage();
       case 4:
-        print('DEBUG: AppShell - Returning SupportAccountPage');
         return const SupportAccountPage();
       default:
-        print('DEBUG: AppShell - Returning default HomePage');
         return const HomePage();
     }
   }

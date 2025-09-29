@@ -27,7 +27,7 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
 
   @override
   Future<List<JobModel>> fetchJobs({int page = 1, int limit = 20}) async {
-    print('DEBUG: Fetching jobs - page: $page, limit: $limit');
+    
 
     try {
       final response = await dio.get(
@@ -35,28 +35,23 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
         queryParameters: {'page': page, 'limit': limit},
       );
 
-      print('DEBUG: Jobs API response status: ${response.statusCode}');
-      print('DEBUG: Jobs API response data type: ${response.data.runtimeType}');
+      
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300) {
-        print('DEBUG: Jobs API entering success parsing block');
         final data = response.data;
-        print('DEBUG: Jobs API response type: ${data.runtimeType}');
+        
 
         List<JobModel> jobs = [];
 
         if (data is List) {
-          print('DEBUG: Jobs data is List with ${data.length} items');
           jobs = data
               .map((e) {
                 try {
                   final jobData = e as Map<String, dynamic>;
-                  print('DEBUG: Parsing job: ${jobData['id']} - ${jobData['title']}');
                   return JobModel.fromJson(jobData, isFromApplications: false);
                 } catch (e) {
-                  print('DEBUG: Error parsing job: $e');
                   return null;
                 }
               })
@@ -65,15 +60,12 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
               .toList();
         } else if (data is Map && data['data'] is List) {
           final dataList = data['data'] as List;
-          print('DEBUG: Jobs data.data is List with ${dataList.length} items');
           jobs = dataList
               .map((e) {
                 try {
                   final jobData = e as Map<String, dynamic>;
-                  print('DEBUG: Parsing job: ${jobData['id']} - ${jobData['title']}');
                   return JobModel.fromJson(jobData, isFromApplications: false);
                 } catch (e) {
-                  print('DEBUG: Error parsing job: $e');
                   return null;
                 }
               })
@@ -82,15 +74,12 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
               .toList();
         } else if (data is Map && data['results'] is List) {
           final resultsList = data['results'] as List;
-          print('DEBUG: Jobs data.results is List with ${resultsList.length} items');
           jobs = resultsList
               .map((e) {
                 try {
                   final jobData = e as Map<String, dynamic>;
-                  print('DEBUG: Parsing job: ${jobData['id']} - ${jobData['title']}');
                   return JobModel.fromJson(jobData, isFromApplications: false);
                 } catch (e) {
-                  print('DEBUG: Error parsing job: $e');
                   return null;
                 }
               })
@@ -98,7 +87,6 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
               .cast<JobModel>()
               .toList();
         } else {
-          print('DEBUG: Jobs unexpected data format: ${data.runtimeType}');
           throw DioException(
             requestOptions: response.requestOptions,
             error: 'Unexpected response format',
@@ -110,10 +98,8 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
           );
         }
 
-        print('DEBUG: Successfully parsed ${jobs.length} jobs');
         return jobs;
       } else {
-        print('DEBUG: Jobs API error - Status: ${response.statusCode}');
         throw DioException(
           requestOptions: response.requestOptions,
           error: 'Failed to fetch jobs',
@@ -125,39 +111,35 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
         );
       }
     } catch (e) {
-      print('DEBUG: Jobs API exception: $e');
       rethrow;
     }
   }
 
   @override
   Future<List<JobModel>> loadApplications({int page = 1, int limit = 20}) async {
-    print('DEBUG: Loading applications - page: $page, limit: $limit');
+    
 
     final response = await dio.get(
       ApiEndpoints.appliedJobs,
       queryParameters: {'page': page, 'limit': limit},
     );
 
-    print('DEBUG: Applications API response status: ${response.statusCode}');
+    
 
     if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
       final data = response.data;
-      print('DEBUG: Applications API response type: ${data.runtimeType}');
+      
 
       List<JobModel> jobs = [];
 
       if (data is List) {
-        print('DEBUG: Applications data is List with ${data.length} items');
         jobs = data
             .map((e) {
               try {
                 final appData = e as Map<String, dynamic>;
                 final jobData = appData['job'] ?? appData;
-                print('DEBUG: Parsing application job: ${jobData['id']} - ${jobData['title']}');
                 return JobModel.fromJson(jobData, isFromApplications: true);
               } catch (e) {
-                print('DEBUG: Error parsing application: $e');
                 return null;
               }
             })
@@ -166,16 +148,13 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
             .toList();
       } else if (data is Map && data['data'] is List) {
         final dataList = data['data'] as List;
-        print('DEBUG: Applications data.data is List with ${dataList.length} items');
         jobs = dataList
             .map((e) {
               try {
                 final appData = e as Map<String, dynamic>;
                 final jobData = appData['job'] ?? appData;
-                print('DEBUG: Parsing application job: ${jobData['id']} - ${jobData['title']}');
                 return JobModel.fromJson(jobData, isFromApplications: true);
               } catch (e) {
-                print('DEBUG: Error parsing application: $e');
                 return null;
               }
             })
@@ -184,16 +163,13 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
             .toList();
       } else if (data is Map && data['results'] is List) {
         final resultsList = data['results'] as List;
-        print('DEBUG: Applications data.results is List with ${resultsList.length} items');
         jobs = resultsList
             .map((e) {
               try {
                 final appData = e as Map<String, dynamic>;
                 final jobData = appData['job'] ?? appData;
-                print('DEBUG: Parsing application job: ${jobData['id']} - ${jobData['title']}');
                 return JobModel.fromJson(jobData, isFromApplications: true);
               } catch (e) {
-                print('DEBUG: Error parsing application: $e');
                 return null;
               }
             })
@@ -201,14 +177,11 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
             .cast<JobModel>()
             .toList();
       } else {
-        print('DEBUG: Applications unexpected data format: ${data.runtimeType}');
         return []; // Return empty list if no applications found
       }
 
-      print('DEBUG: Successfully parsed ${jobs.length} applications');
       return jobs;
     } else {
-      print('DEBUG: Applications API error - Status: ${response.statusCode}');
       throw DioException(
         requestOptions: response.requestOptions,
         error: 'Failed to load applications',
@@ -224,14 +197,11 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
   @override
   Future<bool> applyToJob(JobApplication application) async {
     final applicationData = application.toJson();
-    print('DEBUG: Applying to job with data: $applicationData');
-    print('DEBUG: Apply to job endpoint: ${ApiEndpoints.applyToJob}');
 
     try {
       final response = await dio.post(ApiEndpoints.applyToJob, data: applicationData);
 
-      print('DEBUG: Apply to job response status: ${response.statusCode}');
-      print('DEBUG: Apply to job response data: ${response.data}');
+      
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
@@ -247,11 +217,9 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
         }
         return true; // optimistic on 2xx
       } else {
-        print('DEBUG: Apply to job failed with status: ${response.statusCode}');
         return false;
       }
     } on DioException catch (e) {
-      print('DEBUG: Apply to job DioException: ${e.response?.statusCode} ${e.message}');
       final data = e.response?.data;
       String message = 'Failed to apply to job';
       if (data is Map) {
@@ -260,7 +228,6 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       }
       throw Exception(message);
     } catch (e) {
-      print('DEBUG: Apply to job exception: $e');
       throw Exception('Failed to apply to job: $e');
     }
   }
