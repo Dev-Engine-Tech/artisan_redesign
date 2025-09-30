@@ -11,6 +11,7 @@ import '../../domain/usecases/sign_in_with_apple.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/core/services/login_state_service.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -58,7 +59,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await getCurrentUser.call();
 
       if (user != null) {
-        emit(AuthAuthenticated(user: user));
+        // This is an automatic login from saved credentials
+        debugPrint('🔄 AuthBloc: Recording automatic login from saved credentials');
+        final loginStateService = getIt<LoginStateService>();
+        await loginStateService.recordAutomaticLogin();
+        debugPrint('✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: false');
+        emit(AuthAuthenticated(user: user, isFreshLogin: false));
       } else {
         // If remote says signed in but no local user, mark unauthenticated
         emit(const AuthUnauthenticated());
@@ -76,7 +82,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           identifier: event.identifier, password: event.password);
 
       if (user != null) {
-        emit(AuthAuthenticated(user: user));
+        // This is a fresh manual login
+        debugPrint('🔑 AuthBloc: Recording manual login');
+        final loginStateService = getIt<LoginStateService>();
+        await loginStateService.recordManualLogin();
+        debugPrint('✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: true');
+        emit(AuthAuthenticated(user: user, isFreshLogin: true));
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -114,7 +125,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await signInWithGoogle.call();
       if (user != null) {
-        emit(AuthAuthenticated(user: user));
+        // This is a fresh Google login
+        final loginStateService = getIt<LoginStateService>();
+        await loginStateService.recordGoogleLogin();
+        emit(AuthAuthenticated(user: user, isFreshLogin: true));
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -129,7 +143,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final user = await signInWithApple.call();
       if (user != null) {
-        emit(AuthAuthenticated(user: user));
+        // This is a fresh Apple login
+        final loginStateService = getIt<LoginStateService>();
+        await loginStateService.recordAppleLogin();
+        emit(AuthAuthenticated(user: user, isFreshLogin: true));
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -143,6 +160,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthLoading());
     try {
       await signOut.call();
+      // Clear login state when signing out
+      final loginStateService = getIt<LoginStateService>();
+      await loginStateService.clearLoginState();
       emit(const AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(message: e.toString()));

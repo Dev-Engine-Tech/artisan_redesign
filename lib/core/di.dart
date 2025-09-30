@@ -34,6 +34,7 @@ import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
     if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart'
     as ssl;
 import 'package:artisans_circle/core/services/banner_service.dart';
+import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
@@ -192,6 +193,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   // Register Banner Service
   getIt.registerLazySingleton<BannerService>(
     () => BannerService(),
+  );
+
+  // Register Login State Service for tracking fresh logins
+  getIt.registerLazySingleton<LoginStateService>(
+    () => LoginStateService.instance,
   );
 
   // Location (States/LGAs)

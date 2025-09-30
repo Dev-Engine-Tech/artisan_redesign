@@ -93,7 +93,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         if (filters['categories'] is List) {
           final ids =
               (filters['categories'] as List).map((e) => e.toString()).toList();
-          if (ids.isNotEmpty) categoriesCsv = ids.first; // use first id for API
+          if (ids.isNotEmpty) categoriesCsv = ids.join(',');
           _categoryIds
             ..clear()
             ..addAll(ids);
@@ -684,7 +684,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       budgetType: _budgetTypeFilter,
       duration: _durationFilter,
       category: _categoryFilter,
-      state: _stateFilter,
+      state: _stateName ?? _stateFilter, // prefer name for compatibility
       lgas: _lgasCsv,
     ));
     // Persist search
@@ -705,7 +705,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       budgetType: _budgetTypeFilter,
       duration: _durationFilter,
       category: _categoryFilter,
-      state: _stateFilter,
+      state: _stateName ?? _stateFilter,
       lgas: _lgasCsv,
     ));
     SharedPreferences.getInstance().then((p) => p.remove('discover_search'));
@@ -751,7 +751,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             (filters['categories'] as List).isNotEmpty) {
           final ids =
               (filters['categories'] as List).map((e) => e.toString()).toList();
-          categoriesCsv = ids.first;
+          categoriesCsv = ids.join(',');
           _categoryIds
             ..clear()
             ..addAll(ids);
@@ -878,7 +878,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           budgetType: _budgetTypeFilter,
           duration: _durationFilter,
           category: _categoryFilter,
-          state: _stateFilter,
+          state: _stateName ?? _stateFilter,
           lgas: _lgasCsv,
         ));
         break;
@@ -894,7 +894,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           budgetType: _budgetTypeFilter,
           duration: _durationFilter,
           category: _categoryFilter,
-          state: _stateFilter,
+          state: _stateName ?? _stateFilter,
           lgas: _lgasCsv,
         ));
         break;

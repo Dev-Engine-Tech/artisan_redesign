@@ -9,9 +9,13 @@ import 'package:artisans_circle/features/invoices/presentation/pages/invoice_men
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
+import 'package:artisans_circle/core/services/login_state_service.dart';
+import 'package:artisans_circle/core/widgets/youtube_video_popup.dart';
+import 'package:artisans_circle/features/auth/presentation/pages/sign_in_page.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 class AppShell extends StatefulWidget {
@@ -86,6 +90,43 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  /// Check if instructional video should be shown and display it
+  Future<void> _showInstructionalVideoIfNeeded(BuildContext context) async {
+    try {
+      debugPrint('🔍 AppShell: Checking if instructional video should be shown...');
+      final loginStateService = getIt<LoginStateService>();
+      final shouldShow = await loginStateService.shouldShowInstructionalVideo();
+      
+      debugPrint('🎯 AppShell: Should show video? $shouldShow');
+      
+      if (shouldShow && context.mounted) {
+        debugPrint('⏳ AppShell: Waiting 1 second for UI to load...');
+        // Small delay to ensure the UI is fully loaded
+        await Future.delayed(const Duration(milliseconds: 1000));
+        
+        if (context.mounted) {
+          debugPrint('🎬 AppShell: Showing YouTube video popup now!');
+          showYouTubeVideoPopup(
+            context,
+            videoUrl: 'https://youtube.com/shorts/UbXpeqAfLkE',
+            title: 'Welcome to Artisans Circle!',
+            onClose: () async {
+              debugPrint('✅ AppShell: User closed video, marking as seen');
+              // Mark that user has seen the video
+              await loginStateService.markInstructionalVideoSeen();
+            },
+            barrierDismissible: true,
+          );
+        }
+      } else {
+        debugPrint('❌ AppShell: Not showing video - shouldShow: $shouldShow, mounted: ${context.mounted}');
+      }
+    } catch (e) {
+      // Silently handle errors - video popup is optional
+      debugPrint('❗ Error showing instructional video: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Performance.trackRebuild('AppShell');
@@ -99,10 +140,29 @@ class _AppShellState extends State<AppShell> {
           BlocProvider<AccountBloc>.value(value: _accountBloc),
           BlocProvider<CatalogRequestsBloc>.value(value: _catalogRequestsBloc),
         ],
-        child: Builder(
-          builder: (context) => IndexedStack(
-            index: _selectedIndex,
-            children: List.generate(5, (index) => _getPage(index, context)),
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            // Check if this is a fresh login and show instructional video
+            if (state is AuthAuthenticated && state.isFreshLogin) {
+              debugPrint('🎥 AppShell: Fresh login detected, showing instructional video...');
+              _showInstructionalVideoIfNeeded(context);
+            } else if (state is AuthAuthenticated && !state.isFreshLogin) {
+              debugPrint('🔄 AppShell: Automatic login detected, skipping video');
+            }
+            // Handle logout - navigate back to sign in page
+            else if (state is AuthUnauthenticated) {
+              debugPrint('🚪 AppShell: User logged out, navigating to sign in');
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const SignInPage()),
+                (route) => false,
+              );
+            }
+          },
+          child: Builder(
+            builder: (context) => IndexedStack(
+              index: _selectedIndex,
+              children: List.generate(5, (index) => _getPage(index, context)),
+            ),
           ),
         ),
       ),

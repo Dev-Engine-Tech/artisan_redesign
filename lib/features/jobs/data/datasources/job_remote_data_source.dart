@@ -67,9 +67,36 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       if (budgetType != null && budgetType.isNotEmpty)
         qp['budget_type'] = budgetType;
       if (duration != null && duration.isNotEmpty) qp['duration'] = duration;
-      if (category != null && category.isNotEmpty) qp['categories'] = category;
-      if (state != null && state.isNotEmpty) qp['state'] = state;
-      if (lgas != null && lgas.isNotEmpty) qp['lgas'] = lgas; // CSV of LGAs
+      if (category != null && category.isNotEmpty) {
+        // Prefer sub_categories for jobs (CSV of subcategory IDs)
+        qp['sub_categories'] = category;
+        // Some backends accept categories, or only a single category
+        qp['categories'] = category;
+        final firstCat = category.split(',').first;
+        qp['category'] = firstCat;
+        qp['sub_category'] = firstCat;
+      }
+      if (state != null && state.isNotEmpty) {
+        final isStateId = int.tryParse(state) != null;
+        if (isStateId) {
+          qp['state_id'] = state;
+        } else {
+          qp['state'] = state; // state name
+        }
+      }
+      if (lgas != null && lgas.isNotEmpty) {
+        // Determine if CSV is IDs or names
+        final tokens = lgas.split(',');
+        final allNumeric = tokens.every((t) => int.tryParse(t.trim()) != null);
+        if (allNumeric) {
+          qp['lga_ids'] = lgas; // CSV of IDs
+          qp['lgas'] = lgas;    // some backends accept 'lgas' as ids
+        } else {
+          // Likely names
+          qp['local_government'] = lgas; // CSV of names
+          qp['lgas'] = lgas;
+        }
+      }
 
       final response = await dio.get(
         ApiEndpoints.jobs,

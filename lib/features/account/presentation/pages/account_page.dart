@@ -12,6 +12,7 @@ import '../bloc/account_state.dart';
 import 'my_profile_page.dart';
 import 'my_earnings_page.dart';
 import 'add_bank_page.dart';
+import 'subscription_page.dart';
 import 'contact_us_page.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -92,6 +93,11 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const AddBankPage()),
                   ),
+                ),
+                _MenuTile(
+                  icon: Icons.credit_card_outlined,
+                  title: 'Subscription',
+                  onTap: () => SubscriptionModal.show(context),
                 ),
                 const SizedBox(height: 12),
                 _SectionTitle('Help'),

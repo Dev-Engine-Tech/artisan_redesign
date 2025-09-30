@@ -16,7 +16,8 @@ class AuthLoading extends AuthState {
 
 class AuthAuthenticated extends AuthState {
   final User user;
-  const AuthAuthenticated({required this.user});
+  final bool isFreshLogin;
+  const AuthAuthenticated({required this.user, this.isFreshLogin = false});
 }
 
 class AuthUnauthenticated extends AuthState {

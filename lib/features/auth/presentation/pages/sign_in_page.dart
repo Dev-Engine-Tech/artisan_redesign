@@ -65,10 +65,15 @@ class _SignInPageState extends State<SignInPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => const AppShell()),
-            (route) => false,
-          );
+          // Small delay to ensure AppShell BlocListener can detect fresh login
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (context.mounted) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const AppShell()),
+                (route) => false,
+              );
+            }
+          });
         } else if (state is AuthError) {
           final msg = state.message;
           if (msg.toLowerCase().contains('inactive')) {
