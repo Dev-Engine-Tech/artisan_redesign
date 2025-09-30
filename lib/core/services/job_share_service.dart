@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 
 class JobShareService {
   static const String _appName = 'Artisans Circle';
-  static const String _appStoreUrl = 'https://apps.apple.com/app/artisans-circle/id123456789';
+  static const String _appStoreUrl =
+      'https://apps.apple.com/app/artisans-circle/id123456789';
   static const String _playStoreUrl =
       'https://play.google.com/store/apps/details?id=com.artisanscircle.app';
   static const String _webUrl = 'https://artisanscircle.com';
@@ -25,7 +26,8 @@ class JobShareService {
   }
 
   /// Share a job with additional context for referrals
-  static Future<void> shareJobAsReferral(Job job, {String? personalMessage}) async {
+  static Future<void> shareJobAsReferral(Job job,
+      {String? personalMessage}) async {
     try {
       final shareText = _formatJobReferralText(job, personalMessage);
 
@@ -39,7 +41,8 @@ class JobShareService {
   }
 
   /// Share multiple jobs as a collection
-  static Future<void> shareJobCollection(List<Job> jobs, String collectionName) async {
+  static Future<void> shareJobCollection(
+      List<Job> jobs, String collectionName) async {
     try {
       final shareText = _formatJobCollectionText(jobs, collectionName);
 
@@ -128,7 +131,8 @@ Good luck! 🍀
 ''';
   }
 
-  static String _formatJobCollectionText(List<Job> jobs, String collectionName) {
+  static String _formatJobCollectionText(
+      List<Job> jobs, String collectionName) {
     final jobsPreview = jobs.take(3).map((job) {
       final budget = job.minBudget == job.maxBudget
           ? '₦${job.maxBudget.toStringAsFixed(0)}'
@@ -176,7 +180,8 @@ Web: $_webUrl
   }
 
   /// Share result callback for analytics or UI feedback
-  static Future<ShareResult?> shareJobWithResult(Job job, {String? subject}) async {
+  static Future<ShareResult?> shareJobWithResult(Job job,
+      {String? subject}) async {
     try {
       final shareText = _formatJobShareText(job);
 

@@ -189,10 +189,7 @@ class JobsTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<JobBloc, JobState>(
       builder: (context, state) {
-        
-
         if (state is JobStateLoading) {
-          
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -286,8 +283,6 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
   Widget build(BuildContext context) {
     return BlocBuilder<JobBloc, JobState>(
       builder: (context, state) {
-        
-
         bool isLoading = state is JobStateLoading;
         String? errorMessage;
         List<Job> applications = [];
@@ -314,8 +309,6 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
                     materials: jobModel.materials,
                   ))
               .toList();
-
-          
         } else {
           // Fallback to applications provided by parent when bloc doesn't currently hold applications
           applications = widget.applications

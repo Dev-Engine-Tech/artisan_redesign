@@ -16,7 +16,8 @@ class BankAccount extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, bankName, bankCode, accountName, accountNumber];
+  List<Object?> get props =>
+      [id, bankName, bankCode, accountName, accountNumber];
 }
 
 class BankInfo extends Equatable {

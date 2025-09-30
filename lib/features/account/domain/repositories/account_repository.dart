@@ -43,7 +43,8 @@ abstract class AccountRepository {
 
   // Bank list + verification
   Future<List<BankInfo>> getBankList({bool forceRefresh = false});
-  Future<String> verifyBankAccount({required String bankCode, required String accountNumber});
+  Future<String> verifyBankAccount(
+      {required String bankCode, required String accountNumber});
 
   // Withdrawal PIN
   Future<bool> setWithdrawalPin(String pin);

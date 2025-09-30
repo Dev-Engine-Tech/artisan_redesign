@@ -21,7 +21,8 @@ class MaterialManagementWidget extends StatefulWidget {
   });
 
   @override
-  State<MaterialManagementWidget> createState() => _MaterialManagementWidgetState();
+  State<MaterialManagementWidget> createState() =>
+      _MaterialManagementWidgetState();
 }
 
 class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
@@ -248,7 +249,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
               labelText: 'Description *',
               hintText: 'Enter material description',
               border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             ),
             maxLines: 2,
             onChanged: (_) => _onMaterialChanged(),
@@ -267,7 +269,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                   decoration: const InputDecoration(
                     labelText: 'Quantity',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (_) => _onMaterialChanged(),
@@ -282,7 +285,8 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                   decoration: const InputDecoration(
                     labelText: 'Price (₦)',
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (_) => _onMaterialChanged(),

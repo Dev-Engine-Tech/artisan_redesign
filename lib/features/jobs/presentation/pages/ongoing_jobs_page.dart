@@ -127,7 +127,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                       )
                     : null,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
               onChanged: (value) {
                 setState(() {
@@ -264,7 +265,9 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            _searchQuery.isNotEmpty ? 'No projects match your search' : 'No ongoing projects',
+            _searchQuery.isNotEmpty
+                ? 'No projects match your search'
+                : 'No ongoing projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.black54,
                   fontWeight: FontWeight.w600,

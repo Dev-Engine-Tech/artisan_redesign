@@ -49,8 +49,10 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
     _addressController = TextEditingController(text: customer?.address ?? '');
     _cityController = TextEditingController(text: customer?.city ?? '');
     _stateController = TextEditingController(text: customer?.state ?? '');
-    _countryController = TextEditingController(text: customer?.country ?? 'Nigeria');
-    _postalCodeController = TextEditingController(text: customer?.postalCode ?? '');
+    _countryController =
+        TextEditingController(text: customer?.country ?? 'Nigeria');
+    _postalCodeController =
+        TextEditingController(text: customer?.postalCode ?? '');
     _notesController = TextEditingController(text: customer?.notes ?? '');
   }
 
@@ -178,7 +180,8 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
           ),
           filled: true,
           fillColor: Colors.grey.shade50,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         ),
       ),
     );
@@ -217,15 +220,30 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         id: widget.customer?.id ?? '',
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
-        phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-        company: _companyController.text.trim().isEmpty ? null : _companyController.text.trim(),
-        address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
-        city: _cityController.text.trim().isEmpty ? null : _cityController.text.trim(),
-        state: _stateController.text.trim().isEmpty ? null : _stateController.text.trim(),
-        country: _countryController.text.trim().isEmpty ? null : _countryController.text.trim(),
-        postalCode:
-            _postalCodeController.text.trim().isEmpty ? null : _postalCodeController.text.trim(),
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        phone: _phoneController.text.trim().isEmpty
+            ? null
+            : _phoneController.text.trim(),
+        company: _companyController.text.trim().isEmpty
+            ? null
+            : _companyController.text.trim(),
+        address: _addressController.text.trim().isEmpty
+            ? null
+            : _addressController.text.trim(),
+        city: _cityController.text.trim().isEmpty
+            ? null
+            : _cityController.text.trim(),
+        state: _stateController.text.trim().isEmpty
+            ? null
+            : _stateController.text.trim(),
+        country: _countryController.text.trim().isEmpty
+            ? null
+            : _countryController.text.trim(),
+        postalCode: _postalCodeController.text.trim().isEmpty
+            ? null
+            : _postalCodeController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
         createdAt: widget.customer?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
         totalInvoices: widget.customer?.totalInvoices ?? 0,
@@ -241,7 +259,9 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              _isEditing ? 'Customer updated successfully!' : 'Customer created successfully!',
+              _isEditing
+                  ? 'Customer updated successfully!'
+                  : 'Customer created successfully!',
             ),
             backgroundColor: Colors.green,
           ),
@@ -277,7 +297,8 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.brownHeader),
+                icon:
+                    const Icon(Icons.arrow_back, color: AppColors.brownHeader),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -443,12 +464,15 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                                 width: 24,
                                 height: 24,
                                 child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
                                   strokeWidth: 2,
                                 ),
                               )
                             : Text(
-                                _isEditing ? 'Update Customer' : 'Create Customer',
+                                _isEditing
+                                    ? 'Update Customer'
+                                    : 'Create Customer',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

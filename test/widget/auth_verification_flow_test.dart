@@ -42,7 +42,8 @@ void main() {
 
       // Make mockAuthBloc.stream produce an initial AuthInitial state so BlocProvider can read it.
       when(() => mockAuthBloc.state).thenReturn(const AuthInitial());
-      whenListen(mockAuthBloc, const Stream<AuthState>.empty(), initialState: const AuthInitial());
+      whenListen(mockAuthBloc, const Stream<AuthState>.empty(),
+          initialState: const AuthInitial());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -56,7 +57,6 @@ void main() {
         ),
       );
       // Debug trace
-      
 
       // Verify page shows heading
       expect(find.text('Identity Verification'), findsOneWidget);
@@ -69,20 +69,18 @@ void main() {
       await tester.ensureVisible(uploadButtonText);
       await tester.pumpAndSettle();
       await tester.tap(uploadButtonText);
-      
 
       // allow cubit simulated delay to complete
       await tester.pumpAndSettle(const Duration(milliseconds: 600));
 
       // The cubit should now have identitySubmitted true
       expect(verificationCubit.state.identitySubmitted, isTrue);
-      
 
       // Simulate selfie capture by directly calling cubit (the real SelfieCapturePage would also call this)
-      await verificationCubit.submitSelfie(selfiePath: 'local://selfie_test.jpg');
+      await verificationCubit.submitSelfie(
+          selfiePath: 'local://selfie_test.jpg');
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       expect(verificationCubit.state.selfieCaptured, isTrue);
-      
 
       // Fill required form fields so form validation passes (document number + country)
       final docField = find.byType(TextFormField);
@@ -96,7 +94,6 @@ void main() {
         final state = tester.state<FormFieldState<String>>(dropdown);
         state.didChange('NG'); // Nigeria
         await tester.pumpAndSettle();
-        
       }
 
       // Tap Verify Now button
@@ -105,9 +102,8 @@ void main() {
       // Ensure the verify button is visible (page scrollable)
       await tester.ensureVisible(verifyNowButton);
       await tester.pumpAndSettle();
-      
+
       await tester.tap(verifyNowButton);
-      
 
       // finalizeVerification has a delay; pump in short increments until the submitted page appears
       // This avoids hanging if there are continuous frames (pumpAndSettle can wait forever in that case).
@@ -127,7 +123,8 @@ void main() {
       expect(find.text('Congratulations!'), findsOneWidget);
 
       // Verify that AuthMarkVerified was dispatched to the AuthBloc
-      verify(() => mockAuthBloc.add(any(that: isA<AuthMarkVerified>()))).called(1);
+      verify(() => mockAuthBloc.add(any(that: isA<AuthMarkVerified>())))
+          .called(1);
 
       await verificationCubit.close();
     },

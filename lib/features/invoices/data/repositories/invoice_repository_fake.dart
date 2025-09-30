@@ -5,7 +5,8 @@ import '../models/invoice_model.dart';
 
 class InvoiceRepositoryFake implements InvoiceRepository {
   final List<InvoiceModel> _invoices = [];
-  final StreamController<List<Invoice>> _streamController = StreamController.broadcast();
+  final StreamController<List<Invoice>> _streamController =
+      StreamController.broadcast();
 
   InvoiceRepositoryFake() {
     _initializeSampleData();
@@ -112,7 +113,8 @@ class InvoiceRepositoryFake implements InvoiceRepository {
     int limit = 20,
     InvoiceStatus? status,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
+    await Future.delayed(
+        const Duration(milliseconds: 500)); // Simulate network delay
 
     var filteredInvoices = _invoices.where((invoice) {
       if (status != null) {

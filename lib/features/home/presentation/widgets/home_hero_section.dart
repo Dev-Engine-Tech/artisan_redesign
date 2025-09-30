@@ -11,12 +11,14 @@ class HomeHeroSection extends StatefulWidget {
   State<HomeHeroSection> createState() => _HomeHeroSectionState();
 }
 
-class _HomeHeroSectionState extends State<HomeHeroSection> with AutomaticKeepAliveClientMixin {
+class _HomeHeroSectionState extends State<HomeHeroSection>
+    with AutomaticKeepAliveClientMixin {
   late final PageController _heroController;
   late final List<HeroItem> _heroItems;
 
   @override
-  bool get wantKeepAlive => true; // Performance: Keep state alive to avoid rebuilds
+  bool get wantKeepAlive =>
+      true; // Performance: Keep state alive to avoid rebuilds
 
   @override
   void initState() {

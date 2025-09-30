@@ -50,7 +50,8 @@ class SignUpCubit extends Cubit<SignUpState> {
   /// Verify OTP entered by user. Returns true on success.
   bool verifyOtp(String code) {
     // Allow bypass for testing with code '0000' OR accept the generated OTP.
-    if (code == '0000' || (state.generatedOtp != null && state.generatedOtp == code)) {
+    if (code == '0000' ||
+        (state.generatedOtp != null && state.generatedOtp == code)) {
       emit(state.copyWith(phoneVerified: true, error: null));
       return true;
     } else {

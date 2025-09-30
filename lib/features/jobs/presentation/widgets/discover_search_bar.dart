@@ -214,7 +214,8 @@ class PopularSearches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searches = popularSearches.isNotEmpty ? popularSearches : defaultSearches;
+    final searches =
+        popularSearches.isNotEmpty ? popularSearches : defaultSearches;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

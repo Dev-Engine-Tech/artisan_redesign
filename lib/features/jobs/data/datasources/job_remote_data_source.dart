@@ -5,7 +5,20 @@ import '../../domain/entities/job_application.dart';
 
 abstract class JobRemoteDataSource {
   /// Fetches jobs from remote API.
-  Future<List<JobModel>> fetchJobs({int page = 1, int limit = 20});
+  Future<List<JobModel>> fetchJobs({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    bool? saved,
+    bool? match,
+    String? postedDate,
+    String? workMode,
+    String? budgetType,
+    String? duration,
+    String? category,
+    String? state,
+    String? lgas,
+  });
 
   /// Loads applied jobs from remote API.
   Future<List<JobModel>> loadApplications({int page = 1, int limit = 20});
@@ -26,22 +39,47 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
   JobRemoteDataSourceImpl(this.dio);
 
   @override
-  Future<List<JobModel>> fetchJobs({int page = 1, int limit = 20}) async {
-    
-
+  Future<List<JobModel>> fetchJobs({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    bool? saved,
+    bool? match,
+    String? postedDate,
+    String? workMode,
+    String? budgetType,
+    String? duration,
+    String? category,
+    String? state,
+    String? lgas,
+  }) async {
     try {
+      final qp = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+      };
+      if (search != null && search.isNotEmpty) qp['search'] = search;
+      if (match != null) qp['match'] = match;
+      if (saved != null) qp['saved'] = saved;
+      if (postedDate != null && postedDate.isNotEmpty)
+        qp['posted_date'] = postedDate;
+      if (workMode != null && workMode.isNotEmpty) qp['work_mode'] = workMode;
+      if (budgetType != null && budgetType.isNotEmpty)
+        qp['budget_type'] = budgetType;
+      if (duration != null && duration.isNotEmpty) qp['duration'] = duration;
+      if (category != null && category.isNotEmpty) qp['categories'] = category;
+      if (state != null && state.isNotEmpty) qp['state'] = state;
+      if (lgas != null && lgas.isNotEmpty) qp['lgas'] = lgas; // CSV of LGAs
+
       final response = await dio.get(
         ApiEndpoints.jobs,
-        queryParameters: {'page': page, 'limit': limit},
+        queryParameters: qp,
       );
-
-      
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300) {
         final data = response.data;
-        
 
         List<JobModel> jobs = [];
 
@@ -116,19 +154,17 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
   }
 
   @override
-  Future<List<JobModel>> loadApplications({int page = 1, int limit = 20}) async {
-    
-
+  Future<List<JobModel>> loadApplications(
+      {int page = 1, int limit = 20}) async {
     final response = await dio.get(
       ApiEndpoints.appliedJobs,
       queryParameters: {'page': page, 'limit': limit},
     );
 
-    
-
-    if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
       final data = response.data;
-      
 
       List<JobModel> jobs = [];
 
@@ -199,9 +235,8 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
     final applicationData = application.toJson();
 
     try {
-      final response = await dio.post(ApiEndpoints.applyToJob, data: applicationData);
-
-      
+      final response =
+          await dio.post(ApiEndpoints.applyToJob, data: applicationData);
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
@@ -212,7 +247,9 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
           return true;
         }
         if (data is Map &&
-            (data['success'] == true || data['status'] == 'ok' || data['detail'] != null)) {
+            (data['success'] == true ||
+                data['status'] == 'ok' ||
+                data['detail'] != null)) {
           return true;
         }
         return true; // optimistic on 2xx
@@ -224,7 +261,9 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       String message = 'Failed to apply to job';
       if (data is Map) {
         // Try common error shapes
-        message = (data['detail'] ?? data['message'] ?? data['error'] ?? message).toString();
+        message =
+            (data['detail'] ?? data['message'] ?? data['error'] ?? message)
+                .toString();
       }
       throw Exception(message);
     } catch (e) {
@@ -236,9 +275,12 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
   Future<bool> requestChange(String jobId, {required String reason}) async {
     final payload = <String, dynamic>{'reason': reason};
 
-    final response = await dio.post(ApiEndpoints.jobRequestChangeById(jobId), data: payload);
+    final response =
+        await dio.post(ApiEndpoints.jobRequestChangeById(jobId), data: payload);
 
-    if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
       final data = response.data;
       if (data == null) {
         return true;
@@ -256,13 +298,17 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
   Future<bool> acceptAgreement(String projectId) async {
     final url = ApiEndpoints.acceptAgreementByProjectId(projectId);
     final response = await dio.post(url);
-    if (response.statusCode != null && response.statusCode! >= 200 && response.statusCode! < 300) {
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
       final data = response.data;
       if (data == null) {
         return true;
       }
       if (data is Map &&
-          (data['success'] == true || data['status'] == 'ok' || data['detail'] != null)) {
+          (data['success'] == true ||
+              data['status'] == 'ok' ||
+              data['detail'] != null)) {
         return true;
       }
       return true; // optimistic

@@ -162,7 +162,9 @@ class OptimizedHttpService implements HttpService {
       final response = await request();
 
       // Cache successful GET responses
-      if (cacheKey != null && _shouldUseCache(options) && response.statusCode == 200) {
+      if (cacheKey != null &&
+          _shouldUseCache(options) &&
+          response.statusCode == 200) {
         _cacheManager.set(cacheKey, response);
       }
 
@@ -180,7 +182,8 @@ class OptimizedHttpService implements HttpService {
   Exception _mapDioException(DioException e) {
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
-        return HttpException('Connection timeout. Please check your internet connection.');
+        return HttpException(
+            'Connection timeout. Please check your internet connection.');
       case DioExceptionType.sendTimeout:
         return HttpException('Send timeout. Please try again.');
       case DioExceptionType.receiveTimeout:
@@ -190,7 +193,8 @@ class OptimizedHttpService implements HttpService {
       case DioExceptionType.cancel:
         return HttpException('Request was cancelled.');
       case DioExceptionType.connectionError:
-        return HttpException('Connection error. Please check your internet connection.');
+        return HttpException(
+            'Connection error. Please check your internet connection.');
       case DioExceptionType.unknown:
         return HttpException('Unknown error occurred: ${e.message}');
       case DioExceptionType.badCertificate:
@@ -202,8 +206,8 @@ class OptimizedHttpService implements HttpService {
     if (queryParameters == null || queryParameters.isEmpty) {
       return path;
     }
-    final sortedParams =
-        Map.fromEntries(queryParameters.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+    final sortedParams = Map.fromEntries(queryParameters.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key)));
     return '$path?${Uri(queryParameters: sortedParams).query}';
   }
 

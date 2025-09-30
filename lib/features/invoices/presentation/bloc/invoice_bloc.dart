@@ -113,7 +113,8 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   ) async {
     try {
       emit(InvoiceLoading());
-      final invoice = await repository.markAsPaid(event.invoiceId, event.paidDate);
+      final invoice =
+          await repository.markAsPaid(event.invoiceId, event.paidDate);
       emit(InvoiceUpdated(invoice));
     } catch (e) {
       emit(InvoiceError('Failed to mark invoice as paid: ${e.toString()}'));

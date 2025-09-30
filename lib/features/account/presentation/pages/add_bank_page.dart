@@ -58,7 +58,8 @@ class _AddBankPageState extends State<AddBankPage> {
               _banksLoading = true;
             } else if (state is AccountError) {
               // Show add/delete failures as global snackbar; verify/list use dialog-only errors
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(state.message)));
             } else if (state is AccountBankAccountsLoaded) {
               _accountsCache = state.accounts;
             }
@@ -77,12 +78,16 @@ class _AddBankPageState extends State<AddBankPage> {
             if (state is AccountProfileLoaded) {
               isVerified = state.profile.isVerified;
             }
-            if (state is AccountBankAccountsLoaded || state is AccountBankMutationLoading) {
-              final accounts = state is AccountBankAccountsLoaded ? state.accounts : _accountsCache;
+            if (state is AccountBankAccountsLoaded ||
+                state is AccountBankMutationLoading) {
+              final accounts = state is AccountBankAccountsLoaded
+                  ? state.accounts
+                  : _accountsCache;
               Widget content;
               if (accounts.isEmpty) {
                 content = _EmptyState(
-                  onAdd: () => _showAddDialog(context, requireVerified: !isVerified),
+                  onAdd: () =>
+                      _showAddDialog(context, requireVerified: !isVerified),
                   verified: isVerified,
                 );
               } else {
@@ -104,7 +109,8 @@ class _AddBankPageState extends State<AddBankPage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: isVerified ? () => _showAddDialog(context) : null,
+                          onPressed:
+                              isVerified ? () => _showAddDialog(context) : null,
                           child: Text(isVerified
                               ? 'Add another bank account'
                               : 'Verify your identity to add bank'),
@@ -138,7 +144,9 @@ class _AddBankPageState extends State<AddBankPage> {
         ),
         floatingActionButton: BlocBuilder<AccountBloc, AccountState>(
           buildWhen: (p, c) =>
-              c is AccountProfileLoaded || c is AccountLoading || c is AccountError,
+              c is AccountProfileLoaded ||
+              c is AccountLoading ||
+              c is AccountError,
           builder: (context, st) {
             bool verified = true;
             if (st is AccountProfileLoaded) verified = st.profile.isVerified;
@@ -146,7 +154,8 @@ class _AddBankPageState extends State<AddBankPage> {
               onPressed: verified
                   ? () => _showAddDialog(context, requireVerified: false)
                   : () => ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Complete KYC to add bank account')),
+                        const SnackBar(
+                            content: Text('Complete KYC to add bank account')),
                       ),
               child: const Icon(Icons.add),
             );
@@ -156,7 +165,8 @@ class _AddBankPageState extends State<AddBankPage> {
     );
   }
 
-  Future<void> _showAddDialog(BuildContext context, {bool requireVerified = false}) async {
+  Future<void> _showAddDialog(BuildContext context,
+      {bool requireVerified = false}) async {
     if (requireVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Complete KYC to add a bank account')),
@@ -240,24 +250,28 @@ class _AddBankPageState extends State<AddBankPage> {
                     setStateDialog(() {});
                   } else if (state is AccountBankVerifyError) {
                     verifying = false;
-                    numberError = 'Verification failed. Please check details and try again.';
+                    numberError =
+                        'Verification failed. Please check details and try again.';
                     setStateDialog(() {});
                   }
                 },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (_banksLoading) const LinearProgressIndicator(minHeight: 2),
+                    if (_banksLoading)
+                      const LinearProgressIndicator(minHeight: 2),
                     if (!_banksLoading && banksError)
                       Row(
                         children: [
                           Expanded(
-                            child: Text(banksErrorMessage ?? 'Unable to load banks.',
+                            child: Text(
+                                banksErrorMessage ?? 'Unable to load banks.',
                                 style: const TextStyle(color: Colors.red)),
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
                               minimumSize: const Size(0, 36),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
@@ -275,7 +289,8 @@ class _AddBankPageState extends State<AddBankPage> {
                       DropdownButtonFormField<BankInfo>(
                         initialValue: selected,
                         items: _banks
-                            .map((b) => DropdownMenuItem(value: b, child: Text(b.name)))
+                            .map((b) =>
+                                DropdownMenuItem(value: b, child: Text(b.name)))
                             .toList(),
                         onChanged: (b) {
                           selected = b;
@@ -297,7 +312,8 @@ class _AddBankPageState extends State<AddBankPage> {
                         padding: const EdgeInsets.only(top: 6.0),
                         child: Row(
                           children: const [
-                            Icon(Icons.info_outline, size: 14, color: Colors.orange),
+                            Icon(Icons.info_outline,
+                                size: 14, color: Colors.orange),
                             SizedBox(width: 6),
                             Expanded(
                               child: Text(
@@ -335,24 +351,28 @@ class _AddBankPageState extends State<AddBankPage> {
                           return;
                         }
                         if (value.isEmpty || value.length < 10) {
-                          numberError =
-                              value.isEmpty ? null : 'Enter a valid 10-digit account number';
+                          numberError = value.isEmpty
+                              ? null
+                              : 'Enter a valid 10-digit account number';
                           setStateDialog(() {});
                           return;
                         }
                         if (value.length == 10 && selected != null) {
-                          debounce = Timer(const Duration(milliseconds: 500), () {
+                          debounce =
+                              Timer(const Duration(milliseconds: 500), () {
                             verifying = true;
                             setStateDialog(() {});
-                            context.read<AccountBloc>().add(
-                                AccountVerifyBank(bankCode: selected!.code, accountNumber: value));
+                            context.read<AccountBloc>().add(AccountVerifyBank(
+                                bankCode: selected!.code,
+                                accountNumber: value));
                           });
                         }
                       },
                     ),
                     const SizedBox(height: 8),
                     TextField(
-                      decoration: const InputDecoration(labelText: 'Account Name (auto)'),
+                      decoration: const InputDecoration(
+                          labelText: 'Account Name (auto)'),
                       controller: nameCtr,
                       readOnly: true,
                     ),
@@ -419,7 +439,8 @@ class _BankTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: const CircleAvatar(child: Icon(Icons.account_balance_outlined)),
+        leading:
+            const CircleAvatar(child: Icon(Icons.account_balance_outlined)),
         title: Text(account.bankName),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,8 +449,9 @@ class _BankTile extends StatelessWidget {
             Text('Account Name: ${account.accountName}'),
           ],
         ),
-        trailing:
-            IconButton(onPressed: onDelete, icon: const Icon(Icons.delete, color: Colors.red)),
+        trailing: IconButton(
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete, color: Colors.red)),
       ),
     );
   }
@@ -447,15 +469,19 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.account_balance_outlined, size: 64, color: Colors.grey),
+            const Icon(Icons.account_balance_outlined,
+                size: 64, color: Colors.grey),
             const SizedBox(height: 12),
             Text(
-              verified ? 'No bank accounts yet' : 'Verify your identity to add bank accounts',
+              verified
+                  ? 'No bank accounts yet'
+                  : 'Verify your identity to add bank accounts',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-                onPressed: onAdd, child: Text(verified ? 'Add bank account' : 'Verify identity'))
+                onPressed: onAdd,
+                child: Text(verified ? 'Add bank account' : 'Verify identity'))
           ],
         ),
       ),

@@ -4,7 +4,8 @@ import '../models/catalog_item_model.dart';
 
 abstract class CatalogRemoteDataSource {
   Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1});
-  Future<List<CatalogItemModel>> getCatalogByUser(String userId, {int page = 1});
+  Future<List<CatalogItemModel>> getCatalogByUser(String userId,
+      {int page = 1});
 
   Future<CatalogItemModel> createCatalog({
     required String title,
@@ -37,10 +38,11 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
   List<CatalogItemModel> _parseList(dynamic data) {
     // Print structure for debugging
     // ignore: avoid_print
-    
+
     if (data is List) {
       return data
-          .map((e) => CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))
+          .map((e) =>
+              CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList();
     }
     if (data is Map) {
@@ -62,33 +64,46 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
       }
       if (list != null) {
         return list
-            .map((e) => CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))
+            .map((e) =>
+                CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))
             .toList();
       }
     }
     throw DioException(
-        requestOptions: RequestOptions(path: ''), error: 'Unexpected catalog response shape');
+        requestOptions: RequestOptions(path: ''),
+        error: 'Unexpected catalog response shape');
   }
 
   @override
   Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1}) async {
-    final resp = await dio.get(ApiEndpoints.myCatalogItems, queryParameters: {'page': page});
-    if (resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300) {
+    final resp = await dio
+        .get(ApiEndpoints.myCatalogItems, queryParameters: {'page': page});
+    if (resp.statusCode != null &&
+        resp.statusCode! >= 200 &&
+        resp.statusCode! < 300) {
       return _parseList(resp.data);
     }
     throw DioException(
-        requestOptions: resp.requestOptions, response: resp, error: 'Failed to fetch my catalog');
+        requestOptions: resp.requestOptions,
+        response: resp,
+        error: 'Failed to fetch my catalog');
   }
 
   @override
-  Future<List<CatalogItemModel>> getCatalogByUser(String userId, {int page = 1}) async {
+  Future<List<CatalogItemModel>> getCatalogByUser(String userId,
+      {int page = 1}) async {
     final url = ApiEndpoints.catalogByUser;
-    final resp = await dio.get(url, queryParameters: {'user_id': userId, 'page': page});
-    if (resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300) {
+    final resp =
+        await dio.get(url, queryParameters: {'user_id': userId, 'page': page});
+    if (resp.statusCode != null &&
+        resp.statusCode! >= 200 &&
+        resp.statusCode! < 300) {
       return _parseList(resp.data);
     }
     throw DioException(
-        requestOptions: resp.requestOptions, response: resp, error: 'Failed to fetch user catalog');
+        requestOptions: resp.requestOptions,
+        response: resp,
+        error: 'Failed to fetch user catalog');
   }
 
   @override
@@ -108,19 +123,27 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
       MapEntry('description', description),
       if (priceMin != null) MapEntry('price_min', priceMin.toString()),
       if (priceMax != null) MapEntry('price_max', priceMax.toString()),
-      if (projectTimeline != null) MapEntry('project_timeline', projectTimeline),
+      if (projectTimeline != null)
+        MapEntry('project_timeline', projectTimeline),
     ]);
     for (var i = 0; i < imagePaths.length; i++) {
-      form.files.add(MapEntry('pictures[$i]', await MultipartFile.fromFile(imagePaths[i])));
+      form.files.add(MapEntry(
+          'pictures[$i]', await MultipartFile.fromFile(imagePaths[i])));
     }
     final resp = await dio.post(ApiEndpoints.createCatalog,
         data: form, options: Options(contentType: 'multipart/form-data'));
-    if (resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300) {
-      final data = resp.data is Map ? Map<String, dynamic>.from(resp.data) : <String, dynamic>{};
+    if (resp.statusCode != null &&
+        resp.statusCode! >= 200 &&
+        resp.statusCode! < 300) {
+      final data = resp.data is Map
+          ? Map<String, dynamic>.from(resp.data)
+          : <String, dynamic>{};
       return CatalogItemModel.fromJson(data);
     }
     throw DioException(
-        requestOptions: resp.requestOptions, response: resp, error: 'Failed to create catalog');
+        requestOptions: resp.requestOptions,
+        response: resp,
+        error: 'Failed to create catalog');
   }
 
   @override
@@ -154,23 +177,32 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
       form.fields.add(MapEntry('project_timeline', projectTimeline));
     }
     for (var i = 0; i < newImagePaths.length; i++) {
-      form.files.add(MapEntry('pictures[$i]', await MultipartFile.fromFile(newImagePaths[i])));
+      form.files.add(MapEntry(
+          'pictures[$i]', await MultipartFile.fromFile(newImagePaths[i])));
     }
     final url = '${ApiEndpoints.updateCatalog}$id/';
-    final resp =
-        await dio.put(url, data: form, options: Options(contentType: 'multipart/form-data'));
-    if (resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300) {
-      final data = resp.data is Map ? Map<String, dynamic>.from(resp.data) : <String, dynamic>{};
+    final resp = await dio.put(url,
+        data: form, options: Options(contentType: 'multipart/form-data'));
+    if (resp.statusCode != null &&
+        resp.statusCode! >= 200 &&
+        resp.statusCode! < 300) {
+      final data = resp.data is Map
+          ? Map<String, dynamic>.from(resp.data)
+          : <String, dynamic>{};
       return CatalogItemModel.fromJson(data);
     }
     throw DioException(
-        requestOptions: resp.requestOptions, response: resp, error: 'Failed to update catalog');
+        requestOptions: resp.requestOptions,
+        response: resp,
+        error: 'Failed to update catalog');
   }
 
   @override
   Future<bool> deleteCatalog(String id) async {
     final url = '${ApiEndpoints.deleteCatalog}$id/';
     final resp = await dio.delete(url);
-    return resp.statusCode != null && resp.statusCode! >= 200 && resp.statusCode! < 300;
+    return resp.statusCode != null &&
+        resp.statusCode! >= 200 &&
+        resp.statusCode! < 300;
   }
 }

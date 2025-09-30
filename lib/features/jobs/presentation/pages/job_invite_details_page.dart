@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
-import 'package:artisans_circle/features/messages/domain/entities/conversation.dart' as domain;
+import 'package:artisans_circle/features/messages/domain/entities/conversation.dart'
+    as domain;
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/shared/widgets/compat_radio.dart';
 
@@ -34,7 +35,10 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(text,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.brownHeader)),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: AppColors.brownHeader)),
     );
   }
 
@@ -50,15 +54,17 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration:
-                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+                color: AppColors.softPink,
+                borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Job Invite', style: TextStyle(color: Colors.black87)),
+        title:
+            const Text('Job Invite', style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
         child: ListView(
@@ -72,28 +78,36 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 border: Border.all(color: AppColors.softBorder),
               ),
               padding: const EdgeInsets.all(16),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(job.title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.w700)),
-                const SizedBox(height: 6),
-                Text(job.category,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45)),
-                const SizedBox(height: 10),
-                Text(job.description,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54)),
-                const SizedBox(height: 12),
-                Wrap(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _badge('Applicants: 10 artisans'),
-                    _badge('Budget: NGN 500,000'),
-                    _badge('Work type: On site'),
-                    _badge('Duration: ${job.duration}'),
-                  ],
-                ),
-              ]),
+                    Text(job.title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 6),
+                    Text(job.category,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.black45)),
+                    const SizedBox(height: 10),
+                    Text(job.description,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.black54)),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      children: [
+                        _badge('Applicants: 10 artisans'),
+                        _badge('Budget: NGN 500,000'),
+                        _badge('Work type: On site'),
+                        _badge('Duration: ${job.duration}'),
+                      ],
+                    ),
+                  ]),
             ),
 
             const SizedBox(height: 14),
@@ -105,14 +119,19 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 color: AppColors.softPink,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-                Text('Reviews', style: TextStyle(fontWeight: FontWeight.w600)),
-                SizedBox(width: 8),
-                CircleAvatar(
-                    radius: 12,
-                    backgroundColor: Color(0xFFE9692D),
-                    child: Text('29', style: TextStyle(color: Colors.white, fontSize: 12))),
-              ]),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text('Reviews',
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                    SizedBox(width: 8),
+                    CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Color(0xFFE9692D),
+                        child: Text('29',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 12))),
+                  ]),
             ),
 
             const SizedBox(height: 12),
@@ -120,15 +139,17 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
             // Primary actions (Accept / Message)
             ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text('Invite accepted')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Invite accepted')));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF9A4B20),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Accept Invite', style: TextStyle(fontSize: 16)),
+              child:
+                  const Text('Accept Invite', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 12),
@@ -154,7 +175,8 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF213447),
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text('Message', style: TextStyle(fontSize: 16)),
             ),
@@ -163,25 +185,30 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
 
             // Delivery Option
             Text('Delivery Option',
-                style:
-                    Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             Card(
               color: AppColors.cardBackground,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               child: Column(
                 children: [
                   CompatRadioListTile<String>(
                     value: 'pickup',
                     groupValue: _deliveryOption,
-                    onChanged: (v) => setState(() => _deliveryOption = v ?? 'pickup'),
+                    onChanged: (v) =>
+                        setState(() => _deliveryOption = v ?? 'pickup'),
                     title: const Text('Pickup items from artisans location',
                         style: TextStyle(color: Colors.black45)),
                   ),
                   CompatRadioListTile<String>(
                     value: 'deliver',
                     groupValue: _deliveryOption,
-                    onChanged: (v) => setState(() => _deliveryOption = v ?? 'deliver'),
+                    onChanged: (v) =>
+                        setState(() => _deliveryOption = v ?? 'deliver'),
                     title: const Text('Deliver items to a specific location',
                         style: TextStyle(color: Colors.black45)),
                   ),
@@ -207,8 +234,10 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
 
             // Add a comment
             Text('Add a Comment',
-                style:
-                    Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
@@ -220,7 +249,8 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
               child: TextField(
                 controller: _commentController,
                 maxLines: 4,
-                decoration: const InputDecoration.collapsed(hintText: 'type in your preferences'),
+                decoration: const InputDecoration.collapsed(
+                    hintText: 'type in your preferences'),
               ),
             ),
 
@@ -233,14 +263,20 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 border: Border.all(color: AppColors.subtleBorder),
                 color: AppColors.cardBackground,
               ),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                Text('Add your preferences',
-                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.brownHeader)),
-                SizedBox(height: 8),
-                Text('• Perhaps you don\'t like the client\'s estimated budget'),
-                SizedBox(height: 6),
-                Text('• The start time isn\'t convenient due to several bookings'),
-              ]),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text('Add your preferences',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.brownHeader)),
+                    SizedBox(height: 8),
+                    Text(
+                        '• Perhaps you don\'t like the client\'s estimated budget'),
+                    SizedBox(height: 6),
+                    Text(
+                        '• The start time isn\'t convenient due to several bookings'),
+                  ]),
             ),
 
             const SizedBox(height: 40),

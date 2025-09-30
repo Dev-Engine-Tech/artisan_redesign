@@ -342,7 +342,9 @@ class ApplicationStatusModal extends StatelessWidget {
                   side: BorderSide(color: AppColors.softBorder),
                 ),
                 child: Text(
-                  actionType == ApplicationActionType.completed ? 'View Receipt' : 'Message Client',
+                  actionType == ApplicationActionType.completed
+                      ? 'View Receipt'
+                      : 'Message Client',
                   style: const TextStyle(color: Colors.black87),
                 ),
               ),
@@ -362,7 +364,9 @@ class ApplicationStatusModal extends StatelessWidget {
                 elevation: 0,
               ),
               child: Text(
-                actionType == ApplicationActionType.completed ? 'OK' : 'View Project',
+                actionType == ApplicationActionType.completed
+                    ? 'OK'
+                    : 'View Project',
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,

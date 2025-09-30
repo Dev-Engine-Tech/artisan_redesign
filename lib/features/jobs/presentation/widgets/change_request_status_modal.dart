@@ -95,14 +95,20 @@ class ChangeRequestStatusModal extends StatelessWidget {
                           children: [
                             Text(
                               'Request Submitted',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.blue.shade700,
                                   ),
                             ),
                             Text(
                               'Waiting for client response',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
                                     color: Colors.blue.shade600,
                                   ),
                             ),
@@ -193,7 +199,8 @@ class ChangeRequestStatusModal extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, color: Colors.grey.shade600, size: 20),
+                      Icon(Icons.info_outline,
+                          color: Colors.grey.shade600, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -224,7 +231,8 @@ class ChangeRequestStatusModal extends StatelessWidget {
                     ),
                     child: const Text(
                       'Got it',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),

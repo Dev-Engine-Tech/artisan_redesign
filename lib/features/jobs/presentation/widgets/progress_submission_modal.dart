@@ -15,7 +15,8 @@ class ProgressSubmissionModal extends StatefulWidget {
   });
 
   @override
-  State<ProgressSubmissionModal> createState() => _ProgressSubmissionModalState();
+  State<ProgressSubmissionModal> createState() =>
+      _ProgressSubmissionModalState();
 }
 
 class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
@@ -134,7 +135,10 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                           children: [
                             Text(
                               'Submit Progress',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.brownHeader,
                                   ),
@@ -142,7 +146,10 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                             const SizedBox(height: 4),
                             Text(
                               'Update your client on project progress',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
                                     color: Colors.black54,
                                   ),
                             ),
@@ -181,7 +188,10 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                             children: [
                               Text(
                                 widget.job.title,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.brownHeader,
                                     ),
@@ -189,7 +199,10 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                               const SizedBox(height: 4),
                               Text(
                                 widget.job.category,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
                                       color: Colors.black54,
                                     ),
                               ),
@@ -199,10 +212,11 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                         const SizedBox(height: 20),
                         Text(
                           'Progress Percentage',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                         const SizedBox(height: 8),
                         Container(
@@ -224,7 +238,9 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                 return 'Please enter progress percentage';
                               }
                               final progress = int.tryParse(value.trim());
-                              if (progress == null || progress < 0 || progress > 100) {
+                              if (progress == null ||
+                                  progress < 0 ||
+                                  progress > 100) {
                                 return 'Progress must be between 0 and 100';
                               }
                               return null;
@@ -234,10 +250,11 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                         const SizedBox(height: 20),
                         Text(
                           'Progress Description',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                         const SizedBox(height: 8),
                         Container(
@@ -249,7 +266,8 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                             controller: _descriptionController,
                             maxLines: 5,
                             decoration: const InputDecoration(
-                              hintText: 'Describe what you have completed and what\'s next...',
+                              hintText:
+                                  'Describe what you have completed and what\'s next...',
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(16),
                             ),
@@ -264,10 +282,11 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                         const SizedBox(height: 20),
                         Text(
                           'Progress Photos',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                         const SizedBox(height: 8),
                         if (_imageUrls.isNotEmpty) ...[
@@ -282,7 +301,8 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                   margin: const EdgeInsets.only(right: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: AppColors.softBorder),
+                                    border:
+                                        Border.all(color: AppColors.softBorder),
                                   ),
                                   child: Stack(
                                     children: [
@@ -329,8 +349,9 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                         OutlinedButton.icon(
                           onPressed: _addImage,
                           icon: const Icon(Icons.add_a_photo, size: 20),
-                          label:
-                              Text(_imageUrls.isEmpty ? 'Add Progress Photos' : 'Add More Photos'),
+                          label: Text(_imageUrls.isEmpty
+                              ? 'Add Progress Photos'
+                              : 'Add More Photos'),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.orange,
                             side: BorderSide(color: AppColors.orange),
@@ -375,7 +396,8 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
                           : const Text(

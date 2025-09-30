@@ -71,7 +71,8 @@ class JobCompletionCertificate extends StatelessWidget {
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.orange.withValues(alpha: 0.2), width: 2),
+                border: Border.all(
+                    color: AppColors.orange.withValues(alpha: 0.2), width: 2),
               ),
               child: Column(
                 children: [
@@ -117,7 +118,8 @@ class JobCompletionCertificate extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -229,7 +231,8 @@ class JobCompletionCertificate extends StatelessWidget {
 
                   // Verification Code
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(6),
@@ -260,7 +263,8 @@ class JobCompletionCertificate extends StatelessWidget {
                     label: const Text('Download'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.orange,
-                      side: BorderSide(color: AppColors.orange.withValues(alpha: 0.5)),
+                      side: BorderSide(
+                          color: AppColors.orange.withValues(alpha: 0.5)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

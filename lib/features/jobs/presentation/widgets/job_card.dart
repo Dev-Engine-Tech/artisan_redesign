@@ -38,9 +38,12 @@ class JobCard extends StatelessWidget {
     final budgetText = job.minBudget == job.maxBudget
         ? '₦${job.maxBudget.toString()}'
         : '₦${job.minBudget.toString()} - ₦${job.maxBudget.toString()}';
-    final titleStyle =
-        Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600);
-    final subtitleStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54);
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .titleLarge
+        ?.copyWith(fontWeight: FontWeight.w600);
+    final subtitleStyle =
+        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -72,7 +75,8 @@ class JobCard extends StatelessWidget {
                         color: AppColors.softPink,
                         image: job.thumbnailUrl.isNotEmpty
                             ? DecorationImage(
-                                image: NetworkImage(sanitizeImageUrl(job.thumbnailUrl)),
+                                image: NetworkImage(
+                                    sanitizeImageUrl(job.thumbnailUrl)),
                                 fit: BoxFit.cover)
                             : null,
                       ),
@@ -90,7 +94,8 @@ class JobCard extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Expanded(child: Text(job.title, style: titleStyle)),
+                              Expanded(
+                                  child: Text(job.title, style: titleStyle)),
                               if (job.applied) _buildStatusIndicator(),
                             ],
                           ),
@@ -102,7 +107,8 @@ class JobCard extends StatelessWidget {
                           ],
                           const SizedBox(height: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 6),
                             decoration: BoxDecoration(
                               color: AppColors.softPink,
                               borderRadius: BorderRadius.circular(8),
@@ -127,12 +133,14 @@ class JobCard extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => JobShareService.shareJob(job),
-                          icon: const Icon(Icons.share_outlined, size: 20, color: Colors.black54),
+                          icon: const Icon(Icons.share_outlined,
+                              size: 20, color: Colors.black54),
                           tooltip: 'Share Job',
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.more_vert, size: 20, color: Colors.black54),
+                          icon: const Icon(Icons.more_vert,
+                              size: 20, color: Colors.black54),
                         ),
                       ],
                     ),
@@ -151,13 +159,15 @@ class JobCard extends StatelessWidget {
                             .bodyLarge
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppColors.cardBackground,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: AppColors.subtleBorder),
                       ),
-                      child: Text(job.duration, style: Theme.of(context).textTheme.bodyMedium),
+                      child: Text(job.duration,
+                          style: Theme.of(context).textTheme.bodyMedium),
                     )
                   ],
                 ),
@@ -182,12 +192,15 @@ class JobCard extends StatelessWidget {
                       child: SizedBox(
                         height: 48,
                         child: ElevatedButton(
-                          onPressed: primaryAction ?? _getPrimaryAction(context),
+                          onPressed:
+                              primaryAction ?? _getPrimaryAction(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _getPrimaryButtonColor(),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                           ),
                           child: Text(primaryLabel ?? _getPrimaryLabel(),
                               style: const TextStyle(fontSize: 16)),
@@ -200,18 +213,22 @@ class JobCard extends StatelessWidget {
                       child: SizedBox(
                         height: 48,
                         child: OutlinedButton(
-                          onPressed: secondaryAction ?? _getSecondaryAction(context),
+                          onPressed:
+                              secondaryAction ?? _getSecondaryAction(context),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: AppColors.softPeach,
                             side: BorderSide.none,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             foregroundColor: AppColors.brownHeader,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.reviews, size: 16, color: AppColors.orange),
+                              const Icon(Icons.reviews,
+                                  size: 16, color: AppColors.orange),
                               const SizedBox(width: 6),
                               Text(secondaryLabel ?? _getSecondaryLabel(),
                                   style: Theme.of(context)
@@ -288,7 +305,8 @@ class JobCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: statusColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
+        border:
+            Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
       ),
       child: Text(
         status,
@@ -414,7 +432,8 @@ class JobCard extends StatelessWidget {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Reject Agreement'),
-            content: const Text('Are you sure you want to reject this agreement?'),
+            content:
+                const Text('Are you sure you want to reject this agreement?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),

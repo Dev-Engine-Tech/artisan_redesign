@@ -26,8 +26,9 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration:
-                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+                color: AppColors.softPink,
+                borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
@@ -78,12 +79,16 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
                           ?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   Text(job.category,
-                      style:
-                          Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black45)),
                   const SizedBox(height: 12),
                   Text(job.description,
-                      style:
-                          Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black54)),
                   const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
@@ -104,9 +109,11 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF9A4B20),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Edit Catalogue', style: TextStyle(fontSize: 16)),
+              child:
+                  const Text('Edit Catalogue', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
@@ -114,11 +121,13 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
                 // placeholder delete
               },
               icon: const Icon(Icons.delete_outline),
-              label: const Text('Delete Catalogue', style: TextStyle(fontSize: 16)),
+              label: const Text('Delete Catalogue',
+                  style: TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFEB2D2D),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
             ),
             const SizedBox(height: 18),
@@ -133,11 +142,14 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Description', style: TextStyle(fontWeight: FontWeight.w700)),
+                  const Text('Description',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 8),
                   Text(job.description,
-                      style:
-                          Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black54)),
                 ],
               ),
             ),
@@ -162,7 +174,10 @@ class _Badge extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.brownHeader)),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: AppColors.brownHeader)),
     );
   }
 }

@@ -28,12 +28,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatLoading());
       await _sub?.cancel();
       _sub = repository
-          .watchMessages(currentUserId: currentUserId, conversationId: conversationId)
+          .watchMessages(
+              currentUserId: currentUserId, conversationId: conversationId)
           .listen((data) {
         add(ChatMessagesUpdated(data));
       });
       // mark as seen when opening chat
-      unawaited(repository.markSeen(currentUserId: currentUserId, conversationId: conversationId));
+      unawaited(repository.markSeen(
+          currentUserId: currentUserId, conversationId: conversationId));
     });
 
     on<ChatMessagesUpdated>((event, emit) {

@@ -2,7 +2,8 @@ import '../../domain/entities/user.dart';
 
 abstract class AuthRemoteDataSource {
   Future<User?> signIn({required String identifier, required String password});
-  Future<User?> signUp({required String identifier, required String password, String? name});
+  Future<User?> signUp(
+      {required String identifier, required String password, String? name});
   Future<bool> requestIsSignedIn();
   Future<User?> fetchUser(String identifier);
   Future<void> signOut();
@@ -15,6 +16,8 @@ abstract class AuthRemoteDataSource {
 
   // Password management methods
   Future<void> forgotPassword({required String email});
-  Future<bool> resetPassword({required String token, required String newPassword});
-  Future<bool> changePassword({required String currentPassword, required String newPassword});
+  Future<bool> resetPassword(
+      {required String token, required String newPassword});
+  Future<bool> changePassword(
+      {required String currentPassword, required String newPassword});
 }

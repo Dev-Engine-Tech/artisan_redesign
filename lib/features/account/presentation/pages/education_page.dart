@@ -17,14 +17,18 @@ class EducationPage extends StatelessWidget {
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state is AccountActionSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is AccountError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
-          final list = (state is AccountProfileLoaded) ? state.profile.education : items;
-          if (list.isEmpty) return const Center(child: Text('No education yet'));
+          final list =
+              (state is AccountProfileLoaded) ? state.profile.education : items;
+          if (list.isEmpty)
+            return const Center(child: Text('No education yet'));
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (_, i) => _EduTile(edu: list[i]),
@@ -32,8 +36,8 @@ class EducationPage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _EduForm())),
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const _EduForm())),
         child: const Icon(Icons.add),
       ),
     );
@@ -49,11 +53,12 @@ class _EduTile extends StatelessWidget {
       child: ListTile(
         title: Text(edu.schoolName),
         subtitle: Text(edu.fieldOfStudy),
-        onTap: () =>
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => _EduForm(existing: edu))),
+        onTap: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => _EduForm(existing: edu))),
         trailing: IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => context.read<AccountBloc>().add(AccountDeleteEducation(edu.id)),
+          onPressed: () =>
+              context.read<AccountBloc>().add(AccountDeleteEducation(edu.id)),
         ),
       ),
     );
@@ -81,7 +86,8 @@ class _EduFormState extends State<_EduForm> {
     school = TextEditingController(text: widget.existing?.schoolName ?? '');
     field = TextEditingController(text: widget.existing?.fieldOfStudy ?? '');
     degree = TextEditingController(text: widget.existing?.degree ?? '');
-    description = TextEditingController(text: widget.existing?.description ?? '');
+    description =
+        TextEditingController(text: widget.existing?.description ?? '');
     startDate = widget.existing?.startDate;
     endDate = widget.existing?.endDate;
   }
@@ -103,29 +109,37 @@ class _EduFormState extends State<_EduForm> {
         initialDate: initial,
         firstDate: DateTime(1980),
         lastDate: DateTime(now.year + 5));
-    if (picked != null) setState(() => isStart ? startDate = picked : endDate = picked);
+    if (picked != null)
+      setState(() => isStart ? startDate = picked : endDate = picked);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.existing == null ? 'Add Education' : 'Edit Education')),
+      appBar: AppBar(
+          title: Text(
+              widget.existing == null ? 'Add Education' : 'Edit Education')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          TextField(controller: school, decoration: const InputDecoration(labelText: 'School')),
+          TextField(
+              controller: school,
+              decoration: const InputDecoration(labelText: 'School')),
           const SizedBox(height: 12),
           TextField(
-              controller: field, decoration: const InputDecoration(labelText: 'Field of Study')),
+              controller: field,
+              decoration: const InputDecoration(labelText: 'Field of Study')),
           const SizedBox(height: 12),
           TextField(
               controller: degree,
-              decoration: const InputDecoration(labelText: 'Degree (optional)')),
+              decoration:
+                  const InputDecoration(labelText: 'Degree (optional)')),
           const SizedBox(height: 12),
           TextField(
               controller: description,
               maxLines: 3,
-              decoration: const InputDecoration(labelText: 'Description (optional)')),
+              decoration:
+                  const InputDecoration(labelText: 'Description (optional)')),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -155,7 +169,8 @@ class _EduFormState extends State<_EduForm> {
               }
               if (endDate != null && endDate!.isBefore(startDate!)) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('End date cannot be before start date')),
+                  const SnackBar(
+                      content: Text('End date cannot be before start date')),
                 );
                 return;
               }
@@ -163,20 +178,28 @@ class _EduFormState extends State<_EduForm> {
                 context.read<AccountBloc>().add(AccountAddEducation(
                       schoolName: school.text.trim(),
                       fieldOfStudy: field.text.trim(),
-                      degree: degree.text.trim().isEmpty ? null : degree.text.trim(),
+                      degree: degree.text.trim().isEmpty
+                          ? null
+                          : degree.text.trim(),
                       startDate: startDate!,
                       endDate: endDate,
-                      description: description.text.trim().isEmpty ? null : description.text.trim(),
+                      description: description.text.trim().isEmpty
+                          ? null
+                          : description.text.trim(),
                     ));
               } else {
                 context.read<AccountBloc>().add(AccountUpdateEducation(
                       id: widget.existing!.id,
                       schoolName: school.text.trim(),
                       fieldOfStudy: field.text.trim(),
-                      degree: degree.text.trim().isEmpty ? null : degree.text.trim(),
+                      degree: degree.text.trim().isEmpty
+                          ? null
+                          : degree.text.trim(),
                       startDate: startDate ?? widget.existing!.startDate,
                       endDate: endDate,
-                      description: description.text.trim().isEmpty ? null : description.text.trim(),
+                      description: description.text.trim().isEmpty
+                          ? null
+                          : description.text.trim(),
                     ));
               }
               Navigator.pop(context);

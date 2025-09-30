@@ -15,7 +15,8 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 
 // Use real backend data to test API integration
 const bool kUseFake = bool.fromEnvironment('USE_FAKE', defaultValue: false);
-const String kBaseUrl = String.fromEnvironment('BASE_URL', defaultValue: ApiEndpoints.baseUrl);
+const String kBaseUrl =
+    String.fromEnvironment('BASE_URL', defaultValue: ApiEndpoints.baseUrl);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

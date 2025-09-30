@@ -21,7 +21,9 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       minBudget: 150000,
       maxBudget: 200000,
       duration: 'Less than a month',
-      applied: index == 1 || index == 3 || index == 5, // mark multiple jobs as applied for demo
+      applied: index == 1 ||
+          index == 3 ||
+          index == 5, // mark multiple jobs as applied for demo
       thumbnailUrl: '',
     ),
   );
@@ -121,14 +123,17 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   ];
 
   @override
-  Future<List<JobModel>> loadApplications({int page = 1, int limit = 20}) async {
+  Future<List<JobModel>> loadApplications(
+      {int page = 1, int limit = 20}) async {
     // simulate network latency
     await Future.delayed(const Duration(milliseconds: 300));
 
     // Return the sample applied jobs with different statuses
     final start = (page - 1) * limit;
     if (start >= _appliedJobs.length) return <JobModel>[];
-    final end = (start + limit) > _appliedJobs.length ? _appliedJobs.length : (start + limit);
+    final end = (start + limit) > _appliedJobs.length
+        ? _appliedJobs.length
+        : (start + limit);
     return _appliedJobs.sublist(start, end);
   }
 
@@ -162,7 +167,20 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   }
 
   @override
-  Future<List<JobModel>> fetchJobs({int page = 1, int limit = 20}) async {
+  Future<List<JobModel>> fetchJobs({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    bool? saved,
+    bool? match,
+    String? postedDate,
+    String? workMode,
+    String? budgetType,
+    String? duration,
+    String? category,
+    String? state,
+    String? lgas,
+  }) async {
     // simulate small delay
     await Future.delayed(const Duration(milliseconds: 250));
     // simple pagination simulation

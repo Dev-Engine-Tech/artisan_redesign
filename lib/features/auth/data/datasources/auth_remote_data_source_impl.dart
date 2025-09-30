@@ -16,7 +16,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final SharedPreferences sharedPreferences;
   final SecureStorage secureStorage;
 
-  AuthRemoteDataSourceImpl(this.dio, this.sharedPreferences, this.secureStorage);
+  AuthRemoteDataSourceImpl(
+      this.dio, this.sharedPreferences, this.secureStorage);
 
   static const String _tokenExpiryKey = 'token_expiry';
   static const String _userKey = 'logged_in_user';
@@ -78,11 +79,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<User?> signIn({required String identifier, required String password}) async {
+  Future<User?> signIn(
+      {required String identifier, required String password}) async {
     final loginId = _normalizeIdentifier(identifier);
-    if (kDebugMode) {
-      
-    }
+    if (kDebugMode) {}
 
     final response = await dio.post(
       '${ApiEndpoints.baseUrl}${ApiEndpoints.login}',
@@ -94,17 +94,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       options: Options(headers: _jsonHeaders, validateStatus: (_) => true),
     );
 
-    if (kDebugMode) {
-      
-    }
+    if (kDebugMode) {}
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = response.data as Map<String, dynamic>;
       final loginResponse = LoginResponse.fromJson(data);
 
-      if (kDebugMode) {
-          
-      }
+      if (kDebugMode) {}
 
       await _saveTokens(
         accessToken: loginResponse.accessToken,
@@ -112,34 +108,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         firebaseToken: loginResponse.firebaseAccessToken,
       );
 
-      if (kDebugMode) {
-          
-      }
+      if (kDebugMode) {}
 
       final user = await fetchUser(identifier);
       if (user != null) {
         await _saveUser(user);
-        if (kDebugMode) {
-            
-        }
+        if (kDebugMode) {}
       }
       return user;
     }
     final data = response.data;
     if (data is Map && data['detail'] != null) {
-      if (kDebugMode) {
-        
-      }
+      if (kDebugMode) {}
       throw Exception(data['detail'].toString());
     }
-    if (kDebugMode) {
-      
-    }
+    if (kDebugMode) {}
     throw Exception('Login failed with status ${response.statusCode}');
   }
 
   @override
-  Future<User?> signUp({required String identifier, required String password, String? name}) async {
+  Future<User?> signUp(
+      {required String identifier,
+      required String password,
+      String? name}) async {
     final loginId = _normalizeIdentifier(identifier);
     final nameParts = name?.split(' ') ?? ['', ''];
     final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
@@ -229,10 +220,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final token = await secureStorage.getAccessToken();
       if (kDebugMode) {
-        
-        if (token != null) {
-          
-        }
+        if (token != null) {}
       }
 
       if (token == null) return false;
@@ -242,15 +230,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         options: Options(headers: await _authHeaders),
       );
 
-      if (kDebugMode) {
-        
-      }
+      if (kDebugMode) {}
 
       return response.statusCode == 200;
     } catch (e) {
-      if (kDebugMode) {
-        
-      }
+      if (kDebugMode) {}
       return false;
     }
   }
@@ -259,18 +243,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<User?> fetchUser(String identifier) async {
     try {
       final headers = await _authHeaders;
-      if (kDebugMode) {
-        
-      }
+      if (kDebugMode) {}
 
       final response = await dio.get(
         '${ApiEndpoints.baseUrl}${ApiEndpoints.userProfile}',
         options: Options(headers: headers),
       );
 
-      if (kDebugMode) {
-        
-      }
+      if (kDebugMode) {}
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -295,18 +275,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             isPhoneVerified: true,
           );
 
-          if (kDebugMode) {
-            
-          }
+          if (kDebugMode) {}
 
           return user;
         }
       }
       return null;
     } catch (e) {
-      if (kDebugMode) {
-        
-      }
+      if (kDebugMode) {}
       return null;
     }
   }
@@ -316,7 +292,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       await dio.post(
         '${ApiEndpoints.baseUrl}/auth/logout/',
-        options: Options(headers: await _authHeaders, validateStatus: (_) => true),
+        options:
+            Options(headers: await _authHeaders, validateStatus: (_) => true),
       );
     } catch (_) {
     } finally {
@@ -335,8 +312,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final token = auth.accessToken ?? auth.idToken;
       if (token == null) throw Exception('Google sign-in failed: no token');
 
-      final clientId = const String.fromEnvironment('CLIENT_ID', defaultValue: '');
-      final clientSecret = const String.fromEnvironment('CLIENT_SECRET', defaultValue: '');
+      final clientId =
+          const String.fromEnvironment('CLIENT_ID', defaultValue: '');
+      final clientSecret =
+          const String.fromEnvironment('CLIENT_SECRET', defaultValue: '');
 
       if (clientId.isEmpty || clientSecret.isEmpty) {
         throw Exception(
@@ -375,7 +354,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (data is Map && data['detail'] != null) {
         throw Exception(data['detail'].toString());
       }
-      throw Exception('Google sign-in failed with status ${response.statusCode}');
+      throw Exception(
+          'Google sign-in failed with status ${response.statusCode}');
     } catch (e) {
       throw Exception('Google sign-in failed: ${e.toString()}');
     }
@@ -390,7 +370,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName
+        ],
       );
       final idToken = credential.identityToken;
       final code = credential.authorizationCode;
@@ -398,7 +381,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw Exception('Apple sign-in failed: missing token');
       }
 
-      final clientId = const String.fromEnvironment('APPLE_CLIENT_ID', defaultValue: '');
+      final clientId =
+          const String.fromEnvironment('APPLE_CLIENT_ID', defaultValue: '');
 
       if (clientId.isEmpty) {
         throw Exception(
@@ -438,7 +422,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (data is Map && data['detail'] != null) {
         throw Exception(data['detail'].toString());
       }
-      throw Exception('Apple sign-in failed with status ${response.statusCode}');
+      throw Exception(
+          'Apple sign-in failed with status ${response.statusCode}');
     } catch (e) {
       throw Exception('Apple sign-in failed: ${e.toString()}');
     }
@@ -453,7 +438,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         options: Options(headers: _jsonHeaders, validateStatus: (_) => true),
       );
       if (response.statusCode != 200) {
-        throw Exception('Forgot password failed with status ${response.statusCode}');
+        throw Exception(
+            'Forgot password failed with status ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Forgot password failed: ${e.toString()}');
@@ -461,7 +447,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<bool> resetPassword({required String token, required String newPassword}) async {
+  Future<bool> resetPassword(
+      {required String token, required String newPassword}) async {
     try {
       final response = await dio.post(
         '${ApiEndpoints.baseUrl}${ApiEndpoints.resetPassword}',
@@ -480,8 +467,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await dio.post(
         '${ApiEndpoints.baseUrl}${ApiEndpoints.changePassword}',
-        data: {'current_password': currentPassword, 'new_password': newPassword},
-        options: Options(headers: await _authHeaders, validateStatus: (_) => true),
+        data: {
+          'current_password': currentPassword,
+          'new_password': newPassword
+        },
+        options:
+            Options(headers: await _authHeaders, validateStatus: (_) => true),
       );
       return response.statusCode == 200;
     } catch (_) {

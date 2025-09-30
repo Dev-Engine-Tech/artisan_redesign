@@ -65,7 +65,8 @@ class AccountLoadBankList extends AccountEvent {
 class AccountVerifyBank extends AccountEvent {
   final String bankCode;
   final String accountNumber;
-  const AccountVerifyBank({required this.bankCode, required this.accountNumber});
+  const AccountVerifyBank(
+      {required this.bankCode, required this.accountNumber});
 }
 
 class AccountSetWithdrawalPin extends AccountEvent {
@@ -86,7 +87,8 @@ class AccountDeleteBankAccount extends AccountEvent {
 class AccountChangePassword extends AccountEvent {
   final String oldPassword;
   final String newPassword;
-  const AccountChangePassword({required this.oldPassword, required this.newPassword});
+  const AccountChangePassword(
+      {required this.oldPassword, required this.newPassword});
 }
 
 class AccountDeleteAccount extends AccountEvent {

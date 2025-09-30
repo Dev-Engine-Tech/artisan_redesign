@@ -58,21 +58,25 @@ class VerificationCubit extends Cubit<VerificationState> {
   Future<void> submitIdentity({required String idDocumentPath}) async {
     emit(state.copyWith(submitting: true, error: null));
     await Future.delayed(idDelay);
-    emit(
-        state.copyWith(submitting: false, identitySubmitted: true, idDocumentPath: idDocumentPath));
+    emit(state.copyWith(
+        submitting: false,
+        identitySubmitted: true,
+        idDocumentPath: idDocumentPath));
   }
 
   /// Capture selfie path and mark captured
   Future<void> submitSelfie({required String selfiePath}) async {
     emit(state.copyWith(submitting: true, error: null));
     await Future.delayed(selfieDelay);
-    emit(state.copyWith(submitting: false, selfieCaptured: true, selfiePath: selfiePath));
+    emit(state.copyWith(
+        submitting: false, selfieCaptured: true, selfiePath: selfiePath));
   }
 
   /// Finalize verification - in a real app this should call a repository to upload images
   Future<void> finalizeVerification() async {
     if (!state.identitySubmitted || !state.selfieCaptured) {
-      emit(state.copyWith(error: 'Please provide ID and a selfie before submitting.'));
+      emit(state.copyWith(
+          error: 'Please provide ID and a selfie before submitting.'));
       return;
     }
     emit(state.copyWith(submitting: true, error: null));

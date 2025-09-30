@@ -17,7 +17,8 @@ class AuthRemoteDataSourceFake implements AuthRemoteDataSource {
       Future.delayed(const Duration(milliseconds: 250), () => result);
 
   @override
-  Future<User?> signIn({required String identifier, required String password}) async {
+  Future<User?> signIn(
+      {required String identifier, required String password}) async {
     if (!_credentials.containsKey(identifier)) {
       return _withDelay(null);
     }
@@ -29,7 +30,10 @@ class AuthRemoteDataSourceFake implements AuthRemoteDataSource {
   }
 
   @override
-  Future<User?> signUp({required String identifier, required String password, String? name}) async {
+  Future<User?> signUp(
+      {required String identifier,
+      required String password,
+      String? name}) async {
     if (_credentials.containsKey(identifier)) {
       return _withDelay(null); // already exists
     }
@@ -153,7 +157,8 @@ class AuthRemoteDataSourceFake implements AuthRemoteDataSource {
   }
 
   @override
-  Future<bool> resetPassword({required String token, required String newPassword}) async {
+  Future<bool> resetPassword(
+      {required String token, required String newPassword}) async {
     // For fake implementation, always succeed
     return _withDelay(true);
   }

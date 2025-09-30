@@ -18,7 +18,8 @@ class CreateInvoicePage extends StatefulWidget {
   State<CreateInvoicePage> createState() => _CreateInvoicePageState();
 }
 
-class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTickerProviderStateMixin {
+class _CreateInvoicePageState extends State<CreateInvoicePage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _customerController = TextEditingController();
   final _deliveryAddressController = TextEditingController();
@@ -67,7 +68,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
 
       // Populate basic fields
       _customerController.text = invoice.clientName;
-      _deliveryAddressController.text = invoice.clientEmail; // Using clientEmail as address for now
+      _deliveryAddressController.text =
+          invoice.clientEmail; // Using clientEmail as address for now
       _termsController.text = invoice.notes ?? '';
       _invoiceDate = invoice.issueDate;
       _dueDate = invoice.dueDate;
@@ -77,8 +79,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
       for (final item in invoice.items) {
         _independentLines.add(_InvoiceLineItem(
           labelController: TextEditingController(text: item.description),
-          quantityController: TextEditingController(text: item.quantity.toString()),
-          unitPriceController: TextEditingController(text: item.unitPrice.toString()),
+          quantityController:
+              TextEditingController(text: item.quantity.toString()),
+          unitPriceController:
+              TextEditingController(text: item.unitPrice.toString()),
         ));
       }
 
@@ -203,9 +207,11 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildSelectableDateField('Invoice Date', _formatDate(_invoiceDate)),
+                            _buildSelectableDateField(
+                                'Invoice Date', _formatDate(_invoiceDate)),
                             const SizedBox(height: 16),
-                            _buildSelectableDateField('Due Date', _formatDate(_dueDate)),
+                            _buildSelectableDateField(
+                                'Due Date', _formatDate(_dueDate)),
                             const SizedBox(height: 16),
                             Row(
                               children: [
@@ -218,12 +224,15 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                const Text('in', style: TextStyle(color: Colors.grey)),
+                                const Text('in',
+                                    style: TextStyle(color: Colors.grey)),
                                 const SizedBox(width: 16),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey.shade300),
+                                    border:
+                                        Border.all(color: Colors.grey.shade300),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: const Text('NGN'),
@@ -282,7 +291,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
                         _buildTotalRow('Total Materials:',
                             'NGN ${_calculateMaterialsTotal().toStringAsFixed(2)}'),
                         const Divider(),
-                        _buildTotalRow('Total:', 'NGN ${_calculateGrandTotal().toStringAsFixed(2)}',
+                        _buildTotalRow('Total:',
+                            'NGN ${_calculateGrandTotal().toStringAsFixed(2)}',
                             isBold: true),
                       ],
                     ),
@@ -393,7 +403,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             icon: const Icon(Icons.work, color: Colors.white),
             label: const Text(
               'Create Job',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -403,7 +414,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
     }
 
     // Add main action button (Confirm/Pay) - but not for paid invoices
-    if (!(widget.mode == InvoiceMode.view && widget.invoice?.status == InvoiceStatus.paid)) {
+    if (!(widget.mode == InvoiceMode.view &&
+        widget.invoice?.status == InvoiceStatus.paid)) {
       String buttonText;
       VoidCallback onPressed;
 
@@ -438,7 +450,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             icon: const Icon(Icons.check, color: Colors.white),
             label: Text(
               buttonText,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -490,7 +503,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
     Navigator.of(context).pop();
   }
 
-  Widget _buildFormField(String label, String hint, TextEditingController controller,
+  Widget _buildFormField(
+      String label, String hint, TextEditingController controller,
       {bool? readOnly}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,7 +544,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
               borderRadius: BorderRadius.circular(4),
               borderSide: BorderSide(color: AppColors.orange),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           ),
         ),
       ],
@@ -740,13 +755,21 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
           child: const Row(
             children: [
               Expanded(
-                  flex: 3, child: Text('Label', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
+                  flex: 3,
+                  child: Text('Label',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 1,
+                  child: Text('Qty',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               Expanded(
                   flex: 2,
-                  child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
+                  child: Text('Unit Price',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               Expanded(
-                  flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
+                  flex: 2,
+                  child: Text('Subtotal',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               SizedBox(width: 32),
             ],
           ),
@@ -768,7 +791,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
                     _invoiceSections[i].descriptionController.text.isEmpty
                         ? 'Section ${i + 1}'
                         : _invoiceSections[i].descriptionController.text,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 14),
                   ),
                 ),
                 IconButton(
@@ -777,7 +801,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
                 ),
                 if (!_isReadOnly)
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, size: 16, color: Colors.red),
+                    icon: const Icon(Icons.delete_outline,
+                        size: 16, color: Colors.red),
                     onPressed: () => _removeSection(i),
                   ),
               ],
@@ -785,12 +810,14 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
           ),
           // Section Items
           for (var j = 0; j < _invoiceSections[i].items.length; j++)
-            _buildInvoiceLineRow(_invoiceSections[i].items[j], () => _removeLineFromSection(i, j)),
+            _buildInvoiceLineRow(_invoiceSections[i].items[j],
+                () => _removeLineFromSection(i, j)),
         ],
 
         // Independent Lines
         for (var i = 0; i < _independentLines.length; i++)
-          _buildInvoiceLineRow(_independentLines[i], () => _removeIndependentLine(i)),
+          _buildInvoiceLineRow(
+              _independentLines[i], () => _removeIndependentLine(i)),
 
         const SizedBox(height: 16),
 
@@ -800,16 +827,20 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             children: [
               ElevatedButton.icon(
                 onPressed: _addIndependentLine,
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF654321)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF654321)),
                 icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Line', style: TextStyle(color: Colors.white)),
+                label: const Text('Add Line',
+                    style: TextStyle(color: Colors.white)),
               ),
               const SizedBox(width: 8),
               ElevatedButton.icon(
                 onPressed: _addSection,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
+                style:
+                    ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
                 icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Section', style: TextStyle(color: Colors.white)),
+                label: const Text('Add Section',
+                    style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -834,7 +865,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             child: TextField(
               controller: item.labelController,
               readOnly: _isReadOnly,
-              decoration: const InputDecoration.collapsed(hintText: 'Enter description'),
+              decoration: const InputDecoration.collapsed(
+                  hintText: 'Enter description'),
               onChanged: (value) => setState(() {}),
             ),
           ),
@@ -872,7 +904,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 16),
                 onPressed: onDelete,
               ),
             ),
@@ -941,7 +974,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             const SizedBox(height: 16),
 
             // Section Items
-            for (var i = 0; i < section.items.length; i++) _buildInvoiceLineCard(sectionIndex, i),
+            for (var i = 0; i < section.items.length; i++)
+              _buildInvoiceLineCard(sectionIndex, i),
 
             const SizedBox(height: 8),
 
@@ -983,8 +1017,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
                 const SizedBox(width: 8),
                 if (!_isReadOnly)
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
-                    onPressed: () => _removeLineFromSection(sectionIndex, itemIndex),
+                    icon: const Icon(Icons.delete_outline,
+                        color: Colors.red, size: 20),
+                    onPressed: () =>
+                        _removeLineFromSection(sectionIndex, itemIndex),
                   ),
               ],
             ),
@@ -1065,13 +1101,21 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
           child: const Row(
             children: [
               Expanded(
-                  flex: 3, child: Text('Material', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
+                  flex: 3,
+                  child: Text('Material',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 1,
+                  child: Text('Qty',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               Expanded(
                   flex: 2,
-                  child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
+                  child: Text('Unit Price',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               Expanded(
-                  flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
+                  flex: 2,
+                  child: Text('Subtotal',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               SizedBox(width: 32),
             ],
           ),
@@ -1089,7 +1133,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             onPressed: _addMaterial,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
             icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text('Add Material', style: TextStyle(color: Colors.white)),
+            label: const Text('Add Material',
+                style: TextStyle(color: Colors.white)),
           ),
       ],
     );
@@ -1111,7 +1156,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             flex: 3,
             child: TextField(
               controller: item.descriptionController,
-              decoration: const InputDecoration.collapsed(hintText: 'Enter material description'),
+              decoration: const InputDecoration.collapsed(
+                  hintText: 'Enter material description'),
               onChanged: (value) => setState(() {}),
             ),
           ),
@@ -1149,7 +1195,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 16),
                 onPressed: onDelete,
               ),
             ),
@@ -1227,7 +1274,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
   }
 
   double _calculateMaterialsTotal() {
-    return _materials.fold<double>(0.0, (prev, material) => prev + material.subtotal);
+    return _materials.fold<double>(
+        0.0, (prev, material) => prev + material.subtotal);
   }
 
   Widget _buildMeasurementTab() {
@@ -1244,9 +1292,18 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
           ),
           child: const Row(
             children: [
-              Expanded(flex: 3, child: Text('Item', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('UoM', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 3,
+                  child: Text('Item',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 1,
+                  child: Text('Qty',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(
+                  flex: 2,
+                  child: Text('UoM',
+                      style: TextStyle(fontWeight: FontWeight.w600))),
               SizedBox(width: 32),
             ],
           ),
@@ -1264,13 +1321,15 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             onPressed: _addMeasurement,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
             icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text('Add Measurement', style: TextStyle(color: Colors.white)),
+            label: const Text('Add Measurement',
+                style: TextStyle(color: Colors.white)),
           ),
       ],
     );
   }
 
-  Widget _buildMeasurementRow(_InvoiceMeasurementItem item, VoidCallback onDelete) {
+  Widget _buildMeasurementRow(
+      _InvoiceMeasurementItem item, VoidCallback onDelete) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -1286,7 +1345,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             flex: 3,
             child: TextField(
               controller: item.itemController,
-              decoration: const InputDecoration.collapsed(hintText: 'Enter item'),
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Enter item'),
               onChanged: (value) => setState(() {}),
             ),
           ),
@@ -1306,7 +1366,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             flex: 2,
             child: TextField(
               controller: item.uomController,
-              decoration: const InputDecoration.collapsed(hintText: 'Enter unit'),
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Enter unit'),
               onChanged: (value) => setState(() {}),
             ),
           ),
@@ -1315,7 +1376,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 16),
                 onPressed: onDelete,
               ),
             ),
@@ -1386,7 +1448,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> with SingleTicker
     return _calculateInvoiceLinesTotal() + _calculateMaterialsTotal();
   }
 
-  Widget _buildTotalRow(String label, String amount, {bool isBold = false, double fontSize = 14}) {
+  Widget _buildTotalRow(String label, String amount,
+      {bool isBold = false, double fontSize = 14}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(

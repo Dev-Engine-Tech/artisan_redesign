@@ -75,7 +75,8 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (bio != null) requestBody['bio'] = bio;
     if (location != null) requestBody['location'] = location;
     if (phone != null) requestBody['phone'] = phone;
-    if (yearsOfExperience != null) requestBody['years_of_experience'] = yearsOfExperience;
+    if (yearsOfExperience != null)
+      requestBody['years_of_experience'] = yearsOfExperience;
 
     final response = await apiClient.put(
       ApiEndpoints.profile,
@@ -119,9 +120,12 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      final List<dynamic> transactionsJson = jsonData['results'] ?? jsonData['data'] ?? [];
+      final List<dynamic> transactionsJson =
+          jsonData['results'] ?? jsonData['data'] ?? [];
 
-      return transactionsJson.map((json) => TransactionModel.fromJson(json)).toList();
+      return transactionsJson
+          .map((json) => TransactionModel.fromJson(json))
+          .toList();
     } else {
       throw Exception('Failed to load transactions: ${response.statusCode}');
     }
@@ -147,9 +151,12 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      final List<dynamic> accountsJson = jsonData['results'] ?? jsonData['data'] ?? [];
+      final List<dynamic> accountsJson =
+          jsonData['results'] ?? jsonData['data'] ?? [];
 
-      return accountsJson.map((json) => BankAccountModel.fromJson(json)).toList();
+      return accountsJson
+          .map((json) => BankAccountModel.fromJson(json))
+          .toList();
     } else {
       throw Exception('Failed to load bank accounts: ${response.statusCode}');
     }

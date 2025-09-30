@@ -18,9 +18,35 @@ class JobRepositoryImpl implements JobRepository {
   }
 
   @override
-  Future<List<Job>> getJobs({int page = 1, int limit = 20}) async {
+  Future<List<Job>> getJobs({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    bool? saved,
+    bool? match,
+    String? postedDate,
+    String? workMode,
+    String? budgetType,
+    String? duration,
+    String? category,
+    String? state,
+    String? lgas,
+  }) async {
     try {
-      final models = await remoteDataSource.fetchJobs(page: page, limit: limit);
+      final models = await remoteDataSource.fetchJobs(
+        page: page,
+        limit: limit,
+        search: search,
+        saved: saved,
+        match: match,
+        postedDate: postedDate,
+        workMode: workMode,
+        budgetType: budgetType,
+        duration: duration,
+        category: category,
+        state: state,
+        lgas: lgas,
+      );
       return models.map((m) => m.toEntity()).toList();
     } catch (_) {
       rethrow;
@@ -30,7 +56,8 @@ class JobRepositoryImpl implements JobRepository {
   @override
   Future<List<Job>> getApplications({int page = 1, int limit = 20}) async {
     try {
-      final models = await remoteDataSource.loadApplications(page: page, limit: limit);
+      final models =
+          await remoteDataSource.loadApplications(page: page, limit: limit);
       return models.map((m) => m.toEntity()).toList();
     } catch (_) {
       rethrow;

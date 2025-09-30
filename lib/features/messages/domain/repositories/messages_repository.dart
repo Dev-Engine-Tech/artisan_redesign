@@ -8,7 +8,8 @@ abstract class MessagesRepository {
   Stream<List<Conversation>> watchConversations({required int currentUserId});
 
   // Messages for a conversation (peer-focused id)
-  Stream<List<Message>> watchMessages({required int currentUserId, required String conversationId});
+  Stream<List<Message>> watchMessages(
+      {required int currentUserId, required String conversationId});
 
   Future<void> sendText({
     required int currentUserId,

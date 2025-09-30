@@ -6,5 +6,6 @@ class UpdateEducation {
   final AccountRepository repository;
   UpdateEducation(this.repository);
 
-  Future<UserProfile> call(ent.Education edu) => repository.updateEducation(edu);
+  Future<UserProfile> call(ent.Education edu) =>
+      repository.updateEducation(edu);
 }

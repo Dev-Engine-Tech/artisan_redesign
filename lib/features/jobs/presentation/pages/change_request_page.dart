@@ -50,8 +50,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
 
     // Additional validation for delivery date
     if (_proposedChange == 'delivery' && _selectedDate == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Please select a proposed delivery date')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please select a proposed delivery date')));
       return;
     }
 
@@ -62,12 +62,14 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
     if (_proposedChange != null) {
       if (_proposedChange == 'price') {
         final priceText = _priceController.text.trim();
-        reason = 'Change price to NGN $priceText. ${baseReason.isNotEmpty ? baseReason : ''}';
+        reason =
+            'Change price to NGN $priceText. ${baseReason.isNotEmpty ? baseReason : ''}';
       } else if (_proposedChange == 'delivery') {
         final dateText = _selectedDate != null
             ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
             : '';
-        reason = 'Change delivery date to $dateText. ${baseReason.isNotEmpty ? baseReason : ''}';
+        reason =
+            'Change delivery date to $dateText. ${baseReason.isNotEmpty ? baseReason : ''}';
       } else if (_proposedChange == 'scope') {
         reason = 'Change scope. ${baseReason.isNotEmpty ? baseReason : ''}';
       } else if (_proposedChange == 'other') {
@@ -76,7 +78,9 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
     }
 
     // Dispatch bloc event
-    context.read<JobBloc>().add(RequestChangeEvent(jobId: widget.job.id, reason: reason.trim()));
+    context
+        .read<JobBloc>()
+        .add(RequestChangeEvent(jobId: widget.job.id, reason: reason.trim()));
 
     setState(() {
       _submitting = true;
@@ -99,7 +103,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 width: 76,
                 height: 76,
                 decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: const Icon(Icons.check_circle_outline, size: 72, color: Color(0xFF6B4CD6)),
+                child: const Icon(Icons.check_circle_outline,
+                    size: 72, color: Color(0xFF6B4CD6)),
               ),
               const SizedBox(height: 12),
               const Text(
@@ -119,7 +124,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.darkBlue,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: () {
                     Navigator.of(ctx).pop(); // close dialog
@@ -153,7 +159,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
           setState(() {
             _submitting = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
         } else if (state is JobStateApplying) {
           setState(() {
             _submitting = true;
@@ -167,8 +174,9 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: Container(
-              decoration:
-                  BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                  color: AppColors.softPink,
+                  borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black54),
                 onPressed: () => Navigator.of(context).pop(),
@@ -176,7 +184,10 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
             ),
           ),
           title: const Text('Change Request',
-              style: TextStyle(color: Colors.black87, fontSize: 20, fontWeight: FontWeight.w600)),
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600)),
           centerTitle: true,
         ),
         backgroundColor: AppColors.lightPeach,
@@ -194,41 +205,54 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                     border: Border.all(color: AppColors.subtleBorder),
                   ),
                   padding: const EdgeInsets.all(14),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text('Agreed Payment', style: TextStyle(color: Colors.black54)),
-                    const SizedBox(height: 6),
-                    Text('NGN ${job.minBudget}',
-                        style:
-                            const TextStyle(color: Color(0xFF9A4B20), fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 12),
-                    const Text('Agreed Delivery Date', style: TextStyle(color: Colors.black54)),
-                    const SizedBox(height: 6),
-                    const Text('30/04/2024', style: TextStyle(color: Colors.black87)),
-                    const SizedBox(height: 12),
-                    const Text('Comment', style: TextStyle(color: Colors.black54)),
-                    const SizedBox(height: 6),
-                    Text(job.description, style: const TextStyle(color: Colors.black87)),
-                  ]),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Agreed Payment',
+                            style: TextStyle(color: Colors.black54)),
+                        const SizedBox(height: 6),
+                        Text('NGN ${job.minBudget}',
+                            style: const TextStyle(
+                                color: Color(0xFF9A4B20),
+                                fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 12),
+                        const Text('Agreed Delivery Date',
+                            style: TextStyle(color: Colors.black54)),
+                        const SizedBox(height: 6),
+                        const Text('30/04/2024',
+                            style: TextStyle(color: Colors.black87)),
+                        const SizedBox(height: 12),
+                        const Text('Comment',
+                            style: TextStyle(color: Colors.black54)),
+                        const SizedBox(height: 6),
+                        Text(job.description,
+                            style: const TextStyle(color: Colors.black87)),
+                      ]),
                 ),
                 const SizedBox(height: 20),
 
-                const Text('Proposed Changes', style: TextStyle(color: Colors.black54)),
+                const Text('Proposed Changes',
+                    style: TextStyle(color: Colors.black54)),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   initialValue: _proposedChange,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 16),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide(color: AppColors.subtleBorder)),
                   ),
                   hint: const Text('Select'),
                   items: const [
-                    DropdownMenuItem(value: 'price', child: Text('Change price')),
-                    DropdownMenuItem(value: 'delivery', child: Text('Change delivery date')),
-                    DropdownMenuItem(value: 'scope', child: Text('Change scope')),
+                    DropdownMenuItem(
+                        value: 'price', child: Text('Change price')),
+                    DropdownMenuItem(
+                        value: 'delivery', child: Text('Change delivery date')),
+                    DropdownMenuItem(
+                        value: 'scope', child: Text('Change scope')),
                     DropdownMenuItem(value: 'other', child: Text('Other')),
                   ],
                   onChanged: (v) => setState(() {
@@ -241,7 +265,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
 
                 // Dynamic fields based on selected proposed change
                 if (_proposedChange == 'price') ...[
-                  const Text('Proposed Price', style: TextStyle(color: Colors.black54)),
+                  const Text('Proposed Price',
+                      style: TextStyle(color: Colors.black54)),
                   const SizedBox(height: 8),
                   Container(
                     decoration: BoxDecoration(
@@ -271,7 +296,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                   ),
                   const SizedBox(height: 12),
                 ] else if (_proposedChange == 'delivery') ...[
-                  const Text('Proposed Delivery Date', style: TextStyle(color: Colors.black54)),
+                  const Text('Proposed Delivery Date',
+                      style: TextStyle(color: Colors.black54)),
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: _pickDate,
@@ -281,7 +307,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(color: AppColors.subtleBorder),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -290,7 +317,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                                   ? 'Select date'
                                   : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
                               style: const TextStyle(color: Colors.black87)),
-                          const Icon(Icons.calendar_today, color: Colors.black54),
+                          const Icon(Icons.calendar_today,
+                              color: Colors.black54),
                         ],
                       ),
                     ),
@@ -303,7 +331,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFF6B4CD6).withValues(alpha: 0.7)),
+                    border: Border.all(
+                        color: const Color(0xFF6B4CD6).withValues(alpha: 0.7)),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   padding: const EdgeInsets.all(6),
@@ -339,12 +368,14 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
               onPressed: _submitting ? null : _submit,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.darkBlue,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: _submitting
                   ? const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-                  : const Text('Submit Request', style: TextStyle(fontSize: 18)),
+                  : const Text('Submit Request',
+                      style: TextStyle(fontSize: 18)),
             ),
           ),
         ),

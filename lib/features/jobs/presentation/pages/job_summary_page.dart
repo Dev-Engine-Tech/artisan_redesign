@@ -45,7 +45,8 @@ class JobSummaryPage extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text('Project Summary', style: TextStyle(color: Colors.black87)),
+        title: const Text('Project Summary',
+            style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
         child: ListView(
@@ -83,14 +84,18 @@ class JobSummaryPage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: statusColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: statusColor.withValues(alpha: 0.4)),
+                          border: Border.all(
+                              color: statusColor.withValues(alpha: 0.4)),
                         ),
                         child: Text(statusText,
-                            style: TextStyle(color: statusColor, fontWeight: FontWeight.w600)),
+                            style: TextStyle(
+                                color: statusColor,
+                                fontWeight: FontWeight.w600)),
                       ),
                     ],
                   ),
@@ -158,7 +163,8 @@ class JobSummaryPage extends StatelessWidget {
                     Text('Status: ${job.agreement!.status}',
                         style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 6),
-                    Text('Agreed Payment: ₦${job.agreement!.agreedPayment.toStringAsFixed(0)}'),
+                    Text(
+                        'Agreed Payment: ₦${job.agreement!.agreedPayment.toStringAsFixed(0)}'),
                     if (job.agreement!.comment.isNotEmpty) ...[
                       const SizedBox(height: 6),
                       Text('Comment: ${job.agreement!.comment}'),

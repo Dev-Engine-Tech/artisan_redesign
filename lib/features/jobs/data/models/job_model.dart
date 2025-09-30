@@ -30,7 +30,8 @@ class JobModel extends Job {
     super.workMode,
   });
 
-  factory JobModel.fromJson(Map<String, dynamic> json, {bool isFromApplications = false}) {
+  factory JobModel.fromJson(Map<String, dynamic> json,
+      {bool isFromApplications = false}) {
     try {
       int toInt(dynamic v) {
         if (v == null) return 0;
@@ -112,17 +113,22 @@ class JobModel extends Job {
         minBudget: minBudget,
         maxBudget: maxBudget,
         duration: (json['duration'] ?? '').toString(),
-        applied: isFromApplications || (json['applied'] ?? json['is_applied'] ?? false) == true,
+        applied: isFromApplications ||
+            (json['applied'] ?? json['is_applied'] ?? false) == true,
         saved: (json['saved'] ?? json['is_saved'] ?? false) == true,
         thumbnailUrl: resolveThumb(json),
         proposal: json['proposal']?.toString(),
         paymentType: json['payment_type']?.toString(),
         desiredPay: json['desired_pay']?.toString(),
-        dateCreated: json['date_created'] != null ? DateTime.tryParse(json['date_created']) : null,
+        dateCreated: json['date_created'] != null
+            ? DateTime.tryParse(json['date_created'])
+            : null,
         status: JobStatusExtension.fromString(json['status'] ?? 'pending'),
-        projectStatus:
-            AppliedProjectStatusExtension.fromString(json['project_status'] ?? 'ongoing'),
-        agreement: json['agreement'] != null ? AgreementModel.fromJson(json['agreement']) : null,
+        projectStatus: AppliedProjectStatusExtension.fromString(
+            json['project_status'] ?? 'ongoing'),
+        agreement: json['agreement'] != null
+            ? AgreementModel.fromJson(json['agreement'])
+            : null,
         changeRequest: json['change_request'] != null
             ? ChangeRequestModel.fromJson(json['change_request'])
             : null,
@@ -165,9 +171,11 @@ class JobModel extends Job {
       'date_created': dateCreated?.toIso8601String(),
       'status': status.name,
       'project_status': projectStatus.name,
-      'agreement': agreement != null ? (agreement! as AgreementModel).toJson() : null,
-      'change_request':
-          changeRequest != null ? (changeRequest! as ChangeRequestModel).toJson() : null,
+      'agreement':
+          agreement != null ? (agreement! as AgreementModel).toJson() : null,
+      'change_request': changeRequest != null
+          ? (changeRequest! as ChangeRequestModel).toJson()
+          : null,
       'materials': materials.map((m) => (m as MaterialModel).toJson()).toList(),
       'expertise': expertise,
       'work_mode': workMode,

@@ -29,7 +29,8 @@ class _SkillsPageState extends State<SkillsPage> {
       appBar: AppBar(title: const Text('Skills')),
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
-          if (state is AccountProfileLoaded) setState(() => skills = state.profile.skills);
+          if (state is AccountProfileLoaded)
+            setState(() => skills = state.profile.skills);
         },
         builder: (context, state) {
           return Padding(
@@ -43,7 +44,9 @@ class _SkillsPageState extends State<SkillsPage> {
                   children: skills
                       .map((s) => Chip(
                             label: Text(s),
-                            onDeleted: () => context.read<AccountBloc>().add(AccountRemoveSkill(s)),
+                            onDeleted: () => context
+                                .read<AccountBloc>()
+                                .add(AccountRemoveSkill(s)),
                           ))
                       .toList(),
                 ),
@@ -53,7 +56,8 @@ class _SkillsPageState extends State<SkillsPage> {
                     Expanded(
                       child: TextField(
                         controller: ctr,
-                        decoration: const InputDecoration(hintText: 'Add a skill'),
+                        decoration:
+                            const InputDecoration(hintText: 'Add a skill'),
                       ),
                     ),
                     const SizedBox(width: 8),

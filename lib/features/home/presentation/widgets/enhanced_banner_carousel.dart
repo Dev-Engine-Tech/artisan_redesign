@@ -53,16 +53,27 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
       final bannerService = getIt<BannerService>();
       if (kDebugMode) debugPrint('EnhancedBanner: got banner service');
 
-      final apiResponse = await bannerService.getBanners(category: widget.category);
-      if (kDebugMode) debugPrint('EnhancedBanner: received ${apiResponse.banners.length} banners');
+      final apiResponse =
+          await bannerService.getBanners(category: widget.category);
+      if (kDebugMode)
+        debugPrint(
+            'EnhancedBanner: received ${apiResponse.banners.length} banners');
 
       // Convert API banners to UI banners
-      final uiBanners = apiResponse.banners
+      var uiBanners = apiResponse.banners
           .where((banner) => banner.isActive)
           .map((apiBanner) => _convertApiBannerToUiBanner(apiBanner))
           .toList();
 
-      if (kDebugMode) debugPrint('EnhancedBanner: converted to ${uiBanners.length} UI banners');
+      // If API returns empty, fallback to defaults so the UI is never blank
+      if (uiBanners.isEmpty) {
+        if (kDebugMode) debugPrint('EnhancedBanner: empty response, using defaults');
+        uiBanners = _getDefaultBannersForCategory();
+      }
+
+      if (kDebugMode)
+        debugPrint(
+            'EnhancedBanner: converted to ${uiBanners.length} UI banners');
       if (mounted) {
         setState(() {
           _banners = uiBanners;
@@ -145,7 +156,9 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   }
 
   List<BannerModel> _getDefaultBannersForCategory() {
-    if (kDebugMode) debugPrint('EnhancedBanner: using default banners for ${widget.category}');
+    if (kDebugMode)
+      debugPrint(
+          'EnhancedBanner: using default banners for ${widget.category}');
     switch (widget.category) {
       case api.BannerCategory.homepage:
         return DefaultBanners.defaultBanners;
@@ -185,7 +198,8 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode)
-      debugPrint('EnhancedBanner: build banners=${_banners.length} loading=$_isLoading');
+      debugPrint(
+          'EnhancedBanner: build banners=${_banners.length} loading=$_isLoading');
 
     if (_isLoading) {
       return Container(

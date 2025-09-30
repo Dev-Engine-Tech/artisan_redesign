@@ -21,7 +21,8 @@ class DiscoverTabView extends StatefulWidget {
   State<DiscoverTabView> createState() => _DiscoverTabViewState();
 }
 
-class _DiscoverTabViewState extends State<DiscoverTabView> with TickerProviderStateMixin {
+class _DiscoverTabViewState extends State<DiscoverTabView>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   int _currentIndex = 0;
 

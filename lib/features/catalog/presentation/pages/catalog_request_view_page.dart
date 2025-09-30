@@ -68,7 +68,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             }
           },
           builder: (context, state) {
-            if (state is CatalogRequestsLoading || state is CatalogRequestsInitial) {
+            if (state is CatalogRequestsLoading ||
+                state is CatalogRequestsInitial) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is CatalogRequestsError) {
@@ -76,12 +77,14 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline, size: 64, color: Colors.grey.shade400),
+                    Icon(Icons.error_outline,
+                        size: 64, color: Colors.grey.shade400),
                     const SizedBox(height: 16),
                     Text('Error: ${state.message}'),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => bloc.add(LoadCatalogRequestDetails(widget.requestId)),
+                      onPressed: () =>
+                          bloc.add(LoadCatalogRequestDetails(widget.requestId)),
                       child: const Text('Retry'),
                     ),
                   ],
@@ -241,7 +244,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.email, size: 14, color: Colors.grey.shade600),
+                          Icon(Icons.email,
+                              size: 14, color: Colors.grey.shade600),
                           const SizedBox(width: 4),
                           Text(
                             client.email!,
@@ -257,7 +261,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.phone, size: 14, color: Colors.grey.shade600),
+                          Icon(Icons.phone,
+                              size: 14, color: Colors.grey.shade600),
                           const SizedBox(width: 4),
                           Text(
                             client.phone!,
@@ -298,7 +303,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            request.description.isNotEmpty ? request.description : 'No description provided',
+            request.description.isNotEmpty
+                ? request.description
+                : 'No description provided',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.black54,
                 ),
@@ -341,7 +348,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     );
   }
 
-  Widget _buildApprovalStatusCard(BuildContext context, CatalogRequest request) {
+  Widget _buildApprovalStatusCard(
+      BuildContext context, CatalogRequest request) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
@@ -383,7 +391,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: request.isBothApproved ? Colors.green : Colors.orange,
+                    color:
+                        request.isBothApproved ? Colors.green : Colors.orange,
                   ),
                 ),
               ),
@@ -453,7 +462,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              context.read<CatalogRequestsBloc>().add(ApproveRequestEvent(request.id));
+              context
+                  .read<CatalogRequestsBloc>()
+                  .add(ApproveRequestEvent(request.id));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,

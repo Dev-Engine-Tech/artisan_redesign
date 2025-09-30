@@ -56,10 +56,12 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('OTP sent. Please check your phone.')),
           );
-        } else if (state is AuthRegistrationComplete || state is AuthAuthenticated) {
+        } else if (state is AuthRegistrationComplete ||
+            state is AuthAuthenticated) {
           Navigator.of(context).pop(true);
         } else if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(
@@ -70,15 +72,17 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: Container(
-              decoration:
-                  BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                  color: AppColors.softPink,
+                  borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black54),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
           ),
-          title: const Text('Verify Phone', style: TextStyle(color: Colors.black87)),
+          title: const Text('Verify Phone',
+              style: TextStyle(color: Colors.black87)),
         ),
         body: SafeArea(
           child: ListView(
@@ -87,14 +91,17 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
               const SizedBox(height: 6),
               const Text('Account Inactive',
                   style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF2E3A59))),
               const SizedBox(height: 8),
               const Text('Verify your phone number to activate your account',
                   style: TextStyle(color: Colors.black54)),
               const SizedBox(height: 18),
               TextFormField(
                 controller: _phoneController,
-                decoration: _inputDecoration(hint: '+234 703...', label: 'Phone Number'),
+                decoration: _inputDecoration(
+                    hint: '+234 703...', label: 'Phone Number'),
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 12),
@@ -103,20 +110,21 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     final phone = _phoneController.text.trim();
-                    context
-                        .read<AuthBloc>()
-                        .add(AuthResendOtpRequested(phone: phone.isEmpty ? null : phone));
+                    context.read<AuthBloc>().add(AuthResendOtpRequested(
+                        phone: phone.isEmpty ? null : phone));
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6B4CD6),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12))),
                   child: const Text('Send Code'),
                 ),
               ),
               const SizedBox(height: 18),
               TextFormField(
                 controller: _codeController,
-                decoration: _inputDecoration(hint: '4-digit code', label: 'Enter Code'),
+                decoration:
+                    _inputDecoration(hint: '4-digit code', label: 'Enter Code'),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 12),
@@ -126,15 +134,18 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                   onPressed: () {
                     final code = _codeController.text.trim();
                     if (code.isEmpty) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(content: Text('Enter the code')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Enter the code')));
                       return;
                     }
-                    context.read<AuthBloc>().add(AuthOtpVerificationRequested(otp: code));
+                    context
+                        .read<AuthBloc>()
+                        .add(AuthOtpVerificationRequested(otp: code));
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E3A59),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12))),
                   child: const Text('Verify'),
                 ),
               ),

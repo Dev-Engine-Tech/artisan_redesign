@@ -51,21 +51,10 @@ class ChatManager {
     final currentUserId = int.tryParse(getCurrentUserId(context)) ?? 1;
     final messagesRepository = getIt<MessagesRepository>();
 
-    // Navigate to chat with properly provided ChatBloc
+    // Navigate to chat; ChatPage will provide its own ChatBloc
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider(
-          create: (_) => ChatBloc(
-            repository: messagesRepository,
-            currentUserId: currentUserId,
-            conversationId: conversation.id,
-            peerUserId: null, // Let repository infer from conversation
-          ),
-          child: ChatPage(
-            conversation: conversation,
-            job: job,
-          ),
-        ),
+        builder: (_) => ChatPage(conversation: conversation, job: job),
       ),
     );
   }

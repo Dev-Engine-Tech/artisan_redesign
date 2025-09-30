@@ -27,7 +27,8 @@ class CatalogRequestCard extends StatelessWidget {
               () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => CatalogRequestViewPage(requestId: request.id),
+                    builder: (_) =>
+                        CatalogRequestViewPage(requestId: request.id),
                   ),
                 );
               },
@@ -349,7 +350,8 @@ class CatalogRequestCard extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => CatalogRequestViewPage(requestId: request.id),
+                    builder: (_) =>
+                        CatalogRequestViewPage(requestId: request.id),
                   ),
                 );
               },

@@ -6,5 +6,6 @@ class UpdateWorkExperience {
   final AccountRepository repository;
   UpdateWorkExperience(this.repository);
 
-  Future<UserProfile> call(ent.WorkExperience work) => repository.updateWorkExperience(work);
+  Future<UserProfile> call(ent.WorkExperience work) =>
+      repository.updateWorkExperience(work);
 }

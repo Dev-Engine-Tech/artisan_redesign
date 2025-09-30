@@ -107,19 +107,19 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
   void _submitApplication() {
     // Validation remains local
     if (_proposalController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Please add a project proposal')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add a project proposal')));
       return;
     }
     if (_paymentMethod == PaymentMethod.byMilestone && _milestones.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Please add at least one milestone')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please add at least one milestone')));
       return;
     }
     // Materials are required by API
     if (_materials.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Please add at least one material item')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please add at least one material item')));
       return;
     }
 
@@ -128,24 +128,27 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
         int.tryParse(widget.job.id.replaceAll(RegExp(r'[^0-9]'), '')) ??
         0;
     if (jobIdInt <= 0) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Invalid job ID for application')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid job ID for application')));
       return;
     }
-    final paymentTypeStr = _paymentMethod == PaymentMethod.byProject ? 'project' : 'milestone';
+    final paymentTypeStr =
+        _paymentMethod == PaymentMethod.byProject ? 'project' : 'milestone';
 
     final materials = _materials
         .where((m) => m.descriptionController.text.trim().isNotEmpty)
         .map((m) => JobMaterial(
               description: m.descriptionController.text.trim(),
-              quantity: (int.tryParse(m.quantityController.text.trim()) ?? 1).clamp(1, 1000000),
-              price: (double.tryParse(m.costController.text.trim()) ?? 0).toInt(),
+              quantity: (int.tryParse(m.quantityController.text.trim()) ?? 1)
+                  .clamp(1, 1000000),
+              price:
+                  (double.tryParse(m.costController.text.trim()) ?? 0).toInt(),
             ))
         .where((m) => m.price > 0)
         .toList();
     if (materials.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Add at least one material with a cost > 0')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Add at least one material with a cost > 0')));
       return;
     }
     final milestones = _milestones
@@ -161,17 +164,21 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
       job: jobIdInt,
       duration: _selectedDuration?.trim().isNotEmpty == true
           ? _selectedDuration!.trim()
-          : (widget.job.duration.trim().isNotEmpty ? widget.job.duration : 'Less than 1 month'),
+          : (widget.job.duration.trim().isNotEmpty
+              ? widget.job.duration
+              : 'Less than 1 month'),
       proposal: _proposalController.text.trim(),
       paymentType: paymentTypeStr,
-      desiredPay: (int.tryParse(_desiredPayController.text.trim()) ?? widget.job.minBudget)
+      desiredPay: (int.tryParse(_desiredPayController.text.trim()) ??
+              widget.job.minBudget)
           .clamp(0, 100000000),
       milestones: milestones,
       materials: materials,
       attachments: _attachments,
-      inspection: _requiresInspection && _inspectionFeeController.text.trim().isNotEmpty
-          ? JobInspectionFee(amount: _inspectionFeeController.text.trim())
-          : null,
+      inspection:
+          _requiresInspection && _inspectionFeeController.text.trim().isNotEmpty
+              ? JobInspectionFee(amount: _inspectionFeeController.text.trim())
+              : null,
     );
 
     // Dispatch via JobBloc; listener will handle success/error.
@@ -191,10 +198,11 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
           if (state is JobStateAppliedSuccess && state.jobId == widget.job.id) {
             // Close the apply sheet/page and show confirmation
             if (Navigator.of(context).canPop()) Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Application submitted — payment requested')));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Application submitted — payment requested')));
           } else if (state is JobStateError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         child: Scaffold(
@@ -206,14 +214,16 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
               padding: const EdgeInsets.only(left: 12.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+                    color: AppColors.softPink,
+                    borderRadius: BorderRadius.circular(10)),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.black54),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
             ),
-            title: const Text('Apply for Job', style: TextStyle(color: Colors.black87)),
+            title: const Text('Apply for Job',
+                style: TextStyle(color: Colors.black87)),
           ),
           body: SafeArea(
             child: ListView(
@@ -227,47 +237,56 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                     border: Border.all(color: AppColors.softBorder),
                   ),
                   padding: const EdgeInsets.all(14),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text('Job Details', style: TextStyle(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    Text(job.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    Text(job.category,
-                        style:
-                            Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.black45)),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                          decoration: BoxDecoration(
-                              color: AppColors.softPeach, borderRadius: BorderRadius.circular(8)),
-                          child: Text('Budget: NGN${job.minBudget}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: AppColors.brownHeader)),
+                        const Text('Job Details',
+                            style: TextStyle(fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 8),
+                        Text(job.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 6),
+                        Text(job.category,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.black45)),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 6),
+                              decoration: BoxDecoration(
+                                  color: AppColors.softPeach,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Text('Budget: NGN${job.minBudget}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: AppColors.brownHeader)),
+                            ),
+                            Text('• ${job.duration}',
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ],
                         ),
-                        Text('• ${job.duration}', style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(job.description,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis),
-                  ]),
+                        const SizedBox(height: 8),
+                        Text(job.description,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis),
+                      ]),
                 ),
 
                 const SizedBox(height: 16),
 
                 // Project proposal input
-                const Text('Project proposal', style: TextStyle(fontWeight: FontWeight.w700)),
+                const Text('Project proposal',
+                    style: TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 8),
                 Container(
                   height: 140,
@@ -311,65 +330,77 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                   // ignore: deprecated_member_use
                   onChanged: (v) => setState(() => _paymentMethod = v!),
                   title: const Text('By Milestone'),
-                  subtitle:
-                      const Text('Divide the project into smaller segments called milestones.'),
+                  subtitle: const Text(
+                      'Divide the project into smaller segments called milestones.'),
                 ),
 
                 if (_paymentMethod == PaymentMethod.byMilestone) ...[
                   const SizedBox(height: 8),
-                  const Text('Milestones', style: TextStyle(fontWeight: FontWeight.w700)),
+                  const Text('Milestones',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 8),
                   for (var i = 0; i < _milestones.length; i++)
                     Card(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Milestone ${i + 1}',
-                                  style: const TextStyle(fontWeight: FontWeight.w700)),
-                              IconButton(
-                                  icon: const Icon(Icons.delete_outline),
-                                  onPressed: () => _removeMilestone(i)),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          TextField(
-                            controller: _milestones[i].descriptionController,
-                            decoration: const InputDecoration(labelText: 'Description'),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => _pickMilestoneDate(i),
-                                  child: Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                                    decoration: BoxDecoration(
-                                        color: AppColors.cardBackground,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: AppColors.softBorder)),
-                                    child: Text(_milestones[i].date == null
-                                        ? 'Select due date'
-                                        : _formatDate(_milestones[i].date!)),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Milestone ${i + 1}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700)),
+                                  IconButton(
+                                      icon: const Icon(Icons.delete_outline),
+                                      onPressed: () => _removeMilestone(i)),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              TextField(
+                                controller:
+                                    _milestones[i].descriptionController,
+                                decoration: const InputDecoration(
+                                    labelText: 'Description'),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () => _pickMilestoneDate(i),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 14),
+                                        decoration: BoxDecoration(
+                                            color: AppColors.cardBackground,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            border: Border.all(
+                                                color: AppColors.softBorder)),
+                                        child: Text(_milestones[i].date == null
+                                            ? 'Select due date'
+                                            : _formatDate(
+                                                _milestones[i].date!)),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: TextField(
-                                  controller: _milestones[i].amountController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(labelText: 'Amount (NGN)'),
-                                ),
-                              ),
-                            ],
-                          )
-                        ]),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: TextField(
+                                      controller:
+                                          _milestones[i].amountController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Amount (NGN)'),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ]),
                       ),
                     ),
                   TextButton.icon(
@@ -379,7 +410,8 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                   ),
                 ] else ...[
                   const SizedBox(height: 8),
-                  const Text('Desired pay', style: TextStyle(fontWeight: FontWeight.w700)),
+                  const Text('Desired pay',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _desiredPayController,
@@ -389,12 +421,15 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                       filled: true,
                       fillColor: AppColors.cardBackground,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text('Note: This is the total amount you will be paid for the project.',
+                  const Text(
+                      'Note: This is the total amount you will be paid for the project.',
                       style: TextStyle(color: Colors.black54)),
                 ],
 
@@ -403,26 +438,31 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                 // Inspection fee
                 CheckboxListTile(
                   value: _requiresInspection,
-                  onChanged: (v) => setState(() => _requiresInspection = v ?? false),
+                  onChanged: (v) =>
+                      setState(() => _requiresInspection = v ?? false),
                   title: const Text('I require an inspection fee'),
                 ),
                 if (_requiresInspection)
                   Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+                    padding: const EdgeInsets.only(
+                        left: 12.0, right: 12.0, bottom: 8.0),
                     child: Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                              color: AppColors.orange, borderRadius: BorderRadius.circular(8)),
-                          child: const Text('₦', style: TextStyle(color: Colors.white)),
+                              color: AppColors.orange,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: const Text('₦',
+                              style: TextStyle(color: Colors.white)),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: TextField(
                             controller: _inspectionFeeController,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(hintText: 'Inspection fee amount'),
+                            decoration: const InputDecoration(
+                                hintText: 'Inspection fee amount'),
                           ),
                         ),
                       ],
@@ -438,17 +478,23 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                 DropdownButtonFormField<String>(
                   initialValue: _selectedDuration,
                   items: const [
-                    DropdownMenuItem(value: 'Less than 1 month', child: Text('Less than 1 month')),
-                    DropdownMenuItem(value: '1-3 months', child: Text('1-3 months')),
-                    DropdownMenuItem(value: '3+ months', child: Text('3+ months')),
+                    DropdownMenuItem(
+                        value: 'Less than 1 month',
+                        child: Text('Less than 1 month')),
+                    DropdownMenuItem(
+                        value: '1-3 months', child: Text('1-3 months')),
+                    DropdownMenuItem(
+                        value: '3+ months', child: Text('3+ months')),
                   ],
                   onChanged: (v) => setState(() => _selectedDuration = v),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: AppColors.cardBackground,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 14),
                   ),
                 ),
 
@@ -463,7 +509,8 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                         style: TextStyle(fontWeight: FontWeight.w700)),
                     ElevatedButton(
                       onPressed: _addMaterial,
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.orange),
                       child: const Text('Add Materials'),
                     )
                   ],
@@ -474,67 +521,79 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        for (var i = 0; i < _materials.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 4,
-                                  child: TextField(
-                                    controller: _materials[i].descriptionController,
-                                    decoration:
-                                        const InputDecoration(labelText: 'Material Description'),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  flex: 2,
-                                  child: TextField(
-                                    controller: _materials[i].quantityController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(labelText: 'Quantity'),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  flex: 3,
-                                  child: TextField(
-                                    controller: _materials[i].costController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: const InputDecoration(labelText: 'Cost (NGN)'),
-                                  ),
-                                ),
-                                IconButton(
-                                    icon: const Icon(Icons.delete_outline),
-                                    onPressed: () => _removeMaterial(i)),
-                              ],
-                            ),
-                          ),
-                        const Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Total', style: TextStyle(fontWeight: FontWeight.w700)),
-                            Text(
-                                'NGN ${_materials.fold<double>(0.0, (prev, m) => prev + m.total).toStringAsFixed(2)}',
-                                style: const TextStyle(fontWeight: FontWeight.w700)),
-                          ],
-                        )
-                      ]),
+                            for (var i = 0; i < _materials.length; i++)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 6),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: TextField(
+                                        controller:
+                                            _materials[i].descriptionController,
+                                        decoration: const InputDecoration(
+                                            labelText: 'Material Description'),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      flex: 2,
+                                      child: TextField(
+                                        controller:
+                                            _materials[i].quantityController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: const InputDecoration(
+                                            labelText: 'Quantity'),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      flex: 3,
+                                      child: TextField(
+                                        controller:
+                                            _materials[i].costController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: const InputDecoration(
+                                            labelText: 'Cost (NGN)'),
+                                      ),
+                                    ),
+                                    IconButton(
+                                        icon: const Icon(Icons.delete_outline),
+                                        onPressed: () => _removeMaterial(i)),
+                                  ],
+                                ),
+                              ),
+                            const Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Total',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700)),
+                                Text(
+                                    'NGN ${_materials.fold<double>(0.0, (prev, m) => prev + m.total).toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700)),
+                              ],
+                            )
+                          ]),
                     ),
                   ),
 
                 const SizedBox(height: 16),
 
                 // Attachments placeholder
-                const Text('Attachments', style: TextStyle(fontWeight: FontWeight.w700)),
+                const Text('Attachments',
+                    style: TextStyle(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(content: Text('Attach files (placeholder)')));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Attach files (placeholder)')));
                   },
                   child: Container(
                     height: 100,
@@ -553,10 +612,11 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF213447),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child:
-                      const Text('Apply Now', style: TextStyle(fontSize: 16, color: Colors.white)),
+                  child: const Text('Apply Now',
+                      style: TextStyle(fontSize: 16, color: Colors.white)),
                 ),
                 const SizedBox(height: 40),
               ],
@@ -584,7 +644,10 @@ class _Milestone {
   TextEditingController amountController;
   DateTime? date;
 
-  _Milestone({required this.descriptionController, required this.amountController, this.date});
+  _Milestone(
+      {required this.descriptionController,
+      required this.amountController,
+      this.date});
 
   void dispose() {
     descriptionController.dispose();

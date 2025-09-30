@@ -52,7 +52,8 @@ class InvoiceMenuPage extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.search, color: Colors.grey, size: 20),
+                          icon: const Icon(Icons.search,
+                              color: Colors.grey, size: 20),
                           padding: const EdgeInsets.all(8),
                           constraints: const BoxConstraints(),
                         ),
@@ -79,7 +80,8 @@ class InvoiceMenuPage extends StatelessWidget {
                       'Draft',
                       Icons.description_outlined,
                       AppColors.orange,
-                      () => _navigateToInvoiceList(context, InvoiceStatus.draft, 'Draft'),
+                      () => _navigateToInvoiceList(
+                          context, InvoiceStatus.draft, 'Draft'),
                     ),
                   ),
                   Expanded(
@@ -87,7 +89,8 @@ class InvoiceMenuPage extends StatelessWidget {
                       'Validated',
                       Icons.check_circle_outline,
                       AppColors.orange,
-                      () => _navigateToInvoiceList(context, InvoiceStatus.validated, 'Validated'),
+                      () => _navigateToInvoiceList(
+                          context, InvoiceStatus.validated, 'Validated'),
                     ),
                   ),
                   Expanded(
@@ -95,7 +98,8 @@ class InvoiceMenuPage extends StatelessWidget {
                       'Paid',
                       Icons.payments_outlined,
                       AppColors.orange,
-                      () => _navigateToInvoiceList(context, InvoiceStatus.paid, 'Paid'),
+                      () => _navigateToInvoiceList(
+                          context, InvoiceStatus.paid, 'Paid'),
                     ),
                   ),
                   Expanded(
@@ -119,7 +123,10 @@ class InvoiceMenuPage extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.orange, AppColors.orange.withOpacity(0.8)],
+                    colors: [
+                      AppColors.orange,
+                      AppColors.orange.withOpacity(0.8)
+                    ],
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -437,7 +444,8 @@ class InvoiceMenuPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.green.shade100,
                             borderRadius: BorderRadius.circular(8),
@@ -478,7 +486,8 @@ class InvoiceMenuPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopIcon(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildTopIcon(
+      String title, IconData icon, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

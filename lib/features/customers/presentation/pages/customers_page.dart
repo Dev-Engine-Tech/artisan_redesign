@@ -375,7 +375,9 @@ class _CustomersPageState extends State<CustomersPage> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              _searchQuery.isEmpty ? 'No customers yet' : 'No customers found',
+                              _searchQuery.isEmpty
+                                  ? 'No customers yet'
+                                  : 'No customers found',
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(height: 8),

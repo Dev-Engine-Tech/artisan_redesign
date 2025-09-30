@@ -13,7 +13,8 @@ void main() {
     await setupDependencies(useFake: true);
   });
 
-  testWidgets('Sign-up stepper widget test: full flow', (WidgetTester tester) async {
+  testWidgets('Sign-up stepper widget test: full flow',
+      (WidgetTester tester) async {
     // Prepare: get the AuthBloc instance and ensure SignUpCubit will be created by the page.
     final authBloc = getIt<AuthBloc>();
 
@@ -30,9 +31,12 @@ void main() {
     await tester.pumpAndSettle();
 
     // Step 0: fill user info
-    await tester.enterText(find.byType(TextFormField).at(0), 'John'); // first name
-    await tester.enterText(find.byType(TextFormField).at(1), 'Doe'); // last name
-    await tester.enterText(find.byType(TextFormField).at(2), 'john.doe@example.com'); // identifier
+    await tester.enterText(
+        find.byType(TextFormField).at(0), 'John'); // first name
+    await tester.enterText(
+        find.byType(TextFormField).at(1), 'Doe'); // last name
+    await tester.enterText(
+        find.byType(TextFormField).at(2), 'john.doe@example.com'); // identifier
     await tester.tap(find.byType(Checkbox)); // accept terms
     await tester.pumpAndSettle();
 
@@ -65,7 +69,8 @@ void main() {
 
     // Enter OTP and verify
     await tester.enterText(find.byType(TextFormField).at(1), generated!);
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Verify Phone Number'));
+    await tester
+        .tap(find.widgetWithText(ElevatedButton, 'Verify Phone Number'));
     await tester.pumpAndSettle();
 
     // Step 3: set PIN

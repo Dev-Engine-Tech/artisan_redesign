@@ -45,22 +45,20 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
         _isLoading = true;
       });
 
-      final apiResponse = await _bannerService.getBanners(category: widget.category);
+      final apiResponse =
+          await _bannerService.getBanners(category: widget.category);
 
-      
       // Convert API banners to UI banners
       final uiBanners = apiResponse.banners
           .where((banner) => banner.isActive)
           .map((apiBanner) => _convertApiBannerToUiBanner(apiBanner))
           .toList();
 
-      
       setState(() {
         _banners = uiBanners;
         _isLoading = false;
       });
     } catch (e) {
-      
       setState(() {
         _isLoading = false;
         // Fallback to default banners on error
@@ -138,9 +136,9 @@ class _ApiBannerCarouselState extends State<ApiBannerCarousel> {
     }
   }
 
-  List<original.BannerModel> _getDefaultBannersForCategory(BannerCategory category) {
+  List<original.BannerModel> _getDefaultBannersForCategory(
+      BannerCategory category) {
     // FORCE API BANNERS TO SHOW - NO FALLBACK TO DEFAULTS
-    
 
     // Create banners that clearly show they are from API
     switch (category) {

@@ -151,7 +151,8 @@ class AgreementModal extends StatelessWidget {
           const SizedBox(height: 8),
           _buildDetailRow('Status', agreement.status),
           const SizedBox(height: 8),
-          _buildDetailRow('Total Amount', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
+          _buildDetailRow(
+              'Total Amount', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
           if (agreement.comment.isNotEmpty) ...[
             const SizedBox(height: 12),
             Text(
@@ -424,7 +425,8 @@ class AgreementModal extends StatelessWidget {
               context.read<JobBloc>().add(AcceptAgreementEvent(jobId: job.id));
               Navigator.of(context).pop(); // Close the agreement modal
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Agreement accepted successfully!')),
+                const SnackBar(
+                    content: Text('Agreement accepted successfully!')),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
@@ -600,7 +602,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                       maxLines: null,
                       expands: true,
                       decoration: const InputDecoration.collapsed(
-                        hintText: 'Describe the specific changes you would like to make...',
+                        hintText:
+                            'Describe the specific changes you would like to make...',
                       ),
                     ),
                   ),
@@ -643,7 +646,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                        Icon(Icons.info_outline,
+                            color: Colors.blue.shade700, size: 20),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -724,7 +728,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
 
     if (_reasonController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please provide a reason for the changes')),
+        const SnackBar(
+            content: Text('Please provide a reason for the changes')),
       );
       return;
     }

@@ -67,7 +67,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Future<void> _markAllAsRead() async {
     // Mark all notifications as read
     setState(() {
-      _notifications = _notifications.map((n) => n.copyWith(read: true)).toList();
+      _notifications =
+          _notifications.map((n) => n.copyWith(read: true)).toList();
     });
   }
 

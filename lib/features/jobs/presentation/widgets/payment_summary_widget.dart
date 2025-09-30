@@ -67,7 +67,8 @@ class PaymentSummaryWidget extends StatelessWidget {
             _buildPaymentItem(
               'Payment Status',
               _getPaymentStatusText(job.paymentStatus ?? 'completed'),
-              statusColor: _getPaymentStatusColor(job.paymentStatus ?? 'completed'),
+              statusColor:
+                  _getPaymentStatusColor(job.paymentStatus ?? 'completed'),
             ),
             if (job.completedDate != null) ...[
               _buildPaymentItem(
@@ -85,7 +86,8 @@ class PaymentSummaryWidget extends StatelessWidget {
                     label: const Text('Download Invoice'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.orange,
-                      side: BorderSide(color: AppColors.orange.withValues(alpha: 0.5)),
+                      side: BorderSide(
+                          color: AppColors.orange.withValues(alpha: 0.5)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -147,7 +149,8 @@ class PaymentSummaryWidget extends StatelessWidget {
               style: TextStyle(
                 fontWeight: isHighlighted ? FontWeight.w700 : FontWeight.w600,
                 fontSize: isHighlighted ? 16 : 14,
-                color: statusColor ?? (isHighlighted ? AppColors.orange : AppColors.brownHeader),
+                color: statusColor ??
+                    (isHighlighted ? AppColors.orange : AppColors.brownHeader),
               ),
             ),
           ),

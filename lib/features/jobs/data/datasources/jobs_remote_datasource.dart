@@ -57,7 +57,8 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      final List<dynamic> jobsJson = jsonData['results'] ?? jsonData['data'] ?? [];
+      final List<dynamic> jobsJson =
+          jsonData['results'] ?? jsonData['data'] ?? [];
 
       return jobsJson.map((json) => JobModel.fromJson(json)).toList();
     } else {
@@ -82,7 +83,8 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      final List<dynamic> applicationsJson = jsonData['results'] ?? jsonData['data'] ?? [];
+      final List<dynamic> applicationsJson =
+          jsonData['results'] ?? jsonData['data'] ?? [];
 
       return applicationsJson.map((json) {
         // Applications might have job nested inside

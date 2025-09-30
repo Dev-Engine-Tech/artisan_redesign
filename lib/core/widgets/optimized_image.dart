@@ -146,7 +146,8 @@ class OptimizedAvatar extends StatelessWidget {
         fit: BoxFit.cover,
         borderRadius: BorderRadius.circular(size / 2),
         memCacheWidth: (size * MediaQuery.of(context).devicePixelRatio).round(),
-        memCacheHeight: (size * MediaQuery.of(context).devicePixelRatio).round(),
+        memCacheHeight:
+            (size * MediaQuery.of(context).devicePixelRatio).round(),
         placeholder: _buildInitialsAvatar(context),
         errorWidget: _buildInitialsAvatar(context),
         heroTag: heroTag,

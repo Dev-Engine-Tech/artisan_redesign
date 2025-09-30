@@ -88,7 +88,8 @@ class ProjectReviewModal extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.person, size: 16, color: Colors.black54),
+                        const Icon(Icons.person,
+                            size: 16, color: Colors.black54),
                         const SizedBox(width: 4),
                         Text(
                           'Client: ${job.clientName}',
@@ -121,7 +122,9 @@ class ProjectReviewModal extends StatelessWidget {
                 children: [
                   ...List.generate(5, (index) {
                     return Icon(
-                      index < (job.rating ?? 0).floor() ? Icons.star : Icons.star_border,
+                      index < (job.rating ?? 0).floor()
+                          ? Icons.star
+                          : Icons.star_border,
                       color: Colors.amber,
                       size: 24,
                     );
@@ -209,7 +212,8 @@ class ProjectReviewModal extends StatelessWidget {
                     label: const Text('Share Review'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.orange,
-                      side: BorderSide(color: AppColors.orange.withValues(alpha: 0.5)),
+                      side: BorderSide(
+                          color: AppColors.orange.withValues(alpha: 0.5)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

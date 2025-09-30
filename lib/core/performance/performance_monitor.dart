@@ -20,7 +20,8 @@ abstract class PerformanceMonitor {
 
 /// Default implementation of performance monitoring
 class DefaultPerformanceMonitor implements PerformanceMonitor {
-  static final DefaultPerformanceMonitor _instance = DefaultPerformanceMonitor._internal();
+  static final DefaultPerformanceMonitor _instance =
+      DefaultPerformanceMonitor._internal();
   factory DefaultPerformanceMonitor() => _instance;
   DefaultPerformanceMonitor._internal();
 
@@ -86,7 +87,8 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
   @override
   void trackWidgetRebuild(String widgetName) {
     if (!_isMonitoring) return;
-    _widgetRebuildCounts[widgetName] = (_widgetRebuildCounts[widgetName] ?? 0) + 1;
+    _widgetRebuildCounts[widgetName] =
+        (_widgetRebuildCounts[widgetName] ?? 0) + 1;
 
     // Log excessive rebuilds
     final rebuildCount = _widgetRebuildCounts[widgetName]!;
@@ -175,11 +177,13 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
     // Network report
     if (_networkMetrics.isNotEmpty) {
       log('🌐 Network Metrics:');
-      final successRate =
-          _networkMetrics.where((m) => m.success).length / _networkMetrics.length * 100;
-      final avgDuration =
-          _networkMetrics.map((m) => m.duration.inMilliseconds).reduce((a, b) => a + b) /
-              _networkMetrics.length;
+      final successRate = _networkMetrics.where((m) => m.success).length /
+          _networkMetrics.length *
+          100;
+      final avgDuration = _networkMetrics
+              .map((m) => m.duration.inMilliseconds)
+              .reduce((a, b) => a + b) /
+          _networkMetrics.length;
       log('  Success rate: ${successRate.toStringAsFixed(1)}%');
       log('  Average duration: ${avgDuration.toStringAsFixed(0)}ms');
       log('  Total requests: ${_networkMetrics.length}');
@@ -188,14 +192,17 @@ class DefaultPerformanceMonitor implements PerformanceMonitor {
     // Frame rate report
     if (_frameMetrics.isNotEmpty) {
       log('🎬 Frame Metrics:');
-      final recentFrames =
-          _frameMetrics.where((f) => DateTime.now().difference(f.timestamp).inMinutes < 5).toList();
+      final recentFrames = _frameMetrics
+          .where((f) => DateTime.now().difference(f.timestamp).inMinutes < 5)
+          .toList();
 
       if (recentFrames.isNotEmpty) {
-        final droppedFrames = recentFrames.where((f) => f.duration.inMilliseconds > 17).length;
-        final avgFrameTime =
-            recentFrames.map((f) => f.duration.inMilliseconds).reduce((a, b) => a + b) /
-                recentFrames.length;
+        final droppedFrames =
+            recentFrames.where((f) => f.duration.inMilliseconds > 17).length;
+        final avgFrameTime = recentFrames
+                .map((f) => f.duration.inMilliseconds)
+                .reduce((a, b) => a + b) /
+            recentFrames.length;
         log('  Recent frames: ${recentFrames.length}');
         log('  Dropped frames: $droppedFrames (${(droppedFrames / recentFrames.length * 100).toStringAsFixed(1)}%)');
         log('  Average frame time: ${avgFrameTime.toStringAsFixed(1)}ms');

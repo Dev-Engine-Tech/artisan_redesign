@@ -27,7 +27,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   @override
   Future<int> getUnreadCount() async {
     try {
-      final response = await dio.get('${ApiEndpoints.notifications}unread-count/');
+      final response =
+          await dio.get('${ApiEndpoints.notifications}unread-count/');
 
       if (response.statusCode == 200) {
         return response.data['count'] ?? 0;
@@ -71,8 +72,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   @override
   Future<NotificationModel?> getNotificationById(String notificationId) async {
     try {
-      final response =
-          await dio.get(ApiEndpoints.notificationById(int.tryParse(notificationId) ?? 0));
+      final response = await dio.get(
+          ApiEndpoints.notificationById(int.tryParse(notificationId) ?? 0));
 
       if (response.statusCode == 200) {
         return NotificationModel.fromJson(response.data);

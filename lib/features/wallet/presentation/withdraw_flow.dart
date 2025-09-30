@@ -42,8 +42,14 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (c) {
         final accounts = [
-          _Account(bank: 'Zenith Bank Plc', masked: '2*****3139', name: 'Adeyeni Praise'),
-          _Account(bank: 'Access Bank Plc', masked: '3*****6789', name: 'Cecillia Uwak'),
+          _Account(
+              bank: 'Zenith Bank Plc',
+              masked: '2*****3139',
+              name: 'Adeyeni Praise'),
+          _Account(
+              bank: 'Access Bank Plc',
+              masked: '3*****6789',
+              name: 'Cecillia Uwak'),
         ];
         return SafeArea(
           child: Column(
@@ -61,9 +67,11 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                          color: AppColors.cardBackground, borderRadius: BorderRadius.circular(8)),
+                          color: AppColors.cardBackground,
+                          borderRadius: BorderRadius.circular(8)),
                       child: const Center(
-                          child: Icon(Icons.account_balance, color: AppColors.orange))),
+                          child: Icon(Icons.account_balance,
+                              color: AppColors.orange))),
                   title: Text(a.bank),
                   subtitle: Text(a.masked),
                   trailing: const Icon(Icons.check, color: AppColors.orange),
@@ -83,7 +91,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
   }
 
   void _showConfirmWithdraw(_Account account) {
-    final amount = double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
+    final amount =
+        double.tryParse(_amountController.text.replaceAll(',', '')) ?? 0.0;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -95,15 +104,18 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
         maxChildSize: 0.9,
         builder: (_, controller) => Container(
           decoration: const BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
                 child: Row(
                   children: [
                     Expanded(
-                        child: Text('Withdraw', style: Theme.of(context).textTheme.titleLarge)),
+                        child: Text('Withdraw',
+                            style: Theme.of(context).textTheme.titleLarge)),
                     IconButton(
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.close)),
@@ -113,7 +125,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               const Divider(height: 1),
               ListTile(
                 title: const Text('Acct Name:'),
-                trailing: Text(account.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                trailing: Text(account.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
               ListTile(
                 title: const Text('Amount'),
@@ -122,7 +135,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               ),
               Expanded(child: Container()),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18),
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // close confirm sheet
@@ -131,10 +145,12 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF213447),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Center(
-                      child: Text('Next', style: TextStyle(fontSize: 16, color: Colors.white))),
+                      child: Text('Next',
+                          style: TextStyle(fontSize: 16, color: Colors.white))),
                 ),
               ),
             ],
@@ -155,7 +171,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
     if (pin != null && pin.length == 4) {
       // simulate success
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => _WithdrawSuccessPage(amount: amount, account: account)));
+          builder: (_) =>
+              _WithdrawSuccessPage(amount: amount, account: account)));
     } else {
       // cancelled or invalid — do nothing (user can try again)
     }
@@ -171,15 +188,17 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
-            decoration:
-                BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+                color: AppColors.softPink,
+                borderRadius: BorderRadius.circular(10)),
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black54),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Withdraw Money', style: TextStyle(color: Colors.black87)),
+        title: const Text('Withdraw Money',
+            style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
         child: ListView(
@@ -187,7 +206,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: AppColors.cardBackground, borderRadius: BorderRadius.circular(10)),
+                  color: AppColors.cardBackground,
+                  borderRadius: BorderRadius.circular(10)),
               padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
@@ -195,17 +215,24 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                          color: AppColors.cardBackground, borderRadius: BorderRadius.circular(8)),
-                      child: const Icon(Icons.account_balance, color: AppColors.orange)),
+                          color: AppColors.cardBackground,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: const Icon(Icons.account_balance,
+                          color: AppColors.orange)),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                      Text('Zenith Bank Plc', style: TextStyle(fontWeight: FontWeight.w700)),
-                      SizedBox(height: 4),
-                      Text('Acct No: ******3139', style: TextStyle(color: Colors.black45)),
-                      SizedBox(height: 2),
-                      Text('Bank Name: Adeyeni Praise', style: TextStyle(color: Colors.black45)),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text('Zenith Bank Plc',
+                              style: TextStyle(fontWeight: FontWeight.w700)),
+                          SizedBox(height: 4),
+                          Text('Acct No: ******3139',
+                              style: TextStyle(color: Colors.black45)),
+                          SizedBox(height: 2),
+                          Text('Bank Name: Adeyeni Praise',
+                              style: TextStyle(color: Colors.black45)),
+                        ]),
                   ),
                 ],
               ),
@@ -214,7 +241,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Amount:', style: TextStyle(fontWeight: FontWeight.w700)),
+                const Text('Amount:',
+                    style: TextStyle(fontWeight: FontWeight.w700)),
                 Text('Earnings: ₦${widget.initialEarnings.toStringAsFixed(0)}',
                     style: const TextStyle(color: Colors.black45)),
               ],
@@ -228,8 +256,10 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               child: TextField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(border: InputBorder.none, hintText: '0'),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                decoration: const InputDecoration(
+                    border: InputBorder.none, hintText: '0'),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 28),
@@ -241,9 +271,11 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF213447),
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('Next', style: TextStyle(fontSize: 16, color: Colors.white)),
+              child: const Text('Next',
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ],
         ),
@@ -275,7 +307,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
     setState(() => _entered += d);
     if (_entered.length == 4) {
       // return pin to caller after small delay so UI updates
-      Future.delayed(const Duration(milliseconds: 250), () => Navigator.of(context).pop(_entered));
+      Future.delayed(const Duration(milliseconds: 250),
+          () => Navigator.of(context).pop(_entered));
     }
   }
 
@@ -293,15 +326,18 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
       maxChildSize: 0.9,
       builder: (_, controller) => Container(
         decoration: const BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           children: [
             const SizedBox(height: 8),
-            Text('Input PIN to withdraw', style: Theme.of(context).textTheme.titleLarge),
+            Text('Input PIN to withdraw',
+                style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             Text('₦${widget.amount.toStringAsFixed(0)}',
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
             const SizedBox(height: 18),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -317,7 +353,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                         borderRadius: BorderRadius.circular(6)),
                     child: Center(
                         child: filled
-                            ? const Icon(Icons.circle, size: 12, color: Colors.black)
+                            ? const Icon(Icons.circle,
+                                size: 12, color: Colors.black)
                             : const SizedBox.shrink()),
                   );
                 })),
@@ -327,7 +364,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                 crossAxisCount: 3,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 children: [
                   for (var i = 1; i <= 9; i++)
                     ElevatedButton(
@@ -335,8 +373,11 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                      child: Text('$i', style: const TextStyle(fontSize: 18, color: Colors.black)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12))),
+                      child: Text('$i',
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.black)),
                     ),
                   const SizedBox.shrink(),
                   ElevatedButton(
@@ -344,16 +385,20 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                    child: const Text('0', style: TextStyle(fontSize: 18, color: Colors.black)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    child: const Text('0',
+                        style: TextStyle(fontSize: 18, color: Colors.black)),
                   ),
                   ElevatedButton(
                     onPressed: _removeDigit,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                    child: const Icon(Icons.backspace_outlined, color: Colors.black),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                    child: const Icon(Icons.backspace_outlined,
+                        color: Colors.black),
                   ),
                 ],
               ),
@@ -368,7 +413,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
 class _WithdrawSuccessPage extends StatelessWidget {
   final double amount;
   final _Account account;
-  const _WithdrawSuccessPage({super.key, required this.amount, required this.account});
+  const _WithdrawSuccessPage(
+      {super.key, required this.amount, required this.account});
 
   @override
   Widget build(BuildContext context) {
@@ -383,7 +429,8 @@ class _WithdrawSuccessPage extends StatelessWidget {
               width: 140,
               height: 140,
               decoration: const BoxDecoration(shape: BoxShape.circle),
-              child: const Icon(Icons.check_circle_outline, size: 140, color: Color(0xFF6B3ECF)),
+              child: const Icon(Icons.check_circle_outline,
+                  size: 140, color: Color(0xFF6B3ECF)),
             ),
             const SizedBox(height: 20),
             Text('Withdraw Successful!',
@@ -396,7 +443,10 @@ class _WithdrawSuccessPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
                 'You successfully withdrew NGN${amount.toStringAsFixed(0)} to ${account.masked} - ${account.bank} - ${account.name}.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Colors.black54),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -404,14 +454,17 @@ class _WithdrawSuccessPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(18.0),
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
+                onPressed: () =>
+                    Navigator.of(context).popUntil((r) => r.isFirst),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF213447),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
                 child: const Center(
-                    child: Text('Continue', style: TextStyle(fontSize: 16, color: Colors.white))),
+                    child: Text('Continue',
+                        style: TextStyle(fontSize: 16, color: Colors.white))),
               ),
             ),
           ],

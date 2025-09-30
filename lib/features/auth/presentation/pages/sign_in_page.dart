@@ -73,16 +73,19 @@ class _SignInPageState extends State<SignInPage> {
           final msg = state.message;
           if (msg.toLowerCase().contains('inactive')) {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) =>
-                  PhoneVerificationPage(initialPhone: _identifierController.text.trim()),
+              builder: (_) => PhoneVerificationPage(
+                  initialPhone: _identifierController.text.trim()),
             ));
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(msg)));
           }
         } else if (state is AuthUnauthenticated) {
           // Show feedback when credentials are invalid or sign-in failed.
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid email/phone or password. Please try again.')),
+            const SnackBar(
+                content:
+                    Text('Invalid email/phone or password. Please try again.')),
           );
         }
       },
@@ -94,8 +97,9 @@ class _SignInPageState extends State<SignInPage> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: Container(
-              decoration:
-                  BoxDecoration(color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                  color: AppColors.softPink,
+                  borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black54),
                 onPressed: () => Navigator.of(context).pop(),
@@ -117,12 +121,15 @@ class _SignInPageState extends State<SignInPage> {
                   borderRadius: BorderRadius.circular(28),
                 ),
                 child: const Center(
-                    child: Icon(Icons.handshake_outlined, size: 56, color: Color(0xFF2E3A59))),
+                    child: Icon(Icons.handshake_outlined,
+                        size: 56, color: Color(0xFF2E3A59))),
               ),
               const SizedBox(height: 18),
               const Text('Log in to your Account',
                   style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.w700, color: Color(0xFF2E3A59))),
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF2E3A59))),
               const SizedBox(height: 6),
               const Text('Login with your email or phone number to continue',
                   style: TextStyle(color: Colors.black54)),
@@ -133,16 +140,19 @@ class _SignInPageState extends State<SignInPage> {
                   children: [
                     TextFormField(
                       controller: _identifierController,
-                      decoration:
-                          _inputDecoration(hint: 'Email or phone number', label: 'Email / Phone'),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? 'Please enter email or phone' : null,
+                      decoration: _inputDecoration(
+                          hint: 'Email or phone number',
+                          label: 'Email / Phone'),
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Please enter email or phone'
+                          : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: _inputDecoration(hint: 'Enter your password', label: 'Password'),
+                      decoration: _inputDecoration(
+                          hint: 'Enter your password', label: 'Password'),
                       validator: (v) => (v == null || v.length < 6)
                           ? 'Password must be at least 6 characters'
                           : null,
@@ -152,14 +162,18 @@ class _SignInPageState extends State<SignInPage> {
                       children: [
                         Checkbox(
                           value: _remember,
-                          onChanged: (v) => setState(() => _remember = v ?? true),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                          onChanged: (v) =>
+                              setState(() => _remember = v ?? true),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4)),
                           activeColor: const Color(0xFF654321),
                         ),
                         const SizedBox(width: 4),
                         const Text('Remember me'),
                         const Spacer(),
-                        TextButton(onPressed: () {}, child: const Text('Forgot Password')),
+                        TextButton(
+                            onPressed: () {},
+                            child: const Text('Forgot Password')),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -169,7 +183,8 @@ class _SignInPageState extends State<SignInPage> {
                       child: ElevatedButton(
                         onPressed: _submit,
                         style: _primaryButtonStyle(),
-                        child: const Text('Login', style: TextStyle(fontSize: 18)),
+                        child:
+                            const Text('Login', style: TextStyle(fontSize: 18)),
                       ),
                     ),
                   ],
@@ -178,7 +193,9 @@ class _SignInPageState extends State<SignInPage> {
               const SizedBox(height: 18),
               Row(children: const [
                 Expanded(child: Divider()),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('OR')),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text('OR')),
                 Expanded(child: Divider())
               ]),
               const SizedBox(height: 12),
@@ -188,8 +205,9 @@ class _SignInPageState extends State<SignInPage> {
                   SizedBox(
                     height: 52,
                     child: OutlinedButton.icon(
-                      onPressed: () =>
-                          context.read<AuthBloc>().add(AuthSignInWithGoogleRequested()),
+                      onPressed: () => context
+                          .read<AuthBloc>()
+                          .add(AuthSignInWithGoogleRequested()),
                       icon: Image.asset(
                         'assets/google_logo.png',
                         width: 22,
@@ -201,7 +219,8 @@ class _SignInPageState extends State<SignInPage> {
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.black87,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         side: const BorderSide(color: Color(0xFFE6E6E6)),
                       ),
                     ),
@@ -210,13 +229,16 @@ class _SignInPageState extends State<SignInPage> {
                   SizedBox(
                     height: 52,
                     child: OutlinedButton.icon(
-                      onPressed: () => context.read<AuthBloc>().add(AuthSignInWithAppleRequested()),
+                      onPressed: () => context
+                          .read<AuthBloc>()
+                          .add(AuthSignInWithAppleRequested()),
                       icon: const Icon(Icons.apple, size: 22),
                       label: const Text('Continue with Apple'),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.black87,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         side: const BorderSide(color: Color(0xFFE6E6E6)),
                       ),
                     ),
@@ -228,8 +250,9 @@ class _SignInPageState extends State<SignInPage> {
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   const Text("Don't have an account? "),
                   TextButton(
-                      onPressed: () => Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (_) => const SignUpPage())),
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const SignUpPage())),
                       child: const Text('Sign Up')),
                 ]),
               ),

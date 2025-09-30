@@ -58,8 +58,9 @@ void main() {
 
   group('GetJobs usecase', () {
     test('calls repository.getJobs and returns list of jobs', () async {
-      when(() => mockRepository.getJobs(page: any(named: 'page'), limit: any(named: 'limit')))
-          .thenAnswer((_) async => [sampleJob]);
+      when(() => mockRepository.getJobs(
+          page: any(named: 'page'),
+          limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
 
       final result = await getJobs(page: 1, limit: 10);
 
@@ -70,8 +71,9 @@ void main() {
     });
 
     test('propagates exceptions from repository', () async {
-      when(() => mockRepository.getJobs(page: any(named: 'page'), limit: any(named: 'limit')))
-          .thenThrow(Exception('network error'));
+      when(() => mockRepository.getJobs(
+          page: any(named: 'page'),
+          limit: any(named: 'limit'))).thenThrow(Exception('network error'));
 
       expect(() => getJobs(page: 1, limit: 10), throwsA(isA<Exception>()));
     });
@@ -79,7 +81,8 @@ void main() {
 
   group('ApplyToJob usecase', () {
     test('returns true when repository.applyToJob succeeds', () async {
-      when(() => mockRepository.applyToJob(any())).thenAnswer((_) async => true);
+      when(() => mockRepository.applyToJob(any()))
+          .thenAnswer((_) async => true);
 
       final result = await applyToJob(sampleApplication);
 
@@ -88,7 +91,8 @@ void main() {
     });
 
     test('propagates exceptions from repository', () async {
-      when(() => mockRepository.applyToJob(any())).thenThrow(Exception('apply failed'));
+      when(() => mockRepository.applyToJob(any()))
+          .thenThrow(Exception('apply failed'));
 
       expect(() => applyToJob(sampleApplication), throwsA(isA<Exception>()));
     });
@@ -96,7 +100,8 @@ void main() {
 
   group('AcceptAgreement usecase', () {
     test('returns true when repository.acceptAgreement succeeds', () async {
-      when(() => mockRepository.acceptAgreement('1')).thenAnswer((_) async => true);
+      when(() => mockRepository.acceptAgreement('1'))
+          .thenAnswer((_) async => true);
 
       final result = await acceptAgreement('1');
 
@@ -105,7 +110,8 @@ void main() {
     });
 
     test('propagates exceptions from repository', () async {
-      when(() => mockRepository.acceptAgreement('1')).thenThrow(Exception('agreement failed'));
+      when(() => mockRepository.acceptAgreement('1'))
+          .thenThrow(Exception('agreement failed'));
 
       expect(() => acceptAgreement('1'), throwsA(isA<Exception>()));
     });

@@ -43,7 +43,8 @@ void main() {
       });
 
       test('should handle flatMap that throws', () {
-        final chained = success.flatMap<int>((data) => throw Exception('error'));
+        final chained =
+            success.flatMap<int>((data) => throw Exception('error'));
         expect(chained.isFailure, isTrue);
       });
 
@@ -84,7 +85,8 @@ void main() {
       });
 
       test('should preserve failure with flatMap', () {
-        final chained = failureResult.flatMap<int>((data) => Success(data.length));
+        final chained =
+            failureResult.flatMap<int>((data) => Success(data.length));
         expect(chained.isFailure, isTrue);
         expect(chained.failure, equals(failure));
       });
@@ -143,7 +145,8 @@ void main() {
 
       test('should create unexpected failure', () {
         final exception = Exception('Unexpected error');
-        final failure = AppFailure.unexpected('Something went wrong', exception: exception);
+        final failure =
+            AppFailure.unexpected('Something went wrong', exception: exception);
         expect(failure.message, equals('Something went wrong'));
         expect(failure.code, equals('UNEXPECTED_ERROR'));
         expect(failure.exception, equals(exception));
@@ -186,14 +189,16 @@ void main() {
       });
 
       test('should return failure when operation throws Exception', () async {
-        final result = await safeCall(() async => throw Exception('test error'));
+        final result =
+            await safeCall(() async => throw Exception('test error'));
 
         expect(result.isFailure, isTrue);
         expect(result.failure.code, equals('UNEXPECTED_ERROR'));
         expect(result.failure.message, contains('test error'));
       });
 
-      test('should return failure when operation throws non-Exception', () async {
+      test('should return failure when operation throws non-Exception',
+          () async {
         final result = await safeCall(() async => throw 'string error');
 
         expect(result.isFailure, isTrue);

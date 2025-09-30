@@ -42,8 +42,9 @@ class CompatRadio<T> extends StatelessWidget {
       mouseCursor: mouseCursor,
       focusColor: focusColor,
       hoverColor: hoverColor,
-      overlayColor:
-          overlayColor == null ? null : MaterialStateProperty.resolveWith((_) => overlayColor),
+      overlayColor: overlayColor == null
+          ? null
+          : MaterialStateProperty.resolveWith((_) => overlayColor),
       splashRadius: splashRadius,
       focusNode: focusNode,
       autofocus: autofocus,

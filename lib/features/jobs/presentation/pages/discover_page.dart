@@ -12,6 +12,11 @@ import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_search_bar.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_tab_view.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/jobs/presentation/utils/filtering_util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
+import 'package:get_it/get_it.dart';
 
 class DiscoverPage extends StatefulWidget {
   final bool showHeader;
@@ -27,7 +32,22 @@ class _DiscoverPageState extends State<DiscoverPage> {
   int _currentTabIndex = 0;
   int _filterCount = 0;
   List<Job> _allJobs = [];
-  List<Job> _filteredJobs = [];
+  // Active filter query params derived from filter modal selections
+  String? _postedDateFilter;
+  String? _workModeFilter;
+  String? _budgetTypeFilter;
+  String? _durationFilter;
+  String? _categoryFilter;
+  final Set<String> _categoryIds = {};
+  Map<String, String> _categoryNameById = {};
+  String? _postedDateLabel;
+  String? _workModeLabel;
+  String? _budgetTypeLabel;
+  String? _durationLabel;
+  String? _stateFilter; // State id for API
+  String? _stateName; // Human-readable for chips
+  List<String> _lgasList = [];
+  String? _lgasCsv; // CSV for API
 
   final List<DiscoverTab> _tabs = [
     const DiscoverTab(label: 'Best Matches', key: 'matches'),
@@ -40,12 +60,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
     _searchController = TextEditingController();
     // Use GetIt to create a fresh bloc (registered as factory)
     bloc = getIt<JobBloc>();
-    // Load jobs when page becomes visible to avoid race condition with HomePage
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        bloc.add(LoadJobs());
-      }
-    });
+    // Load saved filters/search and then fetch jobs
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _initializeFromStorage());
   }
 
   @override
@@ -54,6 +71,142 @@ class _DiscoverPageState extends State<DiscoverPage> {
     // Blocs created by factory should be closed when page is disposed.
     bloc.close();
     super.dispose();
+  }
+
+  Future<void> _initializeFromStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final rawFilters = prefs.getString('discover_filters');
+      final savedSearch = prefs.getString('discover_search') ?? '';
+      String? categoriesCsv;
+      String? postedDateApi;
+      String? workModeApi;
+      String? budgetTypeApi;
+      String? durationApi;
+      String? stateIdParam;
+      List<String> lgaNames = [];
+      String? lgaIdsCsv;
+
+      if (rawFilters != null) {
+        final filters = jsonDecode(rawFilters) as Map<String, dynamic>;
+        // categories as list -> csv
+        if (filters['categories'] is List) {
+          final ids =
+              (filters['categories'] as List).map((e) => e.toString()).toList();
+          if (ids.isNotEmpty) categoriesCsv = ids.first; // use first id for API
+          _categoryIds
+            ..clear()
+            ..addAll(ids);
+          await _ensureCategoryNamesLoaded();
+        } else if (filters['category'] is String) {
+          categoriesCsv = filters['category'] as String?;
+        }
+
+        String labelFromMap(Map<dynamic, dynamic> m) {
+          for (final entry in m.entries) {
+            if (entry.value == true) return entry.key.toString();
+          }
+          return '';
+        }
+
+        if (filters['postedDate'] is Map) {
+          final label = labelFromMap(filters['postedDate']);
+          if (label.isNotEmpty) {
+            postedDateApi = filteringValue(FilteringField.postedDate, [label]);
+            _postedDateLabel = label;
+          }
+        }
+        if (filters['workspace'] is Map) {
+          final label = labelFromMap(filters['workspace']);
+          if (label.isNotEmpty) {
+            workModeApi = filteringValue(FilteringField.workMode, [label]);
+            _workModeLabel = label;
+          }
+        }
+        if (filters['budget'] is Map) {
+          final label = labelFromMap(filters['budget']);
+          if (label.isNotEmpty) {
+            budgetTypeApi = filteringValue(FilteringField.budgetType, [label]);
+            _budgetTypeLabel = label;
+          }
+        }
+        if (filters['duration'] is Map) {
+          final label = labelFromMap(filters['duration']);
+          if (label.isNotEmpty) {
+            durationApi = filteringValue(FilteringField.duration, [label]);
+            _durationLabel = label;
+          }
+        }
+        if (filters['stateId'] != null) {
+          stateIdParam = filters['stateId'].toString();
+        }
+        if (filters['state'] is String && (filters['state'] as String).isNotEmpty) {
+          _stateName = filters['state'] as String;
+        }
+        if (filters['lgas'] is List) {
+          lgaNames = (filters['lgas'] as List).map((e) => e.toString()).toList();
+        }
+        if (filters['lgaIds'] is List && (filters['lgaIds'] as List).isNotEmpty) {
+          final ids = (filters['lgaIds'] as List).map((e) => e.toString()).toList();
+          lgaIdsCsv = ids.join(',');
+        }
+      }
+
+      setState(() {
+        _searchController.text = savedSearch;
+        _categoryFilter = categoriesCsv;
+        _postedDateFilter = postedDateApi;
+        _workModeFilter = workModeApi;
+        _budgetTypeFilter = budgetTypeApi;
+        _durationFilter = durationApi;
+        _stateFilter = stateIdParam;
+        _lgasList = lgaNames;
+        _lgasCsv = lgaIdsCsv;
+        
+        int count = 0;
+        if (_categoryFilter != null && _categoryFilter!.isNotEmpty) count++;
+        if (_postedDateFilter != null && _postedDateFilter!.isNotEmpty) count++;
+        if (_workModeFilter != null && _workModeFilter!.isNotEmpty) count++;
+        if (_budgetTypeFilter != null && _budgetTypeFilter!.isNotEmpty) count++;
+        if (_durationFilter != null && _durationFilter!.isNotEmpty) count++;
+        if (_stateFilter != null && _stateFilter!.isNotEmpty) count++;
+        if (_lgasCsv != null && _lgasCsv!.isNotEmpty) count++;
+        _filterCount = count;
+      });
+
+      // Initial load
+      _loadTabContent(_currentTabIndex);
+    } catch (_) {
+      bloc.add(LoadJobs());
+    }
+  }
+
+  Future<void> _ensureCategoryNamesLoaded() async {
+    if (_categoryNameById.isNotEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cached = prefs.getString('job_categories_cache_data');
+      if (cached != null) {
+        final list = jsonDecode(cached) as List;
+        _categoryNameById = {
+          for (final e in list)
+            (e['id'] ?? e['ID'] ?? e['Id']).toString():
+                (e['name'] ?? e['Name'] ?? '').toString()
+        };
+      }
+      if (_categoryNameById.isEmpty) {
+        final ds = GetIt.I<CatalogCategoriesRemoteDataSource>();
+        final groups = await ds.fetchCategories();
+        final subs = groups.expand((g) => g.subcategories).toList();
+        _categoryNameById = {
+          for (final e in (subs.isNotEmpty
+              ? subs
+              : groups.map((g) => CategoryItem(g.id, g.name))))
+            e.id: e.name,
+        };
+      }
+      if (mounted) setState(() {});
+    } catch (_) {}
   }
 
   @override
@@ -70,9 +223,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   padding: const EdgeInsets.only(left: 12.0),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
+                        color: AppColors.softPink,
+                        borderRadius: BorderRadius.circular(10)),
                     child: IconButton(
-                      icon: const Icon(Icons.chevron_left, color: Colors.black54),
+                      icon:
+                          const Icon(Icons.chevron_left, color: Colors.black54),
                       onPressed: () {
                         // In shell the back may not pop; keep as placeholder
                       },
@@ -81,7 +236,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 ),
                 title: const Text('Discover',
                     style: TextStyle(
-                        color: Colors.black87, fontSize: 20, fontWeight: FontWeight.w600)),
+                        color: Colors.black87,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600)),
                 centerTitle: false,
                 actions: const [],
               )
@@ -120,7 +277,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       // Banner carousel
       EnhancedBannerCarousel(
         category: api.BannerCategory.job,
-        height: 140,
+        height: 110,
         autoPlay: true,
       ),
 
@@ -137,8 +294,240 @@ class _DiscoverPageState extends State<DiscoverPage> {
         showFilterBadge: _filterCount > 0,
       ),
 
+      // Active filters chips row
+      _buildActiveFiltersChips(),
+
       const SizedBox(height: 8),
     ];
+  }
+
+  Widget _buildActiveFiltersChips() {
+    final chips = <Widget>[];
+
+    // Category chips
+    if (_categoryIds.isNotEmpty) {
+      for (final id in _categoryIds) {
+        final name = _categoryNameById[id] ?? 'Category';
+        chips.add(_filterChip(name, () => _removeCategory(id)));
+      }
+    }
+
+    // Simple label chips
+    if (_postedDateLabel != null) {
+      chips.add(_filterChip(_postedDateLabel!, _clearPostedDate));
+    }
+    if (_workModeLabel != null) {
+      chips.add(_filterChip(_workModeLabel!, _clearWorkMode));
+    }
+    if (_budgetTypeLabel != null) {
+      chips.add(_filterChip(_budgetTypeLabel!, _clearBudgetType));
+    }
+    if (_durationLabel != null) {
+      chips.add(_filterChip(_durationLabel!, _clearDuration));
+    }
+    if (_stateFilter != null && _stateFilter!.isNotEmpty) {
+      chips.add(_filterChip(_stateName ?? 'State', _clearState));
+    }
+    if (_lgasList.isNotEmpty) {
+      final n = _lgasList.length;
+      chips.add(_filterChip('LGA ($n)', _clearLgas));
+    }
+
+    if (chips.isEmpty) return const SizedBox.shrink();
+
+    // Add Clear All action
+    chips.add(
+      GestureDetector(
+        onTap: _clearAllFilters,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.subtleBorder),
+          ),
+          child: const Text(
+            'Clear all',
+            style: TextStyle(fontSize: 12, color: AppColors.brownHeader),
+          ),
+        ),
+      ),
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        children: chips,
+      ),
+    );
+  }
+
+  Widget _filterChip(String label, VoidCallback onDelete) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
+      child: Chip(
+        label: Text(label, style: const TextStyle(fontSize: 12)),
+        deleteIcon: const Icon(Icons.close, size: 16),
+        onDeleted: onDelete,
+        backgroundColor: AppColors.cardBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: AppColors.subtleBorder),
+        ),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+    );
+  }
+
+  Future<void> _updatePersistedFilters(
+      void Function(Map<String, dynamic>) mutate) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('discover_filters');
+    final map = raw != null
+        ? (jsonDecode(raw) as Map<String, dynamic>)
+        : <String, dynamic>{};
+    mutate(map);
+    await prefs.setString('discover_filters', jsonEncode(map));
+  }
+
+  void _removeCategory(String id) {
+    setState(() {
+      _categoryIds.remove(id);
+      _categoryFilter = _categoryIds.isEmpty ? null : _categoryIds.join(',');
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) {
+      final list =
+          (m['categories'] as List?)?.map((e) => e.toString()).toList() ?? [];
+      list.remove(id);
+      m['categories'] = list;
+    });
+    _triggerFetch();
+  }
+
+  void _clearPostedDate() {
+    setState(() {
+      _postedDateFilter = null;
+      _postedDateLabel = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) => m['postedDate'] = {});
+    _triggerFetch();
+  }
+
+  void _clearWorkMode() {
+    setState(() {
+      _workModeFilter = null;
+      _workModeLabel = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) => m['workspace'] = {});
+    _triggerFetch();
+  }
+
+  void _clearBudgetType() {
+    setState(() {
+      _budgetTypeFilter = null;
+      _budgetTypeLabel = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) => m['budget'] = {});
+    _triggerFetch();
+  }
+
+  void _clearDuration() {
+    setState(() {
+      _durationFilter = null;
+      _durationLabel = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) => m['duration'] = {});
+    _triggerFetch();
+  }
+
+  void _clearState() {
+    setState(() {
+      _stateFilter = null;
+      _stateName = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) {
+      m['state'] = '';
+      m['stateId'] = null;
+    });
+    _triggerFetch();
+  }
+
+  void _clearLgas() {
+    setState(() {
+      _lgasList.clear();
+      _lgasCsv = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) => m['lgas'] = []);
+    _triggerFetch();
+  }
+
+  void _clearAllFilters() {
+    setState(() {
+      _categoryIds.clear();
+      _categoryFilter = null;
+      _postedDateFilter = null;
+      _workModeFilter = null;
+      _budgetTypeFilter = null;
+      _durationFilter = null;
+      _postedDateLabel = null;
+      _workModeLabel = null;
+      _budgetTypeLabel = null;
+      _durationLabel = null;
+      _stateFilter = null;
+      _lgasList.clear();
+      _lgasCsv = null;
+      _recountFilters();
+    });
+    _updatePersistedFilters((m) {
+      m['categories'] = [];
+      m['postedDate'] = {};
+      m['workspace'] = {};
+      m['budget'] = {};
+      m['duration'] = {};
+      m['state'] = '';
+      m['lgas'] = [];
+    });
+    _triggerFetch();
+  }
+
+  void _recountFilters() {
+    int count = 0;
+    if (_categoryFilter != null && _categoryFilter!.isNotEmpty) count++;
+    if (_postedDateFilter != null && _postedDateFilter!.isNotEmpty) count++;
+    if (_workModeFilter != null && _workModeFilter!.isNotEmpty) count++;
+    if (_budgetTypeFilter != null && _budgetTypeFilter!.isNotEmpty) count++;
+    if (_durationFilter != null && _durationFilter!.isNotEmpty) count++;
+    if (_stateFilter != null && _stateFilter!.isNotEmpty) count++;
+    if (_lgasCsv != null && _lgasCsv!.isNotEmpty) count++;
+    _filterCount = count;
+  }
+
+  void _triggerFetch() {
+    bloc.add(LoadJobs(
+      page: 1,
+      limit: 20,
+      search: _searchController.text,
+      match: false,
+      saved: _currentTabIndex == 1,
+      postedDate: _postedDateFilter,
+      workMode: _workModeFilter,
+      budgetType: _budgetTypeFilter,
+      duration: _durationFilter,
+      category: _categoryFilter,
+      state: _stateFilter,
+      lgas: _lgasCsv,
+    ));
   }
 
   Widget _buildTabContent(int index) {
@@ -171,7 +560,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
         return DiscoverTabContent(
           child: RefreshIndicator(
             onRefresh: () async {
-              bloc.add(RefreshJobs());
+              bloc.add(LoadJobs(
+                page: 1,
+                limit: 20,
+                search: _searchController.text,
+                match: false,
+                saved: _currentTabIndex == 1,
+                postedDate: _postedDateFilter,
+                workMode: _workModeFilter,
+                budgetType: _budgetTypeFilter,
+                duration: _durationFilter,
+                category: _categoryFilter,
+              ));
             },
             child: ListView.builder(
               padding: const EdgeInsets.only(top: 8),
@@ -181,7 +581,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 return DiscoverJobCard(
                   job: job,
                   onTap: () => _navigateToJobDetails(job),
-                  showSaveButton: _currentTabIndex != 1, // Hide on saved jobs tab
+                  showSaveButton:
+                      _currentTabIndex != 1, // Hide on saved jobs tab
                   onSave: () => _toggleSaveJob(job),
                 );
               },
@@ -205,7 +606,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
     switch (index) {
       case 0: // Best Matches
-        return _filteredJobs.isNotEmpty ? _filteredJobs : allJobs;
+        return allJobs;
       case 1: // Saved Jobs
         return allJobs.where((job) => job.saved).toList();
       default:
@@ -271,25 +672,43 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 
   void _handleSearch(String query) {
-    // Implement search logic
-    setState(() {
-      if (query.isEmpty) {
-        _filteredJobs = [];
-      } else {
-        _filteredJobs = _allJobs.where((job) {
-          return job.title.toLowerCase().contains(query.toLowerCase()) ||
-              job.category.toLowerCase().contains(query.toLowerCase()) ||
-              job.description.toLowerCase().contains(query.toLowerCase());
-        }).toList();
-      }
-    });
+    // Use server-side search to mirror upstream app
+    bloc.add(LoadJobs(
+      page: 1,
+      limit: 20,
+      search: query,
+      match: false,
+      saved: _currentTabIndex == 1,
+      postedDate: _postedDateFilter,
+      workMode: _workModeFilter,
+      budgetType: _budgetTypeFilter,
+      duration: _durationFilter,
+      category: _categoryFilter,
+      state: _stateFilter,
+      lgas: _lgasCsv,
+    ));
+    // Persist search
+    SharedPreferences.getInstance()
+        .then((p) => p.setString('discover_search', query));
   }
 
   void _clearSearch() {
     _searchController.clear();
-    setState(() {
-      _filteredJobs = [];
-    });
+    bloc.add(LoadJobs(
+      page: 1,
+      limit: 20,
+      search: '',
+      match: false,
+      saved: _currentTabIndex == 1,
+      postedDate: _postedDateFilter,
+      workMode: _workModeFilter,
+      budgetType: _budgetTypeFilter,
+      duration: _durationFilter,
+      category: _categoryFilter,
+      state: _stateFilter,
+      lgas: _lgasCsv,
+    ));
+    SharedPreferences.getInstance().then((p) => p.remove('discover_search'));
   }
 
   Future<void> _showFilterModal() async {
@@ -313,22 +732,171 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
 
     if (filters != null && mounted) {
-      setState(() {
-        _filterCount = 3; // Mock filter count
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Filters applied')),
-      );
+      // Expecting the shape from FilterPage
+      // {'categories': List<String>, 'postedDate': Map<String,bool>, 'workspace': Map<String,bool>,
+      //  'state': String?, 'stateId': int?, 'lgas': List<String>, 'lgaIds': List<int>, 'budget': Map<String,bool>, 'duration': Map<String,bool>}
+      String? categoriesCsv;
+      String? postedDateApi;
+      String? workModeApi;
+      String? budgetTypeApi;
+      String? durationApi;
+      String? stateParam; // state id string
+      String? stateName;
+      List<String> selectedLgaNames = [];
+      String? lgaIdsCsv;
+
+      try {
+        // categories (list of ids) -> first id for API
+        if (filters['categories'] is List &&
+            (filters['categories'] as List).isNotEmpty) {
+          final ids =
+              (filters['categories'] as List).map((e) => e.toString()).toList();
+          categoriesCsv = ids.first;
+          _categoryIds
+            ..clear()
+            ..addAll(ids);
+          _ensureCategoryNamesLoaded();
+        }
+
+        String firstTrueKey(Map<dynamic, dynamic> m) {
+          for (final entry in m.entries) {
+            if (entry.value == true) return entry.key.toString();
+          }
+          return '';
+        }
+
+        final postedDateLabel = filters['postedDate'] is Map
+            ? firstTrueKey(filters['postedDate'])
+            : '';
+        final workModeLabel = filters['workspace'] is Map
+            ? firstTrueKey(filters['workspace'])
+            : '';
+        final budgetLabel =
+            filters['budget'] is Map ? firstTrueKey(filters['budget']) : '';
+        final durationLabel =
+            filters['duration'] is Map ? firstTrueKey(filters['duration']) : '';
+
+        postedDateApi = postedDateLabel.isNotEmpty
+            ? filteringValue(FilteringField.postedDate, [postedDateLabel])
+            : null;
+        workModeApi = workModeLabel.isNotEmpty
+            ? filteringValue(FilteringField.workMode, [workModeLabel])
+            : null;
+        budgetTypeApi = budgetLabel.isNotEmpty
+            ? filteringValue(FilteringField.budgetType, [budgetLabel])
+            : null;
+        durationApi = durationLabel.isNotEmpty
+            ? filteringValue(FilteringField.duration, [durationLabel])
+            : null;
+
+        // Optional state/LGAs
+        if (filters['stateId'] != null) {
+          stateParam = filters['stateId'].toString();
+        }
+        if (filters['state'] is String && (filters['state'] as String).isNotEmpty) {
+          stateName = filters['state'] as String;
+        }
+        if (filters['lgas'] is List) {
+          selectedLgaNames =
+              (filters['lgas'] as List).map((e) => e.toString()).toList();
+        }
+        if (filters['lgaIds'] is List && (filters['lgaIds'] as List).isNotEmpty) {
+          final ids = (filters['lgaIds'] as List).map((e) => e.toString()).toList();
+          lgaIdsCsv = ids.join(',');
+        }
+
+        setState(() {
+          _categoryFilter = categoriesCsv;
+          _postedDateFilter = postedDateApi;
+          _workModeFilter = workModeApi;
+          _budgetTypeFilter = budgetTypeApi;
+          _durationFilter = durationApi;
+          _postedDateLabel =
+              postedDateLabel.isNotEmpty ? postedDateLabel : null;
+          _workModeLabel = workModeLabel.isNotEmpty ? workModeLabel : null;
+          _budgetTypeLabel = budgetLabel.isNotEmpty ? budgetLabel : null;
+          _durationLabel = durationLabel.isNotEmpty ? durationLabel : null;
+          _stateFilter = stateParam;
+          _stateName = stateName;
+          _lgasList = selectedLgaNames; // names for chips
+          _lgasCsv = lgaIdsCsv; // ids for API
+
+          // Count active filters like in the upstream app
+          int count = 0;
+          if (_categoryFilter != null && _categoryFilter!.isNotEmpty) count++;
+          if (_postedDateFilter != null && _postedDateFilter!.isNotEmpty)
+            count++;
+          if (_workModeFilter != null && _workModeFilter!.isNotEmpty) count++;
+          if (_budgetTypeFilter != null && _budgetTypeFilter!.isNotEmpty)
+            count++;
+          if (_durationFilter != null && _durationFilter!.isNotEmpty) count++;
+          if (_stateFilter != null && _stateFilter!.isNotEmpty) count++;
+          if (_lgasCsv != null && _lgasCsv!.isNotEmpty) count++;
+          _filterCount = count;
+        });
+
+        // Persist filters
+        SharedPreferences.getInstance()
+            .then((p) => p.setString('discover_filters', jsonEncode(filters)));
+
+        // Fetch with new filters
+        bloc.add(LoadJobs(
+          page: 1,
+          limit: 20,
+          search: _searchController.text,
+          match: false,
+          saved: _currentTabIndex == 1,
+          postedDate: _postedDateFilter,
+          workMode: _workModeFilter,
+          budgetType: _budgetTypeFilter,
+          duration: _durationFilter,
+          category: _categoryFilter,
+          state: _stateFilter,
+          lgas: _lgasCsv,
+        ));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Filters applied')),
+        );
+      } catch (_) {
+        // Best-effort; ignore mapping errors
+      }
     }
   }
 
   void _loadTabContent(int index) {
     switch (index) {
       case 0: // Best Matches
-        bloc.add(LoadJobs());
+        bloc.add(LoadJobs(
+          page: 1,
+          limit: 20,
+          search: _searchController.text,
+          match: false,
+          saved: false,
+          postedDate: _postedDateFilter,
+          workMode: _workModeFilter,
+          budgetType: _budgetTypeFilter,
+          duration: _durationFilter,
+          category: _categoryFilter,
+          state: _stateFilter,
+          lgas: _lgasCsv,
+        ));
         break;
       case 1: // Saved Jobs
-        // Load saved jobs
+        bloc.add(LoadJobs(
+          page: 1,
+          limit: 20,
+          search: _searchController.text,
+          match: false,
+          saved: true,
+          postedDate: _postedDateFilter,
+          workMode: _workModeFilter,
+          budgetType: _budgetTypeFilter,
+          duration: _durationFilter,
+          category: _categoryFilter,
+          state: _stateFilter,
+          lgas: _lgasCsv,
+        ));
         break;
     }
   }

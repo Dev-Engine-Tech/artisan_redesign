@@ -40,7 +40,20 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   Future<void> _onLoadJobs(LoadJobs event, Emitter<JobState> emit) async {
     emit(const JobStateLoading());
     try {
-      final list = await getJobs(page: event.page, limit: event.limit);
+      final list = await getJobs(
+        page: event.page,
+        limit: event.limit,
+        search: event.search,
+        saved: event.saved,
+        match: event.match,
+        postedDate: event.postedDate,
+        workMode: event.workMode,
+        budgetType: event.budgetType,
+        duration: event.duration,
+        category: event.category,
+        state: event.state,
+        lgas: event.lgas,
+      );
       emit(JobStateLoaded(jobs: list));
     } catch (e) {
       emit(JobStateError(message: e.toString()));
@@ -56,14 +69,17 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     }
   }
 
-  Future<void> _onLoadApplications(LoadApplications event, Emitter<JobState> emit) async {
-    dev.log('Loading applications page=${event.page} limit=${event.limit}', name: 'JobBloc');
+  Future<void> _onLoadApplications(
+      LoadApplications event, Emitter<JobState> emit) async {
+    dev.log('Loading applications page=${event.page} limit=${event.limit}',
+        name: 'JobBloc');
     emit(const JobStateLoading());
     try {
       final list = await getApplications(page: event.page, limit: event.limit);
       dev.log('Received ${list.length} applications', name: 'JobBloc');
       emit(JobStateAppliedSuccess(jobs: list, jobId: ''));
-      dev.log('Emitted JobStateAppliedSuccess with ${list.length} jobs', name: 'JobBloc');
+      dev.log('Emitted JobStateAppliedSuccess with ${list.length} jobs',
+          name: 'JobBloc');
     } catch (e) {
       dev.log('Error loading applications: $e', name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
@@ -120,31 +136,35 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     }
   }
 
-  Future<void> _onLoadOngoingJobs(LoadOngoingJobs event, Emitter<JobState> emit) async {
+  Future<void> _onLoadOngoingJobs(
+      LoadOngoingJobs event, Emitter<JobState> emit) async {
     emit(const JobStateLoading());
     try {
       // Use existing getJobs endpoint and filter client-side for ongoing jobs
       final allJobs = await getJobs(page: event.page, limit: event.limit);
-      final ongoingJobs = allJobs.where((job) => 
-        job.status == JobStatus.inProgress || 
-        job.status == JobStatus.accepted ||
-        job.projectStatus == AppliedProjectStatus.ongoing
-      ).toList();
+      final ongoingJobs = allJobs
+          .where((job) =>
+              job.status == JobStatus.inProgress ||
+              job.status == JobStatus.accepted ||
+              job.projectStatus == AppliedProjectStatus.ongoing)
+          .toList();
       emit(JobStateOngoingLoaded(ongoingJobs: ongoingJobs));
     } catch (e) {
       emit(JobStateError(message: e.toString()));
     }
   }
 
-  Future<void> _onLoadCompletedJobs(LoadCompletedJobs event, Emitter<JobState> emit) async {
+  Future<void> _onLoadCompletedJobs(
+      LoadCompletedJobs event, Emitter<JobState> emit) async {
     emit(const JobStateLoading());
     try {
       // Use existing getJobs endpoint and filter client-side for completed jobs
       final allJobs = await getJobs(page: event.page, limit: event.limit);
-      final completedJobs = allJobs.where((job) => 
-        job.status == JobStatus.completed ||
-        job.projectStatus == AppliedProjectStatus.completed
-      ).toList();
+      final completedJobs = allJobs
+          .where((job) =>
+              job.status == JobStatus.completed ||
+              job.projectStatus == AppliedProjectStatus.completed)
+          .toList();
       emit(JobStateCompletedLoaded(completedJobs: completedJobs));
     } catch (e) {
       emit(JobStateError(message: e.toString()));

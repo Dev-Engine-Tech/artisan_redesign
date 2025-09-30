@@ -5,13 +5,18 @@ class ContactUsPage extends StatelessWidget {
   const ContactUsPage({super.key});
 
   static const List<Map<String, String>> channels = [
-    {"title": "Chat with us", "img": "msg", "handle": "https://wa.me/+2348117672244"},
+    {
+      "title": "Chat with us",
+      "img": "msg",
+      "handle": "https://wa.me/+2348117672244"
+    },
     {"title": "Email us", "img": "mail", "handle": "info@artisansbridge.com"},
     {"title": "Call us", "img": "call", "handle": "+2348117672244"},
     {
       "title": "Facebook",
       "img": "facebook",
-      "handle": "https://www.facebook.com/share/58HcoxDxiXAdVjwk/?mibextid=LQQJ4d",
+      "handle":
+          "https://www.facebook.com/share/58HcoxDxiXAdVjwk/?mibextid=LQQJ4d",
     },
     {
       "title": "LinkedIn",

@@ -36,25 +36,30 @@ class UserProfileModel extends UserProfile {
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
       id: json['id']?.toString() ?? json['user_id']?.toString() ?? '',
-      firstName: json['first_name']?.toString() ?? json['firstName']?.toString(),
+      firstName:
+          json['first_name']?.toString() ?? json['firstName']?.toString(),
       lastName: json['last_name']?.toString() ?? json['lastName']?.toString(),
       email: json['email']?.toString(),
       phone: json['phone']?.toString(),
-      profileImage: json['profile_image']?.toString() ?? json['profilePic']?.toString(),
+      profileImage:
+          json['profile_image']?.toString() ?? json['profilePic']?.toString(),
       jobTitle: json['job_title']?.toString() ?? json['occupation']?.toString(),
       bio: json['bio']?.toString(),
       location: json['location']?.toString(),
-      skills: (json['skills'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      skills: (json['skills'] as List?)?.map((e) => e.toString()).toList() ??
+          const [],
       workExperience: (json['work_experience'] as List?)
-              ?.map((e) => WorkExperienceModel.fromJson(Map<String, dynamic>.from(e)))
+              ?.map((e) =>
+                  WorkExperienceModel.fromJson(Map<String, dynamic>.from(e)))
               .toList() ??
           const [],
       education: (json['education'] as List?)
-              ?.map((e) => EducationModel.fromJson(Map<String, dynamic>.from(e)))
+              ?.map(
+                  (e) => EducationModel.fromJson(Map<String, dynamic>.from(e)))
               .toList() ??
           const [],
-      yearsOfExperience:
-          (json['years_of_experience'] as num?)?.toInt() ?? json['yearsOfExperience'] as int?,
+      yearsOfExperience: (json['years_of_experience'] as num?)?.toInt() ??
+          json['yearsOfExperience'] as int?,
       isVerified: json['is_verified'] == true || json['isVerified'] == true,
     );
   }
@@ -71,8 +76,11 @@ class UserProfileModel extends UserProfile {
       'bio': bio,
       'location': location,
       'skills': skills,
-      'work_experience': workExperience.map((e) => (e as WorkExperienceModel).toJson()).toList(),
-      'education': education.map((e) => (e as EducationModel).toJson()).toList(),
+      'work_experience': workExperience
+          .map((e) => (e as WorkExperienceModel).toJson())
+          .toList(),
+      'education':
+          education.map((e) => (e as EducationModel).toJson()).toList(),
       'years_of_experience': yearsOfExperience,
       'is_verified': isVerified,
     };
@@ -107,8 +115,11 @@ class WorkExperienceModel extends WorkExperience {
       companyName: json['company_name']?.toString() ?? '',
       location: json['location']?.toString(),
       description: json['description']?.toString(),
-      startDate: DateTime.tryParse(json['start_date']?.toString() ?? '') ?? DateTime.now(),
-      endDate: json['end_date'] != null ? DateTime.tryParse(json['end_date'].toString()) : null,
+      startDate: DateTime.tryParse(json['start_date']?.toString() ?? '') ??
+          DateTime.now(),
+      endDate: json['end_date'] != null
+          ? DateTime.tryParse(json['end_date'].toString())
+          : null,
       isCurrent: json['is_current'] == true,
     );
   }
@@ -150,8 +161,11 @@ class EducationModel extends Education {
       schoolName: json['school_name']?.toString() ?? '',
       fieldOfStudy: json['field_of_study']?.toString() ?? '',
       degree: json['degree']?.toString(),
-      startDate: DateTime.tryParse(json['start_date']?.toString() ?? '') ?? DateTime.now(),
-      endDate: json['end_date'] != null ? DateTime.tryParse(json['end_date'].toString()) : null,
+      startDate: DateTime.tryParse(json['start_date']?.toString() ?? '') ??
+          DateTime.now(),
+      endDate: json['end_date'] != null
+          ? DateTime.tryParse(json['end_date'].toString())
+          : null,
       description: json['description']?.toString(),
     );
   }

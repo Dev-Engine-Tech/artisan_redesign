@@ -35,8 +35,16 @@ class CatalogClient extends Equatable {
   String get fullName => '$firstName $lastName';
 
   @override
-  List<Object?> get props =>
-      [id, firstName, lastName, email, phone, homeAddress, profilePic, stateName];
+  List<Object?> get props => [
+        id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        homeAddress,
+        profilePic,
+        stateName
+      ];
 }
 
 /// Enhanced catalog product structure
@@ -123,7 +131,8 @@ class CatalogRequest extends Equatable {
   }
 
   /// Determines if the request can be modified
-  bool get canModify => requestStatus == CatalogRequestStatus.pending && isArtisanApproved;
+  bool get canModify =>
+      requestStatus == CatalogRequestStatus.pending && isArtisanApproved;
 
   @override
   List<Object?> get props => [

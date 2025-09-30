@@ -31,8 +31,10 @@ import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'api/endpoints.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dart';
 import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
-    if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart' as ssl;
+    if (dart.library.io) 'package:artisans_circle/core/network/ssl_overrides_io.dart'
+    as ssl;
 import 'package:artisans_circle/core/services/banner_service.dart';
+import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
@@ -85,11 +87,11 @@ import 'package:artisans_circle/features/account/domain/usecases/verify_withdraw
 // Messages feature
 import 'package:artisans_circle/features/messages/data/datasources/messages_in_memory_data_source.dart';
 import 'package:artisans_circle/features/messages/data/repositories/messages_repository_impl.dart';
-// import 'package:artisans_circle/features/messages/data/repositories/messages_repository_firebase.dart';
+import 'package:artisans_circle/features/messages/data/repositories/messages_repository_firebase.dart';
 import 'package:artisans_circle/features/messages/domain/repositories/messages_repository.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_core/firebase_core.dart' as fb;
-// import 'package:firebase_auth/firebase_auth.dart' as fba;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart' as fb;
+import 'package:firebase_auth/firebase_auth.dart' as fba;
 // Notifications feature
 import 'package:artisans_circle/features/notifications/data/datasources/notification_remote_data_source.dart';
 import 'package:artisans_circle/features/notifications/data/datasources/notification_remote_data_source_impl.dart';
@@ -113,9 +115,11 @@ final GetIt getIt = GetIt.instance;
 
 // Allow opting into insecure TLS (e.g., self-signed, wrong host) for dev only.
 // Never enable this in production.
-const bool kAllowInsecure = bool.fromEnvironment('ALLOW_INSECURE', defaultValue: true);
+const bool kAllowInsecure =
+    bool.fromEnvironment('ALLOW_INSECURE', defaultValue: true);
 const bool kLogHttp = bool.fromEnvironment('LOG_HTTP', defaultValue: true);
-const bool kUseFirebaseMessages = bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
+const bool kUseFirebaseMessages =
+    bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
 
 /// Call this during app startup (before runApp) to register dependencies.
 ///
@@ -144,7 +148,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
           final token = await secureStorage.getAccessToken();
           options.headers.addAll({
             'Accept': 'application/json',
-            'Content-Type': options.headers['Content-Type'] ?? 'application/json',
+            'Content-Type':
+                options.headers['Content-Type'] ?? 'application/json',
             if (token != null) 'Authorization': 'Bearer $token',
           });
         } catch (_) {}
@@ -187,6 +192,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   // Register Banner Service
   getIt.registerLazySingleton<BannerService>(
     () => BannerService(),
+  );
+
+  // Location (States/LGAs)
+  getIt.registerLazySingleton<LocationRemoteDataSource>(
+    () => LocationRemoteDataSourceImpl(getIt<Dio>()),
   );
 
   // Register Firebase Analytics service
@@ -257,11 +267,15 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
 
   getIt.registerLazySingleton<SignIn>(() => SignIn(getIt<AuthRepository>()));
   getIt.registerLazySingleton<SignUp>(() => SignUp(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<IsSignedIn>(() => IsSignedIn(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<GetCurrentUser>(() => GetCurrentUser(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<IsSignedIn>(
+      () => IsSignedIn(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<GetCurrentUser>(
+      () => GetCurrentUser(getIt<AuthRepository>()));
   getIt.registerLazySingleton<SignOut>(() => SignOut(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<SignInWithGoogle>(() => SignInWithGoogle(getIt<AuthRepository>()));
-  getIt.registerLazySingleton<SignInWithApple>(() => SignInWithApple(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignInWithGoogle>(
+      () => SignInWithGoogle(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<SignInWithApple>(
+      () => SignInWithApple(getIt<AuthRepository>()));
 
   // Blocs / Cubits are registered as factories so they can be created with fresh state.
   getIt.registerFactory<AuthBloc>(
@@ -301,7 +315,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
 
   // Catalog feature
   if (useFake) {
-    getIt.registerLazySingleton<CatalogRemoteDataSource>(() => CatalogRemoteDataSourceFake());
+    getIt.registerLazySingleton<CatalogRemoteDataSource>(
+        () => CatalogRemoteDataSourceFake());
   } else {
     getIt.registerLazySingleton<CatalogRemoteDataSource>(
         () => CatalogRemoteDataSourceImpl(getIt<Dio>()));
@@ -310,20 +325,25 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       () => CatalogRepositoryImpl(getIt<CatalogRemoteDataSource>()));
   getIt.registerLazySingleton<GetMyCatalogItems>(
       () => GetMyCatalogItems(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<GetCatalogByUser>(() => GetCatalogByUser(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<CreateCatalog>(() => CreateCatalog(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<UpdateCatalog>(() => UpdateCatalog(getIt<CatalogRepository>()));
-  getIt.registerLazySingleton<DeleteCatalog>(() => DeleteCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<GetCatalogByUser>(
+      () => GetCatalogByUser(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<CreateCatalog>(
+      () => CreateCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<UpdateCatalog>(
+      () => UpdateCatalog(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<DeleteCatalog>(
+      () => DeleteCatalog(getIt<CatalogRepository>()));
   getIt.registerFactory<CatalogBloc>(() => CatalogBloc(
-      getMyCatalogItems: getIt<GetMyCatalogItems>(), getCatalogByUser: getIt<GetCatalogByUser>()));
+      getMyCatalogItems: getIt<GetMyCatalogItems>(),
+      getCatalogByUser: getIt<GetCatalogByUser>()));
   getIt.registerLazySingleton<CatalogCategoriesRemoteDataSource>(
       () => CatalogCategoriesRemoteDataSourceImpl(getIt<Dio>()));
 
   // Catalog Requests
   getIt.registerLazySingleton<CatalogRequestsRemoteDataSource>(
       () => CatalogRequestsRemoteDataSourceImpl(getIt<Dio>()));
-  getIt.registerLazySingleton<CatalogRequestsRepository>(
-      () => CatalogRequestsRepositoryImpl(getIt<CatalogRequestsRemoteDataSource>()));
+  getIt.registerLazySingleton<CatalogRequestsRepository>(() =>
+      CatalogRequestsRepositoryImpl(getIt<CatalogRequestsRemoteDataSource>()));
   getIt.registerLazySingleton<GetCatalogRequests>(
       () => GetCatalogRequests(getIt<CatalogRequestsRepository>()));
   getIt.registerLazySingleton<GetCatalogRequestDetails>(
@@ -346,36 +366,50 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       () => AccountRemoteDataSourceImpl(getIt<Dio>()));
   getIt.registerLazySingleton<AccountRepository>(
       () => AccountRepositoryImpl(getIt<AccountRemoteDataSource>()));
-  getIt.registerLazySingleton<GetUserProfile>(() => GetUserProfile(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetUserProfile>(
+      () => GetUserProfile(getIt<AccountRepository>()));
   getIt.registerLazySingleton<UpdateUserProfile>(
       () => UpdateUserProfile(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetEarnings>(() => GetEarnings(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetTransactions>(() => GetTransactions(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetEarnings>(
+      () => GetEarnings(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetTransactions>(
+      () => GetTransactions(getIt<AccountRepository>()));
   getIt.registerLazySingleton<RequestWithdrawal>(
       () => RequestWithdrawal(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetBankAccounts>(() => GetBankAccounts(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<AddBankAccount>(() => AddBankAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetBankAccounts>(
+      () => GetBankAccounts(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddBankAccount>(
+      () => AddBankAccount(getIt<AccountRepository>()));
   getIt.registerLazySingleton<DeleteBankAccount>(
       () => DeleteBankAccount(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<GetBankList>(() => GetBankList(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<GetBankList>(
+      () => GetBankList(getIt<AccountRepository>()));
   getIt.registerLazySingleton<VerifyBankAccount>(
       () => VerifyBankAccount(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<SetWithdrawalPin>(() => SetWithdrawalPin(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<SetWithdrawalPin>(
+      () => SetWithdrawalPin(getIt<AccountRepository>()));
   getIt.registerLazySingleton<VerifyWithdrawalPin>(
       () => VerifyWithdrawalPin(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<ChangePassword>(() => ChangePassword(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<DeleteAccount>(() => DeleteAccount(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<AddSkill>(() => AddSkill(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<RemoveSkill>(() => RemoveSkill(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<ChangePassword>(
+      () => ChangePassword(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteAccount>(
+      () => DeleteAccount(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddSkill>(
+      () => AddSkill(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<RemoveSkill>(
+      () => RemoveSkill(getIt<AccountRepository>()));
   getIt.registerLazySingleton<AddWorkExperience>(
       () => AddWorkExperience(getIt<AccountRepository>()));
   getIt.registerLazySingleton<UpdateWorkExperience>(
       () => UpdateWorkExperience(getIt<AccountRepository>()));
   getIt.registerLazySingleton<DeleteWorkExperience>(
       () => DeleteWorkExperience(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<AddEducation>(() => AddEducation(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<UpdateEducation>(() => UpdateEducation(getIt<AccountRepository>()));
-  getIt.registerLazySingleton<DeleteEducation>(() => DeleteEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<AddEducation>(
+      () => AddEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<UpdateEducation>(
+      () => UpdateEducation(getIt<AccountRepository>()));
+  getIt.registerLazySingleton<DeleteEducation>(
+      () => DeleteEducation(getIt<AccountRepository>()));
   getIt.registerLazySingleton<UploadProfileImage>(
       () => UploadProfileImage(getIt<AccountRepository>()));
   getIt.registerFactory<AccountBloc>(() => AccountBloc(
@@ -404,29 +438,34 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
         uploadProfileImage: getIt<UploadProfileImage>(),
       ));
 
-  // Messages feature - using in-memory fallback since Firebase is disabled
-  // final bool hasFirebase = fb.Firebase.apps.isNotEmpty;
-  // final bool hasFirebaseAuthUser = hasFirebase && (fba.FirebaseAuth.instance.currentUser != null);
-  // final String? customToken = await getIt<SecureStorage>().getFirebaseToken();
-  // final bool hasCustomToken = customToken != null;
-  // if (kUseFirebaseMessages && hasFirebase && (hasFirebaseAuthUser || hasCustomToken)) {
-  //   // Firebase-backed
-  //   getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
-  //   getIt.registerLazySingleton<MessagesRepository>(
-  //       () => MessagesRepositoryFirebase(getIt<FirebaseFirestore>()));
-  // } else {
-  // In-memory fallback
-  getIt.registerLazySingleton<InMemoryMessagesStore>(() => InMemoryMessagesStore());
-  getIt.registerLazySingleton<MessagesRepository>(
-      () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
-  // }
+  // Messages feature: prefer Firebase if available and permitted
+  final bool hasFirebase = fb.Firebase.apps.isNotEmpty;
+  final bool hasFirebaseAuthUser =
+      hasFirebase && (fba.FirebaseAuth.instance.currentUser != null);
+  final String? customToken = await getIt<SecureStorage>().getFirebaseToken();
+  final bool hasCustomToken = customToken != null;
+  if (kUseFirebaseMessages &&
+      hasFirebase &&
+      (hasFirebaseAuthUser || hasCustomToken)) {
+    getIt.registerLazySingleton<FirebaseFirestore>(
+        () => FirebaseFirestore.instance);
+    getIt.registerLazySingleton<MessagesRepository>(
+        () => MessagesRepositoryFirebase(getIt<FirebaseFirestore>()));
+  } else {
+    // In-memory fallback
+    getIt.registerLazySingleton<InMemoryMessagesStore>(
+        () => InMemoryMessagesStore());
+    getIt.registerLazySingleton<MessagesRepository>(
+        () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
+  }
 
   // Notifications feature
   getIt.registerLazySingleton<NotificationRemoteDataSource>(
     () => NotificationRemoteDataSourceImpl(getIt<Dio>()),
   );
   getIt.registerLazySingleton<NotificationRepository>(
-    () => NotificationRepositoryImpl(remoteDataSource: getIt<NotificationRemoteDataSource>()),
+    () => NotificationRepositoryImpl(
+        remoteDataSource: getIt<NotificationRemoteDataSource>()),
   );
 
   // Invoice feature

@@ -153,7 +153,8 @@ void main() {
 
       test('should delegate to remote when no cached user', () async {
         // Arrange
-        when(() => mockRemoteDataSource.requestIsSignedIn()).thenAnswer((_) async => true);
+        when(() => mockRemoteDataSource.requestIsSignedIn())
+            .thenAnswer((_) async => true);
 
         // Act
         final result = await repository.isSignedIn();
@@ -190,7 +191,8 @@ void main() {
       const tOtp = '123456';
       const tPinId = 'pin123';
 
-      test('should return user and cache it when verification succeeds', () async {
+      test('should return user and cache it when verification succeeds',
+          () async {
         // Arrange
         when(() => mockRemoteDataSource.verifyOtp(
               otp: any(named: 'otp'),
@@ -203,7 +205,8 @@ void main() {
         // Assert
         expect(result, equals(tUser));
         expect(await repository.getCurrentUser(), equals(tUser));
-        verify(() => mockRemoteDataSource.verifyOtp(otp: tOtp, pinId: tPinId)).called(1);
+        verify(() => mockRemoteDataSource.verifyOtp(otp: tOtp, pinId: tPinId))
+            .called(1);
       });
 
       test('should return null when verification fails', () async {
@@ -255,19 +258,22 @@ void main() {
 
       test('should call remote forgotPassword', () async {
         // Arrange
-        when(() => mockRemoteDataSource.forgotPassword(email: any(named: 'email')))
+        when(() =>
+                mockRemoteDataSource.forgotPassword(email: any(named: 'email')))
             .thenAnswer((_) async {});
 
         // Act
         await repository.forgotPassword(email: tEmail);
 
         // Assert
-        verify(() => mockRemoteDataSource.forgotPassword(email: tEmail)).called(1);
+        verify(() => mockRemoteDataSource.forgotPassword(email: tEmail))
+            .called(1);
       });
 
       test('should throw exception when remote throws', () async {
         // Arrange
-        when(() => mockRemoteDataSource.forgotPassword(email: any(named: 'email')))
+        when(() =>
+                mockRemoteDataSource.forgotPassword(email: any(named: 'email')))
             .thenThrow(Exception('Network error'));
 
         // Act & Assert
@@ -388,9 +394,11 @@ void main() {
 
     group('OAuth sign-in', () {
       group('signInWithGoogle', () {
-        test('should return user and cache it when Google sign-in succeeds', () async {
+        test('should return user and cache it when Google sign-in succeeds',
+            () async {
           // Arrange
-          when(() => mockRemoteDataSource.signInWithGoogle()).thenAnswer((_) async => tUser);
+          when(() => mockRemoteDataSource.signInWithGoogle())
+              .thenAnswer((_) async => tUser);
 
           // Act
           final result = await repository.signInWithGoogle();
@@ -403,9 +411,11 @@ void main() {
       });
 
       group('signInWithApple', () {
-        test('should return user and cache it when Apple sign-in succeeds', () async {
+        test('should return user and cache it when Apple sign-in succeeds',
+            () async {
           // Arrange
-          when(() => mockRemoteDataSource.signInWithApple()).thenAnswer((_) async => tUser);
+          when(() => mockRemoteDataSource.signInWithApple())
+              .thenAnswer((_) async => tUser);
 
           // Act
           final result = await repository.signInWithApple();

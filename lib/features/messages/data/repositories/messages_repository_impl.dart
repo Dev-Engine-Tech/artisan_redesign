@@ -39,13 +39,16 @@ class MessagesRepositoryImpl implements MessagesRepository {
   }
 
   @override
-  Future<void> markSeen({required int currentUserId, required String conversationId}) async {
+  Future<void> markSeen(
+      {required int currentUserId, required String conversationId}) async {
     store.markSeen(conversationId);
   }
 
   @override
   Future<void> setTyping(
-      {required int currentUserId, required String conversationId, required bool typing}) async {
+      {required int currentUserId,
+      required String conversationId,
+      required bool typing}) async {
     store.setTyping(conversationId, typing);
   }
 

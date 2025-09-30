@@ -7,8 +7,31 @@ abstract class JobEvent {}
 class LoadJobs extends JobEvent {
   final int page;
   final int limit;
+  final String? search;
+  final bool? saved;
+  final bool? match;
+  final String? postedDate;
+  final String? workMode;
+  final String? budgetType;
+  final String? duration;
+  final String? category;
+  final String? state;
+  final String? lgas;
 
-  LoadJobs({this.page = 1, this.limit = 20});
+  LoadJobs({
+    this.page = 1,
+    this.limit = 20,
+    this.search,
+    this.saved,
+    this.match,
+    this.postedDate,
+    this.workMode,
+    this.budgetType,
+    this.duration,
+    this.category,
+    this.state,
+    this.lgas,
+  });
 }
 
 class RefreshJobs extends JobEvent {

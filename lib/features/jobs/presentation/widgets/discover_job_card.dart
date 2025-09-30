@@ -30,9 +30,12 @@ class DiscoverJobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle =
-        Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700, fontSize: 20);
-    final subtitleStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45);
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .titleLarge
+        ?.copyWith(fontWeight: FontWeight.w700, fontSize: 20);
+    final subtitleStyle =
+        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45);
     final priceStyle = Theme.of(context)
         .textTheme
         .bodyLarge
@@ -68,7 +71,8 @@ class DiscoverJobCard extends StatelessWidget {
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: 180,
-                              errorBuilder: (c, e, s) => _buildSubtlePlaceholder(context),
+                              errorBuilder: (c, e, s) =>
+                                  _buildSubtlePlaceholder(context),
                             )
                           : _buildSubtlePlaceholder(context),
                     ),
@@ -107,7 +111,8 @@ class DiscoverJobCard extends StatelessWidget {
                       top: 12,
                       left: 12,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(12),
@@ -127,7 +132,8 @@ class DiscoverJobCard extends StatelessWidget {
 
                 // content area
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14.0, vertical: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -138,7 +144,8 @@ class DiscoverJobCard extends StatelessWidget {
                           Expanded(child: Text(job.title, style: titleStyle)),
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
                               color: AppColors.softPeach,
                               borderRadius: BorderRadius.circular(10),
@@ -159,7 +166,8 @@ class DiscoverJobCard extends StatelessWidget {
                       // Duration pill that spans full width
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
                         decoration: BoxDecoration(
                           color: AppColors.cardBackground,
                           borderRadius: BorderRadius.circular(10),

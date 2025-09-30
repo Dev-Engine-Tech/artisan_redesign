@@ -34,7 +34,8 @@ void main() {
       const tRefreshToken = 'test_refresh_token';
 
       test('should store refresh token in secure storage', () async {
-        expect(secureStorage.setRefreshToken(tRefreshToken), isA<Future<void>>());
+        expect(
+            secureStorage.setRefreshToken(tRefreshToken), isA<Future<void>>());
       });
 
       test('should retrieve refresh token from secure storage', () async {
@@ -46,7 +47,8 @@ void main() {
       const tFirebaseToken = 'test_firebase_token';
 
       test('should store firebase token in secure storage', () async {
-        expect(secureStorage.setFirebaseToken(tFirebaseToken), isA<Future<void>>());
+        expect(secureStorage.setFirebaseToken(tFirebaseToken),
+            isA<Future<void>>());
       });
 
       test('should retrieve firebase token from secure storage', () async {
@@ -117,7 +119,8 @@ void main() {
         );
       });
 
-      test('should store required data when optional parameters are null', () async {
+      test('should store required data when optional parameters are null',
+          () async {
         // Arrange
         const tAccessToken = 'access_token';
         const tUserId = 'user_123';

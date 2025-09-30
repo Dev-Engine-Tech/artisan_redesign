@@ -41,7 +41,8 @@ void main() {
   });
 
   group('Widget — Messages flow', () {
-    testWidgets('MessagesListPage displays conversations and opens ChatPage on tap',
+    testWidgets(
+        'MessagesListPage displays conversations and opens ChatPage on tap',
         (WidgetTester tester) async {
       final widget = MediaQuery(
         data: const MediaQueryData(size: Size(390, 844)),
@@ -103,7 +104,8 @@ void main() {
 
       // ChatPage visible and job summary is shown
       expect(find.byType(ChatPage), findsOneWidget);
-      expect(find.text('Test Project'), findsWidgets); // appears in header and job card
+      expect(find.text('Test Project'),
+          findsWidgets); // appears in header and job card
 
       // Bubbles should render (sample messages in ChatPage)
       expect(find.text('How are you doing'), findsOneWidget);
@@ -133,7 +135,8 @@ void main() {
       expect(find.byType(PageView), findsOneWidget);
     });
 
-    testWidgets('Job Invite "Message" button opens direct ChatPage with job context',
+    testWidgets(
+        'Job Invite "Message" button opens direct ChatPage with job context',
         (WidgetTester tester) async {
       final job = Job(
         id: 'invite_1',

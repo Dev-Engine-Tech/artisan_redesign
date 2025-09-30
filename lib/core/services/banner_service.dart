@@ -31,9 +31,11 @@ class BannerService {
         if (r1.statusCode == 200) {
           return ApiBannerModel.fromJson(r1.data);
         }
-        dev.log('Primary endpoint status ${r1.statusCode}', name: 'BannerService');
+        dev.log('Primary endpoint status ${r1.statusCode}',
+            name: 'BannerService');
       } on DioException catch (e) {
-        dev.log('Primary failed: ${e.response?.statusCode}', name: 'BannerService');
+        dev.log('Primary failed: ${e.response?.statusCode}',
+            name: 'BannerService');
       }
 
       // Fallback 1: category route
@@ -44,9 +46,11 @@ class BannerService {
         if (r2.statusCode == 200) {
           return ApiBannerModel.fromJson(r2.data);
         }
-        dev.log('Fallback1 endpoint status ${r2.statusCode}', name: 'BannerService');
+        dev.log('Fallback1 endpoint status ${r2.statusCode}',
+            name: 'BannerService');
       } on DioException catch (e) {
-        dev.log('Fallback1 failed: ${e.response?.statusCode}', name: 'BannerService');
+        dev.log('Fallback1 failed: ${e.response?.statusCode}',
+            name: 'BannerService');
       }
 
       // Fallback 2: query param based
@@ -60,9 +64,11 @@ class BannerService {
         if (r3.statusCode == 200) {
           return ApiBannerModel.fromJson(r3.data);
         }
-        dev.log('Fallback2 endpoint status ${r3.statusCode}', name: 'BannerService');
+        dev.log('Fallback2 endpoint status ${r3.statusCode}',
+            name: 'BannerService');
       } on DioException catch (e) {
-        dev.log('Fallback2 failed: ${e.response?.statusCode}', name: 'BannerService');
+        dev.log('Fallback2 failed: ${e.response?.statusCode}',
+            name: 'BannerService');
       }
 
       // Fallback 3: lowercase category slug
@@ -74,9 +80,11 @@ class BannerService {
         if (r4.statusCode == 200) {
           return ApiBannerModel.fromJson(r4.data);
         }
-        dev.log('Fallback3 endpoint status ${r4.statusCode}', name: 'BannerService');
+        dev.log('Fallback3 endpoint status ${r4.statusCode}',
+            name: 'BannerService');
       } on DioException catch (e) {
-        dev.log('Fallback3 failed: ${e.response?.statusCode}', name: 'BannerService');
+        dev.log('Fallback3 failed: ${e.response?.statusCode}',
+            name: 'BannerService');
       }
 
       throw Exception('No banner endpoint responded successfully');

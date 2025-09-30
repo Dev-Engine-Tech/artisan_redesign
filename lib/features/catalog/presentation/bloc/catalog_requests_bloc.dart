@@ -103,7 +103,8 @@ class CatalogRequestMaterialsUpdated extends CatalogRequestsState {
   const CatalogRequestMaterialsUpdated(this.id, this.materials);
 }
 
-class CatalogRequestsBloc extends Bloc<CatalogRequestsEvent, CatalogRequestsState> {
+class CatalogRequestsBloc
+    extends Bloc<CatalogRequestsEvent, CatalogRequestsState> {
   final GetCatalogRequests getRequests;
   final GetCatalogRequestDetails getDetails;
   final ApproveCatalogRequest approve;
@@ -157,7 +158,8 @@ class CatalogRequestsBloc extends Bloc<CatalogRequestsEvent, CatalogRequestsStat
     on<DeclineRequestEvent>((event, emit) async {
       emit(CatalogRequestDeclining(event.id));
       try {
-        final ok = await decline(event.id, reason: event.reason, message: event.message);
+        final ok = await decline(event.id,
+            reason: event.reason, message: event.message);
         if (ok) {
           emit(CatalogRequestActionSuccess(event.id));
         } else {

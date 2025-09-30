@@ -9,7 +9,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
   // Stream controllers for real-time updates
   final StreamController<List<Notification>> _notificationsController =
       StreamController<List<Notification>>.broadcast();
-  final StreamController<int> _unreadCountController = StreamController<int>.broadcast();
+  final StreamController<int> _unreadCountController =
+      StreamController<int>.broadcast();
 
   // Cache for notifications
   List<Notification> _cachedNotifications = [];

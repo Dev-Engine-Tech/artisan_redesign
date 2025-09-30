@@ -49,8 +49,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
       _isSubmitting = true;
     });
 
-    final changeTypeLabel =
-        _changeTypes.firstWhere((type) => type['value'] == _selectedChangeType)['label'];
+    final changeTypeLabel = _changeTypes
+        .firstWhere((type) => type['value'] == _selectedChangeType)['label'];
 
     final reason = '$changeTypeLabel: ${_reasonController.text.trim()}';
 
@@ -118,7 +118,10 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                           children: [
                             Text(
                               'Request Changes',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.brownHeader,
                                   ),
@@ -126,7 +129,10 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                             const SizedBox(height: 4),
                             Text(
                               'Specify what changes you need for this project',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
                                     color: Colors.black54,
                                   ),
                             ),
@@ -168,7 +174,10 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                             children: [
                               Text(
                                 widget.job.title,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.brownHeader,
                                     ),
@@ -176,7 +185,10 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                               const SizedBox(height: 4),
                               Text(
                                 widget.job.category,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
                                       color: Colors.black54,
                                     ),
                               ),
@@ -185,7 +197,10 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                 children: [
                                   Text(
                                     'Agreed Amount: ',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
                                           color: Colors.black54,
                                         ),
                                   ),
@@ -194,7 +209,10 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                           RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
                                           (match) => '${match[1]},',
                                         )}',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.brownHeader,
                                         ),
@@ -210,10 +228,11 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                         // Change type selection
                         Text(
                           'What type of change do you need?',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                         const SizedBox(height: 12),
 
@@ -231,13 +250,18 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: _selectedChangeType == changeType['value']
+                                    color: _selectedChangeType ==
+                                            changeType['value']
                                         ? AppColors.orange
                                         : AppColors.softBorder,
-                                    width: _selectedChangeType == changeType['value'] ? 2 : 1,
+                                    width: _selectedChangeType ==
+                                            changeType['value']
+                                        ? 2
+                                        : 1,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
-                                  color: _selectedChangeType == changeType['value']
+                                  color: _selectedChangeType ==
+                                          changeType['value']
                                       ? AppColors.orange.withValues(alpha: 0.05)
                                       : Colors.white,
                                 ),
@@ -249,16 +273,19 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                          color: _selectedChangeType == changeType['value']
+                                          color: _selectedChangeType ==
+                                                  changeType['value']
                                               ? AppColors.orange
                                               : Colors.grey.shade400,
                                           width: 2,
                                         ),
-                                        color: _selectedChangeType == changeType['value']
+                                        color: _selectedChangeType ==
+                                                changeType['value']
                                             ? AppColors.orange
                                             : Colors.white,
                                       ),
-                                      child: _selectedChangeType == changeType['value']
+                                      child: _selectedChangeType ==
+                                              changeType['value']
                                           ? const Icon(
                                               Icons.check,
                                               size: 12,
@@ -270,11 +297,16 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                     Expanded(
                                       child: Text(
                                         changeType['label']!,
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                              color: _selectedChangeType == changeType['value']
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: _selectedChangeType ==
+                                                      changeType['value']
                                                   ? AppColors.brownHeader
                                                   : Colors.black87,
-                                              fontWeight: _selectedChangeType == changeType['value']
+                                              fontWeight: _selectedChangeType ==
+                                                      changeType['value']
                                                   ? FontWeight.w600
                                                   : FontWeight.normal,
                                             ),
@@ -292,10 +324,11 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                         // Reason text field
                         Text(
                           'Explain the changes you need',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                         const SizedBox(height: 12),
 
@@ -322,7 +355,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                           ),
                         ),
 
-                        const SizedBox(height: 100), // Extra space for bottom button
+                        const SizedBox(
+                            height: 100), // Extra space for bottom button
                       ],
                     ),
                   ),
@@ -359,7 +393,8 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                               width: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
                           : const Text(

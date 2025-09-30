@@ -7,7 +7,8 @@ import '../../domain/entities/message.dart' as ent;
 class InMemoryMessagesStore {
   final Map<String, List<ent.Message>> _messagesByConversation = {};
   final Map<String, StreamController<List<ent.Message>>> _messageCtrls = {};
-  final StreamController<List<ent.Conversation>> _conversationsCtrl = StreamController.broadcast();
+  final StreamController<List<ent.Conversation>> _conversationsCtrl =
+      StreamController.broadcast();
 
   // conversationId -> Conversation meta
   final Map<String, ent.Conversation> _conversations = {};
@@ -72,7 +73,8 @@ class InMemoryMessagesStore {
         ),
       ];
       _messagesByConversation[conversationId] = list;
-      _messageCtrls[conversationId] = StreamController<List<ent.Message>>.broadcast();
+      _messageCtrls[conversationId] =
+          StreamController<List<ent.Message>>.broadcast();
       _messageCtrls[conversationId]!.add(list);
     }
     _emitConversations();
@@ -105,10 +107,13 @@ class InMemoryMessagesStore {
     final existing = _messagesByConversation[conversationId];
     if (existing != null && existing.isNotEmpty) {
       final sample = existing.first;
-      return sample.senderId == currentUserId ? sample.receiverId : sample.senderId;
+      return sample.senderId == currentUserId
+          ? sample.receiverId
+          : sample.senderId;
     }
     // Derive from conversationId (e.g., user_3 -> 1003)
-    final num = int.tryParse(conversationId.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
+    final num =
+        int.tryParse(conversationId.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
     return 1000 + num;
   }
 
@@ -241,7 +246,8 @@ class InMemoryMessagesStore {
     } else {
       final c = _conversations[conversationId];
       if (c != null) {
-        _conversations[conversationId] = c.copyWith(lastMessage: '', lastTimestamp: DateTime.now());
+        _conversations[conversationId] =
+            c.copyWith(lastMessage: '', lastTimestamp: DateTime.now());
         _emitConversations();
       }
     }
@@ -249,7 +255,8 @@ class InMemoryMessagesStore {
 
   void _emitConversations() {
     final list = _conversations.values.toList()
-      ..sort((a, b) => (b.lastTimestamp ?? DateTime(0)).compareTo(a.lastTimestamp ?? DateTime(0)));
+      ..sort((a, b) => (b.lastTimestamp ?? DateTime(0))
+          .compareTo(a.lastTimestamp ?? DateTime(0)));
     _lastConversations = List.unmodifiable(list);
     _conversationsCtrl.add(_lastConversations);
   }

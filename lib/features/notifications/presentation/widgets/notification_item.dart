@@ -21,7 +21,8 @@ class NotificationItem extends StatelessWidget {
         color: notification.read ? Colors.white : Colors.blue.shade50,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: notification.read ? Colors.grey.shade200 : Colors.blue.shade200,
+          color:
+              notification.read ? Colors.grey.shade200 : Colors.blue.shade200,
           width: 1,
         ),
         boxShadow: [
@@ -68,7 +69,9 @@ class NotificationItem extends StatelessWidget {
                         notification.title,
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: notification.read ? FontWeight.w500 : FontWeight.w600,
+                          fontWeight: notification.read
+                              ? FontWeight.w500
+                              : FontWeight.w600,
                           color: Colors.black87,
                         ),
                       ),

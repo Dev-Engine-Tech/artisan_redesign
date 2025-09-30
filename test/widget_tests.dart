@@ -24,7 +24,8 @@ void main() {
   });
 
   group('JobCard widget', () {
-    testWidgets('renders title, category, address and Apply button enabled/disabled',
+    testWidgets(
+        'renders title, category, address and Apply button enabled/disabled',
         (tester) async {
       // create a Job entity (applied = false)
       final job = Job(

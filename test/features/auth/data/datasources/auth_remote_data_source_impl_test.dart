@@ -74,16 +74,20 @@ void main() {
         when(() => mockProfileResponse.statusCode).thenReturn(200);
         when(() => mockProfileResponse.data).thenReturn(tUserProfileData);
 
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => tAccessToken);
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => tAccessToken);
 
         when(() => mockDio.get(
               any(),
               options: any(named: 'options'),
             )).thenAnswer((_) async => mockProfileResponse);
 
-        when(() => mockSecureStorage.setAccessToken(any())).thenAnswer((_) async {});
-        when(() => mockSecureStorage.setFirebaseToken(any())).thenAnswer((_) async {});
-        when(() => mockSharedPreferences.setString(any(), any())).thenAnswer((_) async => true);
+        when(() => mockSecureStorage.setAccessToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSecureStorage.setFirebaseToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSharedPreferences.setString(any(), any()))
+            .thenAnswer((_) async => true);
 
         // Act
         final result = await dataSource.signIn(
@@ -108,13 +112,16 @@ void main() {
             )).called(1);
 
         verify(() => mockSecureStorage.setAccessToken(tAccessToken)).called(1);
-        verify(() => mockSecureStorage.setFirebaseToken(tFirebaseToken)).called(1);
+        verify(() => mockSecureStorage.setFirebaseToken(tFirebaseToken))
+            .called(1);
       });
 
-      test('should throw exception when login fails with error details', () async {
+      test('should throw exception when login fails with error details',
+          () async {
         // Arrange
         when(() => mockResponse.statusCode).thenReturn(401);
-        when(() => mockResponse.data).thenReturn({'detail': 'Invalid credentials'});
+        when(() => mockResponse.data)
+            .thenReturn({'detail': 'Invalid credentials'});
 
         when(() => mockDio.post(
               any(),
@@ -150,15 +157,20 @@ void main() {
         when(() => mockProfileResponse.statusCode).thenReturn(200);
         when(() => mockProfileResponse.data).thenReturn(tUserProfileData);
 
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => tAccessToken);
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => tAccessToken);
         when(() => mockDio.get(any(), options: any(named: 'options')))
             .thenAnswer((_) async => mockProfileResponse);
-        when(() => mockSecureStorage.setAccessToken(any())).thenAnswer((_) async {});
-        when(() => mockSecureStorage.setFirebaseToken(any())).thenAnswer((_) async {});
-        when(() => mockSharedPreferences.setString(any(), any())).thenAnswer((_) async => true);
+        when(() => mockSecureStorage.setAccessToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSecureStorage.setFirebaseToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSharedPreferences.setString(any(), any()))
+            .thenAnswer((_) async => true);
 
         // Act
-        await dataSource.signIn(identifier: tPhoneIdentifier, password: tPassword);
+        await dataSource.signIn(
+            identifier: tPhoneIdentifier, password: tPassword);
 
         // Assert
         verify(() => mockDio.post(
@@ -247,7 +259,8 @@ void main() {
 
       test('should return verified user when OTP is correct', () async {
         // Arrange
-        when(() => mockSecureStorage.getPinId()).thenAnswer((_) async => tPinId);
+        when(() => mockSecureStorage.getPinId())
+            .thenAnswer((_) async => tPinId);
         when(() => mockResponse.statusCode).thenReturn(200);
         when(() => mockResponse.data).thenReturn(tOtpResponseData);
 
@@ -262,13 +275,17 @@ void main() {
         when(() => mockProfileResponse.statusCode).thenReturn(200);
         when(() => mockProfileResponse.data).thenReturn(tUserProfileData);
 
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => tAccessToken);
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => tAccessToken);
         when(() => mockDio.get(any(), options: any(named: 'options')))
             .thenAnswer((_) async => mockProfileResponse);
 
-        when(() => mockSecureStorage.setAccessToken(any())).thenAnswer((_) async {});
-        when(() => mockSecureStorage.setFirebaseToken(any())).thenAnswer((_) async {});
-        when(() => mockSharedPreferences.setString(any(), any())).thenAnswer((_) async => true);
+        when(() => mockSecureStorage.setAccessToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSecureStorage.setFirebaseToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSharedPreferences.setString(any(), any()))
+            .thenAnswer((_) async => true);
 
         // Act
         final result = await dataSource.verifyOtp(otp: tOtp, pinId: tPinId);
@@ -289,7 +306,8 @@ void main() {
       test('should use cached pin_id when pinId parameter is null', () async {
         // Arrange
         const tCachedPinId = 'cached_pin_123';
-        when(() => mockSecureStorage.getPinId()).thenAnswer((_) async => tCachedPinId);
+        when(() => mockSecureStorage.getPinId())
+            .thenAnswer((_) async => tCachedPinId);
         when(() => mockResponse.statusCode).thenReturn(200);
         when(() => mockResponse.data).thenReturn(tOtpResponseData);
 
@@ -302,12 +320,16 @@ void main() {
         final mockProfileResponse = MockResponse();
         when(() => mockProfileResponse.statusCode).thenReturn(200);
         when(() => mockProfileResponse.data).thenReturn(tUserProfileData);
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => tAccessToken);
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => tAccessToken);
         when(() => mockDio.get(any(), options: any(named: 'options')))
             .thenAnswer((_) async => mockProfileResponse);
-        when(() => mockSecureStorage.setAccessToken(any())).thenAnswer((_) async {});
-        when(() => mockSecureStorage.setFirebaseToken(any())).thenAnswer((_) async {});
-        when(() => mockSharedPreferences.setString(any(), any())).thenAnswer((_) async => true);
+        when(() => mockSecureStorage.setAccessToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSecureStorage.setFirebaseToken(any()))
+            .thenAnswer((_) async {});
+        when(() => mockSharedPreferences.setString(any(), any()))
+            .thenAnswer((_) async => true);
 
         // Act
         await dataSource.verifyOtp(otp: tOtp);
@@ -324,7 +346,8 @@ void main() {
     group('requestIsSignedIn', () {
       test('should return false when no token is stored', () async {
         // Arrange
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => null);
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => null);
 
         // Act
         final result = await dataSource.requestIsSignedIn();
@@ -336,7 +359,8 @@ void main() {
 
       test('should return true when token is valid', () async {
         // Arrange
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => 'valid_token');
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => 'valid_token');
         when(() => mockResponse.statusCode).thenReturn(200);
         when(() => mockDio.get(any(), options: any(named: 'options')))
             .thenAnswer((_) async => mockResponse);
@@ -354,7 +378,8 @@ void main() {
 
       test('should return false when API call fails', () async {
         // Arrange
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => 'invalid_token');
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => 'invalid_token');
         when(() => mockDio.get(any(), options: any(named: 'options')))
             .thenThrow(Exception('Network error'));
 
@@ -369,12 +394,14 @@ void main() {
     group('signOut', () {
       test('should clear auth data and call logout endpoint', () async {
         // Arrange
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => 'token');
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => 'token');
         when(() => mockResponse.statusCode).thenReturn(200);
         when(() => mockDio.post(any(), options: any(named: 'options')))
             .thenAnswer((_) async => mockResponse);
         when(() => mockSecureStorage.clear()).thenAnswer((_) async {});
-        when(() => mockSharedPreferences.remove(any())).thenAnswer((_) async => true);
+        when(() => mockSharedPreferences.remove(any()))
+            .thenAnswer((_) async => true);
 
         // Act
         await dataSource.signOut();
@@ -389,11 +416,13 @@ void main() {
 
       test('should clear auth data even if logout endpoint fails', () async {
         // Arrange
-        when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => 'token');
+        when(() => mockSecureStorage.getAccessToken())
+            .thenAnswer((_) async => 'token');
         when(() => mockDio.post(any(), options: any(named: 'options')))
             .thenThrow(Exception('Network error'));
         when(() => mockSecureStorage.clear()).thenAnswer((_) async {});
-        when(() => mockSharedPreferences.remove(any())).thenAnswer((_) async => true);
+        when(() => mockSharedPreferences.remove(any()))
+            .thenAnswer((_) async => true);
 
         // Act
         await dataSource.signOut();
@@ -527,7 +556,8 @@ void main() {
 
         test('should return true when change succeeds', () async {
           // Arrange
-          when(() => mockSecureStorage.getAccessToken()).thenAnswer((_) async => 'token');
+          when(() => mockSecureStorage.getAccessToken())
+              .thenAnswer((_) async => 'token');
           when(() => mockResponse.statusCode).thenReturn(200);
           when(() => mockDio.post(
                 any(),

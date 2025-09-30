@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
-import 'package:artisans_circle/features/jobs/domain/entities/material.dart' as job_material;
+import 'package:artisans_circle/features/jobs/domain/entities/material.dart'
+    as job_material;
 
 class JobMaterialManagementWidget extends StatefulWidget {
   final List<job_material.Material> materials;
@@ -17,10 +18,12 @@ class JobMaterialManagementWidget extends StatefulWidget {
   });
 
   @override
-  State<JobMaterialManagementWidget> createState() => _JobMaterialManagementWidgetState();
+  State<JobMaterialManagementWidget> createState() =>
+      _JobMaterialManagementWidgetState();
 }
 
-class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidget> {
+class _JobMaterialManagementWidgetState
+    extends State<JobMaterialManagementWidget> {
   late List<job_material.Material> _materials;
 
   @override
@@ -126,7 +129,9 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.readOnly ? 'No materials specified' : 'No materials added yet',
+                    widget.readOnly
+                        ? 'No materials specified'
+                        : 'No materials added yet',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.black54,
                         ),
@@ -154,7 +159,8 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
                     borderRadius: const BorderRadius.vertical(
@@ -167,20 +173,22 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         flex: 4,
                         child: Text(
                           'Material Description',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                       ),
                       Expanded(
                         flex: 2,
                         child: Text(
                           'Qty',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -188,10 +196,11 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         flex: 3,
                         child: Text(
                           'Unit Price',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -199,10 +208,11 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         flex: 3,
                         child: Text(
                           'Total',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                           textAlign: TextAlign.right,
                         ),
                       ),
@@ -219,7 +229,8 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                   );
                 }),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppColors.softPeach.withValues(alpha: 0.3),
                     borderRadius: const BorderRadius.vertical(
@@ -232,10 +243,11 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                         flex: 4,
                         child: Text(
                           'Total Material Cost',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                         ),
                       ),
                       const Expanded(flex: 2, child: SizedBox()),
@@ -247,10 +259,11 @@ class _JobMaterialManagementWidgetState extends State<JobMaterialManagementWidge
                                 RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
                                 (match) => '${match[1]},',
                               )}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                           textAlign: TextAlign.right,
                         ),
                       ),
@@ -292,8 +305,10 @@ class _MaterialRowState extends State<_MaterialRow> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.material.name);
-    _quantityController = TextEditingController(text: widget.material.quantity.toString());
-    _priceController = TextEditingController(text: widget.material.price.toString());
+    _quantityController =
+        TextEditingController(text: widget.material.quantity.toString());
+    _priceController =
+        TextEditingController(text: widget.material.price.toString());
   }
 
   @override
@@ -332,7 +347,9 @@ class _MaterialRowState extends State<_MaterialRow> {
             flex: 4,
             child: widget.readOnly
                 ? Text(
-                    widget.material.name.isEmpty ? 'Unnamed Material' : widget.material.name,
+                    widget.material.name.isEmpty
+                        ? 'Unnamed Material'
+                        : widget.material.name,
                     style: Theme.of(context).textTheme.bodyMedium,
                   )
                 : TextField(

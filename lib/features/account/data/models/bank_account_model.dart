@@ -18,10 +18,15 @@ class BankAccountModel extends BankAccount {
   factory BankAccountModel.fromJson(Map<String, dynamic> json) {
     return BankAccountModel(
       id: json['id']?.toString() ?? json['acc_id']?.toString() ?? '',
-      bankName: json['bank_name']?.toString() ?? json['bankName']?.toString() ?? '',
+      bankName:
+          json['bank_name']?.toString() ?? json['bankName']?.toString() ?? '',
       bankCode: json['bank_code']?.toString() ?? json['code']?.toString(),
-      accountName: json['account_name']?.toString() ?? json['accountName']?.toString() ?? '',
-      accountNumber: json['account_number']?.toString() ?? json['accountNumber']?.toString() ?? '',
+      accountName: json['account_name']?.toString() ??
+          json['accountName']?.toString() ??
+          '',
+      accountNumber: json['account_number']?.toString() ??
+          json['accountNumber']?.toString() ??
+          '',
     );
   }
 
@@ -35,7 +40,8 @@ class BankAccountModel extends BankAccount {
 }
 
 class BankInfoModel extends BankInfo {
-  const BankInfoModel({required String name, required String code}) : super(name: name, code: code);
+  const BankInfoModel({required String name, required String code})
+      : super(name: name, code: code);
 
   factory BankInfoModel.fromJson(Map<String, dynamic> json) {
     return BankInfoModel(

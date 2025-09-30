@@ -129,7 +129,8 @@ class JobTimelineWidget extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.blue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -354,7 +355,8 @@ class JobTimelineWidget extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           if (job.agreement != null) ...[
-            _buildAgreementItem('Amount', 'NGN ${job.agreement!.amount ?? job.minBudget}'),
+            _buildAgreementItem(
+                'Amount', 'NGN ${job.agreement!.amount ?? job.minBudget}'),
             _buildAgreementItem('Status', job.agreement!.status),
             if (job.agreement!.description != null)
               _buildAgreementItem('Description', job.agreement!.description!),
@@ -473,7 +475,8 @@ class JobTimelineWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineItem(String title, String description, IconData icon, bool isCompleted) {
+  Widget _buildTimelineItem(
+      String title, String description, IconData icon, bool isCompleted) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -588,8 +591,8 @@ class JobTimelineWidget extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Pause Project'),
-        content:
-            const Text('Are you sure you want to pause this project? You can resume it later.'),
+        content: const Text(
+            'Are you sure you want to pause this project? You can resume it later.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),

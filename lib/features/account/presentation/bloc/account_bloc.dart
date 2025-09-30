@@ -102,7 +102,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<AccountVerifyWithdrawalPin>(_onVerifyWithdrawalPin);
   }
 
-  Future<void> _onLoadProfile(AccountLoadProfile event, Emitter<AccountState> emit) async {
+  Future<void> _onLoadProfile(
+      AccountLoadProfile event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await getUserProfile.call();
@@ -112,7 +113,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onLoadBankList(AccountLoadBankList event, Emitter<AccountState> emit) async {
+  Future<void> _onLoadBankList(
+      AccountLoadBankList event, Emitter<AccountState> emit) async {
     emit(const AccountBankListLoading());
     try {
       final banks = await getBankList.call(forceRefresh: event.forceRefresh);
@@ -122,7 +124,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onVerifyBank(AccountVerifyBank event, Emitter<AccountState> emit) async {
+  Future<void> _onVerifyBank(
+      AccountVerifyBank event, Emitter<AccountState> emit) async {
     emit(const AccountBankVerifyLoading());
     try {
       final name = await verifyBankAccount.call(
@@ -174,7 +177,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onAddSkill(AccountAddSkill event, Emitter<AccountState> emit) async {
+  Future<void> _onAddSkill(
+      AccountAddSkill event, Emitter<AccountState> emit) async {
     try {
       final profile = await addSkill.call(event.skill);
       emit(AccountProfileLoaded(profile));
@@ -184,7 +188,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onRemoveSkill(AccountRemoveSkill event, Emitter<AccountState> emit) async {
+  Future<void> _onRemoveSkill(
+      AccountRemoveSkill event, Emitter<AccountState> emit) async {
     try {
       final profile = await removeSkill.call(event.skill);
       emit(AccountProfileLoaded(profile));
@@ -194,7 +199,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onAddWork(AccountAddWorkExperience event, Emitter<AccountState> emit) async {
+  Future<void> _onAddWork(
+      AccountAddWorkExperience event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await addWork.call(ent.WorkExperience(
@@ -214,7 +220,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onUpdateWork(AccountUpdateWorkExperience event, Emitter<AccountState> emit) async {
+  Future<void> _onUpdateWork(
+      AccountUpdateWorkExperience event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await updateWork.call(ent.WorkExperience(
@@ -234,7 +241,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onDeleteWork(AccountDeleteWorkExperience event, Emitter<AccountState> emit) async {
+  Future<void> _onDeleteWork(
+      AccountDeleteWorkExperience event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await deleteWork.call(event.id);
@@ -245,7 +253,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onAddEducation(AccountAddEducation event, Emitter<AccountState> emit) async {
+  Future<void> _onAddEducation(
+      AccountAddEducation event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await addEducation.call(ent.Education(
@@ -264,7 +273,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onUpdateEducation(AccountUpdateEducation event, Emitter<AccountState> emit) async {
+  Future<void> _onUpdateEducation(
+      AccountUpdateEducation event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await updateEducation.call(ent.Education(
@@ -283,7 +293,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onDeleteEducation(AccountDeleteEducation event, Emitter<AccountState> emit) async {
+  Future<void> _onDeleteEducation(
+      AccountDeleteEducation event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await deleteEducation.call(event.id);
@@ -294,7 +305,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onUpdateProfile(AccountUpdateProfile event, Emitter<AccountState> emit) async {
+  Future<void> _onUpdateProfile(
+      AccountUpdateProfile event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final profile = await updateUserProfile.call(
@@ -313,7 +325,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onLoadEarnings(AccountLoadEarnings event, Emitter<AccountState> emit) async {
+  Future<void> _onLoadEarnings(
+      AccountLoadEarnings event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       final earnings = await getEarnings.call();
@@ -327,7 +340,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       AccountLoadTransactions event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
-      final list = await getTransactions.call(page: event.page, limit: event.limit);
+      final list =
+          await getTransactions.call(page: event.page, limit: event.limit);
       final hasMore = list.length >= event.limit;
       emit(AccountTransactionsLoaded(list, hasMore: hasMore));
     } catch (e) {
@@ -357,7 +371,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onAddBankAccount(AccountAddBankAccount event, Emitter<AccountState> emit) async {
+  Future<void> _onAddBankAccount(
+      AccountAddBankAccount event, Emitter<AccountState> emit) async {
     emit(const AccountBankMutationLoading());
     try {
       await addBankAccount.call(
@@ -387,17 +402,20 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     }
   }
 
-  Future<void> _onChangePassword(AccountChangePassword event, Emitter<AccountState> emit) async {
+  Future<void> _onChangePassword(
+      AccountChangePassword event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
-      await changePassword.call(oldPassword: event.oldPassword, newPassword: event.newPassword);
+      await changePassword.call(
+          oldPassword: event.oldPassword, newPassword: event.newPassword);
       emit(const AccountActionSuccess('Password changed'));
     } catch (e) {
       emit(AccountError(e.toString()));
     }
   }
 
-  Future<void> _onDeleteAccount(AccountDeleteAccount event, Emitter<AccountState> emit) async {
+  Future<void> _onDeleteAccount(
+      AccountDeleteAccount event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
       await deleteAccount.call(otp: event.otp);

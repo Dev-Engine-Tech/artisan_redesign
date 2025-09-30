@@ -17,7 +17,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
   void initState() {
     super.initState();
     // Load transactions when page opens
-    context.read<AccountBloc>().add(AccountLoadTransactions(page: 1, limit: 20));
+    context
+        .read<AccountBloc>()
+        .add(AccountLoadTransactions(page: 1, limit: 20));
   }
 
   @override
@@ -72,12 +74,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<AccountBloc>().add(AccountLoadTransactions(page: 1, limit: 20));
+                context
+                    .read<AccountBloc>()
+                    .add(AccountLoadTransactions(page: 1, limit: 20));
               },
               child: ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: transactions.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
 
@@ -107,8 +112,12 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: Icon(
-                            transaction.amount > 0 ? Icons.arrow_downward : Icons.arrow_upward,
-                            color: transaction.amount > 0 ? Colors.green : Colors.red,
+                            transaction.amount > 0
+                                ? Icons.arrow_downward
+                                : Icons.arrow_upward,
+                            color: transaction.amount > 0
+                                ? Colors.green
+                                : Colors.red,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -119,7 +128,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             children: [
                               Text(
                                 transaction.description ??
-                                    (transaction.amount > 0 ? 'Payment Received' : 'Withdrawal'),
+                                    (transaction.amount > 0
+                                        ? 'Payment Received'
+                                        : 'Withdrawal'),
                                 style: textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -134,9 +145,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
                               Text(
                                 transaction.status.toUpperCase(),
                                 style: textTheme.bodySmall?.copyWith(
-                                  color: transaction.status.toLowerCase() == 'completed'
+                                  color: transaction.status.toLowerCase() ==
+                                          'completed'
                                       ? Colors.green
-                                      : transaction.status.toLowerCase() == 'pending'
+                                      : transaction.status.toLowerCase() ==
+                                              'pending'
                                           ? Colors.orange
                                           : Colors.red,
                                   fontWeight: FontWeight.w500,
@@ -153,7 +166,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                               '${transaction.amount > 0 ? '+' : ''}${transaction.currency} ${transaction.amount.abs().toStringAsFixed(0)}',
                               style: textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: transaction.amount > 0 ? Colors.green : Colors.red,
+                                color: transaction.amount > 0
+                                    ? Colors.green
+                                    : Colors.red,
                               ),
                             ),
                           ],
@@ -194,7 +209,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<AccountBloc>().add(AccountLoadTransactions(page: 1, limit: 20));
+                      context
+                          .read<AccountBloc>()
+                          .add(AccountLoadTransactions(page: 1, limit: 20));
                     },
                     child: const Text('Retry'),
                   ),

@@ -23,7 +23,8 @@ class InvoiceMenuCard extends StatefulWidget {
   State<InvoiceMenuCard> createState() => _InvoiceMenuCardState();
 }
 
-class _InvoiceMenuCardState extends State<InvoiceMenuCard> with SingleTickerProviderStateMixin {
+class _InvoiceMenuCardState extends State<InvoiceMenuCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   bool _isPressed = false;
@@ -102,7 +103,9 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard> with SingleTickerProv
                   ),
                 ],
                 border: Border.all(
-                  color: _isPressed ? widget.accentColor.withOpacity(0.3) : Colors.transparent,
+                  color: _isPressed
+                      ? widget.accentColor.withOpacity(0.3)
+                      : Colors.transparent,
                   width: 2,
                 ),
               ),
@@ -156,7 +159,8 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard> with SingleTickerProv
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: widget.accentColor.withOpacity(0.2),
+                                      color:
+                                          widget.accentColor.withOpacity(0.2),
                                       width: 1,
                                     ),
                                   ),
@@ -175,7 +179,8 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard> with SingleTickerProv
                                     color: widget.accentColor.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color: widget.accentColor.withOpacity(0.2),
+                                      color:
+                                          widget.accentColor.withOpacity(0.2),
                                       width: 1,
                                     ),
                                   ),

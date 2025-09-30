@@ -6,7 +6,9 @@ class SignUp {
 
   SignUp(this.repository);
 
-  Future<User?> call({required String identifier, required String password, String? name}) {
-    return repository.signUp(identifier: identifier, password: password, name: name);
+  Future<User?> call(
+      {required String identifier, required String password, String? name}) {
+    return repository.signUp(
+        identifier: identifier, password: password, name: name);
   }
 }

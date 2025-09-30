@@ -107,7 +107,8 @@ class ApiClient {
   Uri _buildUri(String endpoint, [Map<String, dynamic>? queryParams]) {
     // Ensure proper URL construction with slash separation
     final cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';
-    final cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+    final cleanEndpoint =
+        endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
     final uri = Uri.parse('$cleanBaseUrl$cleanEndpoint');
 
     if (queryParams != null && queryParams.isNotEmpty) {

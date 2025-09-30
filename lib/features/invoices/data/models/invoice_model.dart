@@ -29,7 +29,9 @@ class InvoiceModel extends Invoice {
       clientEmail: json['clientEmail'],
       issueDate: DateTime.parse(json['issueDate']),
       dueDate: DateTime.parse(json['dueDate']),
-      items: (json['items'] as List).map((item) => InvoiceItemModel.fromJson(item)).toList(),
+      items: (json['items'] as List)
+          .map((item) => InvoiceItemModel.fromJson(item))
+          .toList(),
       subtotal: json['subtotal'].toDouble(),
       taxRate: json['taxRate'].toDouble(),
       taxAmount: json['taxAmount'].toDouble(),
@@ -37,7 +39,8 @@ class InvoiceModel extends Invoice {
       status: InvoiceStatus.values.byName(json['status']),
       notes: json['notes'],
       jobId: json['jobId'],
-      paidDate: json['paidDate'] != null ? DateTime.parse(json['paidDate']) : null,
+      paidDate:
+          json['paidDate'] != null ? DateTime.parse(json['paidDate']) : null,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
@@ -51,7 +54,9 @@ class InvoiceModel extends Invoice {
       'clientEmail': clientEmail,
       'issueDate': issueDate.toIso8601String(),
       'dueDate': dueDate.toIso8601String(),
-      'items': items.map((item) => InvoiceItemModel.fromEntity(item).toJson()).toList(),
+      'items': items
+          .map((item) => InvoiceItemModel.fromEntity(item).toJson())
+          .toList(),
       'subtotal': subtotal,
       'taxRate': taxRate,
       'taxAmount': taxAmount,
@@ -73,7 +78,9 @@ class InvoiceModel extends Invoice {
       clientEmail: invoice.clientEmail,
       issueDate: invoice.issueDate,
       dueDate: invoice.dueDate,
-      items: invoice.items.map((item) => InvoiceItemModel.fromEntity(item)).toList(),
+      items: invoice.items
+          .map((item) => InvoiceItemModel.fromEntity(item))
+          .toList(),
       subtotal: invoice.subtotal,
       taxRate: invoice.taxRate,
       taxAmount: invoice.taxAmount,
@@ -94,7 +101,8 @@ class InvoiceModel extends Invoice {
         clientEmail: clientEmail,
         issueDate: issueDate,
         dueDate: dueDate,
-        items: items.map((item) => (item as InvoiceItemModel).toEntity()).toList(),
+        items:
+            items.map((item) => (item as InvoiceItemModel).toEntity()).toList(),
         subtotal: subtotal,
         taxRate: taxRate,
         taxAmount: taxAmount,

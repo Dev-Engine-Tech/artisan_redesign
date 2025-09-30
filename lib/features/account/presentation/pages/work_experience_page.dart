@@ -17,14 +17,19 @@ class WorkExperiencePage extends StatelessWidget {
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state is AccountActionSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is AccountError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
-          final list = (state is AccountProfileLoaded) ? state.profile.workExperience : items;
-          if (list.isEmpty) return const Center(child: Text('No work experience yet'));
+          final list = (state is AccountProfileLoaded)
+              ? state.profile.workExperience
+              : items;
+          if (list.isEmpty)
+            return const Center(child: Text('No work experience yet'));
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (_, i) => _WorkTile(exp: list[i]),
@@ -32,8 +37,8 @@ class WorkExperiencePage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const _WorkForm())),
+        onPressed: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const _WorkForm())),
         child: const Icon(Icons.add),
       ),
     );
@@ -49,11 +54,13 @@ class _WorkTile extends StatelessWidget {
       child: ListTile(
         title: Text(exp.jobTitle),
         subtitle: Text(exp.companyName),
-        onTap: () =>
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => _WorkForm(existing: exp))),
+        onTap: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => _WorkForm(existing: exp))),
         trailing: IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => context.read<AccountBloc>().add(AccountDeleteWorkExperience(exp.id)),
+          onPressed: () => context
+              .read<AccountBloc>()
+              .add(AccountDeleteWorkExperience(exp.id)),
         ),
       ),
     );
@@ -82,7 +89,8 @@ class _WorkFormState extends State<_WorkForm> {
     title = TextEditingController(text: widget.existing?.jobTitle ?? '');
     company = TextEditingController(text: widget.existing?.companyName ?? '');
     location = TextEditingController(text: widget.existing?.location ?? '');
-    description = TextEditingController(text: widget.existing?.description ?? '');
+    description =
+        TextEditingController(text: widget.existing?.description ?? '');
     startDate = widget.existing?.startDate;
     endDate = widget.existing?.endDate;
     isCurrent = widget.existing?.isCurrent ?? false;
@@ -105,21 +113,29 @@ class _WorkFormState extends State<_WorkForm> {
         initialDate: initial,
         firstDate: DateTime(1980),
         lastDate: DateTime(now.year + 5));
-    if (picked != null) setState(() => isStart ? startDate = picked : endDate = picked);
+    if (picked != null)
+      setState(() => isStart ? startDate = picked : endDate = picked);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.existing == null ? 'Add Work' : 'Edit Work')),
+      appBar: AppBar(
+          title: Text(widget.existing == null ? 'Add Work' : 'Edit Work')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          TextField(controller: title, decoration: const InputDecoration(labelText: 'Job Title')),
+          TextField(
+              controller: title,
+              decoration: const InputDecoration(labelText: 'Job Title')),
           const SizedBox(height: 12),
-          TextField(controller: company, decoration: const InputDecoration(labelText: 'Company')),
+          TextField(
+              controller: company,
+              decoration: const InputDecoration(labelText: 'Company')),
           const SizedBox(height: 12),
-          TextField(controller: location, decoration: const InputDecoration(labelText: 'Location')),
+          TextField(
+              controller: location,
+              decoration: const InputDecoration(labelText: 'Location')),
           const SizedBox(height: 12),
           TextField(
               controller: description,
@@ -159,7 +175,8 @@ class _WorkFormState extends State<_WorkForm> {
               }
               if (endDate != null && endDate!.isBefore(startDate!)) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('End date cannot be before start date')),
+                  const SnackBar(
+                      content: Text('End date cannot be before start date')),
                 );
                 return;
               }

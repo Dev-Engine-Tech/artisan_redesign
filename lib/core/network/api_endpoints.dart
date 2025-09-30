@@ -39,15 +39,18 @@ class ApiEndpoints {
 
   // Dynamic job endpoints
   static String saveJob(int jobId) => '$job/api/jobs/$jobId/save-or-unsave/';
-  static String acceptAgreement(int agreementId) => '$job/api/project/$agreementId/accept/';
+  static String acceptAgreement(int agreementId) =>
+      '$job/api/project/$agreementId/accept/';
   static String submitProgress(int jobId, int userId) =>
       '${jobs}submissions/$jobId/artisan/$userId';
 
   // Catalog endpoints
   static const String catalog = 'catalog';
-  static const String catalogRequests = '$catalog/api/artisan/catalog/request/lists/';
+  static const String catalogRequests =
+      '$catalog/api/artisan/catalog/request/lists/';
   static const String createCatalogProduct = '$catalog/api/catalog/products/';
-  static const String getCatalogProducts = '$catalog/api/artisan/catalog/lists/';
+  static const String getCatalogProducts =
+      '$catalog/api/artisan/catalog/lists/';
 
   // Dynamic catalog endpoints
   static String catalogRequestDetail(int requestId) =>
@@ -58,5 +61,6 @@ class ApiEndpoints {
       '$catalog/api/catalog/requests/$requestId/artisan-approve-or-disapprove/';
   static String catalogRequestDecline(int requestId) =>
       '$catalog/api/catalog/request/$requestId/decline/';
-  static String updateCatalog(int catalogId) => '$catalog/api/catalog/product/$catalogId/';
+  static String updateCatalog(int catalogId) =>
+      '$catalog/api/catalog/product/$catalogId/';
 }

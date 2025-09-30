@@ -35,7 +35,8 @@ class _YearsOfExperiencePageState extends State<YearsOfExperiencePage> {
       body: BlocListener<AccountBloc, AccountState>(
         listener: (context, state) {
           if (state is AccountActionSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
             Navigator.pop(context);
           }
         },
@@ -44,7 +45,8 @@ class _YearsOfExperiencePageState extends State<YearsOfExperiencePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('How many years of professional experience do you have?'),
+              const Text(
+                  'How many years of professional experience do you have?'),
               const SizedBox(height: 12),
               TextField(
                 controller: yearsCtr,

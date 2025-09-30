@@ -4,7 +4,20 @@ import '../entities/job_application.dart';
 abstract class JobRepository {
   /// Fetches a page/list of available jobs.
   /// Implementations may throw exceptions on network or parsing failures.
-  Future<List<Job>> getJobs({int page = 1, int limit = 20});
+  Future<List<Job>> getJobs({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    bool? saved,
+    bool? match,
+    String? postedDate,
+    String? workMode,
+    String? budgetType,
+    String? duration,
+    String? category,
+    String? state,
+    String? lgas,
+  });
 
   /// Fetches applied jobs/applications from the API.
   Future<List<Job>> getApplications({int page = 1, int limit = 20});

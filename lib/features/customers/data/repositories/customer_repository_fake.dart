@@ -4,7 +4,8 @@ import '../../domain/repositories/customer_repository.dart';
 
 class CustomerRepositoryFake implements CustomerRepository {
   final List<Customer> _customers = [];
-  final StreamController<List<Customer>> _streamController = StreamController.broadcast();
+  final StreamController<List<Customer>> _streamController =
+      StreamController.broadcast();
 
   CustomerRepositoryFake() {
     _initializeSampleData();
@@ -133,7 +134,8 @@ class CustomerRepositoryFake implements CustomerRepository {
     int limit = 20,
     String? searchQuery,
   }) async {
-    await Future.delayed(const Duration(milliseconds: 300)); // Simulate network delay
+    await Future.delayed(
+        const Duration(milliseconds: 300)); // Simulate network delay
 
     var filteredCustomers = _customers.where((customer) {
       if (searchQuery?.isEmpty ?? true) return true;

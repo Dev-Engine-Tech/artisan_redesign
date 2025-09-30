@@ -130,8 +130,10 @@ class _AppShellState extends State<AppShell> {
                   activeIcon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.home_outlined, color: AppColors.orange),
+                        color: AppColors.softPink,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.home_outlined,
+                        color: AppColors.orange),
                   ),
                   label: 'Home',
                 ),
@@ -140,8 +142,10 @@ class _AppShellState extends State<AppShell> {
                   activeIcon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.explore_outlined, color: AppColors.orange),
+                        color: AppColors.softPink,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.explore_outlined,
+                        color: AppColors.orange),
                   ),
                   label: 'Discover',
                 ),
@@ -150,8 +154,10 @@ class _AppShellState extends State<AppShell> {
                   activeIcon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.grid_view_outlined, color: AppColors.orange),
+                        color: AppColors.softPink,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.grid_view_outlined,
+                        color: AppColors.orange),
                   ),
                   label: 'Catalogue',
                 ),
@@ -160,8 +166,10 @@ class _AppShellState extends State<AppShell> {
                   activeIcon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.receipt_long_outlined, color: AppColors.orange),
+                        color: AppColors.softPink,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.receipt_long_outlined,
+                        color: AppColors.orange),
                   ),
                   label: 'Invoice',
                 ),
@@ -170,8 +178,10 @@ class _AppShellState extends State<AppShell> {
                   activeIcon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: AppColors.softPink, borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.person_outline, color: AppColors.orange),
+                        color: AppColors.softPink,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Icon(Icons.person_outline,
+                        color: AppColors.orange),
                   ),
                   label: 'Support',
                 ),

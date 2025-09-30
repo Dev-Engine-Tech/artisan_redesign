@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_storage/firebase_storage.dart';
-import 'storage_uploader_io.dart' if (dart.library.html) 'storage_uploader_web.dart' as up;
+import 'storage_uploader_io.dart'
+    if (dart.library.html) 'storage_uploader_web.dart' as up;
 
 import '../../domain/entities/conversation.dart' as ent;
 import '../../domain/entities/message.dart' as ent;
@@ -14,21 +16,31 @@ class MessagesRepositoryFirebase implements MessagesRepository {
 
   MessagesRepositoryFirebase(this.firestore);
 
-  CollectionReference<Map<String, dynamic>> get _users => firestore.collection('users');
+  CollectionReference<Map<String, dynamic>> get _users =>
+      firestore.collection('users');
+
+  /// Resolve the user document id; prefer FirebaseAuth uid when available
+  String _userDocId(int currentUserId) {
+    final uid = fba.FirebaseAuth.instance.currentUser?.uid;
+    return (uid != null && uid.isNotEmpty) ? uid : currentUserId.toString();
+  }
 
   @override
-  Stream<List<ent.Conversation>> watchConversations({required int currentUserId}) {
+  Stream<List<ent.Conversation>> watchConversations(
+      {required int currentUserId}) {
     // Avoid Firestore errors if 'timeSent' mixed types exist by not ordering server-side.
     // Sort client-side by lastTimestamp desc instead.
-    return _users.doc(currentUserId.toString()).collection('chats').snapshots().map((qs) {
+    final docId = _userDocId(currentUserId);
+    return _users.doc(docId).collection('chats').snapshots().map((qs) {
       final list = qs.docs.map((d) => _conversationFromDoc(d)).toList();
-      list.sort(
-          (a, b) => (b.lastTimestamp ?? DateTime(0)).compareTo(a.lastTimestamp ?? DateTime(0)));
+      list.sort((a, b) => (b.lastTimestamp ?? DateTime(0))
+          .compareTo(a.lastTimestamp ?? DateTime(0)));
       return list;
     });
   }
 
-  ent.Conversation _conversationFromDoc(QueryDocumentSnapshot<Map<String, dynamic>> d) {
+  ent.Conversation _conversationFromDoc(
+      QueryDocumentSnapshot<Map<String, dynamic>> d) {
     final m = d.data();
     return ent.Conversation(
       id: d.id, // contact/peer id
@@ -59,14 +71,19 @@ class MessagesRepositoryFirebase implements MessagesRepository {
   @override
   Stream<List<ent.Message>> watchMessages(
       {required int currentUserId, required String conversationId}) {
+    final docId = _userDocId(currentUserId);
     return _users
-        .doc(currentUserId.toString())
+        .doc(docId)
         .collection('chats')
         .doc(conversationId)
         .collection('messages')
-        .orderBy('timeSent')
         .snapshots()
-        .map((qs) => qs.docs.map((d) => _messageFromDoc(conversationId, d)).toList());
+        .map((qs) {
+      final list =
+          qs.docs.map((d) => _messageFromDoc(conversationId, d)).toList();
+      list.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      return list;
+    });
   }
 
   ent.Message _messageFromDoc(
@@ -157,7 +174,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     required String text,
     ent.RepliedMessage? reply,
   }) async {
-    final receiverId = conversationId; // conversationId is peer id in this model
+    final senderIdDoc = _userDocId(currentUserId);
+    final receiverId = conversationId; // conversationId is peer id doc id
     final now = DateTime.now();
     final messageId = firestore.collection('_ids').doc().id;
 
@@ -195,24 +213,26 @@ class MessagesRepositoryFirebase implements MessagesRepository {
           SetOptions(merge: true));
     }
 
-    setMessage(currentUserId.toString(), receiverId);
-    setMessage(receiverId, currentUserId.toString());
-    setContact(currentUserId.toString(), receiverId, recipient: false);
-    setContact(receiverId, currentUserId.toString(), recipient: true);
+    setMessage(senderIdDoc, receiverId);
+    setMessage(receiverId, senderIdDoc);
+    setContact(senderIdDoc, receiverId, recipient: false);
+    setContact(receiverId, senderIdDoc, recipient: true);
 
     await batch.commit();
   }
 
   @override
-  Future<void> markSeen({required int currentUserId, required String conversationId}) async {
+  Future<void> markSeen(
+      {required int currentUserId, required String conversationId}) async {
     // Mark all un-seen incoming messages as seen for current user in this conversation
+    final docId = _userDocId(currentUserId);
     final q = await _users
-        .doc(currentUserId.toString())
+        .doc(docId)
         .collection('chats')
         .doc(conversationId)
         .collection('messages')
         .where('isSeen', isEqualTo: false)
-        .where('receiverId', isEqualTo: currentUserId.toString())
+        .where('receiverId', isEqualTo: docId)
         .get();
     final batch = firestore.batch();
     for (final d in q.docs) {
@@ -223,7 +243,7 @@ class MessagesRepositoryFirebase implements MessagesRepository {
       final mirrorRef = _users
           .doc(conversationId)
           .collection('chats')
-          .doc(currentUserId.toString())
+          .doc(docId)
           .collection('messages')
           .doc(msgId);
       batch.update(mirrorRef, {'isSeen': true});
@@ -231,7 +251,7 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     await batch.commit();
     // Reset unreadCount field on chat contact (if used)
     await _users
-        .doc(currentUserId.toString())
+        .doc(docId)
         .collection('chats')
         .doc(conversationId)
         .set({'unreadCount': 0}, SetOptions(merge: true));
@@ -239,12 +259,15 @@ class MessagesRepositoryFirebase implements MessagesRepository {
 
   @override
   Future<void> setTyping(
-      {required int currentUserId, required String conversationId, required bool typing}) async {
+      {required int currentUserId,
+      required String conversationId,
+      required bool typing}) async {
     // Persist typing on the RECEIVER's chat doc so they see you typing.
+    final senderIdDoc = _userDocId(currentUserId);
     await _users
         .doc(conversationId)
         .collection('chats')
-        .doc(currentUserId.toString())
+        .doc(senderIdDoc)
         .set({'isTyping': typing}, SetOptions(merge: true));
   }
 
@@ -255,6 +278,7 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     required String fileUrl,
     ent.RepliedMessage? reply,
   }) async {
+    final senderIdDoc = _userDocId(currentUserId);
     final receiverId = conversationId;
     final now = DateTime.now();
     final messageId = firestore.collection('_ids').doc().id;
@@ -263,7 +287,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     String uploadedUrl = fileUrl;
     try {
       if (!fileUrl.startsWith('http')) {
-        final remote = 'chats/$currentUserId/$receiverId/audio_${now.millisecondsSinceEpoch}.m4a';
+        final remote =
+            'chats/$currentUserId/$receiverId/audio_${now.millisecondsSinceEpoch}.m4a';
         final res = await up.uploadFile(storage, fileUrl, remote, 'audio/m4a');
         if (res != null) uploadedUrl = res;
       }
@@ -302,10 +327,10 @@ class MessagesRepositoryFirebase implements MessagesRepository {
           SetOptions(merge: true));
     }
 
-    setMessage(currentUserId.toString(), receiverId);
-    setMessage(receiverId, currentUserId.toString());
-    setContact(currentUserId.toString(), receiverId, recipient: false);
-    setContact(receiverId, currentUserId.toString(), recipient: true);
+    setMessage(senderIdDoc, receiverId);
+    setMessage(receiverId, senderIdDoc);
+    setContact(senderIdDoc, receiverId, recipient: false);
+    setContact(receiverId, senderIdDoc, recipient: true);
 
     await batch.commit();
   }
@@ -317,6 +342,7 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     required String fileUrl,
     ent.RepliedMessage? reply,
   }) async {
+    final senderIdDoc = _userDocId(currentUserId);
     final receiverId = conversationId;
     final now = DateTime.now();
     final messageId = firestore.collection('_ids').doc().id;
@@ -324,7 +350,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     String uploadedUrl = fileUrl;
     try {
       if (!fileUrl.startsWith('http')) {
-        final remote = 'chats/$currentUserId/$receiverId/image_${now.millisecondsSinceEpoch}.jpg';
+        final remote =
+            'chats/$currentUserId/$receiverId/image_${now.millisecondsSinceEpoch}.jpg';
         final res = await up.uploadFile(storage, fileUrl, remote, 'image/jpeg');
         if (res != null) uploadedUrl = res;
       }
@@ -362,10 +389,10 @@ class MessagesRepositoryFirebase implements MessagesRepository {
           SetOptions(merge: true));
     }
 
-    setMessage(currentUserId.toString(), receiverId);
-    setMessage(receiverId, currentUserId.toString());
-    setContact(currentUserId.toString(), receiverId, recipient: false);
-    setContact(receiverId, currentUserId.toString(), recipient: true);
+    setMessage(senderIdDoc, receiverId);
+    setMessage(receiverId, senderIdDoc);
+    setContact(senderIdDoc, receiverId, recipient: false);
+    setContact(receiverId, senderIdDoc, recipient: true);
     await batch.commit();
   }
 
@@ -376,8 +403,9 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     required String messageId,
     bool forEveryone = false,
   }) async {
+    final docId = _userDocId(currentUserId);
     final myRef = _users
-        .doc(currentUserId.toString())
+        .doc(docId)
         .collection('chats')
         .doc(conversationId)
         .collection('messages')
@@ -389,7 +417,7 @@ class MessagesRepositoryFirebase implements MessagesRepository {
     final otherRef = _users
         .doc(conversationId)
         .collection('chats')
-        .doc(currentUserId.toString())
+        .doc(docId)
         .collection('messages')
         .doc(messageId);
     final batch = firestore.batch();

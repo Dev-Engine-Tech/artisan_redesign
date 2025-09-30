@@ -16,7 +16,8 @@ import 'package:artisans_circle/features/jobs/presentation/pages/job_invite_deta
 import 'package:artisans_circle/features/jobs/presentation/pages/order_details_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/agreement_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/change_request_page.dart';
-import 'package:artisans_circle/features/messages/domain/entities/conversation.dart' as domain;
+import 'package:artisans_circle/features/messages/domain/entities/conversation.dart'
+    as domain;
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/features/wallet/presentation/withdraw_flow.dart';
 import 'package:artisans_circle/core/di.dart';
@@ -265,8 +266,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   // Convert CatalogRequest to JobModel for display consistency
   JobModel _catalogRequestToJob(CatalogRequest request) {
     // Use enhanced fields for better display
-    final displayTitle =
-        request.catalogTitle?.isNotEmpty == true ? request.catalogTitle! : request.title;
+    final displayTitle = request.catalogTitle?.isNotEmpty == true
+        ? request.catalogTitle!
+        : request.title;
 
     // Priority for price: paymentBudget > priceMin/Max > material cost
     int minBudget = 0;
@@ -278,11 +280,15 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       maxBudget = budget.toInt();
     } else if (request.priceMin != null || request.priceMax != null) {
       minBudget = double.tryParse(request.priceMin ?? '0')?.toInt() ?? 0;
-      maxBudget = double.tryParse(request.priceMax ?? request.priceMin ?? '0')?.toInt() ?? 0;
+      maxBudget = double.tryParse(request.priceMax ?? request.priceMin ?? '0')
+              ?.toInt() ??
+          0;
     } else {
       // Fallback to material cost calculation
       final totalCost = request.materials.fold<int>(
-          0, (sum, material) => sum + ((material.price ?? 0) * (material.quantity ?? 1)));
+          0,
+          (sum, material) =>
+              sum + ((material.price ?? 0) * (material.quantity ?? 1)));
       minBudget = totalCost;
       maxBudget = totalCost;
     }
@@ -292,12 +298,18 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       title: displayTitle,
       category: 'Catalog Request',
       description: request.description,
-      address: request.clientName != null ? 'Order from ${request.clientName}' : 'Client order',
+      address: request.clientName != null
+          ? 'Order from ${request.clientName}'
+          : 'Client order',
       minBudget: minBudget,
       maxBudget: maxBudget,
-      duration: request.projectStatus?.toUpperCase() ?? request.status?.toUpperCase() ?? 'PENDING',
+      duration: request.projectStatus?.toUpperCase() ??
+          request.status?.toUpperCase() ??
+          'PENDING',
       applied: true,
-      thumbnailUrl: request.catalogPictures.isNotEmpty ? request.catalogPictures.first : '',
+      thumbnailUrl: request.catalogPictures.isNotEmpty
+          ? request.catalogPictures.first
+          : '',
     );
   }
 
@@ -323,7 +335,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           content: const Text(
               'Agreement accepted. Payment requested and client notified. Proceed once deposit is made.'),
           actions: [
-            TextButton(onPressed: () => Navigator.of(c).pop(), child: const Text('OK')),
+            TextButton(
+                onPressed: () => Navigator.of(c).pop(),
+                child: const Text('OK')),
           ],
         ),
       );
@@ -395,13 +409,18 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     });
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Requested changes. Client notified.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Requested changes. Client notified.')));
     }
   }
 
   // mapping for hero per tab
-  static const List<String> _tabs = ['Jobs', 'Applications', 'Job Invite', 'Orders'];
+  static const List<String> _tabs = [
+    'Jobs',
+    'Applications',
+    'Job Invite',
+    'Orders'
+  ];
 
   Widget _buildHero(BuildContext context) {
     return SizedBox(
@@ -414,8 +433,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
-              decoration:
-                  BoxDecoration(color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
+              decoration: BoxDecoration(
+                  color: AppColors.orange,
+                  borderRadius: BorderRadius.circular(14)),
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
@@ -430,7 +450,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                           child: Text(
                             data['title']!,
                             style: const TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -439,7 +461,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         Flexible(
                           child: Text(
                             data['subtitle']!,
-                            style: const TextStyle(color: Colors.white70, fontSize: 13),
+                            style: const TextStyle(
+                                color: Colors.white70, fontSize: 13),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -486,14 +509,19 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                   Text(label,
                       style: TextStyle(
                           color: AppColors.brownHeader,
-                          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight:
+                              selected ? FontWeight.w700 : FontWeight.w500,
                           fontSize: selected ? 13 : 12)),
                   const SizedBox(width: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration:
-                        BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-                    child: Text('56', style: TextStyle(fontSize: 10, color: AppColors.brownHeader)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Text('56',
+                        style: TextStyle(
+                            fontSize: 10, color: AppColors.brownHeader)),
                   ),
                 ],
               ),
@@ -618,12 +646,14 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       children: [
                         Text('Hey, Uwak Daniel',
                             style: textTheme.titleLarge?.copyWith(
-                                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         Text('Welcome back!',
-                            style:
-                                textTheme.bodyMedium?.copyWith(color: Colors.white70, fontSize: 12),
+                            style: textTheme.bodyMedium
+                                ?.copyWith(color: Colors.white70, fontSize: 12),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                       ],
@@ -642,8 +672,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration:
-                  BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(16)),
               child: Text('Available Balance',
                   style: textTheme.bodySmall?.copyWith(color: Colors.white70)),
             ),
@@ -669,7 +700,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('NGN',
-                        style: textTheme.titleLarge?.copyWith(color: Colors.white70, fontSize: 20)),
+                        style: textTheme.titleLarge
+                            ?.copyWith(color: Colors.white70, fontSize: 20)),
                     const SizedBox(width: 8),
                     Flexible(
                       child: FittedBox(
@@ -677,15 +709,20 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         alignment: Alignment.centerLeft,
                         child: Text(balanceText,
                             style: textTheme.headlineLarge?.copyWith(
-                                color: Colors.white, fontSize: 36, fontWeight: FontWeight.w800)),
+                                color: Colors.white,
+                                fontSize: 36,
+                                fontWeight: FontWeight.w800)),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Container(
                       decoration: BoxDecoration(
-                          color: Colors.white24, borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                      child: const Icon(Icons.visibility, color: Colors.white70, size: 18),
+                          color: Colors.white24,
+                          borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 6),
+                      child: const Icon(Icons.visibility,
+                          color: Colors.white70, size: 18),
                     ),
                   ],
                 );
@@ -711,7 +748,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       backgroundColor: Colors.transparent,
                       side: const BorderSide(color: Colors.white24),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                     ),
                     child: const Row(
@@ -741,7 +779,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       backgroundColor: Colors.transparent,
                       side: const BorderSide(color: Colors.white24),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       elevation: 0,
                     ),
                     child: const Row(
@@ -749,7 +788,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       children: [
                         Icon(Icons.receipt_long, color: Colors.white),
                         SizedBox(width: 8),
-                        Text('Transactions', style: TextStyle(color: Colors.white)),
+                        Text('Transactions',
+                            style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),

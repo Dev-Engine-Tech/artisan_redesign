@@ -13,12 +13,15 @@ class ApiBannerModel {
 
   factory ApiBannerModel.fromJson(Map<String, dynamic> json) {
     // Accept several shapes: {results: []} OR {data: []} OR {banners: []}
-    final list = (json['results'] ?? json['data'] ?? json['banners'] ?? []) as List<dynamic>;
+    final list = (json['results'] ?? json['data'] ?? json['banners'] ?? [])
+        as List<dynamic>;
     return ApiBannerModel(
       count: json['count'] ?? (json['total'] ?? list.length) ?? 0,
       next: json['next'],
       previous: json['previous'],
-      banners: list.map((e) => ApiBannerItem.fromJson(e as Map<String, dynamic>)).toList(),
+      banners: list
+          .map((e) => ApiBannerItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 

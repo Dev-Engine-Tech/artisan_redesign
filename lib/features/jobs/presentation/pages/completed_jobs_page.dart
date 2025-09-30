@@ -177,7 +177,8 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
@@ -238,7 +239,8 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                       )
                     : null,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
               onChanged: (value) {
                 setState(() {
@@ -300,7 +302,8 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
   }
 
   List<Job> _getFilteredJobs(List<Job> jobs) {
-    List<Job> filtered = jobs.where((job) => job.status == JobStatus.completed).toList();
+    List<Job> filtered =
+        jobs.where((job) => job.status == JobStatus.completed).toList();
 
     if (_filterStatus != 'all') {
       filtered = filtered.where((job) {
@@ -323,19 +326,22 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       filtered = filtered.where((job) {
         return job.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             job.category.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            (job.clientName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+            (job.clientName
+                    ?.toLowerCase()
+                    .contains(_searchQuery.toLowerCase()) ??
+                false);
       }).toList();
     }
 
     // Apply sorting
     switch (_sortBy) {
       case 'date_desc':
-        filtered.sort((a, b) =>
-            (b.completedDate ?? DateTime.now()).compareTo(a.completedDate ?? DateTime.now()));
+        filtered.sort((a, b) => (b.completedDate ?? DateTime.now())
+            .compareTo(a.completedDate ?? DateTime.now()));
         break;
       case 'date_asc':
-        filtered.sort((a, b) =>
-            (a.completedDate ?? DateTime.now()).compareTo(b.completedDate ?? DateTime.now()));
+        filtered.sort((a, b) => (a.completedDate ?? DateTime.now())
+            .compareTo(b.completedDate ?? DateTime.now()));
         break;
       case 'amount_desc':
         filtered.sort((a, b) => b.minBudget.compareTo(a.minBudget));
@@ -388,7 +394,9 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            _searchQuery.isNotEmpty ? 'No projects match your search' : 'No completed projects yet',
+            _searchQuery.isNotEmpty
+                ? 'No projects match your search'
+                : 'No completed projects yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.black54,
                   fontWeight: FontWeight.w600,
@@ -647,7 +655,9 @@ class CompletedJobCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isPaid ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
+        color: isPaid
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.orange.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

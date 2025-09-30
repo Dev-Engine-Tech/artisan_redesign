@@ -48,19 +48,21 @@ class ApplicationCard extends StatelessWidget {
                       children: [
                         Text(
                           job.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.brownHeader,
+                                  ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           job.category,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.black54,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.black54,
+                                  ),
                         ),
                       ],
                     ),
@@ -200,7 +202,8 @@ class ApplicationCard extends StatelessWidget {
     if (job.status == JobStatus.changeRequested) {
       return true;
     }
-    if (job.status == JobStatus.accepted || job.status == JobStatus.inProgress) {
+    if (job.status == JobStatus.accepted ||
+        job.status == JobStatus.inProgress) {
       return true; // allow opening project
     }
     if (job.status == JobStatus.completed) {
@@ -285,7 +288,8 @@ class ApplicationCard extends StatelessWidget {
       );
     }
 
-    if (job.status == JobStatus.accepted || job.status == JobStatus.inProgress) {
+    if (job.status == JobStatus.accepted ||
+        job.status == JobStatus.inProgress) {
       return SizedBox(
         width: double.infinity,
         child: ElevatedButton(

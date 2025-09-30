@@ -19,7 +19,8 @@ void main() {
     await setupDependencies(useFake: true);
   });
 
-  testWidgets('DiscoverPage shows job list and cards', (WidgetTester tester) async {
+  testWidgets('DiscoverPage shows job list and cards',
+      (WidgetTester tester) async {
     // Render DiscoverPage without the heavy header to avoid tight layout in tests
     final widget = MediaQuery(
       data: const MediaQueryData(size: Size(390, 844)),
@@ -77,7 +78,8 @@ void main() {
     expect(find.text('Description'), findsOneWidget);
   });
 
-  testWidgets('Applications tab: tapping an application opens Application (Agreement) page',
+  testWidgets(
+      'Applications tab: tapping an application opens Application (Agreement) page',
       (WidgetTester tester) async {
     final widget = MediaQuery(
       data: const MediaQueryData(size: Size(390, 844)),
@@ -115,6 +117,7 @@ void main() {
 
     // AgreementPage content should show 'Project Agreement' and the payment breakdown label
     expect(find.text('Project Agreement'), findsOneWidget);
-    expect(find.textContaining('Agreed Payment', findRichText: false), findsOneWidget);
+    expect(find.textContaining('Agreed Payment', findRichText: false),
+        findsOneWidget);
   });
 }

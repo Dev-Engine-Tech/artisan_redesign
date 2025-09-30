@@ -149,7 +149,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                           child: Text(
                             banner.subtitle,
                             style: TextStyle(
-                              color: (banner.textColor ?? Colors.white).withValues(alpha: 0.8),
+                              color: (banner.textColor ?? Colors.white)
+                                  .withValues(alpha: 0.8),
                               fontSize: 12,
                             ),
                             maxLines: 2,
@@ -159,7 +160,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                         if (banner.ctaText != null) ...[
                           const SizedBox(height: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
@@ -196,7 +198,8 @@ class _BannerCarouselState extends State<BannerCarousel> {
                                 errorBuilder: (context, error, stackTrace) {
                                   return _buildImagePlaceholder();
                                 },
-                                loadingBuilder: (context, child, loadingProgress) {
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
                                   if (loadingProgress == null) return child;
                                   return _buildImagePlaceholder();
                                 },
@@ -239,8 +242,9 @@ class _BannerCarouselState extends State<BannerCarousel> {
           width: _currentIndex == index ? 20 : 8,
           height: 8,
           decoration: BoxDecoration(
-            color:
-                _currentIndex == index ? AppColors.orange : AppColors.orange.withValues(alpha: 0.3),
+            color: _currentIndex == index
+                ? AppColors.orange
+                : AppColors.orange.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -266,7 +270,8 @@ class DefaultBanners {
         BannerModel(
           id: '2',
           title: 'Artisan Tips & Best Practices',
-          subtitle: 'Improve your listings and win more orders with short tips.',
+          subtitle:
+              'Improve your listings and win more orders with short tips.',
           ctaText: 'Learn',
           backgroundColor: const Color(0xFF6B4CD6),
           onTap: () {
