@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:artisans_circle/core/di.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/messages/domain/entities/conversation.dart';
 import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
@@ -13,6 +14,7 @@ void main() {
 
   setUpAll(() async {
     // Use the fake data sources/DI for deterministic tests
+    SharedPreferences.setMockInitialValues({});
     await setupDependencies(useFake: true);
   });
 

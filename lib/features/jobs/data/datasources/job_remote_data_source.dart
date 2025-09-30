@@ -90,7 +90,7 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
         final allNumeric = tokens.every((t) => int.tryParse(t.trim()) != null);
         if (allNumeric) {
           qp['lga_ids'] = lgas; // CSV of IDs
-          qp['lgas'] = lgas;    // some backends accept 'lgas' as ids
+          qp['lgas'] = lgas; // some backends accept 'lgas' as ids
         } else {
           // Likely names
           qp['local_government'] = lgas; // CSV of names

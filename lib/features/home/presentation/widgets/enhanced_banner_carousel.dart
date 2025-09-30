@@ -67,7 +67,8 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
 
       // If API returns empty, fallback to defaults so the UI is never blank
       if (uiBanners.isEmpty) {
-        if (kDebugMode) debugPrint('EnhancedBanner: empty response, using defaults');
+        if (kDebugMode)
+          debugPrint('EnhancedBanner: empty response, using defaults');
         uiBanners = _getDefaultBannersForCategory();
       }
 

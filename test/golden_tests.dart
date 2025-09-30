@@ -4,12 +4,14 @@ import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/discover_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_details_page.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
     // Use fake data source so rendering is deterministic
+    SharedPreferences.setMockInitialValues({});
     await setupDependencies(useFake: true);
   });
 

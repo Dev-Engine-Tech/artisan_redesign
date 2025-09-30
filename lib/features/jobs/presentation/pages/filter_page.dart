@@ -619,8 +619,8 @@ class _FilterPageState extends State<FilterPage> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide.none),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 14),
                   ),
                   child: const Text('No states available. Tap to retry'),
                 ),
@@ -629,7 +629,8 @@ class _FilterPageState extends State<FilterPage> {
               DropdownButtonFormField<int>(
                 value: _selectedStateId,
                 items: _states
-                    .map((s) => DropdownMenuItem<int>(value: s.id, child: Text(s.name)))
+                    .map((s) =>
+                        DropdownMenuItem<int>(value: s.id, child: Text(s.name)))
                     .toList(),
                 onChanged: (v) async {
                   setState(() {

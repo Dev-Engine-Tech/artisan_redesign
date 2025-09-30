@@ -140,14 +140,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
         if (filters['stateId'] != null) {
           stateIdParam = filters['stateId'].toString();
         }
-        if (filters['state'] is String && (filters['state'] as String).isNotEmpty) {
+        if (filters['state'] is String &&
+            (filters['state'] as String).isNotEmpty) {
           _stateName = filters['state'] as String;
         }
         if (filters['lgas'] is List) {
-          lgaNames = (filters['lgas'] as List).map((e) => e.toString()).toList();
+          lgaNames =
+              (filters['lgas'] as List).map((e) => e.toString()).toList();
         }
-        if (filters['lgaIds'] is List && (filters['lgaIds'] as List).isNotEmpty) {
-          final ids = (filters['lgaIds'] as List).map((e) => e.toString()).toList();
+        if (filters['lgaIds'] is List &&
+            (filters['lgaIds'] as List).isNotEmpty) {
+          final ids =
+              (filters['lgaIds'] as List).map((e) => e.toString()).toList();
           lgaIdsCsv = ids.join(',');
         }
       }
@@ -162,7 +166,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         _stateFilter = stateIdParam;
         _lgasList = lgaNames;
         _lgasCsv = lgaIdsCsv;
-        
+
         int count = 0;
         if (_categoryFilter != null && _categoryFilter!.isNotEmpty) count++;
         if (_postedDateFilter != null && _postedDateFilter!.isNotEmpty) count++;
@@ -793,15 +797,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
         if (filters['stateId'] != null) {
           stateParam = filters['stateId'].toString();
         }
-        if (filters['state'] is String && (filters['state'] as String).isNotEmpty) {
+        if (filters['state'] is String &&
+            (filters['state'] as String).isNotEmpty) {
           stateName = filters['state'] as String;
         }
         if (filters['lgas'] is List) {
           selectedLgaNames =
               (filters['lgas'] as List).map((e) => e.toString()).toList();
         }
-        if (filters['lgaIds'] is List && (filters['lgaIds'] as List).isNotEmpty) {
-          final ids = (filters['lgaIds'] as List).map((e) => e.toString()).toList();
+        if (filters['lgaIds'] is List &&
+            (filters['lgaIds'] as List).isNotEmpty) {
+          final ids =
+              (filters['lgaIds'] as List).map((e) => e.toString()).toList();
           lgaIdsCsv = ids.join(',');
         }
 

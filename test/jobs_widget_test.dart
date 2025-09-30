@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/discover_page.dart';
@@ -15,6 +16,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
     // Ensure DI uses the fake data source for deterministic widget tests
     await setupDependencies(useFake: true);
   });

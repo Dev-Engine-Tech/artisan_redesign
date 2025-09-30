@@ -71,19 +71,19 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           // Page indicators
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(3, (index) => 
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: _currentPage == index 
-                    ? AppColors.orange 
-                    : Colors.grey[300],
-                  shape: BoxShape.circle,
-                ),
-              )
-            ),
+            children: List.generate(
+                3,
+                (index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _currentPage == index
+                            ? AppColors.orange
+                            : Colors.grey[300],
+                        shape: BoxShape.circle,
+                      ),
+                    )),
           ),
           const SizedBox(height: 16),
           // Monthly/Yearly toggle
@@ -104,19 +104,23 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       decoration: BoxDecoration(
                         color: !_isYearly ? Colors.white : Colors.transparent,
                         borderRadius: BorderRadius.circular(6),
-                        boxShadow: !_isYearly ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 2,
-                          )
-                        ] : null,
+                        boxShadow: !_isYearly
+                            ? [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 2,
+                                )
+                              ]
+                            : null,
                       ),
                       child: Text(
                         'Monthly',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: !_isYearly ? AppColors.brownHeader : Colors.grey[600],
+                          color: !_isYearly
+                              ? AppColors.brownHeader
+                              : Colors.grey[600],
                         ),
                       ),
                     ),
@@ -130,19 +134,23 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       decoration: BoxDecoration(
                         color: _isYearly ? Colors.white : Colors.transparent,
                         borderRadius: BorderRadius.circular(6),
-                        boxShadow: _isYearly ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 2,
-                          )
-                        ] : null,
+                        boxShadow: _isYearly
+                            ? [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 2,
+                                )
+                              ]
+                            : null,
                       ),
                       child: Text(
                         'Yearly',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: _isYearly ? AppColors.brownHeader : Colors.grey[600],
+                          color: _isYearly
+                              ? AppColors.brownHeader
+                              : Colors.grey[600],
                         ),
                       ),
                     ),
@@ -160,7 +168,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               children: [
                 _buildPricingCard(
                   title: 'Bronze Plan',
-                  description: 'Perfect for individuals starting their artisan journey',
+                  description:
+                      'Perfect for individuals starting their artisan journey',
                   price: _isYearly ? '₦50,000' : '₦5,000',
                   period: _isYearly ? '/ year' : '/ month',
                   gradient: LinearGradient(
@@ -184,7 +193,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 ),
                 _buildPricingCard(
                   title: 'Silver Plan',
-                  description: 'Best for established artisans looking to grow their business',
+                  description:
+                      'Best for established artisans looking to grow their business',
                   price: _isYearly ? '₦100,000' : '₦10,000',
                   period: _isYearly ? '/ year' : '/ month',
                   gradient: LinearGradient(
@@ -212,7 +222,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 ),
                 _buildPricingCard(
                   title: 'Gold Plan',
-                  description: 'Comprehensive solution for large artisan businesses',
+                  description:
+                      'Comprehensive solution for large artisan businesses',
                   price: _isYearly ? '₦150,000' : '₦15,000',
                   period: _isYearly ? '/ year' : '/ month',
                   gradient: LinearGradient(
@@ -279,7 +290,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             children: [
               if (savePercent != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.orange,
                     borderRadius: BorderRadius.circular(12),
@@ -373,7 +385,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),

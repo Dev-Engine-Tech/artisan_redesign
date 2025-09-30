@@ -3,12 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/discover_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
     // ensure DI uses fake data source for widget tests
+    SharedPreferences.setMockInitialValues({});
     await setupDependencies(useFake: true);
   });
 

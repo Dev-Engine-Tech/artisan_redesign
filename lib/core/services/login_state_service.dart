@@ -1,10 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 /// Service to track login state and determine if user should see instructional video
 class LoginStateService {
   static const String _lastLoginMethodKey = 'last_login_method';
   static const String _lastLoginTimestampKey = 'last_login_timestamp';
-  static const String _hasSeenInstructionalVideoKey = 'has_seen_instructional_video';
+  static const String _hasSeenInstructionalVideoKey =
+      'has_seen_instructional_video';
 
   // Login method types
   static const String loginMethodManual = 'manual';
@@ -14,7 +16,7 @@ class LoginStateService {
 
   static LoginStateService? _instance;
   static LoginStateService get instance => _instance ??= LoginStateService._();
-  
+
   LoginStateService._();
 
   /// Record that user logged in manually (fresh login)
@@ -41,7 +43,8 @@ class LoginStateService {
   Future<void> _recordLogin(String method) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_lastLoginMethodKey, method);
-    await prefs.setInt(_lastLoginTimestampKey, DateTime.now().millisecondsSinceEpoch);
+    await prefs.setInt(
+        _lastLoginTimestampKey, DateTime.now().millisecondsSinceEpoch);
   }
 
   /// Check if the current login session should show the instructional video
@@ -49,36 +52,42 @@ class LoginStateService {
   Future<bool> shouldShowInstructionalVideo() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       // Check if user has already seen the video in this session
-      final hasSeenVideo = prefs.getBool(_hasSeenInstructionalVideoKey) ?? false;
-      print('🔍 LoginStateService: Has seen video this session? $hasSeenVideo');
-      
+      final hasSeenVideo =
+          prefs.getBool(_hasSeenInstructionalVideoKey) ?? false;
+      debugPrint(
+          '🔍 LoginStateService: Has seen video this session? $hasSeenVideo');
+
       if (hasSeenVideo) {
-        print('❌ LoginStateService: Video already seen this session, not showing again');
+        debugPrint(
+            '❌ LoginStateService: Video already seen this session, not showing again');
         return false;
       }
 
       // Get the last login method
       final lastLoginMethod = prefs.getString(_lastLoginMethodKey);
-      print('🔑 LoginStateService: Last login method: $lastLoginMethod');
-      
+      debugPrint('🔑 LoginStateService: Last login method: $lastLoginMethod');
+
       // Show video for fresh logins but not automatic logins
       switch (lastLoginMethod) {
         case loginMethodManual:
         case loginMethodGoogle:
         case loginMethodApple:
-          print('✅ LoginStateService: Fresh login detected ($lastLoginMethod), should show video');
+          debugPrint(
+              '✅ LoginStateService: Fresh login detected ($lastLoginMethod), should show video');
           return true;
         case loginMethodAutomatic:
-          print('🔄 LoginStateService: Automatic login detected, skipping video');
+          debugPrint(
+              '🔄 LoginStateService: Automatic login detected, skipping video');
           return false;
         default:
-          print('❓ LoginStateService: Unknown login method ($lastLoginMethod), not showing video');
+          debugPrint(
+              '❓ LoginStateService: Unknown login method ($lastLoginMethod), not showing video');
           return false;
       }
     } catch (e) {
-      print('❗ LoginStateService error: $e');
+      debugPrint('❗ LoginStateService error: $e');
       // On error, default to not showing video
       return false;
     }
@@ -129,10 +138,11 @@ class LoginStateService {
   }
 
   /// Check if the last login was within a specified duration
-  Future<bool> wasLastLoginRecent({Duration duration = const Duration(hours: 24)}) async {
+  Future<bool> wasLastLoginRecent(
+      {Duration duration = const Duration(hours: 24)}) async {
     final lastLogin = await getLastLoginTimestamp();
     if (lastLogin == null) return false;
-    
+
     return DateTime.now().difference(lastLogin) < duration;
   }
 

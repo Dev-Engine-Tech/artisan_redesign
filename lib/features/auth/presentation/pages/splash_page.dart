@@ -7,9 +7,10 @@ import 'package:artisans_circle/features/auth/presentation/bloc/auth_event.dart'
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:artisans_circle/core/app_shell.dart';
+import 'package:artisans_circle/core/theme.dart';
 
-/// Simple splash/loading screen that dispatches an auth check and then routes
-/// based on the result. Designed to be visually appealing and brandable.
+/// Splash screen with "Get Started" design that dispatches auth check
+/// and routes based on result or shows login when "Get Started" is tapped
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
@@ -18,22 +19,31 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  bool _showGetStarted = false;
+
   @override
   void initState() {
     super.initState();
-    // Trigger auth check after a short delay to allow splash animation.
-    Timer(const Duration(milliseconds: 300), () {
+    // Show splash animation first, then check auth
+    Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _showGetStarted = true);
+      }
+    });
+
+    // Trigger auth check after a delay to allow splash animation
+    Timer(const Duration(milliseconds: 800), () {
       try {
         context.read<AuthBloc>().add(AuthCheckRequested());
       } catch (_) {
-        // If no AuthBloc is available, ignore - host will handle navigation.
+        // If no AuthBloc is available, ignore - host will handle navigation
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Listen for auth state and route accordingly.
+    // Listen for auth state and route accordingly
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
@@ -41,49 +51,148 @@ class _SplashPageState extends State<SplashPage> {
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const AppShell()));
         } else if (state is AuthUnauthenticated) {
-          // If not authenticated, show sign in page
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const SignInPage()));
+          // Stay on splash page to show "Get Started" - user can tap to proceed
         } else if (state is AuthError) {
-          // On error fallback to sign in page
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const SignInPage()));
+          // On error stay on splash page
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            // Placeholder logo
+        body: Stack(
+          children: [
+            // Background image
             Container(
-              width: 110,
-              height: 110,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                      'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            // Dark overlay for better text readability
+            Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFF2F4F7),
-                borderRadius: BorderRadius.circular(28),
-              ),
-              child: const Center(
-                  child: Icon(Icons.handshake_outlined,
-                      size: 56, color: Color(0xFF2E3A59))),
-            ),
-            const SizedBox(height: 18),
-            const Text('Artisans Circle',
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF2E3A59))),
-            const SizedBox(height: 8),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 72.0),
-              child: Text(
-                'Empowering artisans, connecting skills and projects.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.3),
+                    Colors.black.withValues(alpha: 0.7),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            const CircularProgressIndicator(),
-          ]),
+
+            // Content
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    // Back arrow (top left)
+                    Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    // Modal-style content overlay
+                    AnimatedOpacity(
+                      opacity: _showGetStarted ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 500),
+                      child: Container(
+                        padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.1),
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            // App title
+                            const Text(
+                              'Showcase Your Skills\nand Grow Your\nCraft Business',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Subtitle
+                            Text(
+                              'Join a community of skilled artisans. Find new clients, showcase your portfolio, and build your reputation in the craft industry.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontSize: 14,
+                                height: 1.4,
+                              ),
+                            ),
+
+                            const SizedBox(height: 32),
+
+                            // Get Started button
+                            SizedBox(
+                              width: double.infinity,
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (_) => const SignInPage()),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.orange,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                child: const Text(
+                                  'Join the Circle',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 64),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

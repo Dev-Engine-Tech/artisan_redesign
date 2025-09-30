@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
     await setupDependencies(useFake: true);
   });
 

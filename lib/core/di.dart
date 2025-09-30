@@ -3,6 +3,8 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:artisans_circle/core/storage/secure_storage.dart';
+import 'package:artisans_circle/core/storage/secure_storage_fake.dart'
+    show SecureStorageFake;
 
 import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source.dart';
 import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source_fake.dart';
@@ -131,7 +133,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 
   // Register secure storage for sensitive data
-  getIt.registerLazySingleton<SecureStorage>(() => SecureStorage());
+  if (useFake) {
+    getIt.registerLazySingleton<SecureStorage>(() => SecureStorageFake());
+  } else {
+    getIt.registerLazySingleton<SecureStorage>(() => SecureStorage());
+  }
 
   getIt.registerLazySingleton<Dio>(() {
     final dio = Dio(

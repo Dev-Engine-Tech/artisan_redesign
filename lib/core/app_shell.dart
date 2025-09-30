@@ -28,9 +28,9 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
   late final JobBloc _jobBloc;
-  late final AuthBloc _authBloc;
   late final AccountBloc _accountBloc;
   late final CatalogRequestsBloc _catalogRequestsBloc;
+  bool _videoCheckScheduled = false;
 
   // Pages will be created dynamically to provide proper context
   Widget _getPage(int index, BuildContext context) {
@@ -59,9 +59,16 @@ class _AppShellState extends State<AppShell> {
 
     // Initialize BLoCs once in initState for better performance
     _jobBloc = getIt<JobBloc>();
-    _authBloc = getIt<AuthBloc>();
     _accountBloc = getIt<AccountBloc>();
     _catalogRequestsBloc = getIt<CatalogRequestsBloc>();
+
+    // After first frame, check if we should show the instructional video.
+    // This covers the fresh-login case where AppShell is pushed after auth succeeds.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _triggerVideoCheckIfNeeded();
+      }
+    });
 
     // Track app launch analytics
     // try {
@@ -78,7 +85,6 @@ class _AppShellState extends State<AppShell> {
   @override
   void dispose() {
     _jobBloc.close();
-    _authBloc.close();
     _accountBloc.close();
     _catalogRequestsBloc.close();
     super.dispose();
@@ -93,17 +99,18 @@ class _AppShellState extends State<AppShell> {
   /// Check if instructional video should be shown and display it
   Future<void> _showInstructionalVideoIfNeeded(BuildContext context) async {
     try {
-      debugPrint('🔍 AppShell: Checking if instructional video should be shown...');
+      debugPrint(
+          '🔍 AppShell: Checking if instructional video should be shown...');
       final loginStateService = getIt<LoginStateService>();
       final shouldShow = await loginStateService.shouldShowInstructionalVideo();
-      
+
       debugPrint('🎯 AppShell: Should show video? $shouldShow');
-      
+
       if (shouldShow && context.mounted) {
         debugPrint('⏳ AppShell: Waiting 1 second for UI to load...');
         // Small delay to ensure the UI is fully loaded
         await Future.delayed(const Duration(milliseconds: 1000));
-        
+
         if (context.mounted) {
           debugPrint('🎬 AppShell: Showing YouTube video popup now!');
           showYouTubeVideoPopup(
@@ -119,12 +126,19 @@ class _AppShellState extends State<AppShell> {
           );
         }
       } else {
-        debugPrint('❌ AppShell: Not showing video - shouldShow: $shouldShow, mounted: ${context.mounted}');
+        debugPrint(
+            '❌ AppShell: Not showing video - shouldShow: $shouldShow, mounted: ${context.mounted}');
       }
     } catch (e) {
       // Silently handle errors - video popup is optional
       debugPrint('❗ Error showing instructional video: $e');
     }
+  }
+
+  void _triggerVideoCheckIfNeeded() {
+    if (_videoCheckScheduled) return;
+    _videoCheckScheduled = true;
+    _showInstructionalVideoIfNeeded(context);
   }
 
   @override
@@ -135,7 +149,7 @@ class _AppShellState extends State<AppShell> {
       // Provide AuthBloc, JobBloc, and AccountBloc to descendant pages.
       body: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthBloc>.value(value: _authBloc),
+          // AuthBloc is already provided at the app root. Reuse that instance.
           BlocProvider<JobBloc>.value(value: _jobBloc),
           BlocProvider<AccountBloc>.value(value: _accountBloc),
           BlocProvider<CatalogRequestsBloc>.value(value: _catalogRequestsBloc),
@@ -144,10 +158,12 @@ class _AppShellState extends State<AppShell> {
           listener: (context, state) {
             // Check if this is a fresh login and show instructional video
             if (state is AuthAuthenticated && state.isFreshLogin) {
-              debugPrint('🎥 AppShell: Fresh login detected, showing instructional video...');
-              _showInstructionalVideoIfNeeded(context);
+              debugPrint(
+                  '🎥 AppShell: Fresh login detected, showing instructional video...');
+              _triggerVideoCheckIfNeeded();
             } else if (state is AuthAuthenticated && !state.isFreshLogin) {
-              debugPrint('🔄 AppShell: Automatic login detected, skipping video');
+              debugPrint(
+                  '🔄 AppShell: Automatic login detected, skipping video');
             }
             // Handle logout - navigate back to sign in page
             else if (state is AuthUnauthenticated) {

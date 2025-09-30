@@ -5,11 +5,13 @@ import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
     await setupDependencies(useFake: true);
   });
 

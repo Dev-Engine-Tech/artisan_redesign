@@ -8,12 +8,14 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/job_card.dart
 import 'package:artisans_circle/features/jobs/presentation/pages/discover_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
     // register dependencies with the fake remote data source for tests
+    SharedPreferences.setMockInitialValues({});
     await setupDependencies(useFake: true);
   });
 

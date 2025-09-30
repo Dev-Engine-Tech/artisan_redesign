@@ -32,14 +32,15 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
     try {
       // Extract video ID and create embed URL
       final videoId = _extractVideoId(widget.videoUrl);
-      
+
       if (videoId == null) {
         setState(() => _hasError = true);
         return;
       }
 
       // Create YouTube embed URL
-      final embedUrl = 'https://www.youtube.com/embed/$videoId?autoplay=0&rel=0&showinfo=0&controls=1';
+      final embedUrl =
+          'https://www.youtube.com/embed/$videoId?autoplay=0&rel=0&showinfo=0&controls=1';
 
       _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -68,13 +69,15 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
 
   String? _extractVideoId(String url) {
     // Handle YouTube Shorts URLs
-    final shortsMatch = RegExp(r'youtube\.com/shorts/([a-zA-Z0-9_-]+)').firstMatch(url);
+    final shortsMatch =
+        RegExp(r'youtube\.com/shorts/([a-zA-Z0-9_-]+)').firstMatch(url);
     if (shortsMatch != null) {
       return shortsMatch.group(1);
     }
 
     // Handle regular YouTube URLs
-    final regularMatch = RegExp(r'youtube\.com/watch\?v=([a-zA-Z0-9_-]+)').firstMatch(url);
+    final regularMatch =
+        RegExp(r'youtube\.com/watch\?v=([a-zA-Z0-9_-]+)').firstMatch(url);
     if (regularMatch != null) {
       return regularMatch.group(1);
     }
@@ -89,10 +92,12 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
   }
 
   void _closePopup() {
-    if (widget.onClose != null) {
-      widget.onClose!();
-    } else {
-      Navigator.of(context).pop();
+    try {
+      widget.onClose?.call();
+    } finally {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -149,17 +154,15 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
                 ],
               ),
             ),
-            
+
             // Video content
             Flexible(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
-                child: _hasError
-                    ? _buildErrorWidget()
-                    : _buildVideoPlayer(),
+                child: _hasError ? _buildErrorWidget() : _buildVideoPlayer(),
               ),
             ),
-            
+
             // Bottom padding and optional message
             Container(
               padding: const EdgeInsets.all(16),

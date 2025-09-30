@@ -60,10 +60,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (user != null) {
         // This is an automatic login from saved credentials
-        debugPrint('🔄 AuthBloc: Recording automatic login from saved credentials');
+        debugPrint(
+            '🔄 AuthBloc: Recording automatic login from saved credentials');
         final loginStateService = getIt<LoginStateService>();
         await loginStateService.recordAutomaticLogin();
-        debugPrint('✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: false');
+        debugPrint(
+            '✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: false');
         emit(AuthAuthenticated(user: user, isFreshLogin: false));
       } else {
         // If remote says signed in but no local user, mark unauthenticated
@@ -86,7 +88,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         debugPrint('🔑 AuthBloc: Recording manual login');
         final loginStateService = getIt<LoginStateService>();
         await loginStateService.recordManualLogin();
-        debugPrint('✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: true');
+        debugPrint(
+            '✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: true');
         emit(AuthAuthenticated(user: user, isFreshLogin: true));
       } else {
         emit(const AuthUnauthenticated());
