@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/identity_verification_page.dart';
+import 'package:artisans_circle/features/auth/presentation/bloc/verification_cubit.dart';
 import 'package:artisans_circle/features/account/presentation/pages/account_page.dart';
 
 class ProfileActionButtons extends StatelessWidget {
@@ -71,7 +73,10 @@ class ProfileActionButtons extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => const IdentityVerificationPage(),
+                      builder: (_) => BlocProvider(
+                        create: (_) => VerificationCubit(),
+                        child: const IdentityVerificationPage(),
+                      ),
                     ),
                   );
                 },
