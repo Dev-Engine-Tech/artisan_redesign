@@ -13,30 +13,30 @@ abstract class AnalyticsService {
   Future<void> setUserProperty(String name, String value);
   Future<void> logLogin(String method);
   Future<void> logSignUp(String method);
-  
+
   // Screen Analytics
   Future<void> logScreenView(String screenName, String screenClass);
   Future<void> setCurrentScreen(String screenName, String screenClass);
-  
+
   // Security Analytics
   Future<void> logSecurityEvent(String eventName, Map<String, dynamic> parameters);
   Future<void> logAuthenticationFailure(String method, String reason);
   Future<void> logSuspiciousActivity(String activity, Map<String, dynamic> context);
-  
+
   // Performance Analytics
   Future<void> logPerformanceEvent(String eventName, Map<String, dynamic> metrics);
   Future<void> logSlowOperation(String operation, Duration duration);
   Future<void> logMemoryWarning(int memoryUsage);
-  
+
   // Business Analytics
   Future<void> logJobApplication(String jobId, String category);
   Future<void> logJobAcceptance(String jobId, double amount);
   Future<void> logWithdrawal(double amount, String method);
   Future<void> logError(String error, Map<String, dynamic> context);
-  
+
   // Custom Events
   Future<void> logEvent(String name, Map<String, dynamic> parameters);
-  
+
   // Performance Monitoring
   Trace? startTrace(String name);
 }
@@ -48,53 +48,40 @@ class FirebaseAnalyticsService implements AnalyticsService {
   final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   final FirebaseCrashlytics _crashlytics = FirebaseCrashlytics.instance;
   final FirebasePerformance _performance = FirebasePerformance.instance;
-  
+
   static final FirebaseAnalyticsService _instance = FirebaseAnalyticsService._internal();
   factory FirebaseAnalyticsService() => _instance;
   FirebaseAnalyticsService._internal();
 
+  bool _available = false;
+  bool _warned = false;
+
   /// Initialize Firebase Analytics with enhanced configuration
   Future<void> initialize() async {
     try {
-      // Enable analytics collection
       await _analytics.setAnalyticsCollectionEnabled(true);
-      
-      // Configure Crashlytics
       await _crashlytics.setCrashlyticsCollectionEnabled(true);
-      
-      // Set custom keys for better crash reporting
       await _crashlytics.setCustomKey('flutter_channel', 'stable');
       await _crashlytics.setCustomKey('app_version', '1.0.0');
-      
-      // Configure Performance Monitoring
       await _performance.setPerformanceCollectionEnabled(true);
-      
-      // Log initialization
+
       await logEvent('analytics_initialized', {
         'timestamp': DateTime.now().toIso8601String(),
         'debug_mode': kDebugMode,
       });
-      
-      if (kDebugMode) {
-        print('🔥 Firebase Analytics initialized successfully');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('🔥 Firebase Analytics initialization error: $e');
-      }
-      // Don't throw - analytics failures shouldn't crash the app
+      _available = true;
+    } catch (_) {
+      _available = false;
+      // Do not fail app startup
     }
   }
 
   @override
   Future<void> setUserId(String userId) async {
+    if (!_available) return;
     try {
       await _analytics.setUserId(id: userId);
       await _crashlytics.setUserIdentifier(userId);
-      
-      // Track user segments for analytics
-      await setUserProperty('user_type', 'artisan');
-      await setUserProperty('onboarding_completed', 'true');
     } catch (e) {
       _handleError('set_user_id_failed', e);
     }
@@ -102,6 +89,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> setUserProperty(String name, String value) async {
+    if (!_available) return;
     try {
       await _analytics.setUserProperty(name: name, value: value);
       await _crashlytics.setCustomKey(name, value);
@@ -112,6 +100,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logLogin(String method) async {
+    if (!_available) return;
     try {
       await _analytics.logLogin(loginMethod: method);
       await logSecurityEvent('user_login_success', {
@@ -125,6 +114,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logSignUp(String method) async {
+    if (!_available) return;
     try {
       await _analytics.logSignUp(signUpMethod: method);
       await logEvent('user_registration', {
@@ -139,18 +129,16 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logScreenView(String screenName, String screenClass) async {
+    if (!_available) return;
     try {
       await _analytics.logScreenView(
         screenName: screenName,
         screenClass: screenClass,
       );
-      
-      // Enhanced screen tracking with context
       await logEvent('screen_view_enhanced', {
         'screen_name': screenName,
         'screen_class': screenClass,
         'timestamp': DateTime.now().toIso8601String(),
-        'session_duration': _getSessionDuration(),
       });
     } catch (e) {
       _handleError('log_screen_view_failed', e);
@@ -159,8 +147,8 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> setCurrentScreen(String screenName, String screenClass) async {
+    if (!_available) return;
     try {
-      // Using logScreenView as setCurrentScreen is deprecated
       await _analytics.logScreenView(
         screenName: screenName,
         screenClass: screenClass,
@@ -172,19 +160,14 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logSecurityEvent(String eventName, Map<String, dynamic> parameters) async {
+    if (!_available) return;
     try {
-      // Enhanced security parameters
       final securityParams = {
         ...parameters,
         'security_event': true,
-        'device_id': await _getDeviceId(),
         'timestamp': DateTime.now().toIso8601String(),
-        'app_state': _getAppState(),
       };
-      
       await _analytics.logEvent(name: eventName, parameters: Map<String, Object>.from(securityParams));
-      
-      // Also log to Crashlytics for security monitoring
       await _crashlytics.log('Security Event: $eventName');
       await _crashlytics.setCustomKey('last_security_event', eventName);
     } catch (e) {
@@ -194,15 +177,12 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logAuthenticationFailure(String method, String reason) async {
+    if (!_available) return;
     try {
       await logSecurityEvent('authentication_failure', {
         'method': method,
         'failure_reason': reason,
-        'consecutive_failures': await _getConsecutiveFailures(),
-        'ip_address': await _getIPAddress(),
       });
-      
-      // Record for security analysis
       await _crashlytics.recordError(
         'Authentication Failure: $method - $reason',
         null,
@@ -215,12 +195,11 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logSuspiciousActivity(String activity, Map<String, dynamic> context) async {
+    if (!_available) return;
     try {
       await logSecurityEvent('suspicious_activity_detected', {
         'activity_type': activity,
         'context': context,
-        'threat_level': _calculateThreatLevel(activity, context),
-        'user_behavior_pattern': await _getUserBehaviorPattern(),
       });
     } catch (e) {
       _handleError('log_suspicious_activity_failed', e);
@@ -229,15 +208,12 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logPerformanceEvent(String eventName, Map<String, dynamic> metrics) async {
+    if (!_available) return;
     try {
       final performanceParams = {
         ...metrics,
         'performance_event': true,
-        'device_performance_class': await _getDevicePerformanceClass(),
-        'memory_pressure': await _getMemoryPressure(),
-        'battery_level': await _getBatteryLevel(),
       };
-      
       await _analytics.logEvent(name: eventName, parameters: Map<String, Object>.from(performanceParams));
     } catch (e) {
       _handleError('log_performance_event_failed', e);
@@ -246,12 +222,12 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logSlowOperation(String operation, Duration duration) async {
+    if (!_available) return;
     try {
       await logPerformanceEvent('slow_operation_detected', {
         'operation_name': operation,
         'duration_ms': duration.inMilliseconds,
         'threshold_exceeded': duration.inMilliseconds > 1000,
-        'performance_impact': _calculatePerformanceImpact(duration),
       });
     } catch (e) {
       _handleError('log_slow_operation_failed', e);
@@ -260,11 +236,10 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logMemoryWarning(int memoryUsage) async {
+    if (!_available) return;
     try {
       await logPerformanceEvent('memory_warning', {
         'memory_usage_mb': memoryUsage,
-        'memory_threshold_exceeded': memoryUsage > 512,
-        'available_memory': await _getAvailableMemory(),
       });
     } catch (e) {
       _handleError('log_memory_warning_failed', e);
@@ -273,12 +248,12 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logJobApplication(String jobId, String category) async {
+    if (!_available) return;
     try {
       await _analytics.logEvent(name: 'job_application', parameters: {
         'job_id': jobId,
         'job_category': category,
         'application_source': 'mobile_app',
-        'user_experience_level': await _getUserExperienceLevel(),
       });
     } catch (e) {
       _handleError('log_job_application_failed', e);
@@ -287,6 +262,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logJobAcceptance(String jobId, double amount) async {
+    if (!_available) return;
     try {
       await _analytics.logEvent(name: 'job_acceptance', parameters: {
         'job_id': jobId,
@@ -301,12 +277,12 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logWithdrawal(double amount, String method) async {
+    if (!_available) return;
     try {
       await _analytics.logEvent(name: 'withdrawal_request', parameters: {
         'amount': amount,
         'currency': 'NGN',
         'withdrawal_method': method,
-        'account_balance_after': await _getAccountBalance(),
       });
     } catch (e) {
       _handleError('log_withdrawal_failed', e);
@@ -315,6 +291,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logError(String error, Map<String, dynamic> context) async {
+    if (!_available) return;
     try {
       await _crashlytics.recordError(
         error,
@@ -322,24 +299,20 @@ class FirebaseAnalyticsService implements AnalyticsService {
         fatal: false,
         information: context.entries.map((e) => '${e.key}: ${e.value}').toList(),
       );
-      
+
       await logEvent('app_error', {
         'error_message': error,
         'error_context': context,
-        'error_severity': _calculateErrorSeverity(error, context),
       });
     } catch (e) {
       // Last resort logging
-      if (kDebugMode) {
-        print('🔥 Analytics error logging failed: $e');
-      }
     }
   }
 
   @override
   Future<void> logEvent(String name, Map<String, dynamic> parameters) async {
+    if (!_available) return;
     try {
-      // Sanitize parameters for Firebase Analytics
       final sanitizedParams = _sanitizeParameters(parameters);
       await _analytics.logEvent(name: name, parameters: Map<String, Object>.from(sanitizedParams));
     } catch (e) {
@@ -357,54 +330,33 @@ class FirebaseAnalyticsService implements AnalyticsService {
     }
   }
 
-  /// Helper Methods
-  
   void _handleError(String event, dynamic error) {
-    if (kDebugMode) {
-      print('🔥 Firebase Analytics Error ($event): $error');
+    if (!_warned && kDebugMode) {
+      _warned = true;
+      // ignore: avoid_print
+      print('Firebase Analytics Error ($event): $error');
     }
-    // Don't throw - analytics failures shouldn't crash the app
   }
 
   Map<String, dynamic> _sanitizeParameters(Map<String, dynamic> parameters) {
     final sanitized = <String, dynamic>{};
-    
     for (final entry in parameters.entries) {
       final key = entry.key.replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_');
       final value = entry.value;
-      
       if (value is String || value is num || value is bool) {
         sanitized[key] = value;
       } else {
         sanitized[key] = value.toString();
       }
     }
-    
     return sanitized;
   }
-
-  // Placeholder methods for enhanced analytics
-  String _getSessionDuration() => '${DateTime.now().millisecondsSinceEpoch}';
-  Future<String> _getDeviceId() async => 'device_id_placeholder';
-  String _getAppState() => 'foreground';
-  Future<int> _getConsecutiveFailures() async => 0;
-  Future<String> _getIPAddress() async => '0.0.0.0';
-  String _calculateThreatLevel(String activity, Map<String, dynamic> context) => 'low';
-  Future<String> _getUserBehaviorPattern() async => 'normal';
-  Future<String> _getDevicePerformanceClass() async => 'high';
-  Future<String> _getMemoryPressure() async => 'normal';
-  Future<int> _getBatteryLevel() async => 100;
-  String _calculatePerformanceImpact(Duration duration) => duration.inMilliseconds > 1000 ? 'high' : 'low';
-  Future<int> _getAvailableMemory() async => 1024;
-  Future<String> _getUserExperienceLevel() async => 'intermediate';
-  Future<double> _getAccountBalance() async => 0.0;
-  String _calculateErrorSeverity(String error, Map<String, dynamic> context) => 'medium';
 }
 
 /// Firebase Analytics observer for route tracking
 class FirebaseAnalyticsRouteObserver extends RouteObserver<ModalRoute> {
   final AnalyticsService _analyticsService;
-  
+
   FirebaseAnalyticsRouteObserver(this._analyticsService);
 
   @override
@@ -432,7 +384,6 @@ class FirebaseAnalyticsRouteObserver extends RouteObserver<ModalRoute> {
   void _logRouteChange(Route route) {
     final routeName = route.settings.name ?? 'unnamed_route';
     final routeClass = route.runtimeType.toString();
-    
     _analyticsService.logScreenView(routeName, routeClass);
     _analyticsService.setCurrentScreen(routeName, routeClass);
   }

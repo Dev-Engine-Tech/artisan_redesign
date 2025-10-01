@@ -38,6 +38,7 @@ import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
 import 'package:artisans_circle/core/services/banner_service.dart';
 import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
+import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
@@ -212,9 +213,9 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   );
 
   // Register Firebase Analytics service
-  // getIt.registerLazySingleton<AnalyticsService>(
-  //   () => FirebaseAnalyticsService(),
-  // );
+  getIt.registerLazySingleton<AnalyticsService>(
+    () => FirebaseAnalyticsService(),
+  );
 
   // Register Performance Monitor with Analytics integration
   // getIt.registerLazySingleton<PerformanceMonitor>(() {

@@ -15,6 +15,7 @@ import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_reque
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
 import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/widgets/youtube_video_popup.dart';
+import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/sign_in_page.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
@@ -71,15 +72,15 @@ class _AppShellState extends State<AppShell> {
     });
 
     // Track app launch analytics
-    // try {
-    //   final analyticsService = getIt<AnalyticsService>();
-    //   analyticsService.logEvent('app_launched', {
-    //     'platform': 'mobile',
-    //     'timestamp': DateTime.now().toIso8601String(),
-    //   });
-    // } catch (e) {
-    //   // Analytics failure shouldn't crash the app
-    // }
+    try {
+      final analyticsService = getIt<AnalyticsService>();
+      analyticsService.logEvent('app_launched', {
+        'platform': 'mobile',
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    } catch (_) {
+      // ignore
+    }
   }
 
   @override
@@ -94,6 +95,12 @@ class _AppShellState extends State<AppShell> {
     setState(() {
       _selectedIndex = index;
     });
+    // Log tab screen view manually since tabs don't change routes
+    try {
+      final analytics = getIt<AnalyticsService>();
+      final names = ['Home', 'Discover', 'Catalogue', 'Invoice', 'Support'];
+      analytics.logScreenView('tab_${names[index].toLowerCase()}', 'BottomTab');
+    } catch (_) {}
   }
 
   /// Check if instructional video should be shown and display it

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 /// Simple withdraw flow used by the Home page Withdraw button.
 /// This is a self-contained UI demonstration of the flow shown in the screenshots:
@@ -170,6 +172,10 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
 
     if (pin != null && pin.length == 4) {
       // simulate success
+      try {
+        final analytics = getIt<AnalyticsService>();
+        await analytics.logWithdrawal(amount, 'bank_transfer');
+      } catch (_) {}
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) =>
               _WithdrawSuccessPage(amount: amount, account: account)));

@@ -13,6 +13,7 @@ import 'auth_state.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/services/login_state_service.dart';
 import '../../domain/repositories/auth_repository.dart';
+import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignIn signIn;
@@ -64,6 +65,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             '🔄 AuthBloc: Recording automatic login from saved credentials');
         final loginStateService = getIt<LoginStateService>();
         await loginStateService.recordAutomaticLogin();
+        // Log automatic login for analytics (non-fresh session)
+        try {
+          final analytics = getIt<AnalyticsService>();
+          await analytics.logLogin('automatic');
+          await analytics.setUserId(user.id.toString());
+        } catch (_) {}
         debugPrint(
             '✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: false');
         emit(AuthAuthenticated(user: user, isFreshLogin: false));
@@ -88,6 +95,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         debugPrint('🔑 AuthBloc: Recording manual login');
         final loginStateService = getIt<LoginStateService>();
         await loginStateService.recordManualLogin();
+        // Analytics: manual login success
+        try {
+          final analytics = getIt<AnalyticsService>();
+          await analytics.logLogin('manual');
+          await analytics.setUserId(user.id.toString());
+        } catch (_) {}
         debugPrint(
             '✅ AuthBloc: Emitting AuthAuthenticated with isFreshLogin: true');
         emit(AuthAuthenticated(user: user, isFreshLogin: true));
@@ -114,6 +127,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           emit(AuthAuthenticated(user: user));
         }
+        // Analytics: sign up event
+        try {
+          final analytics = getIt<AnalyticsService>();
+          await analytics.logSignUp('manual');
+          await analytics.setUserId(user.id.toString());
+        } catch (_) {}
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -131,6 +150,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // This is a fresh Google login
         final loginStateService = getIt<LoginStateService>();
         await loginStateService.recordGoogleLogin();
+        // Analytics: Google login
+        try {
+          final analytics = getIt<AnalyticsService>();
+          await analytics.logLogin('google');
+          await analytics.setUserId(user.id.toString());
+        } catch (_) {}
         emit(AuthAuthenticated(user: user, isFreshLogin: true));
       } else {
         emit(const AuthUnauthenticated());
@@ -149,6 +174,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // This is a fresh Apple login
         final loginStateService = getIt<LoginStateService>();
         await loginStateService.recordAppleLogin();
+        // Analytics: Apple login
+        try {
+          final analytics = getIt<AnalyticsService>();
+          await analytics.logLogin('apple');
+          await analytics.setUserId(user.id.toString());
+        } catch (_) {}
         emit(AuthAuthenticated(user: user, isFreshLogin: true));
       } else {
         emit(const AuthUnauthenticated());
@@ -166,6 +197,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // Clear login state when signing out
       final loginStateService = getIt<LoginStateService>();
       await loginStateService.clearLoginState();
+      // Analytics: log sign out
+      try {
+        final analytics = getIt<AnalyticsService>();
+        await analytics.logEvent('logout', {
+          'timestamp': DateTime.now().toIso8601String(),
+        });
+      } catch (_) {}
       emit(const AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(message: e.toString()));

@@ -4,8 +4,8 @@ import 'core/theme.dart';
 import 'core/api/endpoints.dart';
 import 'core/di.dart';
 import 'core/storage/secure_storage.dart';
-// import 'core/analytics/firebase_analytics_service.dart';
-// import 'core/performance/performance_monitor.dart';
+import 'core/analytics/firebase_analytics_service.dart';
+import 'core/performance/performance_monitor.dart';
 import 'features/auth/presentation/pages/splash_page.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'firebase_options.dart';
@@ -19,35 +19,31 @@ const String kBaseUrl =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase so chat can use Firestore when enabled.
-  const bool useFirebaseMessages =
-      bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
-  if (useFirebaseMessages) {
-    try {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    } catch (_) {
-      // Continue for in-memory fallback if init fails
-    }
+  // Initialize Firebase early so Analytics/other plugins are ready.
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (_) {
+    // Continue for in-memory fallback if init fails (e.g., tests)
   }
   await setupDependencies(useFake: kUseFake, baseUrl: kBaseUrl);
 
   // Initialize Firebase Analytics
-  // try {
-  //   final analyticsService = getIt<AnalyticsService>();
-  //   await (analyticsService as FirebaseAnalyticsService).initialize();
-  //
-  //   // Initialize Performance Monitor
-  //   final performanceMonitor = getIt<PerformanceMonitor>();
-  //   (performanceMonitor as DefaultPerformanceMonitor).enable();
-  // } catch (e) {
-  //   if (kDebugMode) {
-  //     print('Analytics initialization error: $e');
-  //   }
-  // }
+  try {
+    final analyticsService = getIt<AnalyticsService>();
+    await (analyticsService as FirebaseAnalyticsService).initialize();
+
+    // Initialize Performance Monitor
+    final performanceMonitor = DefaultPerformanceMonitor();
+    performanceMonitor.enable();
+  } catch (e) {
+    // Analytics/perf init issues should not block app start
+  }
 
   // Attempt Firebase Auth sign-in using saved custom token from backend (if any)
+  const bool useFirebaseMessages =
+      bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
   if (useFirebaseMessages) {
     try {
       final secureStorage = getIt<SecureStorage>();
@@ -77,9 +73,9 @@ class MyApp extends StatelessWidget {
       theme: AppThemes.lightTheme(),
       darkTheme: AppThemes.darkTheme(),
       themeMode: ThemeMode.system,
-      // navigatorObservers: [
-      //   FirebaseAnalyticsRouteObserver(getIt<AnalyticsService>()),
-      // ],
+      navigatorObservers: [
+        FirebaseAnalyticsRouteObserver(getIt<AnalyticsService>()),
+      ],
       home: const SplashPage(),
     );
   }

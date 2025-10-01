@@ -39,9 +39,9 @@ dependencies:
   cloud_firestore: ^5.4.4
   firebase_auth: ^5.2.0
   firebase_storage: ^12.3.2
-  # firebase_analytics: ^11.3.0
-  # firebase_crashlytics: ^4.1.0
-  # firebase_performance: ^0.10.0
+  firebase_analytics: ^11.3.0
+  firebase_crashlytics: ^4.1.0
+  firebase_performance: ^0.10.0
   # firebase_remote_config: ^5.1.0
   # flutter_sound: ^9.28.0
 
