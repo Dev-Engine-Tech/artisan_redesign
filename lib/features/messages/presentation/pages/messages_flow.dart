@@ -14,10 +14,11 @@ import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 // import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 
-/// Helper function to safely get current user ID as int with proper fallback
-int _getCurrentUserId(BuildContext context) {
-  final userIdString = ChatManager().getCurrentUserId(context);
-  return int.tryParse(userIdString) ?? 1;
+/// Try to get current user ID, returns null if not authenticated
+int? _tryGetCurrentUserId(BuildContext context) {
+  final userIdString = ChatManager().tryGetCurrentUserId(context);
+  if (userIdString == null) return null;
+  return int.tryParse(userIdString);
 }
 
 /// Simple messages flow containing:
@@ -29,7 +30,7 @@ int _getCurrentUserId(BuildContext context) {
 /// or `Navigator.push(MaterialPageRoute(builder: (_) => ChatPage(conversation: conv)));`
 
 class MessagesListPage extends StatelessWidget {
-  MessagesListPage({super.key});
+  const MessagesListPage({super.key});
 
   String _formatTime(DateTime? dt) {
     if (dt == null) return '';
@@ -40,8 +41,60 @@ class MessagesListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine current user id from Auth state, default to 1 for demo
-    final currentUserId = _getCurrentUserId(context);
+    // Try to get current user ID, show error if not authenticated
+    final currentUserId = _tryGetCurrentUserId(context);
+
+    if (currentUserId == null) {
+      return Scaffold(
+        backgroundColor: AppColors.lightPeach,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppColors.softPink,
+                  borderRadius: BorderRadius.circular(10)),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                onPressed: () => Navigator.of(context).maybePop(),
+              ),
+            ),
+          ),
+          title: const Text('Messages',
+              style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w700)),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.lock_outline, size: 64, color: Colors.black26),
+              const SizedBox(height: 16),
+              const Text(
+                'Authentication Required',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Please sign in to view your messages',
+                style: TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).maybePop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.orange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     final repo = getIt<MessagesRepository>();
 
@@ -237,7 +290,6 @@ class _ChatPageState extends State<ChatPage> {
   domain.Message? _replyTo;
   // FlutterSoundRecorder? _recorder;
   bool _isRecording = false;
-  String? _recordPath;
 
   @override
   void dispose() {
@@ -463,8 +515,60 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     final conv = widget.conversation;
-    // Determine current user id
-    final currentUserId = _getCurrentUserId(context);
+    // Try to get current user id, return error if not authenticated
+    final currentUserId = _tryGetCurrentUserId(context);
+
+    if (currentUserId == null) {
+      return Scaffold(
+        backgroundColor: AppColors.lightPeach,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppColors.softPink,
+                  borderRadius: BorderRadius.circular(10)),
+              child: IconButton(
+                icon: const Icon(Icons.chevron_left, color: Colors.black54),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
+          title: const Text('Chat',
+              style: TextStyle(color: AppColors.brownHeader, fontWeight: FontWeight.w700)),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.lock_outline, size: 64, color: Colors.black26),
+              const SizedBox(height: 16),
+              const Text(
+                'Authentication Required',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Please sign in to access chat',
+                style: TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.orange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     final repo = getIt<MessagesRepository>();
 
@@ -564,8 +668,46 @@ class _ChatPageState extends State<ChatPage> {
                           return const Center(
                               child: CircularProgressIndicator());
                         }
+                        if (state is ChatError) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                                const SizedBox(height: 16),
+                                Text('Error loading messages', style: const TextStyle(fontWeight: FontWeight.w600)),
+                                const SizedBox(height: 8),
+                                Text(state.message, style: const TextStyle(color: Colors.black54), textAlign: TextAlign.center),
+                                const SizedBox(height: 16),
+                                ElevatedButton.icon(
+                                  onPressed: () => context.read<ChatBloc>().add(ChatRetry()),
+                                  icon: const Icon(Icons.refresh),
+                                  label: const Text('Retry'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.orange,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                         if (state is ChatLoaded) {
                           final messages = state.messages;
+                          if (messages.isEmpty) {
+                            return const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.message_outlined, size: 64, color: Colors.black26),
+                                  SizedBox(height: 16),
+                                  Text('No messages yet', style: TextStyle(color: Colors.black54)),
+                                  SizedBox(height: 8),
+                                  Text('Start the conversation!', style: TextStyle(color: Colors.black38)),
+                                ],
+                              ),
+                            );
+                          }
                           return ListView.builder(
                             controller: _scrollController,
                             padding: const EdgeInsets.symmetric(

@@ -53,3 +53,12 @@ class ChatDeleteMessage extends ChatEvent {
   @override
   List<Object?> get props => [messageId, forEveryone];
 }
+
+class ChatErrorOccurred extends ChatEvent {
+  final String error;
+  const ChatErrorOccurred(this.error);
+  @override
+  List<Object?> get props => [error];
+}
+
+class ChatRetry extends ChatEvent {}

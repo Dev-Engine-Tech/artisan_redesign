@@ -27,19 +27,37 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatStarted>((event, emit) async {
       emit(ChatLoading());
       await _sub?.cancel();
-      _sub = repository
-          .watchMessages(
-              currentUserId: currentUserId, conversationId: conversationId)
-          .listen((data) {
-        add(ChatMessagesUpdated(data));
-      });
-      // mark as seen when opening chat
-      unawaited(repository.markSeen(
-          currentUserId: currentUserId, conversationId: conversationId));
+      try {
+        _sub = repository
+            .watchMessages(
+                currentUserId: currentUserId, conversationId: conversationId)
+            .listen(
+          (data) {
+            add(ChatMessagesUpdated(data));
+          },
+          onError: (error, stackTrace) {
+            add(ChatErrorOccurred(error.toString()));
+          },
+          cancelOnError: false,
+        );
+        // mark as seen when opening chat
+        await repository.markSeen(
+            currentUserId: currentUserId, conversationId: conversationId);
+      } catch (e) {
+        emit(ChatError(e.toString()));
+      }
     });
 
     on<ChatMessagesUpdated>((event, emit) {
       emit(ChatLoaded(messages: event.messages));
+    });
+
+    on<ChatErrorOccurred>((event, emit) {
+      emit(ChatError(event.error));
+    });
+
+    on<ChatRetry>((event, emit) {
+      add(ChatStarted());
     });
 
     on<ChatSendText>((event, emit) async {

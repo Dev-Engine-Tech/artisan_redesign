@@ -93,6 +93,14 @@ import 'package:artisans_circle/features/messages/data/datasources/messages_in_m
 import 'package:artisans_circle/features/messages/data/repositories/messages_repository_impl.dart';
 import 'package:artisans_circle/features/messages/data/repositories/messages_repository_firebase.dart';
 import 'package:artisans_circle/features/messages/domain/repositories/messages_repository.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/send_text_message.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/send_image_message.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/send_audio_message.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/delete_message.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/watch_messages.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/watch_conversations.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/mark_messages_seen.dart';
+import 'package:artisans_circle/features/messages/domain/usecases/set_typing_status.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart' as fb;
 import 'package:firebase_auth/firebase_auth.dart' as fba;
@@ -120,8 +128,8 @@ final GetIt getIt = GetIt.instance;
 // Allow opting into insecure TLS (e.g., self-signed, wrong host) for dev only.
 // Never enable this in production.
 const bool kAllowInsecure =
-    bool.fromEnvironment('ALLOW_INSECURE', defaultValue: true);
-const bool kLogHttp = bool.fromEnvironment('LOG_HTTP', defaultValue: true);
+    bool.fromEnvironment('ALLOW_INSECURE', defaultValue: false);
+const bool kLogHttp = bool.fromEnvironment('LOG_HTTP', defaultValue: false);
 const bool kUseFirebaseMessages =
     bool.fromEnvironment('USE_FIREBASE_MESSAGES', defaultValue: true);
 
@@ -471,6 +479,32 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     getIt.registerLazySingleton<MessagesRepository>(
         () => MessagesRepositoryImpl(getIt<InMemoryMessagesStore>()));
   }
+
+  // Messages use cases
+  getIt.registerLazySingleton<SendTextMessage>(
+    () => SendTextMessage(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<SendImageMessage>(
+    () => SendImageMessage(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<SendAudioMessage>(
+    () => SendAudioMessage(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<DeleteMessage>(
+    () => DeleteMessage(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<WatchMessages>(
+    () => WatchMessages(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<WatchConversations>(
+    () => WatchConversations(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<MarkMessagesSeen>(
+    () => MarkMessagesSeen(getIt<MessagesRepository>()),
+  );
+  getIt.registerLazySingleton<SetTypingStatus>(
+    () => SetTypingStatus(getIt<MessagesRepository>()),
+  );
 
   // Notifications feature
   getIt.registerLazySingleton<NotificationRemoteDataSource>(
