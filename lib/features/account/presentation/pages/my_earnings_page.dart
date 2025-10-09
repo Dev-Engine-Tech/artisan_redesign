@@ -21,8 +21,26 @@ class _MyEarningsPageState extends State<MyEarningsPage> {
   void initState() {
     super.initState();
     _bloc = getIt<AccountBloc>();
-    _bloc.add(AccountLoadEarnings());
-    _bloc.add(const AccountLoadTransactions());
+
+    // ✅ PERFORMANCE FIX: Check state before loading to avoid redundant API calls
+    final currentState = _bloc.state;
+
+    // Only load earnings if not already loaded
+    if (currentState is! AccountEarningsLoaded) {
+      _bloc.add(AccountLoadEarnings());
+    }
+
+    // ✅ PERFORMANCE FIX: Defer transactions load to avoid concurrent API calls
+    // Load transactions after a short delay
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _bloc.state is! AccountTransactionsLoaded) {
+        Future.delayed(const Duration(milliseconds: 200), () {
+          if (mounted) {
+            _bloc.add(const AccountLoadTransactions());
+          }
+        });
+      }
+    });
   }
 
   @override

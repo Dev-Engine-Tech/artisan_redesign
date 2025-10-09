@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import '../../domain/entities/catalog_item.dart';
 import '../../domain/usecases/get_my_catalog_items.dart';
 import '../../domain/usecases/get_catalog_by_user.dart';
+import '../../data/models/catalog_item_model.dart' show CatalogItemModel;
 
 abstract class CatalogEvent {}
 
@@ -40,7 +42,8 @@ class CatalogError extends CatalogState {
   const CatalogError(this.message);
 }
 
-class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
+// ✅ WEEK 4: Added CachedBlocMixin for automatic caching
+class CatalogBloc extends Bloc<CatalogEvent, CatalogState> with CachedBlocMixin {
   final GetMyCatalogItems getMyCatalogItems;
   final GetCatalogByUser getCatalogByUser;
   CatalogBloc({required this.getMyCatalogItems, required this.getCatalogByUser})

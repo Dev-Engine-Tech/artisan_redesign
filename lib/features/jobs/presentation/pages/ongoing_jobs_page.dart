@@ -22,7 +22,12 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<JobBloc>().add(LoadOngoingJobs());
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final bloc = context.read<JobBloc>();
+    final currentState = bloc.state;
+    if (currentState is! JobStateOngoingLoaded) {
+      bloc.add(LoadOngoingJobs());
+    }
   }
 
   @override
@@ -62,6 +67,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
         actions: [
           IconButton(
             onPressed: () {
+              // ✅ PERFORMANCE FIX: Force refresh is intentional here
               context.read<JobBloc>().add(LoadOngoingJobs());
             },
             icon: const Icon(Icons.refresh, color: Colors.black54),
@@ -235,6 +241,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
 
     return RefreshIndicator(
       onRefresh: () async {
+        // ✅ PERFORMANCE FIX: Force refresh is intentional here
         context.read<JobBloc>().add(LoadOngoingJobs());
       },
       child: ListView.builder(
@@ -245,6 +252,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           return OngoingJobCard(
             job: job,
             onStatusUpdate: () {
+              // ✅ PERFORMANCE FIX: Reload after status update to reflect changes
               context.read<JobBloc>().add(LoadOngoingJobs());
             },
           );
@@ -317,6 +325,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
+              // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
               context.read<JobBloc>().add(LoadOngoingJobs());
             },
             style: ElevatedButton.styleFrom(

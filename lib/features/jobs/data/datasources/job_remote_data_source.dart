@@ -57,6 +57,8 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       final qp = <String, dynamic>{
         'page': page,
         'limit': limit,
+        // Some backends expect page_size instead of limit. Send both.
+        'page_size': limit,
       };
       if (search != null && search.isNotEmpty) qp['search'] = search;
       if (match != null) qp['match'] = match;
@@ -106,62 +108,45 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300) {
-        final data = response.data;
+        final body = response.data;
 
-        List<JobModel> jobs = [];
-
-        if (data is List) {
-          jobs = data
-              .map((e) {
-                try {
-                  final jobData = e as Map<String, dynamic>;
-                  return JobModel.fromJson(jobData, isFromApplications: false);
-                } catch (e) {
-                  return null;
+        List listFromBody(dynamic b) {
+          if (b is List) return b;
+          if (b is Map) {
+            // Handle common paginated shapes, including nested maps
+            const keys = ['results', 'data', 'items', 'jobs', 'records'];
+            for (final k in keys) {
+              final v = b[k];
+              if (v is List) return v;
+              if (v is Map) {
+                for (final kk in keys) {
+                  final vv = v[kk];
+                  if (vv is List) return vv;
                 }
-              })
-              .where((job) => job != null)
-              .cast<JobModel>()
-              .toList();
-        } else if (data is Map && data['data'] is List) {
-          final dataList = data['data'] as List;
-          jobs = dataList
-              .map((e) {
-                try {
-                  final jobData = e as Map<String, dynamic>;
-                  return JobModel.fromJson(jobData, isFromApplications: false);
-                } catch (e) {
-                  return null;
-                }
-              })
-              .where((job) => job != null)
-              .cast<JobModel>()
-              .toList();
-        } else if (data is Map && data['results'] is List) {
-          final resultsList = data['results'] as List;
-          jobs = resultsList
-              .map((e) {
-                try {
-                  final jobData = e as Map<String, dynamic>;
-                  return JobModel.fromJson(jobData, isFromApplications: false);
-                } catch (e) {
-                  return null;
-                }
-              })
-              .where((job) => job != null)
-              .cast<JobModel>()
-              .toList();
-        } else {
-          throw DioException(
-            requestOptions: response.requestOptions,
-            error: 'Unexpected response format',
-            response: Response(
-                requestOptions: response.requestOptions,
-                statusCode: response.statusCode,
-                data: response.data),
-            type: DioExceptionType.badResponse,
-          );
+              }
+            }
+          }
+          return const [];
         }
+
+        final list = listFromBody(body);
+        if (list.isEmpty && body is Map) {
+          // If backend returns empty structure without list key, treat as empty set
+          // instead of throwing, to avoid blocking UI entirely.
+        }
+
+        final jobs = list
+            .map((e) {
+              try {
+                final jobData = Map<String, dynamic>.from(e as Map);
+                return JobModel.fromJson(jobData, isFromApplications: false);
+              } catch (_) {
+                return null;
+              }
+            })
+            .where((job) => job != null)
+            .cast<JobModel>()
+            .toList();
 
         return jobs;
       } else {
@@ -185,63 +170,54 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       {int page = 1, int limit = 20}) async {
     final response = await dio.get(
       ApiEndpoints.appliedJobs,
-      queryParameters: {'page': page, 'limit': limit},
+      // Support both limit and page_size naming
+      queryParameters: {'page': page, 'limit': limit, 'page_size': limit},
     );
 
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! < 300) {
-      final data = response.data;
+      final body = response.data;
 
-      List<JobModel> jobs = [];
-
-      if (data is List) {
-        jobs = data
-            .map((e) {
-              try {
-                final appData = e as Map<String, dynamic>;
-                final jobData = appData['job'] ?? appData;
-                return JobModel.fromJson(jobData, isFromApplications: true);
-              } catch (e) {
-                return null;
+      List listFromBody(dynamic b) {
+        if (b is List) return b;
+        if (b is Map) {
+          // Common keys for applications collections (support nested under data)
+          const keys = ['applications', 'results', 'data', 'items', 'records'];
+          for (final k in keys) {
+            final v = b[k];
+            if (v is List) return v;
+            if (v is Map) {
+              for (final kk in keys) {
+                final vv = v[kk];
+                if (vv is List) return vv;
               }
-            })
-            .where((job) => job != null)
-            .cast<JobModel>()
-            .toList();
-      } else if (data is Map && data['data'] is List) {
-        final dataList = data['data'] as List;
-        jobs = dataList
-            .map((e) {
-              try {
-                final appData = e as Map<String, dynamic>;
-                final jobData = appData['job'] ?? appData;
-                return JobModel.fromJson(jobData, isFromApplications: true);
-              } catch (e) {
-                return null;
-              }
-            })
-            .where((job) => job != null)
-            .cast<JobModel>()
-            .toList();
-      } else if (data is Map && data['results'] is List) {
-        final resultsList = data['results'] as List;
-        jobs = resultsList
-            .map((e) {
-              try {
-                final appData = e as Map<String, dynamic>;
-                final jobData = appData['job'] ?? appData;
-                return JobModel.fromJson(jobData, isFromApplications: true);
-              } catch (e) {
-                return null;
-              }
-            })
-            .where((job) => job != null)
-            .cast<JobModel>()
-            .toList();
-      } else {
-        return []; // Return empty list if no applications found
+            }
+          }
+        }
+        return const [];
       }
+
+      final list = listFromBody(body);
+      if (list.isEmpty && body is Map) {
+        // Treat as empty applications rather than erroring
+      }
+
+      final jobs = list
+          .map((e) {
+            try {
+              final appData = Map<String, dynamic>.from(e as Map);
+              final jobData = appData['job'] is Map
+                  ? Map<String, dynamic>.from(appData['job'] as Map)
+                  : appData;
+              return JobModel.fromJson(jobData, isFromApplications: true);
+            } catch (_) {
+              return null;
+            }
+          })
+          .where((job) => job != null)
+          .cast<JobModel>()
+          .toList();
 
       return jobs;
     } else {

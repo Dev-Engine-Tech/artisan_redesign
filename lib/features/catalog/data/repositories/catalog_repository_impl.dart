@@ -28,6 +28,12 @@ class CatalogRepositoryImpl implements CatalogRepository {
     int? priceMax,
     String? projectTimeline,
     List<String> imagePaths = const [],
+    bool instantSelling = false,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool warranty = false,
+    bool delivery = false,
   }) async {
     final model = await (remote as dynamic).createCatalog(
       title: title,
@@ -37,6 +43,12 @@ class CatalogRepositoryImpl implements CatalogRepository {
       priceMax: priceMax,
       projectTimeline: projectTimeline,
       imagePaths: imagePaths,
+      instantSelling: instantSelling,
+      brand: brand,
+      condition: condition,
+      salesCategory: salesCategory,
+      warranty: warranty,
+      delivery: delivery,
     ) as dynamic;
     return (model as dynamic).toEntity() as CatalogItem;
   }
@@ -51,6 +63,12 @@ class CatalogRepositoryImpl implements CatalogRepository {
     int? priceMax,
     String? projectTimeline,
     List<String> newImagePaths = const [],
+    bool? instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool? warranty,
+    bool? delivery,
   }) async {
     final model = await (remote as dynamic).updateCatalog(
       id: id,
@@ -61,6 +79,12 @@ class CatalogRepositoryImpl implements CatalogRepository {
       priceMax: priceMax,
       projectTimeline: projectTimeline,
       newImagePaths: newImagePaths,
+      instantSelling: instantSelling,
+      brand: brand,
+      condition: condition,
+      salesCategory: salesCategory,
+      warranty: warranty,
+      delivery: delivery,
     ) as dynamic;
     return (model as dynamic).toEntity() as CatalogItem;
   }

@@ -16,10 +16,12 @@ class _TransactionsPageState extends State<TransactionsPage> {
   @override
   void initState() {
     super.initState();
-    // Load transactions when page opens
-    context
-        .read<AccountBloc>()
-        .add(AccountLoadTransactions(page: 1, limit: 20));
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final bloc = context.read<AccountBloc>();
+    final currentState = bloc.state;
+    if (currentState is! AccountTransactionsLoaded) {
+      bloc.add(const AccountLoadTransactions(page: 1, limit: 20));
+    }
   }
 
   @override
@@ -74,9 +76,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
             return RefreshIndicator(
               onRefresh: () async {
+                // ✅ PERFORMANCE FIX: Force refresh on pull-to-refresh is intentional
                 context
                     .read<AccountBloc>()
-                    .add(AccountLoadTransactions(page: 1, limit: 20));
+                    .add(const AccountLoadTransactions(page: 1, limit: 20));
               },
               child: ListView.separated(
                 padding: const EdgeInsets.all(16),
@@ -209,9 +212,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
+                      // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
                       context
                           .read<AccountBloc>()
-                          .add(AccountLoadTransactions(page: 1, limit: 20));
+                          .add(const AccountLoadTransactions(page: 1, limit: 20));
                     },
                     child: const Text('Retry'),
                   ),

@@ -15,6 +15,12 @@ abstract class CatalogRemoteDataSource {
     int? priceMax,
     String? projectTimeline,
     List<String> imagePaths = const [],
+    bool instantSelling = false,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool warranty = false,
+    bool delivery = false,
   });
 
   Future<CatalogItemModel> updateCatalog({
@@ -26,6 +32,12 @@ abstract class CatalogRemoteDataSource {
     int? priceMax,
     String? projectTimeline,
     List<String> newImagePaths = const [],
+    bool? instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool? warranty,
+    bool? delivery,
   });
 
   Future<bool> deleteCatalog(String id);
@@ -115,6 +127,12 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
     int? priceMax,
     String? projectTimeline,
     List<String> imagePaths = const [],
+    bool instantSelling = false,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool warranty = false,
+    bool delivery = false,
   }) async {
     final form = FormData();
     form.fields.addAll([
@@ -125,6 +143,12 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
       if (priceMax != null) MapEntry('price_max', priceMax.toString()),
       if (projectTimeline != null)
         MapEntry('project_timeline', projectTimeline),
+      MapEntry('instant_selling', instantSelling.toString()),
+      if (brand != null && brand.isNotEmpty) MapEntry('brand', brand),
+      if (condition != null && condition.isNotEmpty) MapEntry('condition', condition),
+      if (salesCategory != null && salesCategory.isNotEmpty) MapEntry('sales_category', salesCategory),
+      MapEntry('warranty', warranty.toString()),
+      MapEntry('delivery', delivery.toString()),
     ]);
     for (var i = 0; i < imagePaths.length; i++) {
       form.files.add(MapEntry(
@@ -156,6 +180,12 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
     int? priceMax,
     String? projectTimeline,
     List<String> newImagePaths = const [],
+    bool? instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool? warranty,
+    bool? delivery,
   }) async {
     final form = FormData();
     if (title != null) {
@@ -175,6 +205,24 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
     }
     if (projectTimeline != null) {
       form.fields.add(MapEntry('project_timeline', projectTimeline));
+    }
+    if (instantSelling != null) {
+      form.fields.add(MapEntry('instant_selling', instantSelling.toString()));
+    }
+    if (brand != null && brand.isNotEmpty) {
+      form.fields.add(MapEntry('brand', brand));
+    }
+    if (condition != null && condition.isNotEmpty) {
+      form.fields.add(MapEntry('condition', condition));
+    }
+    if (salesCategory != null && salesCategory.isNotEmpty) {
+      form.fields.add(MapEntry('sales_category', salesCategory));
+    }
+    if (warranty != null) {
+      form.fields.add(MapEntry('warranty', warranty.toString()));
+    }
+    if (delivery != null) {
+      form.fields.add(MapEntry('delivery', delivery.toString()));
     }
     for (var i = 0; i < newImagePaths.length; i++) {
       form.files.add(MapEntry(

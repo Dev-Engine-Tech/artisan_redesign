@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import 'account_event.dart';
 import 'account_state.dart';
 import '../../domain/usecases/get_user_profile.dart';
+import '../../data/models/user_profile_model.dart' show UserProfileModel;
 import '../../domain/usecases/update_user_profile.dart';
 import '../../domain/usecases/get_earnings.dart';
 import '../../domain/usecases/get_transactions.dart';
@@ -26,7 +28,8 @@ import '../../domain/usecases/verify_bank_account.dart';
 import '../../domain/usecases/set_withdrawal_pin.dart';
 import '../../domain/usecases/verify_withdrawal_pin.dart';
 
-class AccountBloc extends Bloc<AccountEvent, AccountState> {
+// ✅ WEEK 4: Added CachedBlocMixin for automatic caching
+class AccountBloc extends Bloc<AccountEvent, AccountState> with CachedBlocMixin {
   final GetUserProfile getUserProfile;
   final UpdateUserProfile updateUserProfile;
   final GetEarnings getEarnings;
@@ -106,7 +109,15 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       AccountLoadProfile event, Emitter<AccountState> emit) async {
     emit(AccountLoading());
     try {
-      final profile = await getUserProfile.call();
+      // ✅ WEEK 4: Added caching with 10 minute TTL for profile data
+      final profile = await executeWithCache(
+        cacheKey: 'user_profile',
+        fetch: () => getUserProfile.call(),
+        fromJson: (json) => UserProfileModel.fromJson(json as Map<String, dynamic>),
+        toJson: (profile) => (profile as UserProfileModel).toJson(),
+        ttl: const Duration(minutes: 10),
+        persistent: true, // Keep profile in persistent storage
+      );
       emit(AccountProfileLoaded(profile));
     } catch (e) {
       emit(AccountError(e.toString()));

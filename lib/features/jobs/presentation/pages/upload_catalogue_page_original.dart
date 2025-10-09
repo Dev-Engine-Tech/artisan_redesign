@@ -41,6 +41,20 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
   final Set<String> _selectedSkills = {};
   bool _materialsIncluded = true;
 
+  // Instant selling fields
+  bool _instantSelling = false;
+  final TextEditingController _brandController = TextEditingController();
+  String? _condition;
+  final TextEditingController _salesCategoryController = TextEditingController();
+  bool _warranty = false;
+  bool _delivery = false;
+
+  final List<String> _conditions = [
+    'Brand New',
+    'Foreign used',
+    'Local Used'
+  ];
+
   // Selected image file paths (for upload)
   final List<String> _media = [];
   // final ImagePicker _picker = ImagePicker(); // Temporarily disabled
@@ -77,6 +91,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     _minPriceController.dispose();
     _maxPriceController.dispose();
     _subCategoryIdController.dispose();
+    _brandController.dispose();
+    _salesCategoryController.dispose();
     super.dispose();
   }
 
@@ -183,6 +199,12 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           priceMax: toInt(_maxPriceController.text),
           projectTimeline: timelineValue,
           imagePaths: _media,
+          instantSelling: _instantSelling,
+          brand: _brandController.text.trim().isEmpty ? null : _brandController.text.trim(),
+          condition: _condition,
+          salesCategory: _salesCategoryController.text.trim().isEmpty ? null : _salesCategoryController.text.trim(),
+          warranty: _warranty,
+          delivery: _delivery,
         );
       } else {
         final update = getIt<UpdateCatalog>();
@@ -195,6 +217,12 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           priceMax: toInt(_maxPriceController.text),
           projectTimeline: timelineValue,
           newImagePaths: _media,
+          instantSelling: _instantSelling,
+          brand: _brandController.text.trim().isEmpty ? null : _brandController.text.trim(),
+          condition: _condition,
+          salesCategory: _salesCategoryController.text.trim().isEmpty ? null : _salesCategoryController.text.trim(),
+          warranty: _warranty,
+          delivery: _delivery,
         );
       }
       if (!mounted) return;
@@ -582,6 +610,105 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             ],
           ),
         ),
+        const SizedBox(height: 18),
+        const Text('Instant Selling',
+            style: TextStyle(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(10)),
+          child: SwitchListTile(
+            title: const Text('Enable instant selling'),
+            subtitle: const Text(
+                'Allow buyers to purchase this item directly'),
+            value: _instantSelling,
+            onChanged: (v) => setState(() => _instantSelling = v),
+          ),
+        ),
+        if (_instantSelling) ...[
+          const SizedBox(height: 18),
+          const Text('Brand', style: TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _brandController,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.cardBackground,
+              hintText: 'Enter brand name',
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+            ),
+          ),
+          const SizedBox(height: 18),
+          const Text('Condition',
+              style: TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            value: _condition,
+            items: _conditions
+                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                .toList(),
+            onChanged: (v) => setState(() => _condition = v),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.cardBackground,
+              hintText: 'Select item condition',
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            ),
+          ),
+          const SizedBox(height: 18),
+          const Text('Sales Category',
+              style: TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _salesCategoryController,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.cardBackground,
+              hintText: 'e.g., Electronics, Furniture, etc.',
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+            ),
+          ),
+          const SizedBox(height: 18),
+          const Text('Additional Options',
+              style: TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: AppColors.cardBackground,
+                borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              children: [
+                CheckboxListTile(
+                  title: const Text('Warranty included'),
+                  value: _warranty,
+                  onChanged: (v) => setState(() => _warranty = v ?? false),
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('Delivery available'),
+                  value: _delivery,
+                  onChanged: (v) => setState(() => _delivery = v ?? false),
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),

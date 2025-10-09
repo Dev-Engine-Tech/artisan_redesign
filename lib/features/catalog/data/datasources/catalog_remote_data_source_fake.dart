@@ -94,6 +94,12 @@ class CatalogRemoteDataSourceFake implements CatalogRemoteDataSource {
     int? priceMax,
     String? projectTimeline,
     List<String> imagePaths = const [],
+    bool instantSelling = false,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool warranty = false,
+    bool delivery = false,
   }) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 800));
@@ -107,6 +113,12 @@ class CatalogRemoteDataSourceFake implements CatalogRemoteDataSource {
       projectTimeline: projectTimeline,
       imageUrl: null,
       ownerName: 'Current User',
+      instantSelling: instantSelling,
+      brand: brand,
+      condition: condition,
+      salesCategory: salesCategory,
+      warranty: warranty,
+      delivery: delivery,
     );
 
     _catalogItems.add(newItem);
@@ -123,6 +135,12 @@ class CatalogRemoteDataSourceFake implements CatalogRemoteDataSource {
     int? priceMax,
     String? projectTimeline,
     List<String> newImagePaths = const [],
+    bool? instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool? warranty,
+    bool? delivery,
   }) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 600));
@@ -142,6 +160,12 @@ class CatalogRemoteDataSourceFake implements CatalogRemoteDataSource {
       projectTimeline: projectTimeline ?? existing.projectTimeline,
       imageUrl: existing.imageUrl,
       ownerName: existing.ownerName,
+      instantSelling: instantSelling ?? existing.instantSelling,
+      brand: brand ?? existing.brand,
+      condition: condition ?? existing.condition,
+      salesCategory: salesCategory ?? existing.salesCategory,
+      warranty: warranty ?? existing.warranty,
+      delivery: delivery ?? existing.delivery,
     );
 
     _catalogItems[index] = updated;

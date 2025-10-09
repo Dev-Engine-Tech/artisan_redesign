@@ -26,10 +26,32 @@ class _AddBankPageState extends State<AddBankPage> {
   void initState() {
     super.initState();
     _bloc = getIt<AccountBloc>();
-    _bloc.add(AccountLoadBankAccounts());
-    _bloc.add(AccountLoadProfile());
-    _bloc.add(AccountLoadBankList());
+
+    // ✅ PERFORMANCE FIX: Check state and stagger API calls
+    final currentState = _bloc.state;
+
+    // Profile is likely already loaded from parent context, skip if so
+    if (currentState is! AccountProfileLoaded) {
+      _bloc.add(AccountLoadProfile());
+    }
+
+    // Load bank accounts (user's saved accounts)
+    if (currentState is! AccountBankAccountsLoaded) {
+      _bloc.add(AccountLoadBankAccounts());
+    }
+
+    // ✅ PERFORMANCE FIX: Defer bank list load to avoid 3 concurrent API calls
+    // Load available banks list after a delay
     _banksLoading = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Future.delayed(const Duration(milliseconds: 250), () {
+          if (mounted) {
+            _bloc.add(AccountLoadBankList());
+          }
+        });
+      }
+    });
   }
 
   @override

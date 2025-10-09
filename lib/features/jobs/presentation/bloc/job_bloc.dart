@@ -5,6 +5,9 @@ import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart'
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/job.dart' show Job;
+import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
+import 'package:artisans_circle/features/jobs/data/models/job_model.dart' show JobModel;
 
 export 'package:artisans_circle/features/jobs/presentation/bloc/job_event.dart';
 export 'package:artisans_circle/features/jobs/presentation/bloc/job_state.dart';
@@ -13,7 +16,8 @@ import 'package:artisans_circle/features/jobs/presentation/bloc/job_event.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_state.dart';
 import 'dart:developer' as dev;
 
-class JobBloc extends Bloc<JobEvent, JobState> {
+// ✅ WEEK 4: Added CachedBlocMixin for automatic caching
+class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
   final GetJobs getJobs;
   final GetApplications getApplications;
   final ApplyToJob applyToJob;
@@ -40,24 +44,80 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   Future<void> _onLoadJobs(LoadJobs event, Emitter<JobState> emit) async {
     emit(const JobStateLoading());
     try {
-      final list = await getJobs(
+      // ✅ WEEK 4: Added caching with 5 minute TTL
+      final cacheKey = _jobsCacheKey(
         page: event.page,
         limit: event.limit,
         search: event.search,
-        saved: event.saved,
-        match: event.match,
-        postedDate: event.postedDate,
-        workMode: event.workMode,
-        budgetType: event.budgetType,
-        duration: event.duration,
+        saved: event.saved ?? false,
+        match: event.match ?? false,
         category: event.category,
         state: event.state,
-        lgas: event.lgas,
+      );
+
+      final list = await executeWithCache(
+        cacheKey: cacheKey,
+        fetch: () => getJobs(
+          page: event.page,
+          limit: event.limit,
+          search: event.search,
+          saved: event.saved,
+          match: event.match,
+          postedDate: event.postedDate,
+          workMode: event.workMode,
+          budgetType: event.budgetType,
+          duration: event.duration,
+          category: event.category,
+          state: event.state,
+          lgas: event.lgas,
+        ),
+        // Cache as JSON list and restore back to domain entities
+        fromJson: (json) => (json as List)
+            .map((e) => JobModel.fromJson(e as Map<String, dynamic>).toEntity())
+            .toList(),
+        toJson: (jobs) => jobs
+            .map((job) => {
+                  'id': (job as Job).id,
+                  'title': job.title,
+                  'category': job.category,
+                  'description': job.description,
+                  // Prefer job_address key which our model also understands
+                  'job_address': job.address,
+                  'min_budget': job.minBudget,
+                  'max_budget': job.maxBudget,
+                  'duration': job.duration,
+                  'applied': job.applied,
+                  'saved': job.saved,
+                  'thumbnail_url': job.thumbnailUrl,
+                  'proposal': job.proposal,
+                  'payment_type': job.paymentType,
+                  'desired_pay': job.desiredPay,
+                  'date_created': job.dateCreated?.toIso8601String(),
+                  'status': job.status.name,
+                  'project_status': job.projectStatus.name,
+                  // Keep materials empty in cache JSON to avoid type casting issues
+                  'materials': const <Map<String, dynamic>>[],
+                })
+            .toList(),
+        ttl: const Duration(minutes: 5),
       );
       emit(JobStateLoaded(jobs: list));
     } catch (e) {
       emit(JobStateError(message: e.toString()));
     }
+  }
+
+  // ✅ WEEK 4: Cache key generation
+  String _jobsCacheKey({
+    int page = 1,
+    int limit = 20,
+    String? search,
+    bool saved = false,
+    bool match = false,
+    String? category,
+    String? state,
+  }) {
+    return 'jobs_p${page}_l${limit}_s${search ?? ''}_sv${saved}_m${match}_c${category ?? ''}_st${state ?? ''}';
   }
 
   Future<void> _onRefreshJobs(RefreshJobs event, Emitter<JobState> emit) async {

@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import '../../../../core/theme.dart';
 import '../../domain/entities/invoice.dart';
+import '../../../catalog/domain/entities/catalog_item.dart';
+import '../../../catalog/domain/usecases/get_my_catalog_items.dart';
+import '../../../customers/domain/entities/customer.dart';
+import '../../../customers/domain/usecases/get_customers.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubit/invoice_form_cubit.dart';
+import '../widgets/customer_field.dart';
+import '../widgets/label_cell.dart';
+import '../widgets/lines_tab.dart';
+import '../widgets/materials_tab.dart';
+import '../widgets/measurement_tab.dart';
 
 enum InvoiceMode { create, edit, view }
 
@@ -20,6 +32,7 @@ class CreateInvoicePage extends StatefulWidget {
 
 class _CreateInvoicePageState extends State<CreateInvoicePage>
     with SingleTickerProviderStateMixin {
+  bool _hydrated = false;
   late TabController _tabController;
   final _customerController = TextEditingController();
   final _deliveryAddressController = TextEditingController();
@@ -28,11 +41,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   DateTime _invoiceDate = DateTime.now();
   DateTime _dueDate = DateTime.now().add(const Duration(days: 30));
 
-  // Dynamic lists for invoice management
-  final List<_InvoiceSection> _invoiceSections = [];
-  final List<_InvoiceLineItem> _independentLines = [];
-  final List<_InvoiceMaterialItem> _materials = [];
-  final List<_InvoiceMeasurementItem> _measurements = [];
+  // Dynamic lists migrated to InvoiceFormCubit (sections, lines, materials, measurements)
+
+  // Form pickers are handled by InvoiceFormCubit now
 
   @override
   void initState() {
@@ -74,18 +85,6 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
       _invoiceDate = invoice.issueDate;
       _dueDate = invoice.dueDate;
 
-      // Populate invoice items as independent lines
-      _independentLines.clear();
-      for (final item in invoice.items) {
-        _independentLines.add(_InvoiceLineItem(
-          labelController: TextEditingController(text: item.description),
-          quantityController:
-              TextEditingController(text: item.quantity.toString()),
-          unitPriceController:
-              TextEditingController(text: item.unitPrice.toString()),
-        ));
-      }
-
       // Note: Materials and measurements would need to be stored separately in a real app
       // For now, we'll leave them empty when viewing existing invoices
     }
@@ -99,27 +98,30 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     _productController.dispose();
     _termsController.dispose();
 
-    // Dispose dynamic items
-    for (final section in _invoiceSections) {
-      section.dispose();
-    }
-    for (final line in _independentLines) {
-      line.dispose();
-    }
-    for (final material in _materials) {
-      material.dispose();
-    }
-    for (final measurement in _measurements) {
-      measurement.dispose();
-    }
-
     super.dispose();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return BlocProvider(
+      create: (_) => InvoiceFormCubit(
+        getCustomers: GetIt.I<GetCustomers>(),
+        getMyCatalogItems: GetIt.I<GetMyCatalogItems>(),
+      )..loadInitial(),
+      child: Builder(builder: (provCtx) {
+        if (!_hydrated && widget.invoice != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            try {
+              provCtx.read<InvoiceFormCubit>().hydrateFromInvoice(widget.invoice!);
+            } catch (_) {}
+          });
+          _hydrated = true;
+        }
+        return Scaffold(
+        backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -153,8 +155,12 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         children: [
           // Invoice Title and Form
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+            child: Builder(builder: (context) {
+              final bottomSafe = MediaQuery.of(context).viewPadding.bottom;
+              // Add extra bottom padding so content doesn't collide with bottom bar
+              final bottomPad = 16.0 + bottomSafe + 80.0;
+              return SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPad),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -186,10 +192,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildFormField(
-                              'Customer',
-                              'Search a name or Tax ID...',
-                              _customerController,
+                            CustomerField(
+                              customerController: _customerController,
+                              addressController: _deliveryAddressController,
+                              readOnly: _isReadOnly,
                             ),
                             const SizedBox(height: 16),
                             _buildFormField(
@@ -260,42 +266,47 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                     ],
                   ),
 
-                  // Tab Content
-                  SizedBox(
-                    height: 400,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _buildInvoiceLinesTab(),
-                        _buildMaterialsTab(),
-                        _buildMeasurementTab(),
-                      ],
-                    ),
-                  ),
+                  // Tab Content (scrollable inside, height tuned to viewport)
+                  Builder(builder: (context) {
+                    final vh = MediaQuery.of(context).size.height;
+                    final tabHeight = (vh * 0.5).clamp(420.0, 560.0);
+                    return SizedBox(
+                      height: tabHeight,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          LinesTab(),
+                          MaterialsTab(),
+                          MeasurementTab(),
+                        ],
+                      ),
+                    );
+                  }),
 
                   const SizedBox(height: 24),
 
-                  // Totals Section
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _buildTotalRow('Total Invoice:',
-                            'NGN ${_calculateInvoiceLinesTotal().toStringAsFixed(2)}'),
-                        _buildTotalRow('Total Materials:',
-                            'NGN ${_calculateMaterialsTotal().toStringAsFixed(2)}'),
-                        const Divider(),
-                        _buildTotalRow('Total:',
-                            'NGN ${_calculateGrandTotal().toStringAsFixed(2)}',
-                            isBold: true),
-                      ],
-                    ),
+                  // Totals Section (computed by InvoiceFormCubit)
+                  BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
+                    builder: (context, state) {
+                      final cubit = context.read<InvoiceFormCubit>();
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            _buildTotalRow('Subtotal (Invoice):', 'NGN ${cubit.invoiceLinesTotal.toStringAsFixed(2)}'),
+                            _buildTotalRow('Subtotal (Materials):', 'NGN ${cubit.materialsTotal.toStringAsFixed(2)}'),
+                            const Divider(),
+                            _buildTotalRow('Total:', 'NGN ${cubit.grandTotal.toStringAsFixed(2)}', isBold: true),
+                          ],
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 24),
@@ -336,27 +347,16 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                   ),
                 ],
               ),
-            ),
+              );
+            }),
           ),
 
-          // Bottom Actions
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Colors.grey.shade200),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Spacer(),
-              ],
-            ),
-          ),
+          // Spacer removed to avoid minor vertical overflows
         ],
-      ),
-      bottomNavigationBar: _buildBottomActionBar(),
-    );
+        ),
+        bottomNavigationBar: _buildBottomActionBar(),
+      );
+    }));
   }
 
   Widget _buildBottomActionBar() {
@@ -552,6 +552,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     );
   }
 
+  
+
   Widget _buildDateField(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -609,91 +611,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     }
   }
 
-  // Invoice Section Management
-  void _addSection() {
-    setState(() {
-      _invoiceSections.add(_InvoiceSection(
-        descriptionController: TextEditingController(),
-      ));
-    });
-  }
-
-  void _removeSection(int index) {
-    setState(() {
-      _invoiceSections[index].dispose();
-      _invoiceSections.removeAt(index);
-    });
-  }
-
-  void _addLineToSection(int sectionIndex) {
-    setState(() {
-      _invoiceSections[sectionIndex].items.add(_InvoiceLineItem(
-            labelController: TextEditingController(),
-            quantityController: TextEditingController(text: '1'),
-            unitPriceController: TextEditingController(),
-          ));
-    });
-  }
-
-  void _addIndependentLine() {
-    setState(() {
-      _independentLines.add(_InvoiceLineItem(
-        labelController: TextEditingController(),
-        quantityController: TextEditingController(text: '1'),
-        unitPriceController: TextEditingController(),
-      ));
-    });
-  }
-
-  void _removeIndependentLine(int index) {
-    setState(() {
-      _independentLines[index].dispose();
-      _independentLines.removeAt(index);
-    });
-  }
-
-  void _removeLineFromSection(int sectionIndex, int itemIndex) {
-    setState(() {
-      _invoiceSections[sectionIndex].items[itemIndex].dispose();
-      _invoiceSections[sectionIndex].items.removeAt(itemIndex);
-    });
-  }
-
-  // Material Management
-  void _addMaterial() {
-    setState(() {
-      _materials.add(_InvoiceMaterialItem(
-        descriptionController: TextEditingController(),
-        quantityController: TextEditingController(text: '1'),
-        unitPriceController: TextEditingController(),
-      ));
-    });
-  }
-
-  void _removeMaterial(int index) {
-    setState(() {
-      _materials[index].dispose();
-      _materials.removeAt(index);
-    });
-  }
-
-  // Measurement Management
-  void _addMeasurement() {
-    setState(() {
-      _measurements.add(_InvoiceMeasurementItem(
-        itemController: TextEditingController(),
-        quantityController: TextEditingController(text: '1'),
-        uomController: TextEditingController(),
-      ));
-    });
-  }
-
-  void _removeMeasurement(int index) {
-    setState(() {
-      _measurements[index].dispose();
-      _measurements.removeAt(index);
-    });
-  }
+  // Management of sections/lines/materials/measurements moved to InvoiceFormCubit
 
   Widget _buildSelectableDateField(String label, String value) {
     return Column(
@@ -741,712 +659,78 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   }
 
   Widget _buildInvoiceLinesTab() {
-    return Column(
-      children: [
-        const SizedBox(height: 16),
-
-        // Table Header
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: const Row(
-            children: [
-              Expanded(
-                  flex: 3,
-                  child: Text('Label',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 1,
-                  child: Text('Qty',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 2,
-                  child: Text('Unit Price',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 2,
-                  child: Text('Subtotal',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              SizedBox(width: 32),
-            ],
-          ),
-        ),
-
-        // Sections
-        for (var i = 0; i < _invoiceSections.length; i++) ...[
-          // Section Header
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.orange.withOpacity(0.1),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _invoiceSections[i].descriptionController.text.isEmpty
-                        ? 'Section ${i + 1}'
-                        : _invoiceSections[i].descriptionController.text,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 14),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.edit, size: 16),
-                  onPressed: () => _editSection(i),
-                ),
-                if (!_isReadOnly)
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        size: 16, color: Colors.red),
-                    onPressed: () => _removeSection(i),
-                  ),
-              ],
-            ),
-          ),
-          // Section Items
-          for (var j = 0; j < _invoiceSections[i].items.length; j++)
-            _buildInvoiceLineRow(_invoiceSections[i].items[j],
-                () => _removeLineFromSection(i, j)),
-        ],
-
-        // Independent Lines
-        for (var i = 0; i < _independentLines.length; i++)
-          _buildInvoiceLineRow(
-              _independentLines[i], () => _removeIndependentLine(i)),
-
-        const SizedBox(height: 16),
-
-        // Action Buttons
-        if (!_isReadOnly)
-          Row(
-            children: [
-              ElevatedButton.icon(
-                onPressed: _addIndependentLine,
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF654321)),
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Line',
-                    style: TextStyle(color: Colors.white)),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton.icon(
-                onPressed: _addSection,
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Section',
-                    style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-      ],
-    );
+    return const SizedBox.shrink();
   }
 
-  Widget _buildInvoiceLineRow(_InvoiceLineItem item, VoidCallback onDelete) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(color: Colors.grey.shade200),
-          right: BorderSide(color: Colors.grey.shade200),
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: TextField(
-              controller: item.labelController,
-              readOnly: _isReadOnly,
-              decoration: const InputDecoration.collapsed(
-                  hintText: 'Enter description'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 1,
-            child: TextField(
-              controller: item.quantityController,
-              readOnly: _isReadOnly,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration.collapsed(hintText: '1'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: TextField(
-              controller: item.unitPriceController,
-              readOnly: _isReadOnly,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration.collapsed(hintText: 'NGN 0.00'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: Text(
-              'NGN ${item.subtotal.toStringAsFixed(2)}',
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ),
-          if (!_isReadOnly)
-            SizedBox(
-              width: 32,
-              child: IconButton(
-                icon: const Icon(Icons.delete_outline,
-                    color: Colors.red, size: 16),
-                onPressed: onDelete,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+  Widget _buildInvoiceLineRow([dynamic a, dynamic b]) => const SizedBox.shrink();
+
+  
 
   void _editSection(int index) {
+    // No-op placeholder — handled in LinesTab via cubit
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Edit Section'),
-        content: TextField(
-          controller: _invoiceSections[index].descriptionController,
-          decoration: const InputDecoration(labelText: 'Section Description'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {});
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
+        content: const Text('Section editing is handled in Lines tab.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
       ),
     );
   }
 
-  Widget _buildSectionCard(int sectionIndex) {
-    final section = _invoiceSections[sectionIndex];
+  Widget _buildSectionCard([int sectionIndex = 0]) => const SizedBox.shrink();
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Section Header
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: section.descriptionController,
-                    decoration: const InputDecoration(
-                      labelText: 'Section Description',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (!_isReadOnly)
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    onPressed: () => _removeSection(sectionIndex),
-                  ),
-              ],
-            ),
+  Widget _buildInvoiceLineCard([int a = 0, int b = 0]) => const SizedBox.shrink();
 
-            const SizedBox(height: 16),
+  double _calculateInvoiceLinesTotal() => 0.0;
 
-            // Section Items
-            for (var i = 0; i < section.items.length; i++)
-              _buildInvoiceLineCard(sectionIndex, i),
+  Widget _buildMaterialsTab() => const SizedBox.shrink();
 
-            const SizedBox(height: 8),
+  Widget _buildMaterialRow([dynamic a, dynamic onDelete]) => const SizedBox.shrink();
 
-            // Add Line Button
-            TextButton.icon(
-              onPressed: () => _addLineToSection(sectionIndex),
-              icon: const Icon(Icons.add),
-              label: const Text('Add Line'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildMaterialCard([int index = 0]) => const SizedBox.shrink();
 
-  Widget _buildInvoiceLineCard(int sectionIndex, int itemIndex) {
-    final item = _invoiceSections[sectionIndex].items[itemIndex];
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      color: Colors.grey.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            // First Row - Label and Delete
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: item.labelController,
-                    decoration: const InputDecoration(
-                      labelText: 'Item Description',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                if (!_isReadOnly)
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        color: Colors.red, size: 20),
-                    onPressed: () =>
-                        _removeLineFromSection(sectionIndex, itemIndex),
-                  ),
-              ],
-            ),
-
-            const SizedBox(height: 8),
-
-            // Second Row - Qty, Price, Tax, Total
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: TextField(
-                    controller: item.quantityController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Qty',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: item.unitPriceController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Unit Price',
-                      border: OutlineInputBorder(),
-                      prefixText: 'NGN ',
-                      isDense: true,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'NGN ${item.subtotal.toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  double _calculateInvoiceLinesTotal() {
-    double total = 0.0;
-    for (final section in _invoiceSections) {
-      for (final item in section.items) {
-        total += item.subtotal;
-      }
-    }
-    return total;
-  }
-
-  Widget _buildMaterialsTab() {
-    return Column(
-      children: [
-        const SizedBox(height: 16),
-
-        // Table Header
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: const Row(
-            children: [
-              Expanded(
-                  flex: 3,
-                  child: Text('Material',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 1,
-                  child: Text('Qty',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 2,
-                  child: Text('Unit Price',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 2,
-                  child: Text('Subtotal',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              SizedBox(width: 32),
-            ],
-          ),
-        ),
-
-        // Materials
-        for (var i = 0; i < _materials.length; i++)
-          _buildMaterialRow(_materials[i], () => _removeMaterial(i)),
-
-        const SizedBox(height: 16),
-
-        // Action Button
-        if (!_isReadOnly)
-          ElevatedButton.icon(
-            onPressed: _addMaterial,
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
-            icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text('Add Material',
-                style: TextStyle(color: Colors.white)),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildMaterialRow(_InvoiceMaterialItem item, VoidCallback onDelete) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(color: Colors.grey.shade200),
-          right: BorderSide(color: Colors.grey.shade200),
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: TextField(
-              controller: item.descriptionController,
-              decoration: const InputDecoration.collapsed(
-                  hintText: 'Enter material description'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 1,
-            child: TextField(
-              controller: item.quantityController,
-              readOnly: _isReadOnly,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration.collapsed(hintText: '1'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: TextField(
-              controller: item.unitPriceController,
-              readOnly: _isReadOnly,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration.collapsed(hintText: 'NGN 0.00'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: Text(
-              'NGN ${item.subtotal.toStringAsFixed(2)}',
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ),
-          if (!_isReadOnly)
-            SizedBox(
-              width: 32,
-              child: IconButton(
-                icon: const Icon(Icons.delete_outline,
-                    color: Colors.red, size: 16),
-                onPressed: onDelete,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMaterialCard(int index) {
-    final material = _materials[index];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 4,
-            child: TextField(
-              controller: material.descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Material Description',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: TextField(
-              controller: material.quantityController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Quantity',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
-            child: TextField(
-              controller: material.unitPriceController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Unit Price (NGN)',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            width: 80,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              'NGN ${material.subtotal.toStringAsFixed(2)}',
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          if (!_isReadOnly)
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.red),
-              onPressed: () => _removeMaterial(index),
-            ),
-        ],
-      ),
-    );
-  }
-
-  double _calculateMaterialsTotal() {
-    return _materials.fold<double>(
-        0.0, (prev, material) => prev + material.subtotal);
-  }
+  double _calculateMaterialsTotal() => 0.0;
 
   Widget _buildMeasurementTab() {
-    return Column(
-      children: [
-        const SizedBox(height: 16),
-
-        // Table Header
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: const Row(
-            children: [
-              Expanded(
-                  flex: 3,
-                  child: Text('Item',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 1,
-                  child: Text('Qty',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              Expanded(
-                  flex: 2,
-                  child: Text('UoM',
-                      style: TextStyle(fontWeight: FontWeight.w600))),
-              SizedBox(width: 32),
-            ],
-          ),
+    final children = <Widget>[
+      const SizedBox(height: 16),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          border: Border.all(color: Colors.grey.shade200),
         ),
-
-        // Measurements
-        for (var i = 0; i < _measurements.length; i++)
-          _buildMeasurementRow(_measurements[i], () => _removeMeasurement(i)),
-
-        const SizedBox(height: 16),
-
-        // Action Button
-        if (!_isReadOnly)
-          ElevatedButton.icon(
-            onPressed: _addMeasurement,
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
-            icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text('Add Measurement',
-                style: TextStyle(color: Colors.white)),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildMeasurementRow(
-      _InvoiceMeasurementItem item, VoidCallback onDelete) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(color: Colors.grey.shade200),
-          right: BorderSide(color: Colors.grey.shade200),
-          bottom: BorderSide(color: Colors.grey.shade200),
+        child: const Row(
+          children: [
+            Expanded(
+                flex: 3,
+                child:
+                    Text('Item', style: TextStyle(fontWeight: FontWeight.w600))),
+            Expanded(
+                flex: 1,
+                child: Text('Qty',
+                    style: TextStyle(fontWeight: FontWeight.w600))),
+            Expanded(
+                flex: 2,
+                child:
+                    Text('UoM', style: TextStyle(fontWeight: FontWeight.w600))),
+            SizedBox(width: 32),
+          ],
         ),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: TextField(
-              controller: item.itemController,
-              decoration:
-                  const InputDecoration.collapsed(hintText: 'Enter item'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 1,
-            child: TextField(
-              controller: item.quantityController,
-              readOnly: _isReadOnly,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration.collapsed(hintText: '1'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: TextField(
-              controller: item.uomController,
-              decoration:
-                  const InputDecoration.collapsed(hintText: 'Enter unit'),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (!_isReadOnly)
-            SizedBox(
-              width: 32,
-              child: IconButton(
-                icon: const Icon(Icons.delete_outline,
-                    color: Colors.red, size: 16),
-                onPressed: onDelete,
-              ),
-            ),
-        ],
-      ),
-    );
+    ];
+    // migrated to MeasurementTab widget
+    children.add(const SizedBox(height: 16));
+    // migrated to MeasurementTab widget
+    return ListView(padding: EdgeInsets.zero, children: children);
   }
 
-  Widget _buildMeasurementCard(int index) {
-    final measurement = _measurements[index];
+  Widget _buildMeasurementRow([dynamic a, dynamic b]) => const SizedBox.shrink();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: TextField(
-              controller: measurement.itemController,
-              decoration: const InputDecoration(
-                labelText: 'Item',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: TextField(
-              controller: measurement.quantityController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Qty',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: TextField(
-              controller: measurement.uomController,
-              decoration: const InputDecoration(
-                labelText: 'UoM',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            ),
-          ),
-          if (!_isReadOnly)
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.red),
-              onPressed: () => _removeMeasurement(index),
-            ),
-        ],
-      ),
-    );
-  }
+  Widget _buildMeasurementCard([int index = 0]) => const SizedBox.shrink();
 
-  double _calculateMeasurementTotal() {
-    // Measurements don't have monetary values, so return 0
-    return 0.0;
-  }
-
-  double _calculateGrandTotal() {
-    return _calculateInvoiceLinesTotal() + _calculateMaterialsTotal();
-  }
+  // Totals are computed by InvoiceFormCubit
 
   Widget _buildTotalRow(String label, String amount,
       {bool isBold = false, double fontSize = 14}) {
@@ -1475,82 +759,4 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   }
 }
 
-// Data models for dynamic invoice management
-class _InvoiceSection {
-  TextEditingController descriptionController;
-  List<_InvoiceLineItem> items;
-
-  _InvoiceSection({
-    required this.descriptionController,
-    List<_InvoiceLineItem>? items,
-  }) : items = items ?? [];
-
-  void dispose() {
-    descriptionController.dispose();
-    for (final item in items) {
-      item.dispose();
-    }
-  }
-}
-
-class _InvoiceLineItem {
-  TextEditingController labelController;
-  TextEditingController quantityController;
-  TextEditingController unitPriceController;
-
-  _InvoiceLineItem({
-    required this.labelController,
-    required this.quantityController,
-    required this.unitPriceController,
-  });
-
-  double get quantity => double.tryParse(quantityController.text) ?? 1.0;
-  double get unitPrice => double.tryParse(unitPriceController.text) ?? 0.0;
-  double get subtotal => quantity * unitPrice;
-
-  void dispose() {
-    labelController.dispose();
-    quantityController.dispose();
-    unitPriceController.dispose();
-  }
-}
-
-class _InvoiceMaterialItem {
-  TextEditingController descriptionController;
-  TextEditingController quantityController;
-  TextEditingController unitPriceController;
-
-  _InvoiceMaterialItem({
-    required this.descriptionController,
-    required this.quantityController,
-    required this.unitPriceController,
-  });
-
-  double get quantity => double.tryParse(quantityController.text) ?? 1.0;
-  double get unitPrice => double.tryParse(unitPriceController.text) ?? 0.0;
-  double get subtotal => quantity * unitPrice;
-
-  void dispose() {
-    descriptionController.dispose();
-    quantityController.dispose();
-    unitPriceController.dispose();
-  }
-}
-
-class _InvoiceMeasurementItem {
-  TextEditingController itemController;
-  TextEditingController quantityController;
-  TextEditingController uomController;
-
-  _InvoiceMeasurementItem({
-    required this.itemController,
-    required this.quantityController,
-    required this.uomController,
-  });
-
-  void dispose() {
-    itemController.dispose();
-    quantityController.dispose();
-    uomController.dispose();
-  }
-}
+// Obsolete local models removed (now handled by InvoiceFormCubit)

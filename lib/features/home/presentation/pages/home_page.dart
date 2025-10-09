@@ -33,6 +33,7 @@ import 'package:artisans_circle/features/home/presentation/widgets/banner_carous
 import 'package:artisans_circle/features/home/presentation/widgets/enhanced_banner_carousel.dart';
 import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
+import 'package:artisans_circle/features/home/utils/home_data_loader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,6 +53,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   bool _loadingMoreOrders = false;
   // Backing list for the Applications tab so we can update agreement state at runtime
   List<JobModel> _applications = [];
+
+  // Performance optimization: centralized data loader
+  final HomeDataLoader _dataLoader = HomeDataLoader();
   final List<Map<String, String>> _heroItems = [
     {
       'title': 'Discover Your Ideal\nJob match',
@@ -77,45 +81,27 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     // Auto-advance disabled to avoid animation-driven flakiness in widget tests.
     try {
       _ordersBloc = BlocProvider.of<CatalogRequestsBloc>(context);
-      _ordersBloc!.add(LoadCatalogRequests());
     } catch (_) {
       // Fallback if provider not found (should not happen under AppShell)
       _ordersBloc = getIt<CatalogRequestsBloc>();
-      _ordersBloc!.add(LoadCatalogRequests());
     }
     _scrollController.addListener(_onScroll);
 
-    // Load real data from APIs
-    _loadJobsData();
-    _loadAccountData();
-  }
-
-  void _loadJobsData() {
-    try {
-      final jobBloc = BlocProvider.of<JobBloc>(context);
-      // Load applications first (for Applications tab)
-      // Jobs will be loaded when user switches to Jobs tab to avoid race condition
-      jobBloc.add(LoadApplications(page: 1, limit: 10));
-    } catch (e) {
-      // JobBloc not available in context, will use sample data
-    }
-  }
-
-  void _loadAccountData() {
-    try {
-      final accountBloc = BlocProvider.of<AccountBloc>(context);
-      // Load earnings data
-      accountBloc.add(AccountLoadEarnings());
-      accountBloc.add(AccountLoadTransactions(page: 1, limit: 10));
-    } catch (e) {
-      // AccountBloc not available, will use fallback data
-    }
+    // ✅ PERFORMANCE OPTIMIZATION: Staggered data loading with request management
+    // Load data after first frame to avoid blocking initial render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _dataLoader.loadAllData(context);
+      }
+    });
   }
 
   @override
   void dispose() {
     _heroController.dispose();
     _scrollController.dispose();
+    // ✅ Cancel all pending API requests to prevent memory leaks
+    _dataLoader.dispose();
     // Do not close _ordersBloc here; AppShell owns its lifecycle
     super.dispose();
   }

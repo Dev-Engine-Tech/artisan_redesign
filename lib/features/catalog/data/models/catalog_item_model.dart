@@ -12,6 +12,12 @@ class CatalogItemModel extends CatalogItem {
     super.ownerName,
     super.status,
     super.projectStatus,
+    super.instantSelling,
+    super.brand,
+    super.condition,
+    super.salesCategory,
+    super.warranty,
+    super.delivery,
   });
 
   factory CatalogItemModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +70,14 @@ class CatalogItemModel extends CatalogItem {
     // Handle both direct catalog items and catalog request items
     final catalogData = catalog ?? json;
 
+    bool toBool(dynamic v) {
+      if (v == null) return false;
+      if (v is bool) return v;
+      if (v is int) return v != 0;
+      if (v is String) return v.toLowerCase() == 'true' || v == '1';
+      return false;
+    }
+
     return CatalogItemModel(
       id: (catalogData['id'] ?? json['id'] ?? '').toString(),
       title: (catalogData['title'] ?? json['title'] ?? json['name'] ?? '')
@@ -87,6 +101,12 @@ class CatalogItemModel extends CatalogItem {
       ownerName: ownerName,
       status: json['status']?.toString(),
       projectStatus: json['project_status']?.toString(),
+      instantSelling: toBool(catalogData['instant_selling'] ?? json['instant_selling']),
+      brand: (catalogData['brand'] ?? json['brand'])?.toString(),
+      condition: (catalogData['condition'] ?? json['condition'])?.toString(),
+      salesCategory: (catalogData['sales_category'] ?? json['sales_category'])?.toString(),
+      warranty: toBool(catalogData['warranty'] ?? json['warranty']),
+      delivery: toBool(catalogData['delivery'] ?? json['delivery']),
     );
   }
 
@@ -101,5 +121,11 @@ class CatalogItemModel extends CatalogItem {
         ownerName: ownerName,
         status: status,
         projectStatus: projectStatus,
+        instantSelling: instantSelling,
+        brand: brand,
+        condition: condition,
+        salesCategory: salesCategory,
+        warranty: warranty,
+        delivery: delivery,
       );
 }

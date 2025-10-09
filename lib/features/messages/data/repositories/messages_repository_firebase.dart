@@ -189,8 +189,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
           .collection('messages')
           .doc(messageId);
       batch.set(ref, {
-        'senderId': sender,
-        'receiverId': receiver,
+        'senderId': sender, // Store as string for consistent querying
+        'receiverId': receiver, // Store as string for consistent querying
         'text': text,
         'type': 'text',
         'timeSent': now.millisecondsSinceEpoch,
@@ -226,29 +226,45 @@ class MessagesRepositoryFirebase implements MessagesRepository {
       {required int currentUserId, required String conversationId}) async {
     // Mark all un-seen incoming messages as seen for current user in this conversation
     final docId = _userDocId(currentUserId);
+
+    // Get all unseen messages for this user in the conversation
     final q = await _users
         .doc(docId)
         .collection('chats')
         .doc(conversationId)
         .collection('messages')
         .where('isSeen', isEqualTo: false)
-        .where('receiverId', isEqualTo: docId)
         .get();
+
     final batch = firestore.batch();
+    int updateCount = 0;
+
     for (final d in q.docs) {
-      // Update current user's copy
-      batch.update(d.reference, {'isSeen': true});
-      // Update mirrored copy on sender's branch so they see the read receipt
-      final msgId = d.data()['messageId'] as String? ?? d.id;
-      final mirrorRef = _users
-          .doc(conversationId)
-          .collection('chats')
-          .doc(docId)
-          .collection('messages')
-          .doc(msgId);
-      batch.update(mirrorRef, {'isSeen': true});
+      final msgData = d.data();
+      final receiverId = msgData['receiverId']?.toString() ?? '';
+
+      // Only mark messages where current user is the receiver
+      if (receiverId == docId) {
+        // Update current user's copy
+        batch.update(d.reference, {'isSeen': true});
+
+        // Update mirrored copy on sender's branch so they see the read receipt
+        final msgId = msgData['messageId'] as String? ?? d.id;
+        final mirrorRef = _users
+            .doc(conversationId)
+            .collection('chats')
+            .doc(docId)
+            .collection('messages')
+            .doc(msgId);
+        batch.update(mirrorRef, {'isSeen': true});
+        updateCount++;
+      }
     }
-    await batch.commit();
+
+    if (updateCount > 0) {
+      await batch.commit();
+    }
+
     // Reset unreadCount field on chat contact (if used)
     await _users
         .doc(docId)
@@ -302,8 +318,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
           .collection('messages')
           .doc(messageId);
       batch.set(ref, {
-        'senderId': sender,
-        'receiverId': receiver,
+        'senderId': sender, // Store as string for consistent querying
+        'receiverId': receiver, // Store as string for consistent querying
         'text': 'audio',
         'type': 'audio',
         'timeSent': now.millisecondsSinceEpoch,
@@ -364,8 +380,8 @@ class MessagesRepositoryFirebase implements MessagesRepository {
           .collection('messages')
           .doc(messageId);
       batch.set(ref, {
-        'senderId': sender,
-        'receiverId': receiver,
+        'senderId': sender, // Store as string for consistent querying
+        'receiverId': receiver, // Store as string for consistent querying
         'text': '',
         'type': 'image',
         'timeSent': now.millisecondsSinceEpoch,

@@ -14,6 +14,12 @@ class UpdateCatalog {
     int? priceMax,
     String? projectTimeline,
     List<String> newImagePaths = const [],
+    bool? instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool? warranty,
+    bool? delivery,
   }) =>
       repository.updateCatalog(
         id: id,
@@ -24,5 +30,11 @@ class UpdateCatalog {
         priceMax: priceMax,
         projectTimeline: projectTimeline,
         newImagePaths: newImagePaths,
+        instantSelling: instantSelling,
+        brand: brand,
+        condition: condition,
+        salesCategory: salesCategory,
+        warranty: warranty,
+        delivery: delivery,
       );
 }

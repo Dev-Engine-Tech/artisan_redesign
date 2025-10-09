@@ -30,7 +30,11 @@ class _MyProfilePageState extends State<MyProfilePage> {
   void initState() {
     super.initState();
     _bloc = getIt<AccountBloc>();
-    _bloc.add(AccountLoadProfile());
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final currentState = _bloc.state;
+    if (currentState is! AccountProfileLoaded) {
+      _bloc.add(AccountLoadProfile());
+    }
   }
 
   @override

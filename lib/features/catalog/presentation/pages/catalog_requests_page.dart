@@ -20,7 +20,11 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
   void initState() {
     super.initState();
     bloc = getIt<CatalogRequestsBloc>();
-    bloc.add(LoadCatalogRequests());
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final currentState = bloc.state;
+    if (currentState is! CatalogRequestsLoaded) {
+      bloc.add(LoadCatalogRequests());
+    }
   }
 
   @override
@@ -58,6 +62,7 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
                 return const Center(child: Text('No catalog requests'));
               }
               return RefreshIndicator(
+                // ✅ PERFORMANCE FIX: Force refresh on pull-to-refresh is intentional
                 onRefresh: () async => bloc.add(RefreshCatalogRequests()),
                 child: ListView.builder(
                   itemCount: items.length + 1,
@@ -65,6 +70,7 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
                     if (index == items.length) {
                       if (_next != null) {
                         return TextButton(
+                          // ✅ PERFORMANCE FIX: Load more for pagination is intentional
                           onPressed: () =>
                               bloc.add(LoadCatalogRequests(next: _next)),
                           child: const Text('Load more'),

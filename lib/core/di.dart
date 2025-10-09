@@ -122,6 +122,10 @@ import 'package:artisans_circle/features/invoices/presentation/bloc/invoice_bloc
 import 'package:artisans_circle/core/network/http_service.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 // import 'package:artisans_circle/core/performance/performance_monitor.dart';
+// Customers
+import 'package:artisans_circle/features/customers/data/repositories/customer_repository_fake.dart';
+import 'package:artisans_circle/features/customers/domain/repositories/customer_repository.dart';
+import 'package:artisans_circle/features/customers/domain/usecases/get_customers.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -535,5 +539,13 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       sendInvoice: getIt<invoice_usecases.SendInvoice>(),
       repository: getIt<InvoiceRepository>(),
     ),
+  );
+
+  // Customers feature (sample data via fake repository)
+  getIt.registerLazySingleton<CustomerRepository>(
+    () => CustomerRepositoryFake(),
+  );
+  getIt.registerLazySingleton<GetCustomers>(
+    () => GetCustomers(getIt<CustomerRepository>()),
   );
 }

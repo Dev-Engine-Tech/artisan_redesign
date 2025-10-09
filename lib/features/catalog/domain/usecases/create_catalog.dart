@@ -13,6 +13,12 @@ class CreateCatalog {
     int? priceMax,
     String? projectTimeline,
     List<String> imagePaths = const [],
+    bool instantSelling = false,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool warranty = false,
+    bool delivery = false,
   }) =>
       repository.createCatalog(
         title: title,
@@ -22,5 +28,11 @@ class CreateCatalog {
         priceMax: priceMax,
         projectTimeline: projectTimeline,
         imagePaths: imagePaths,
+        instantSelling: instantSelling,
+        brand: brand,
+        condition: condition,
+        salesCategory: salesCategory,
+        warranty: warranty,
+        delivery: delivery,
       );
 }

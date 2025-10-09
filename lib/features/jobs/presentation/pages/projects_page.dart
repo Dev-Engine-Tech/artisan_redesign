@@ -30,7 +30,11 @@ class _CatalogPageState extends State<CatalogPage>
   void initState() {
     super.initState();
     bloc = getIt<CatalogBloc>();
-    bloc.add(LoadMyCatalog());
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final currentState = bloc.state;
+    if (currentState is! CatalogLoaded) {
+      bloc.add(LoadMyCatalog());
+    }
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -280,6 +284,7 @@ class _CatalogPageState extends State<CatalogPage>
           final items = state.items;
           if (items.isEmpty) {
             return RefreshIndicator(
+              // ✅ PERFORMANCE FIX: Force refresh on pull-to-refresh is intentional
               onRefresh: () async =>
                   context.read<CatalogBloc>().add(RefreshMyCatalog()),
               child: ListView(
@@ -294,6 +299,7 @@ class _CatalogPageState extends State<CatalogPage>
           }
 
           return RefreshIndicator(
+            // ✅ PERFORMANCE FIX: Force refresh on pull-to-refresh is intentional
             onRefresh: () async =>
                 context.read<CatalogBloc>().add(RefreshMyCatalog()),
             child: ListView.builder(
@@ -327,6 +333,7 @@ class _CatalogPageState extends State<CatalogPage>
               MaterialPageRoute(
                   builder: (_) => CatalogItemDetailsPage(item: item)),
             );
+            // ✅ PERFORMANCE FIX: Reload after item edit is intentional
             if (changed == true && mounted) {
               context.read<CatalogBloc>().add(RefreshMyCatalog());
             }

@@ -41,6 +41,14 @@ app.*.symbols
 app.*.map.json
 
 AGENTS.md
+PERFORMANCE.md
+CACHING.md
+CACHING_AND_REACTIVE_GUIDE.md
+COMPREHENSIVE_APP_AUDIT.md
+PERFORMANCE_OPTIMIZATIONS.md
+REFACTORING_SUMMARY.md
+SECURITY_IMPROVEMENTS.md
+TODO.md
 
 # Android Studio will place build artifacts here
 /android/app/debug
@@ -70,6 +78,7 @@ GoogleService-Info.plist
 .env.local
 .env.production
 .env.staging
+.gitignore
 
 # macOS
 .DS_Store

@@ -6,7 +6,7 @@ import '../../domain/entities/invoice.dart';
 import '../bloc/invoice_bloc.dart';
 import 'create_invoice_page.dart';
 
-class InvoicesPage extends StatelessWidget {
+class InvoicesPage extends StatefulWidget {
   final InvoiceStatus? status;
   final String? title;
 
@@ -15,6 +15,31 @@ class InvoicesPage extends StatelessWidget {
     this.status,
     this.title,
   });
+
+  @override
+  State<InvoicesPage> createState() => _InvoicesPageState();
+}
+
+class _InvoicesPageState extends State<InvoicesPage> {
+  late final InvoiceBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = getIt<InvoiceBloc>();
+
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final currentState = _bloc.state;
+    if (currentState is! InvoicesLoaded) {
+      _bloc.add(const LoadInvoices());
+    }
+  }
+
+  @override
+  void dispose() {
+    _bloc.close();
+    super.dispose();
+  }
 
   String _formatCurrency(double amount) {
     return 'NGN ${amount.toStringAsFixed(0).replaceAllMapped(
@@ -180,7 +205,7 @@ class InvoicesPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Text(
-          title ?? 'Invoices',
+          widget.title ?? 'Invoices',
           style: const TextStyle(
             color: Colors.black87,
             fontWeight: FontWeight.w700,
@@ -201,10 +226,8 @@ class InvoicesPage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocProvider(
-        create: (context) {
-          return getIt<InvoiceBloc>()..add(const LoadInvoices());
-        },
+      body: BlocProvider.value(
+        value: _bloc,
         child: BlocBuilder<InvoiceBloc, InvoiceState>(
           builder: (context, state) {
             if (state is InvoiceLoading) {

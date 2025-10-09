@@ -12,6 +12,12 @@ abstract class CatalogRepository {
     int? priceMax,
     String? projectTimeline,
     List<String> imagePaths,
+    bool instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool warranty,
+    bool delivery,
   });
 
   Future<CatalogItem> updateCatalog({
@@ -23,6 +29,12 @@ abstract class CatalogRepository {
     int? priceMax,
     String? projectTimeline,
     List<String> newImagePaths,
+    bool? instantSelling,
+    String? brand,
+    String? condition,
+    String? salesCategory,
+    bool? warranty,
+    bool? delivery,
   });
 
   Future<bool> deleteCatalog(String id);

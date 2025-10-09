@@ -2,17 +2,20 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 
 import '../../domain/entities/invoice.dart';
 import '../../domain/repositories/invoice_repository.dart';
 import '../../domain/usecases/get_invoices.dart';
 import '../../domain/usecases/create_invoice.dart' as usecase;
 import '../../domain/usecases/send_invoice.dart' as usecase;
+import '../../data/models/invoice_model.dart' show InvoiceModel;
 
 part 'invoice_event.dart';
 part 'invoice_state.dart';
 
-class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
+// ✅ WEEK 4: Added CachedBlocMixin for automatic caching
+class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> with CachedBlocMixin {
   final GetInvoices getInvoices;
   final usecase.CreateInvoice createInvoice;
   final usecase.SendInvoice sendInvoice;
@@ -39,10 +42,25 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   ) async {
     try {
       emit(InvoiceLoading());
-      final invoices = await getInvoices(
-        page: event.page,
-        limit: event.limit,
-        status: event.status,
+
+      // ✅ WEEK 4: Added caching with 3 minute TTL for invoices
+      final cacheKey = 'invoices_p${event.page}_l${event.limit}_s${event.status?.name ?? 'all'}';
+
+      final invoices = await executeWithCache(
+        cacheKey: cacheKey,
+        fetch: () => getInvoices(
+          page: event.page,
+          limit: event.limit,
+          status: event.status,
+        ),
+        // Cache as JSON; restore to domain invoices
+        fromJson: (json) => (json as List)
+            .map((e) => InvoiceModel.fromJson(e as Map<String, dynamic>).toEntity())
+            .toList(),
+        toJson: (invoices) => invoices
+            .map((inv) => InvoiceModel.fromEntity(inv as Invoice).toJson())
+            .toList(),
+        ttl: const Duration(minutes: 3),
       );
 
       emit(InvoicesLoaded(

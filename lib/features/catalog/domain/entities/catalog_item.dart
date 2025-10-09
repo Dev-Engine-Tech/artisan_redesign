@@ -12,6 +12,14 @@ class CatalogItem extends Equatable {
   final String? status; // e.g., "accepted", "rejected", "pending"
   final String? projectStatus; // e.g., "ongoing", "completed", "paused"
 
+  // Instant selling fields
+  final bool instantSelling;
+  final String? brand;
+  final String? condition; // "Brand New", "Foreign used", "Local Used"
+  final String? salesCategory;
+  final bool warranty;
+  final bool delivery;
+
   const CatalogItem({
     required this.id,
     required this.title,
@@ -23,6 +31,12 @@ class CatalogItem extends Equatable {
     this.ownerName,
     this.status,
     this.projectStatus,
+    this.instantSelling = false,
+    this.brand,
+    this.condition,
+    this.salesCategory,
+    this.warranty = false,
+    this.delivery = false,
   });
 
   @override
@@ -36,6 +50,12 @@ class CatalogItem extends Equatable {
         imageUrl,
         ownerName,
         status,
-        projectStatus
+        projectStatus,
+        instantSelling,
+        brand,
+        condition,
+        salesCategory,
+        warranty,
+        delivery,
       ];
 }

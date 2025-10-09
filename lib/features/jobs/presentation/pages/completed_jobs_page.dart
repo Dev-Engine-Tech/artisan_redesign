@@ -24,7 +24,12 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<JobBloc>().add(LoadCompletedJobs());
+    // ✅ PERFORMANCE FIX: Check state before loading
+    final bloc = context.read<JobBloc>();
+    final currentState = bloc.state;
+    if (currentState is! JobStateCompletedLoaded) {
+      bloc.add(LoadCompletedJobs());
+    }
   }
 
   @override
@@ -68,6 +73,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
           ),
           IconButton(
             onPressed: () {
+              // ✅ PERFORMANCE FIX: Force refresh is intentional here
               context.read<JobBloc>().add(LoadCompletedJobs());
             },
             icon: const Icon(Icons.refresh, color: Colors.black54),
@@ -364,6 +370,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
 
     return RefreshIndicator(
       onRefresh: () async {
+        // ✅ PERFORMANCE FIX: Force refresh is intentional here
         context.read<JobBloc>().add(LoadCompletedJobs());
       },
       child: ListView.builder(
@@ -446,6 +453,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
+              // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
               context.read<JobBloc>().add(LoadCompletedJobs());
             },
             style: ElevatedButton.styleFrom(
