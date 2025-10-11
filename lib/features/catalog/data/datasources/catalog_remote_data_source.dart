@@ -145,8 +145,10 @@ class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
         MapEntry('project_timeline', projectTimeline),
       MapEntry('instant_selling', instantSelling.toString()),
       if (brand != null && brand.isNotEmpty) MapEntry('brand', brand),
-      if (condition != null && condition.isNotEmpty) MapEntry('condition', condition),
-      if (salesCategory != null && salesCategory.isNotEmpty) MapEntry('sales_category', salesCategory),
+      if (condition != null && condition.isNotEmpty)
+        MapEntry('condition', condition),
+      if (salesCategory != null && salesCategory.isNotEmpty)
+        MapEntry('sales_category', salesCategory),
       MapEntry('warranty', warranty.toString()),
       MapEntry('delivery', delivery.toString()),
     ]);

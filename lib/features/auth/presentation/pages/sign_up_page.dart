@@ -129,7 +129,7 @@ class _SignUpViewState extends State<_SignUpView> {
               hintStyle: TextStyle(color: Colors.grey[400]),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
-              prefixIcon: prefixIcon != null 
+              prefixIcon: prefixIcon != null
                   ? Icon(prefixIcon, color: Colors.grey[400])
                   : null,
               suffixIcon: suffixIcon,
@@ -198,12 +198,12 @@ class _SignUpViewState extends State<_SignUpView> {
       },
       builder: (context, state) {
         final cubit = context.read<SignUpCubit>();
-        
+
         if (state.step >= 4) {
           // Completed step - different layout
           return _buildCompletedStep(state, cubit);
         }
-        
+
         return Scaffold(
           body: Container(
             decoration: BoxDecoration(
@@ -252,12 +252,12 @@ class _SignUpViewState extends State<_SignUpView> {
                             ),
                           ],
                         ),
-                        
+
                         // Step indicator
                         _stepIndicator(state.step),
-                        
+
                         const SizedBox(height: 24),
-                        
+
                         // Title and subtitle
                         Text(
                           _getStepTitle(state.step),
@@ -268,9 +268,9 @@ class _SignUpViewState extends State<_SignUpView> {
                             height: 1.2,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 8),
-                        
+
                         Text(
                           _getStepSubtitle(state.step),
                           style: TextStyle(
@@ -281,7 +281,7 @@ class _SignUpViewState extends State<_SignUpView> {
                       ],
                     ),
                   ),
-                  
+
                   // Form section
                   Expanded(
                     child: Container(
@@ -328,7 +328,7 @@ class _SignUpViewState extends State<_SignUpView> {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          
+
           _buildTextField(
             controller: _firstController,
             label: 'First Name',
@@ -338,9 +338,9 @@ class _SignUpViewState extends State<_SignUpView> {
                 ? 'Please enter first name'
                 : null,
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           _buildTextField(
             controller: _lastController,
             label: 'Last Name',
@@ -350,9 +350,9 @@ class _SignUpViewState extends State<_SignUpView> {
                 ? 'Please enter last name'
                 : null,
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           _buildTextField(
             controller: _identifierController,
             label: 'Email Address',
@@ -363,18 +363,18 @@ class _SignUpViewState extends State<_SignUpView> {
                 ? 'Please enter email address'
                 : null,
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           _buildTextField(
             controller: _referralController,
             label: 'Referral Code (Optional)',
             hint: 'Enter referral code if you have one',
             prefixIcon: Icons.card_giftcard_outlined,
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Terms and conditions
           Row(
             children: [
@@ -416,16 +416,17 @@ class _SignUpViewState extends State<_SignUpView> {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Continue button
           SizedBox(
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                if (_formKeyStep0.currentState!.validate() && state.termsAccepted) {
+                if (_formKeyStep0.currentState!.validate() &&
+                    state.termsAccepted) {
                   cubit.updateName(
                     firstName: _firstController.text.trim(),
                     lastName: _lastController.text.trim(),
@@ -435,7 +436,8 @@ class _SignUpViewState extends State<_SignUpView> {
                   cubit.nextStep();
                 } else if (!state.termsAccepted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please accept terms and conditions')),
+                    const SnackBar(
+                        content: Text('Please accept terms and conditions')),
                   );
                 }
               },
@@ -456,9 +458,9 @@ class _SignUpViewState extends State<_SignUpView> {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Or register with
           Row(
             children: [
@@ -476,9 +478,9 @@ class _SignUpViewState extends State<_SignUpView> {
               Expanded(child: Divider(color: Colors.grey[300])),
             ],
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Social login buttons
           Row(
             children: [
@@ -510,9 +512,7 @@ class _SignUpViewState extends State<_SignUpView> {
                   ),
                 ),
               ),
-              
               const SizedBox(width: 16),
-              
               Expanded(
                 child: Container(
                   height: 56,
@@ -552,7 +552,6 @@ class _SignUpViewState extends State<_SignUpView> {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          
           _buildTextField(
             controller: _passwordController,
             label: 'Password',
@@ -561,18 +560,19 @@ class _SignUpViewState extends State<_SignUpView> {
             obscureText: _obscurePassword,
             suffixIcon: IconButton(
               icon: Icon(
-                _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                _obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
                 color: Colors.grey[400],
               ),
-              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+              onPressed: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
             ),
             validator: (v) => (v == null || v.length < 6)
                 ? 'Password must be at least 6 characters'
                 : null,
           ),
-          
           const SizedBox(height: 20),
-          
           _buildTextField(
             controller: _confirmController,
             label: 'Confirm Password',
@@ -581,18 +581,19 @@ class _SignUpViewState extends State<_SignUpView> {
             obscureText: _obscureConfirmPassword,
             suffixIcon: IconButton(
               icon: Icon(
-                _obscureConfirmPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                _obscureConfirmPassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
                 color: Colors.grey[400],
               ),
-              onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+              onPressed: () => setState(
+                  () => _obscureConfirmPassword = !_obscureConfirmPassword),
             ),
             validator: (v) => (v != _passwordController.text)
                 ? 'Passwords do not match'
                 : null,
           ),
-          
           const SizedBox(height: 32),
-          
           SizedBox(
             width: double.infinity,
             height: 56,
@@ -629,7 +630,6 @@ class _SignUpViewState extends State<_SignUpView> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        
         _buildTextField(
           controller: _phoneController,
           label: 'Phone Number',
@@ -637,9 +637,7 @@ class _SignUpViewState extends State<_SignUpView> {
           prefixIcon: Icons.phone_outlined,
           keyboardType: TextInputType.phone,
         ),
-        
         const SizedBox(height: 24),
-        
         if (!state.otpSent) ...[
           SizedBox(
             width: double.infinity,
@@ -686,9 +684,7 @@ class _SignUpViewState extends State<_SignUpView> {
             keyboardType: TextInputType.number,
             maxLength: 4,
           ),
-          
           const SizedBox(height: 24),
-          
           SizedBox(
             width: double.infinity,
             height: 56,
@@ -716,9 +712,7 @@ class _SignUpViewState extends State<_SignUpView> {
               ),
             ),
           ),
-          
           const SizedBox(height: 16),
-          
           TextButton(
             onPressed: () => cubit.sendOtp(_phoneController.text.trim()),
             child: Text(
@@ -738,7 +732,6 @@ class _SignUpViewState extends State<_SignUpView> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        
         _buildTextField(
           controller: _pinController,
           label: 'Withdrawal PIN',
@@ -748,9 +741,7 @@ class _SignUpViewState extends State<_SignUpView> {
           maxLength: 4,
           obscureText: true,
         ),
-        
         const SizedBox(height: 32),
-        
         SizedBox(
           width: double.infinity,
           height: 56,
@@ -768,7 +759,8 @@ class _SignUpViewState extends State<_SignUpView> {
               if (!mounted) return;
               if (cubit.state.createdUser != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Account created successfully!')),
+                  const SnackBar(
+                      content: Text('Account created successfully!')),
                 );
               }
             },
@@ -802,7 +794,7 @@ class _SignUpViewState extends State<_SignUpView> {
           child: Column(
             children: [
               const Spacer(),
-              
+
               // Success icon
               Container(
                 width: 120,
@@ -817,9 +809,9 @@ class _SignUpViewState extends State<_SignUpView> {
                   color: Colors.white,
                 ),
               ),
-              
+
               const SizedBox(height: 32),
-              
+
               const Text(
                 'Welcome to\nArtisans Circle!',
                 textAlign: TextAlign.center,
@@ -830,9 +822,9 @@ class _SignUpViewState extends State<_SignUpView> {
                   height: 1.2,
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               Text(
                 'Your account has been created successfully. Start showcasing your skills and connecting with clients.',
                 textAlign: TextAlign.center,
@@ -842,9 +834,9 @@ class _SignUpViewState extends State<_SignUpView> {
                   height: 1.4,
                 ),
               ),
-              
+
               const Spacer(),
-              
+
               // Action buttons
               SizedBox(
                 width: double.infinity,
@@ -877,9 +869,9 @@ class _SignUpViewState extends State<_SignUpView> {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               SizedBox(
                 width: double.infinity,
                 height: 56,

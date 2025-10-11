@@ -22,9 +22,18 @@ class MeasurementTab extends StatelessWidget {
             ),
             child: const Row(
               children: [
-                Expanded(flex: 3, child: Text('Item', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 2, child: Text('UoM', style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 3,
+                    child: Text('Item',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 1,
+                    child: Text('Qty',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 2,
+                    child: Text('UoM',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
                 SizedBox(width: 32),
               ],
             ),
@@ -51,9 +60,11 @@ class MeasurementTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton.icon(
                 onPressed: cubit.addMeasurement,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
+                style:
+                    ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
                 icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Measurement', style: TextStyle(color: Colors.white)),
+                label: const Text('Add Measurement',
+                    style: TextStyle(color: Colors.white)),
               ),
             ),
           );
@@ -104,7 +115,8 @@ class _MeasurementRowState extends State<_MeasurementRow> {
   void didUpdateWidget(covariant _MeasurementRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.item != widget.item) _item.text = widget.item;
-    if (oldWidget.quantity != widget.quantity) _qty.text = widget.quantity.toString();
+    if (oldWidget.quantity != widget.quantity)
+      _qty.text = widget.quantity.toString();
     if (oldWidget.uom != widget.uom) _uom.text = widget.uom;
   }
 
@@ -134,7 +146,8 @@ class _MeasurementRowState extends State<_MeasurementRow> {
             child: TextField(
               controller: _item,
               readOnly: widget.readOnly,
-              decoration: const InputDecoration.collapsed(hintText: 'Enter item'),
+              decoration:
+                  const InputDecoration.collapsed(hintText: 'Enter item'),
               onChanged: widget.onItemChanged,
             ),
           ),
@@ -163,7 +176,8 @@ class _MeasurementRowState extends State<_MeasurementRow> {
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 16),
                 onPressed: widget.onDelete,
               ),
             ),
@@ -172,4 +186,3 @@ class _MeasurementRowState extends State<_MeasurementRow> {
     );
   }
 }
-

@@ -213,9 +213,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   ElevatedButton(
                     onPressed: () {
                       // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
-                      context
-                          .read<AccountBloc>()
-                          .add(const AccountLoadTransactions(page: 1, limit: 20));
+                      context.read<AccountBloc>().add(
+                          const AccountLoadTransactions(page: 1, limit: 20));
                     },
                     child: const Text('Retry'),
                   ),

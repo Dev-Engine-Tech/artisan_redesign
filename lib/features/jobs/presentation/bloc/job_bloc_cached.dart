@@ -137,10 +137,12 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
         persistent: false,
       );
 
-      dev.log('Received ${list.length} applications (cached)', name: 'JobBlocCached');
+      dev.log('Received ${list.length} applications (cached)',
+          name: 'JobBlocCached');
       emit(JobStateAppliedSuccess(jobs: list, jobId: ''));
     } catch (e) {
-      dev.log('Error loading applications: $e', name: 'JobBlocCached', error: e);
+      dev.log('Error loading applications: $e',
+          name: 'JobBlocCached', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }

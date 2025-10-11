@@ -24,10 +24,22 @@ class LinesTab extends StatelessWidget {
             ),
             child: const Row(
               children: [
-                Expanded(flex: 3, child: Text('Label', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 2, child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 3,
+                    child: Text('Label',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 1,
+                    child: Text('Qty',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 2,
+                    child: Text('Unit Price',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 2,
+                    child: Text('Subtotal',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
                 SizedBox(width: 32),
               ],
             ),
@@ -47,7 +59,8 @@ class LinesTab extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController(text: section.description),
+                    controller:
+                        TextEditingController(text: section.description),
                     readOnly: readOnly,
                     decoration: const InputDecoration(
                       labelText: 'Section Description',
@@ -60,7 +73,8 @@ class LinesTab extends StatelessWidget {
                 if (!readOnly)
                   IconButton(
                       onPressed: () => cubit.removeSection(si),
-                      icon: const Icon(Icons.delete_outline, color: Colors.red)),
+                      icon:
+                          const Icon(Icons.delete_outline, color: Colors.red)),
               ],
             ),
           ));
@@ -74,10 +88,14 @@ class LinesTab extends StatelessWidget {
               unitPrice: line.unitPrice,
               subtotal: line.subtotal,
               catalogId: line.catalogId,
-              onLabelChanged: (v) => cubit.updateLineInSection(si, li, label: v),
-              onCatalogChanged: (id) => cubit.updateLineInSection(si, li, catalogId: id, clearCatalog: id == null),
-              onQtyChanged: (v) => cubit.updateLineInSection(si, li, quantity: v),
-              onPriceChanged: (v) => cubit.updateLineInSection(si, li, unitPrice: v),
+              onLabelChanged: (v) =>
+                  cubit.updateLineInSection(si, li, label: v),
+              onCatalogChanged: (id) => cubit.updateLineInSection(si, li,
+                  catalogId: id, clearCatalog: id == null),
+              onQtyChanged: (v) =>
+                  cubit.updateLineInSection(si, li, quantity: v),
+              onPriceChanged: (v) =>
+                  cubit.updateLineInSection(si, li, unitPrice: v),
               onEdit: () async {
                 final updated = await showLineItemModal(context, initial: line);
                 if (updated != null) {
@@ -100,7 +118,8 @@ class LinesTab extends StatelessWidget {
           if (!readOnly)
             children.add(
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: TextButton.icon(
@@ -129,7 +148,8 @@ class LinesTab extends StatelessWidget {
             subtotal: line.subtotal,
             catalogId: line.catalogId,
             onLabelChanged: (v) => cubit.updateIndependentLine(i, label: v),
-            onCatalogChanged: (id) => cubit.updateIndependentLine(i, catalogId: id, clearCatalog: id == null),
+            onCatalogChanged: (id) => cubit.updateIndependentLine(i,
+                catalogId: id, clearCatalog: id == null),
             onQtyChanged: (v) => cubit.updateIndependentLine(i, quantity: v),
             onPriceChanged: (v) => cubit.updateIndependentLine(i, unitPrice: v),
             onEdit: () async {
@@ -164,16 +184,20 @@ class LinesTab extends StatelessWidget {
                         cubit.addIndependentLineData(created);
                       }
                     },
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF654321)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF654321)),
                     icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text('Add Line', style: TextStyle(color: Colors.white)),
+                    label: const Text('Add Line',
+                        style: TextStyle(color: Colors.white)),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton.icon(
                     onPressed: cubit.addSection,
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.orange),
                     icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text('Add Section', style: TextStyle(color: Colors.white)),
+                    label: const Text('Add Section',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -216,11 +240,16 @@ class LinesTab extends StatelessWidget {
                       const Text('Invoice Summary',
                           style: TextStyle(fontWeight: FontWeight.w600)),
                       const SizedBox(height: 6),
-                      row('Base (Qty x Price):', 'NGN ${c.lineBaseTotal.toStringAsFixed(2)}'),
-                      row('Total Discount:', '- NGN ${c.lineDiscountTotal.toStringAsFixed(2)}'),
-                      row('Total Tax:', '+ NGN ${c.lineTaxTotal.toStringAsFixed(2)}'),
+                      row('Base (Qty x Price):',
+                          'NGN ${c.lineBaseTotal.toStringAsFixed(2)}'),
+                      row('Total Discount:',
+                          '- NGN ${c.lineDiscountTotal.toStringAsFixed(2)}'),
+                      row('Total Tax:',
+                          '+ NGN ${c.lineTaxTotal.toStringAsFixed(2)}'),
                       const Divider(height: 16),
-                      row('Lines Total:', 'NGN ${c.invoiceLinesTotal.toStringAsFixed(2)}', bold: true),
+                      row('Lines Total:',
+                          'NGN ${c.invoiceLinesTotal.toStringAsFixed(2)}',
+                          bold: true),
                     ],
                   );
                 },
@@ -285,8 +314,10 @@ class _LineRowState extends State<_LineRow> {
   void didUpdateWidget(covariant _LineRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.label != widget.label) _label.text = widget.label;
-    if (oldWidget.quantity != widget.quantity) _qty.text = widget.quantity.toString();
-    if (oldWidget.unitPrice != widget.unitPrice) _price.text = widget.unitPrice.toString();
+    if (oldWidget.quantity != widget.quantity)
+      _qty.text = widget.quantity.toString();
+    if (oldWidget.unitPrice != widget.unitPrice)
+      _price.text = widget.unitPrice.toString();
   }
 
   @override
@@ -329,7 +360,8 @@ class _LineRowState extends State<_LineRow> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 border: OutlineInputBorder(),
                 hintText: '1',
               ),
@@ -345,7 +377,8 @@ class _LineRowState extends State<_LineRow> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 border: OutlineInputBorder(),
                 hintText: 'NGN 0.00',
               ),
@@ -369,14 +402,16 @@ class _LineRowState extends State<_LineRow> {
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.edit_outlined, color: Colors.grey, size: 16),
+                icon: const Icon(Icons.edit_outlined,
+                    color: Colors.grey, size: 16),
                 onPressed: widget.onEdit,
               ),
             ),
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 16),
                 onPressed: widget.onDelete,
               ),
             ),

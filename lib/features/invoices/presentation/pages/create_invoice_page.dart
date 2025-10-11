@@ -101,262 +101,272 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     super.dispose();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => InvoiceFormCubit(
-        getCustomers: GetIt.I<GetCustomers>(),
-        getMyCatalogItems: GetIt.I<GetMyCatalogItems>(),
-      )..loadInitial(),
-      child: Builder(builder: (provCtx) {
-        if (!_hydrated && widget.invoice != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            try {
-              provCtx.read<InvoiceFormCubit>().hydrateFromInvoice(widget.invoice!);
-            } catch (_) {}
-          });
-          _hydrated = true;
-        }
-        return Scaffold(
-        backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          _getAppBarTitle(),
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.more_vert, color: Colors.grey),
-                  onPressed: () {},
+        create: (_) => InvoiceFormCubit(
+              getCustomers: GetIt.I<GetCustomers>(),
+              getMyCatalogItems: GetIt.I<GetMyCatalogItems>(),
+            )..loadInitial(),
+        child: Builder(builder: (provCtx) {
+          if (!_hydrated && widget.invoice != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              try {
+                provCtx
+                    .read<InvoiceFormCubit>()
+                    .hydrateFromInvoice(widget.invoice!);
+              } catch (_) {}
+            });
+            _hydrated = true;
+          }
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              title: Text(
+                _getAppBarTitle(),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              actions: [
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.more_vert, color: Colors.grey),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Invoice Title and Form
-          Expanded(
-            child: Builder(builder: (context) {
-              final bottomSafe = MediaQuery.of(context).viewPadding.bottom;
-              // Add extra bottom padding so content doesn't collide with bottom bar
-              final bottomPad = 16.0 + bottomSafe + 80.0;
-              return SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPad),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Customer Invoice',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Draft',
-                    style: TextStyle(
-                      fontSize: 32,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Form Fields Row
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left Column
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomerField(
-                              customerController: _customerController,
-                              addressController: _deliveryAddressController,
-                              readOnly: _isReadOnly,
-                            ),
-                            const SizedBox(height: 16),
-                            _buildFormField(
-                              'Delivery Address',
-                              '',
-                              _deliveryAddressController,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 24),
-
-                      // Right Column
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildSelectableDateField(
-                                'Invoice Date', _formatDate(_invoiceDate)),
-                            const SizedBox(height: 16),
-                            _buildSelectableDateField(
-                                'Due Date', _formatDate(_dueDate)),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                const Text(
-                                  'Currency',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                const Text('in',
-                                    style: TextStyle(color: Colors.grey)),
-                                const SizedBox(width: 16),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: Colors.grey.shade300),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: const Text('NGN'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Tab Bar
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: AppColors.orange,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: AppColors.orange,
-                    tabs: const [
-                      Tab(text: 'Invoice Lines'),
-                      Tab(text: 'Materials'),
-                      Tab(text: 'Measurement'),
-                    ],
-                  ),
-
-                  // Tab Content (scrollable inside, height tuned to viewport)
-                  Builder(builder: (context) {
-                    final vh = MediaQuery.of(context).size.height;
-                    final tabHeight = (vh * 0.5).clamp(420.0, 560.0);
-                    return SizedBox(
-                      height: tabHeight,
-                      child: TabBarView(
-                        controller: _tabController,
+            body: Column(
+              children: [
+                // Invoice Title and Form
+                Expanded(
+                  child: Builder(builder: (context) {
+                    final bottomSafe =
+                        MediaQuery.of(context).viewPadding.bottom;
+                    // Add extra bottom padding so content doesn't collide with bottom bar
+                    final bottomPad = 16.0 + bottomSafe + 80.0;
+                    return SingleChildScrollView(
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, bottomPad),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LinesTab(),
-                          MaterialsTab(),
-                          MeasurementTab(),
+                          const Text(
+                            'Customer Invoice',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Draft',
+                            style: TextStyle(
+                              fontSize: 32,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Form Fields Row
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Left Column
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomerField(
+                                      customerController: _customerController,
+                                      addressController:
+                                          _deliveryAddressController,
+                                      readOnly: _isReadOnly,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildFormField(
+                                      'Delivery Address',
+                                      '',
+                                      _deliveryAddressController,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 24),
+
+                              // Right Column
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildSelectableDateField('Invoice Date',
+                                        _formatDate(_invoiceDate)),
+                                    const SizedBox(height: 16),
+                                    _buildSelectableDateField(
+                                        'Due Date', _formatDate(_dueDate)),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Currency',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        const Text('in',
+                                            style:
+                                                TextStyle(color: Colors.grey)),
+                                        const SizedBox(width: 16),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.grey.shade300),
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                          child: const Text('NGN'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Tab Bar
+                          TabBar(
+                            controller: _tabController,
+                            labelColor: AppColors.orange,
+                            unselectedLabelColor: Colors.grey,
+                            indicatorColor: AppColors.orange,
+                            tabs: const [
+                              Tab(text: 'Invoice Lines'),
+                              Tab(text: 'Materials'),
+                              Tab(text: 'Measurement'),
+                            ],
+                          ),
+
+                          // Tab Content (scrollable inside, height tuned to viewport)
+                          Builder(builder: (context) {
+                            final vh = MediaQuery.of(context).size.height;
+                            final tabHeight = (vh * 0.5).clamp(420.0, 560.0);
+                            return SizedBox(
+                              height: tabHeight,
+                              child: TabBarView(
+                                controller: _tabController,
+                                children: [
+                                  LinesTab(),
+                                  MaterialsTab(),
+                                  MeasurementTab(),
+                                ],
+                              ),
+                            );
+                          }),
+
+                          const SizedBox(height: 24),
+
+                          // Totals Section (computed by InvoiceFormCubit)
+                          BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
+                            builder: (context, state) {
+                              final cubit = context.read<InvoiceFormCubit>();
+                              return Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    _buildTotalRow('Subtotal (Invoice):',
+                                        'NGN ${cubit.invoiceLinesTotal.toStringAsFixed(2)}'),
+                                    _buildTotalRow('Subtotal (Materials):',
+                                        'NGN ${cubit.materialsTotal.toStringAsFixed(2)}'),
+                                    const Divider(),
+                                    _buildTotalRow('Total:',
+                                        'NGN ${cubit.grandTotal.toStringAsFixed(2)}',
+                                        isBold: true),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Terms & Conditions Section
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Terms & Conditions:',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: TextFormField(
+                                  controller: _termsController,
+                                  readOnly: _isReadOnly,
+                                  maxLines: null,
+                                  expands: true,
+                                  textAlignVertical: TextAlignVertical.top,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Enter terms and conditions...',
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.all(12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     );
                   }),
+                ),
 
-                  const SizedBox(height: 24),
-
-                  // Totals Section (computed by InvoiceFormCubit)
-                  BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
-                    builder: (context, state) {
-                      final cubit = context.read<InvoiceFormCubit>();
-                      return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            _buildTotalRow('Subtotal (Invoice):', 'NGN ${cubit.invoiceLinesTotal.toStringAsFixed(2)}'),
-                            _buildTotalRow('Subtotal (Materials):', 'NGN ${cubit.materialsTotal.toStringAsFixed(2)}'),
-                            const Divider(),
-                            _buildTotalRow('Total:', 'NGN ${cubit.grandTotal.toStringAsFixed(2)}', isBold: true),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Terms & Conditions Section
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Terms & Conditions:',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: TextFormField(
-                          controller: _termsController,
-                          readOnly: _isReadOnly,
-                          maxLines: null,
-                          expands: true,
-                          textAlignVertical: TextAlignVertical.top,
-                          decoration: const InputDecoration(
-                            hintText: 'Enter terms and conditions...',
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.all(12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              );
-            }),
-          ),
-
-          // Spacer removed to avoid minor vertical overflows
-        ],
-        ),
-        bottomNavigationBar: _buildBottomActionBar(),
-      );
-    }));
+                // Spacer removed to avoid minor vertical overflows
+              ],
+            ),
+            bottomNavigationBar: _buildBottomActionBar(),
+          );
+        }));
   }
 
   Widget _buildBottomActionBar() {
@@ -552,8 +562,6 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     );
   }
 
-  
-
   Widget _buildDateField(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -662,9 +670,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return const SizedBox.shrink();
   }
 
-  Widget _buildInvoiceLineRow([dynamic a, dynamic b]) => const SizedBox.shrink();
-
-  
+  Widget _buildInvoiceLineRow([dynamic a, dynamic b]) =>
+      const SizedBox.shrink();
 
   void _editSection(int index) {
     // No-op placeholder — handled in LinesTab via cubit
@@ -673,20 +680,25 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
       builder: (context) => AlertDialog(
         title: const Text('Edit Section'),
         content: const Text('Section editing is handled in Lines tab.'),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: const Text('OK'))
+        ],
       ),
     );
   }
 
   Widget _buildSectionCard([int sectionIndex = 0]) => const SizedBox.shrink();
 
-  Widget _buildInvoiceLineCard([int a = 0, int b = 0]) => const SizedBox.shrink();
+  Widget _buildInvoiceLineCard([int a = 0, int b = 0]) =>
+      const SizedBox.shrink();
 
   double _calculateInvoiceLinesTotal() => 0.0;
 
   Widget _buildMaterialsTab() => const SizedBox.shrink();
 
-  Widget _buildMaterialRow([dynamic a, dynamic onDelete]) => const SizedBox.shrink();
+  Widget _buildMaterialRow([dynamic a, dynamic onDelete]) =>
+      const SizedBox.shrink();
 
   Widget _buildMaterialCard([int index = 0]) => const SizedBox.shrink();
 
@@ -705,12 +717,12 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
           children: [
             Expanded(
                 flex: 3,
-                child:
-                    Text('Item', style: TextStyle(fontWeight: FontWeight.w600))),
+                child: Text('Item',
+                    style: TextStyle(fontWeight: FontWeight.w600))),
             Expanded(
                 flex: 1,
-                child: Text('Qty',
-                    style: TextStyle(fontWeight: FontWeight.w600))),
+                child:
+                    Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
             Expanded(
                 flex: 2,
                 child:
@@ -726,7 +738,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return ListView(padding: EdgeInsets.zero, children: children);
   }
 
-  Widget _buildMeasurementRow([dynamic a, dynamic b]) => const SizedBox.shrink();
+  Widget _buildMeasurementRow([dynamic a, dynamic b]) =>
+      const SizedBox.shrink();
 
   Widget _buildMeasurementCard([int index = 0]) => const SizedBox.shrink();
 

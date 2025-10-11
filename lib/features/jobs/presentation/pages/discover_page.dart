@@ -880,7 +880,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
   void _loadTabContent(int index) {
     // ✅ PERFORMANCE FIX: Check if data is already loaded before fetching
     final currentState = bloc.state;
-    if (currentState is JobStateLoaded || currentState is JobStateAppliedSuccess) {
+    if (currentState is JobStateLoaded ||
+        currentState is JobStateAppliedSuccess) {
       // Data already loaded, no need to reload unless filters changed
       return;
     }

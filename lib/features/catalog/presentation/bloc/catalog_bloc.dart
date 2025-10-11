@@ -43,7 +43,8 @@ class CatalogError extends CatalogState {
 }
 
 // ✅ WEEK 4: Added CachedBlocMixin for automatic caching
-class CatalogBloc extends Bloc<CatalogEvent, CatalogState> with CachedBlocMixin {
+class CatalogBloc extends Bloc<CatalogEvent, CatalogState>
+    with CachedBlocMixin {
   final GetMyCatalogItems getMyCatalogItems;
   final GetCatalogByUser getCatalogByUser;
   CatalogBloc({required this.getMyCatalogItems, required this.getCatalogByUser})

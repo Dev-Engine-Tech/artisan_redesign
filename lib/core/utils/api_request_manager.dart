@@ -45,7 +45,8 @@ class ApiRequestManager {
           DateTime.now().difference(_lastRequestTime[requestId]!);
       if (timeSinceLastRequest < minRequestInterval) {
         final waitTime = minRequestInterval - timeSinceLastRequest;
-        debugPrint('⏳ Throttling request $requestId for ${waitTime.inMilliseconds}ms');
+        debugPrint(
+            '⏳ Throttling request $requestId for ${waitTime.inMilliseconds}ms');
         await Future.delayed(waitTime);
       }
     }
@@ -62,11 +63,12 @@ class ApiRequestManager {
     _lastRequestTime[requestId] = DateTime.now();
 
     try {
-      debugPrint('🚀 Executing request: $requestId (${_activeRequests.length} active)');
+      debugPrint(
+          '🚀 Executing request: $requestId (${_activeRequests.length} active)');
 
       // Execute with timeout
-      final result = await request()
-          .timeout(customTimeout ?? requestTimeout, onTimeout: () {
+      final result = await request().timeout(customTimeout ?? requestTimeout,
+          onTimeout: () {
         throw TimeoutException(
             'Request $requestId timed out after ${(customTimeout ?? requestTimeout).inSeconds}s');
       });

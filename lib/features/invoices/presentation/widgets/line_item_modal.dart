@@ -44,12 +44,12 @@ class _LineItemFormState extends State<_LineItemForm> {
   void initState() {
     super.initState();
     _label = TextEditingController(text: widget.initial?.label ?? '');
-    _qty = TextEditingController(
-        text: (widget.initial?.quantity ?? 1).toString());
+    _qty =
+        TextEditingController(text: (widget.initial?.quantity ?? 1).toString());
     _price = TextEditingController(
         text: (widget.initial?.unitPrice ?? 0).toString());
-    _discount = TextEditingController(
-        text: (widget.initial?.discount ?? 0).toString());
+    _discount =
+        TextEditingController(text: (widget.initial?.discount ?? 0).toString());
     _taxRatePct = TextEditingController(
         text: ((widget.initial?.taxRate ?? 0) * 100).toString());
     _catalogId = widget.initial?.catalogId;
@@ -68,7 +68,8 @@ class _LineItemFormState extends State<_LineItemForm> {
   double get _qtyValue => double.tryParse(_qty.text.trim()) ?? 0;
   double get _priceValue => double.tryParse(_price.text.trim()) ?? 0;
   double get _discountValue => double.tryParse(_discount.text.trim()) ?? 0;
-  double get _taxRateValue => (double.tryParse(_taxRatePct.text.trim()) ?? 0) / 100.0;
+  double get _taxRateValue =>
+      (double.tryParse(_taxRatePct.text.trim()) ?? 0) / 100.0;
 
   double get _previewSubtotal {
     final base = (_qtyValue * _priceValue);
@@ -105,7 +106,8 @@ class _LineItemFormState extends State<_LineItemForm> {
                     ),
                     const Text(
                       'Line Item',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 12),
                     LabelCell(
@@ -206,7 +208,8 @@ class _LineItemFormState extends State<_LineItemForm> {
                               Navigator.of(context).pop(item);
                             },
                             icon: const Icon(Icons.check, color: Colors.white),
-                            label: const Text('Save', style: TextStyle(color: Colors.white)),
+                            label: const Text('Save',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],

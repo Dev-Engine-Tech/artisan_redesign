@@ -235,7 +235,26 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
 
   @override
   Future<bool> applyToJob(JobApplication application) async {
-    final applicationData = application.toJson();
+    final Map<String, dynamic> applicationData = application.toJson();
+    // Ensure timeline field variants are present for different backends
+    if (applicationData['duration'] is String &&
+        (applicationData['project_timeline'] == null ||
+            (applicationData['project_timeline'] as String?)?.isEmpty ==
+                true)) {
+      applicationData['project_timeline'] = applicationData['duration'];
+    }
+
+    // Helper to map human-friendly duration to API codes used in some variants
+    String _durationCode(String value) {
+      final s = value.trim().toLowerCase();
+      if (s.contains('24') || s.contains('day')) return '<day';
+      if (s.contains('week')) return '<week';
+      if (s.contains('1 - 3') || s.contains('1-3')) return '<3months';
+      if (s.contains('3+') || s.contains('>3')) return '>3months';
+      if (s.contains('less') && s.contains('month')) return '<month';
+      // Fallback to generic month bucket
+      return '<month';
+    }
 
     try {
       final response =
@@ -264,9 +283,51 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
       String message = 'Failed to apply to job';
       if (data is Map) {
         // Try common error shapes
-        message =
-            (data['detail'] ?? data['message'] ?? data['error'] ?? message)
-                .toString();
+        final primary = data['detail'] ?? data['message'] ?? data['error'];
+        if (primary != null) {
+          message = primary.toString();
+        } else {
+          // Flatten typical DRF field errors: { field: ["msg"], ... }
+          final parts = <String>[];
+          data.forEach((key, value) {
+            if (value is List && value.isNotEmpty) {
+              parts.add('$key: ${value.first}');
+            } else if (value is String) {
+              parts.add('$key: $value');
+            }
+          });
+          if (parts.isNotEmpty) {
+            message = parts.join('; ');
+          }
+        }
+
+        // If server rejects duration choice, retry with code-based value for compatibility
+        final durationErrors = data['duration'];
+        final bool invalidDuration = (durationErrors is List &&
+                durationErrors.join(' ').toLowerCase().contains('valid')) ||
+            message.toLowerCase().contains('duration') &&
+                message.toLowerCase().contains('valid');
+
+        if (invalidDuration && applicationData['duration'] is String) {
+          try {
+            final Map<String, dynamic> fallbackPayload =
+                Map.of(applicationData);
+            final current = fallbackPayload['duration'] as String;
+            final code = _durationCode(current);
+            fallbackPayload['duration'] = code;
+            // Some backends accept alternate keys; include them defensively.
+            fallbackPayload['project_timeline'] = code;
+            final r2 =
+                await dio.post(ApiEndpoints.applyToJob, data: fallbackPayload);
+            if (r2.statusCode != null &&
+                r2.statusCode! >= 200 &&
+                r2.statusCode! < 300) {
+              return true;
+            }
+          } catch (_) {
+            // fall through to throw with original message
+          }
+        }
       }
       throw Exception(message);
     } catch (e) {

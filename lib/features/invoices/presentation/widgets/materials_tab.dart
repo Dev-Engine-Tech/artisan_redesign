@@ -22,10 +22,22 @@ class MaterialsTab extends StatelessWidget {
             ),
             child: const Row(
               children: [
-                Expanded(flex: 3, child: Text('Material', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 1, child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 2, child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600))),
-                Expanded(flex: 2, child: Text('Subtotal', style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 3,
+                    child: Text('Material',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 1,
+                    child: Text('Qty',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 2,
+                    child: Text('Unit Price',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                Expanded(
+                    flex: 2,
+                    child: Text('Subtotal',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
                 SizedBox(width: 32),
               ],
             ),
@@ -53,9 +65,11 @@ class MaterialsTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: ElevatedButton.icon(
                 onPressed: cubit.addMaterial,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
+                style:
+                    ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
                 icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Material', style: TextStyle(color: Colors.white)),
+                label: const Text('Add Material',
+                    style: TextStyle(color: Colors.white)),
               ),
             ),
           );
@@ -73,7 +87,8 @@ class MaterialsTab extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Materials Total', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const Text('Materials Total',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                   Text('NGN ${cubit.materialsTotal.toStringAsFixed(2)}',
                       style: const TextStyle(fontWeight: FontWeight.w700)),
                 ],
@@ -129,9 +144,12 @@ class _MaterialRowState extends State<_MaterialRow> {
   @override
   void didUpdateWidget(covariant _MaterialRow oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.description != widget.description) _desc.text = widget.description;
-    if (oldWidget.quantity != widget.quantity) _qty.text = widget.quantity.toString();
-    if (oldWidget.unitPrice != widget.unitPrice) _price.text = widget.unitPrice.toString();
+    if (oldWidget.description != widget.description)
+      _desc.text = widget.description;
+    if (oldWidget.quantity != widget.quantity)
+      _qty.text = widget.quantity.toString();
+    if (oldWidget.unitPrice != widget.unitPrice)
+      _price.text = widget.unitPrice.toString();
   }
 
   @override
@@ -160,7 +178,8 @@ class _MaterialRowState extends State<_MaterialRow> {
             child: TextField(
               controller: _desc,
               readOnly: widget.readOnly,
-              decoration: const InputDecoration.collapsed(hintText: 'Enter material description'),
+              decoration: const InputDecoration.collapsed(
+                  hintText: 'Enter material description'),
               onChanged: widget.onDescChanged,
             ),
           ),
@@ -189,14 +208,16 @@ class _MaterialRowState extends State<_MaterialRow> {
           const SizedBox(width: 8),
           Expanded(
             flex: 2,
-            child: Text('NGN ${(widget.quantity * widget.unitPrice).toStringAsFixed(2)}',
+            child: Text(
+                'NGN ${(widget.quantity * widget.unitPrice).toStringAsFixed(2)}',
                 style: const TextStyle(fontWeight: FontWeight.w600)),
           ),
           if (!widget.readOnly)
             SizedBox(
               width: 32,
               child: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
+                icon: const Icon(Icons.delete_outline,
+                    color: Colors.red, size: 16),
                 onPressed: widget.onDelete,
               ),
             ),

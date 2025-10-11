@@ -29,12 +29,10 @@ void main() {
     when(() => repo.getCustomers(page: 2, limit: 10, searchQuery: 'john'))
         .thenAnswer((_) async => customers);
 
-    final result =
-        await usecase(page: 2, limit: 10, searchQuery: 'john');
+    final result = await usecase(page: 2, limit: 10, searchQuery: 'john');
 
     expect(result, customers);
     verify(() => repo.getCustomers(page: 2, limit: 10, searchQuery: 'john'))
         .called(1);
   });
 }
-

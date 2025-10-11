@@ -45,15 +45,12 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
   bool _instantSelling = false;
   final TextEditingController _brandController = TextEditingController();
   String? _condition;
-  final TextEditingController _salesCategoryController = TextEditingController();
+  final TextEditingController _salesCategoryController =
+      TextEditingController();
   bool _warranty = false;
   bool _delivery = false;
 
-  final List<String> _conditions = [
-    'Brand New',
-    'Foreign used',
-    'Local Used'
-  ];
+  final List<String> _conditions = ['Brand New', 'Foreign used', 'Local Used'];
 
   // Selected image file paths (for upload)
   final List<String> _media = [];
@@ -200,9 +197,13 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           projectTimeline: timelineValue,
           imagePaths: _media,
           instantSelling: _instantSelling,
-          brand: _brandController.text.trim().isEmpty ? null : _brandController.text.trim(),
+          brand: _brandController.text.trim().isEmpty
+              ? null
+              : _brandController.text.trim(),
           condition: _condition,
-          salesCategory: _salesCategoryController.text.trim().isEmpty ? null : _salesCategoryController.text.trim(),
+          salesCategory: _salesCategoryController.text.trim().isEmpty
+              ? null
+              : _salesCategoryController.text.trim(),
           warranty: _warranty,
           delivery: _delivery,
         );
@@ -218,9 +219,13 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           projectTimeline: timelineValue,
           newImagePaths: _media,
           instantSelling: _instantSelling,
-          brand: _brandController.text.trim().isEmpty ? null : _brandController.text.trim(),
+          brand: _brandController.text.trim().isEmpty
+              ? null
+              : _brandController.text.trim(),
           condition: _condition,
-          salesCategory: _salesCategoryController.text.trim().isEmpty ? null : _salesCategoryController.text.trim(),
+          salesCategory: _salesCategoryController.text.trim().isEmpty
+              ? null
+              : _salesCategoryController.text.trim(),
           warranty: _warranty,
           delivery: _delivery,
         );
@@ -621,8 +626,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               borderRadius: BorderRadius.circular(10)),
           child: SwitchListTile(
             title: const Text('Enable instant selling'),
-            subtitle: const Text(
-                'Allow buyers to purchase this item directly'),
+            subtitle: const Text('Allow buyers to purchase this item directly'),
             value: _instantSelling,
             onChanged: (v) => setState(() => _instantSelling = v),
           ),

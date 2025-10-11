@@ -19,12 +19,15 @@ abstract class AnalyticsService {
   Future<void> setCurrentScreen(String screenName, String screenClass);
 
   // Security Analytics
-  Future<void> logSecurityEvent(String eventName, Map<String, dynamic> parameters);
+  Future<void> logSecurityEvent(
+      String eventName, Map<String, dynamic> parameters);
   Future<void> logAuthenticationFailure(String method, String reason);
-  Future<void> logSuspiciousActivity(String activity, Map<String, dynamic> context);
+  Future<void> logSuspiciousActivity(
+      String activity, Map<String, dynamic> context);
 
   // Performance Analytics
-  Future<void> logPerformanceEvent(String eventName, Map<String, dynamic> metrics);
+  Future<void> logPerformanceEvent(
+      String eventName, Map<String, dynamic> metrics);
   Future<void> logSlowOperation(String operation, Duration duration);
   Future<void> logMemoryWarning(int memoryUsage);
 
@@ -49,7 +52,8 @@ class FirebaseAnalyticsService implements AnalyticsService {
   final FirebaseCrashlytics _crashlytics = FirebaseCrashlytics.instance;
   final FirebasePerformance _performance = FirebasePerformance.instance;
 
-  static final FirebaseAnalyticsService _instance = FirebaseAnalyticsService._internal();
+  static final FirebaseAnalyticsService _instance =
+      FirebaseAnalyticsService._internal();
   factory FirebaseAnalyticsService() => _instance;
   FirebaseAnalyticsService._internal();
 
@@ -159,7 +163,8 @@ class FirebaseAnalyticsService implements AnalyticsService {
   }
 
   @override
-  Future<void> logSecurityEvent(String eventName, Map<String, dynamic> parameters) async {
+  Future<void> logSecurityEvent(
+      String eventName, Map<String, dynamic> parameters) async {
     if (!_available) return;
     try {
       final securityParams = {
@@ -167,7 +172,9 @@ class FirebaseAnalyticsService implements AnalyticsService {
         'security_event': true,
         'timestamp': DateTime.now().toIso8601String(),
       };
-      await _analytics.logEvent(name: eventName, parameters: Map<String, Object>.from(securityParams));
+      await _analytics.logEvent(
+          name: eventName,
+          parameters: Map<String, Object>.from(securityParams));
       await _crashlytics.log('Security Event: $eventName');
       await _crashlytics.setCustomKey('last_security_event', eventName);
     } catch (e) {
@@ -194,7 +201,8 @@ class FirebaseAnalyticsService implements AnalyticsService {
   }
 
   @override
-  Future<void> logSuspiciousActivity(String activity, Map<String, dynamic> context) async {
+  Future<void> logSuspiciousActivity(
+      String activity, Map<String, dynamic> context) async {
     if (!_available) return;
     try {
       await logSecurityEvent('suspicious_activity_detected', {
@@ -207,14 +215,17 @@ class FirebaseAnalyticsService implements AnalyticsService {
   }
 
   @override
-  Future<void> logPerformanceEvent(String eventName, Map<String, dynamic> metrics) async {
+  Future<void> logPerformanceEvent(
+      String eventName, Map<String, dynamic> metrics) async {
     if (!_available) return;
     try {
       final performanceParams = {
         ...metrics,
         'performance_event': true,
       };
-      await _analytics.logEvent(name: eventName, parameters: Map<String, Object>.from(performanceParams));
+      await _analytics.logEvent(
+          name: eventName,
+          parameters: Map<String, Object>.from(performanceParams));
     } catch (e) {
       _handleError('log_performance_event_failed', e);
     }
@@ -297,7 +308,8 @@ class FirebaseAnalyticsService implements AnalyticsService {
         error,
         StackTrace.current,
         fatal: false,
-        information: context.entries.map((e) => '${e.key}: ${e.value}').toList(),
+        information:
+            context.entries.map((e) => '${e.key}: ${e.value}').toList(),
       );
 
       await logEvent('app_error', {
@@ -314,7 +326,8 @@ class FirebaseAnalyticsService implements AnalyticsService {
     if (!_available) return;
     try {
       final sanitizedParams = _sanitizeParameters(parameters);
-      await _analytics.logEvent(name: name, parameters: Map<String, Object>.from(sanitizedParams));
+      await _analytics.logEvent(
+          name: name, parameters: Map<String, Object>.from(sanitizedParams));
     } catch (e) {
       _handleError('log_event_failed', e);
     }

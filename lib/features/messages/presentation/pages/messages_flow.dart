@@ -89,10 +89,12 @@ class MessagesListPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.lock_outline, size: 64, color: Colors.black26),
+                    const Icon(Icons.lock_outline,
+                        size: 64, color: Colors.black26),
                     const SizedBox(height: 16),
                     const Text('Authentication Required',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     const Text('Please sign in to view your messages',
                         style: TextStyle(color: Colors.black54)),
@@ -102,7 +104,8 @@ class MessagesListPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.orange,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 12),
                       ),
                       child: const Text('Go Back'),
                     ),
@@ -141,7 +144,8 @@ class MessagesListPage extends StatelessWidget {
                           ),
                           child: Container(
                             color: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
                             child: Row(
                               children: [
                                 Stack(
@@ -149,7 +153,8 @@ class MessagesListPage extends StatelessWidget {
                                     CircleAvatar(
                                       radius: 28,
                                       backgroundColor: AppColors.softPink,
-                                      child: const Icon(Icons.person, color: AppColors.brownHeader),
+                                      child: const Icon(Icons.person,
+                                          color: AppColors.brownHeader),
                                     ),
                                     if (c.online)
                                       Positioned(
@@ -161,7 +166,9 @@ class MessagesListPage extends StatelessWidget {
                                           decoration: BoxDecoration(
                                               color: AppColors.orange,
                                               shape: BoxShape.circle,
-                                              border: Border.all(color: Colors.white, width: 2)),
+                                              border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 2)),
                                         ),
                                       )
                                   ],
@@ -169,7 +176,8 @@ class MessagesListPage extends StatelessWidget {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -185,7 +193,10 @@ class MessagesListPage extends StatelessWidget {
                                           ),
                                           Text(
                                             _formatTime(c.lastTimestamp),
-                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(color: Colors.grey),
                                           ),
                                         ],
                                       ),
@@ -193,16 +204,25 @@ class MessagesListPage extends StatelessWidget {
                                       if (c.jobTitle != null)
                                         Text(
                                           c.jobTitle!,
-                                          style: const TextStyle(color: AppColors.orange, fontWeight: FontWeight.w700),
+                                          style: const TextStyle(
+                                              color: AppColors.orange,
+                                              fontWeight: FontWeight.w700),
                                         ),
                                       const SizedBox(height: 6),
                                       Row(
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              c.isTyping ? 'typing…' : (c.lastMessage ?? ''),
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                    color: c.isTyping ? AppColors.orange : Colors.black54,
+                                              c.isTyping
+                                                  ? 'typing…'
+                                                  : (c.lastMessage ?? ''),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color: c.isTyping
+                                                        ? AppColors.orange
+                                                        : Colors.black54,
                                                   ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -210,13 +230,22 @@ class MessagesListPage extends StatelessWidget {
                                           ),
                                           if (c.unreadCount > 0)
                                             Container(
-                                              margin: const EdgeInsets.only(left: 8),
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                              margin: const EdgeInsets.only(
+                                                  left: 8),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 6),
                                               decoration: BoxDecoration(
-                                                  color: AppColors.orange, borderRadius: BorderRadius.circular(12)),
+                                                  color: AppColors.orange,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
                                               child: Text(
                                                 '${c.unreadCount}',
-                                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12),
                                               ),
                                             )
                                         ],
@@ -496,9 +525,9 @@ class _ChatPageState extends State<ChatPage> {
 
     // Send the message if no phone numbers detected
     context.read<ChatBloc>().add(ChatSendText(
-      messageText,
-      replySource: _replyTo,
-    ));
+          messageText,
+          replySource: _replyTo,
+        ));
     _controller.clear();
     setState(() => _replyTo = null);
   }
@@ -520,7 +549,8 @@ class _ChatPageState extends State<ChatPage> {
             TextButton(
               onPressed: () {
                 // Remove phone numbers and update the text field
-                String cleanedText = PhoneNumberFilter.removePhoneNumbers(_controller.text);
+                String cleanedText =
+                    PhoneNumberFilter.removePhoneNumbers(_controller.text);
                 _controller.text = cleanedText;
                 Navigator.of(dialogContext).pop();
               },
@@ -557,7 +587,8 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           title: const Text('Chat',
-              style: TextStyle(color: AppColors.brownHeader, fontWeight: FontWeight.w700)),
+              style: TextStyle(
+                  color: AppColors.brownHeader, fontWeight: FontWeight.w700)),
         ),
         body: Center(
           child: Column(
@@ -580,7 +611,8 @@ class _ChatPageState extends State<ChatPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orange,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                 ),
                 child: const Text('Go Back'),
               ),
@@ -693,14 +725,21 @@ class _ChatPageState extends State<ChatPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                                const Icon(Icons.error_outline,
+                                    size: 48, color: Colors.red),
                                 const SizedBox(height: 16),
-                                Text('Error loading messages', style: const TextStyle(fontWeight: FontWeight.w600)),
+                                Text('Error loading messages',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600)),
                                 const SizedBox(height: 8),
-                                Text(state.message, style: const TextStyle(color: Colors.black54), textAlign: TextAlign.center),
+                                Text(state.message,
+                                    style:
+                                        const TextStyle(color: Colors.black54),
+                                    textAlign: TextAlign.center),
                                 const SizedBox(height: 16),
                                 ElevatedButton.icon(
-                                  onPressed: () => context.read<ChatBloc>().add(ChatRetry()),
+                                  onPressed: () =>
+                                      context.read<ChatBloc>().add(ChatRetry()),
                                   icon: const Icon(Icons.refresh),
                                   label: const Text('Retry'),
                                   style: ElevatedButton.styleFrom(
@@ -719,11 +758,14 @@ class _ChatPageState extends State<ChatPage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.message_outlined, size: 64, color: Colors.black26),
+                                  Icon(Icons.message_outlined,
+                                      size: 64, color: Colors.black26),
                                   SizedBox(height: 16),
-                                  Text('No messages yet', style: TextStyle(color: Colors.black54)),
+                                  Text('No messages yet',
+                                      style: TextStyle(color: Colors.black54)),
                                   SizedBox(height: 8),
-                                  Text('Start the conversation!', style: TextStyle(color: Colors.black38)),
+                                  Text('Start the conversation!',
+                                      style: TextStyle(color: Colors.black38)),
                                 ],
                               ),
                             );
@@ -1333,7 +1375,8 @@ class _ChatPageState extends State<ChatPage> {
                                       context.read<ChatBloc>().add(
                                           ChatSetTyping(v.trim().isNotEmpty));
                                       // Real-time phone number detection for user feedback
-                                      if (PhoneNumberFilter.containsPhoneNumber(v)) {
+                                      if (PhoneNumberFilter.containsPhoneNumber(
+                                          v)) {
                                         // Visual feedback could be added here if needed
                                       }
                                       setState(() {});

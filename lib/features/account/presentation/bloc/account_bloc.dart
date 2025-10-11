@@ -29,7 +29,8 @@ import '../../domain/usecases/set_withdrawal_pin.dart';
 import '../../domain/usecases/verify_withdrawal_pin.dart';
 
 // ✅ WEEK 4: Added CachedBlocMixin for automatic caching
-class AccountBloc extends Bloc<AccountEvent, AccountState> with CachedBlocMixin {
+class AccountBloc extends Bloc<AccountEvent, AccountState>
+    with CachedBlocMixin {
   final GetUserProfile getUserProfile;
   final UpdateUserProfile updateUserProfile;
   final GetEarnings getEarnings;
@@ -113,7 +114,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> with CachedBlocMixin 
       final profile = await executeWithCache(
         cacheKey: 'user_profile',
         fetch: () => getUserProfile.call(),
-        fromJson: (json) => UserProfileModel.fromJson(json as Map<String, dynamic>),
+        fromJson: (json) =>
+            UserProfileModel.fromJson(json as Map<String, dynamic>),
         toJson: (profile) => (profile as UserProfileModel).toJson(),
         ttl: const Duration(minutes: 10),
         persistent: true, // Keep profile in persistent storage

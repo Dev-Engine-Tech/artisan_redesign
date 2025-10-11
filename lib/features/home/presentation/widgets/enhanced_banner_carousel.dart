@@ -96,6 +96,13 @@ class _EnhancedBannerCarouselState extends State<EnhancedBannerCarousel> {
   BannerModel _convertApiBannerToUiBanner(api.ApiBannerItem apiBanner) {
     String normalize(String? url) {
       if (url == null || url.isEmpty) return '';
+      // Fix common backend bug: '/media/https:/...' should be 'https://...'
+      if (url.startsWith('/media/https:/')) {
+        return 'https://' + url.replaceFirst('/media/https:/', '');
+      }
+      if (url.startsWith('/media/http:/')) {
+        return 'http://' + url.replaceFirst('/media/http:/', '');
+      }
       if (url.startsWith('http')) return url;
       final base = ApiEndpoints.baseUrl;
       final sep = url.startsWith('/') ? '' : '/';

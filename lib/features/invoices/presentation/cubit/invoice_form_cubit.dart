@@ -4,7 +4,8 @@ import 'package:artisans_circle/features/customers/domain/entities/customer.dart
 import 'package:artisans_circle/features/customers/domain/usecases/get_customers.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/get_my_catalog_items.dart';
-import 'package:artisans_circle/features/invoices/domain/entities/invoice.dart' as inv;
+import 'package:artisans_circle/features/invoices/domain/entities/invoice.dart'
+    as inv;
 
 part 'invoice_form_state.dart';
 
@@ -12,7 +13,8 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
   final GetCustomers getCustomers;
   final GetMyCatalogItems getMyCatalogItems;
 
-  InvoiceFormCubit({required this.getCustomers, required this.getMyCatalogItems})
+  InvoiceFormCubit(
+      {required this.getCustomers, required this.getMyCatalogItems})
       : super(const InvoiceFormState());
 
   Future<void> loadInitial() async {
@@ -25,7 +27,8 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
       final list = await getCustomers(page: 1, limit: 50);
       emit(state.copyWith(loadingCustomers: false, customers: list));
     } catch (e) {
-      emit(state.copyWith(loadingCustomers: false, customersError: e.toString()));
+      emit(state.copyWith(
+          loadingCustomers: false, customersError: e.toString()));
     }
   }
 
@@ -97,8 +100,10 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
   }
 
   double get subtotal => invoiceLinesTotal + materialsTotal;
-  double get taxAmount => ((subtotal - state.discount).clamp(0, double.infinity)) * state.taxRate;
-  double get grandTotalWithTax => (subtotal - state.discount).clamp(0, double.infinity) + taxAmount;
+  double get taxAmount =>
+      ((subtotal - state.discount).clamp(0, double.infinity)) * state.taxRate;
+  double get grandTotalWithTax =>
+      (subtotal - state.discount).clamp(0, double.infinity) + taxAmount;
 
   // Hydration ---------------------------------------------------------------
   void hydrateFromInvoice(inv.Invoice invoice) {
@@ -155,7 +160,13 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
   }
 
   void updateLineInSection(int sectionIndex, int lineIndex,
-      {String? label, double? quantity, double? unitPrice, String? catalogId, bool clearCatalog = false, double? discount, double? taxRate}) {
+      {String? label,
+      double? quantity,
+      double? unitPrice,
+      String? catalogId,
+      bool clearCatalog = false,
+      double? discount,
+      double? taxRate}) {
     final sections = List<InvoiceSectionData>.from(state.sections);
     final items = List<InvoiceLineData>.from(sections[sectionIndex].items);
     items[lineIndex] = items[lineIndex].copyWith(
@@ -184,7 +195,13 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
   }
 
   void updateIndependentLine(int index,
-      {String? label, double? quantity, double? unitPrice, String? catalogId, bool clearCatalog = false, double? discount, double? taxRate}) {
+      {String? label,
+      double? quantity,
+      double? unitPrice,
+      String? catalogId,
+      bool clearCatalog = false,
+      double? discount,
+      double? taxRate}) {
     final lines = List<InvoiceLineData>.from(state.independentLines);
     lines[index] = lines[index].copyWith(
       label: label,
@@ -201,7 +218,8 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
   // Add helpers to create lines with initial data ---------------------------
   void addLineToSectionData(int sectionIndex, InvoiceLineData line) {
     final sections = List<InvoiceSectionData>.from(state.sections);
-    final items = List<InvoiceLineData>.from(sections[sectionIndex].items)..add(line);
+    final items = List<InvoiceLineData>.from(sections[sectionIndex].items)
+      ..add(line);
     sections[sectionIndex] = sections[sectionIndex].copyWith(items: items);
     emit(state.copyWith(sections: sections));
   }
@@ -214,7 +232,8 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
   // Materials ---------------------------------------------------------------
   void addMaterial() {
     final list = List<InvoiceMaterialData>.from(state.materials)
-      ..add(const InvoiceMaterialData(description: '', quantity: 1, unitPrice: 0));
+      ..add(const InvoiceMaterialData(
+          description: '', quantity: 1, unitPrice: 0));
     emit(state.copyWith(materials: list));
   }
 
@@ -224,7 +243,8 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
     emit(state.copyWith(materials: list));
   }
 
-  void updateMaterial(int index, {String? description, double? quantity, double? unitPrice}) {
+  void updateMaterial(int index,
+      {String? description, double? quantity, double? unitPrice}) {
     final list = List<InvoiceMaterialData>.from(state.materials);
     list[index] = list[index].copyWith(
       description: description,
@@ -247,9 +267,11 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
     emit(state.copyWith(measurements: list));
   }
 
-  void updateMeasurement(int index, {String? item, double? quantity, String? uom}) {
+  void updateMeasurement(int index,
+      {String? item, double? quantity, String? uom}) {
     final list = List<InvoiceMeasurementData>.from(state.measurements);
-    list[index] = list[index].copyWith(item: item, quantity: quantity, uom: uom);
+    list[index] =
+        list[index].copyWith(item: item, quantity: quantity, uom: uom);
     emit(state.copyWith(measurements: list));
   }
 }

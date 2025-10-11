@@ -12,14 +12,18 @@ class PhoneNumberFilter {
 
     // General patterns
     RegExp(r'\b\d{10,15}\b'), // 10-15 consecutive digits
-    RegExp(r'\b\d{3,4}[\s\-\.]\d{3,4}[\s\-\.]\d{3,4}\b'), // Separated by spaces, hyphens, or dots
-    RegExp(r'\b\d{2,3}[\s\-\.]\d{3,4}[\s\-\.]\d{3,4}[\s\-\.]\d{3,4}\b'), // 4-part numbers
+    RegExp(
+        r'\b\d{3,4}[\s\-\.]\d{3,4}[\s\-\.]\d{3,4}\b'), // Separated by spaces, hyphens, or dots
+    RegExp(
+        r'\b\d{2,3}[\s\-\.]\d{3,4}[\s\-\.]\d{3,4}[\s\-\.]\d{3,4}\b'), // 4-part numbers
 
     // WhatsApp format
     RegExp(r'\bwa\.me\/\+?\d{10,15}\b', caseSensitive: false),
 
     // Common phone number keywords followed by numbers
-    RegExp(r'\b(?:phone|tel|mobile|cell|whatsapp|call|contact)[\s\:]*[\+\d\(\)\-\s\.]{7,20}\b', caseSensitive: false),
+    RegExp(
+        r'\b(?:phone|tel|mobile|cell|whatsapp|call|contact)[\s\:]*[\+\d\(\)\-\s\.]{7,20}\b',
+        caseSensitive: false),
 
     // Numbers with country codes
     RegExp(r'\b\+\d{1,3}[\s\-\.]?\d{1,4}[\s\-\.]?\d{1,4}[\s\-\.]?\d{1,9}\b'),
@@ -75,7 +79,9 @@ class PhoneNumberFilter {
     });
 
     // Clean up multiple consecutive removals
-    cleanedText = cleanedText.replaceAll(RegExp(r'(\[Phone number removed\]\s*){2,}'), '[Phone number removed] ');
+    cleanedText = cleanedText.replaceAll(
+        RegExp(r'(\[Phone number removed\]\s*){2,}'),
+        '[Phone number removed] ');
 
     return cleanedText.trim();
   }
@@ -98,7 +104,8 @@ class PhoneNumberFilter {
     if (_isSequential(digits)) return false;
 
     // Skip common non-phone number patterns
-    if (digits == '1000' || digits == '2023' || digits == '123456') return false;
+    if (digits == '1000' || digits == '2023' || digits == '123456')
+      return false;
 
     return true;
   }

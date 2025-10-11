@@ -220,11 +220,11 @@ class ApiCacheManager {
     if (_memoryCache.length > maxMemoryCacheSize) {
       // Remove oldest entries
       final sortedKeys = _memoryCache.keys.toList()
-        ..sort((a, b) => _memoryCache[a]!
-            .timestamp
-            .compareTo(_memoryCache[b]!.timestamp));
+        ..sort((a, b) =>
+            _memoryCache[a]!.timestamp.compareTo(_memoryCache[b]!.timestamp));
 
-      final toRemove = sortedKeys.take(_memoryCache.length - maxMemoryCacheSize);
+      final toRemove =
+          sortedKeys.take(_memoryCache.length - maxMemoryCacheSize);
       for (final key in toRemove) {
         _memoryCache.remove(key);
       }

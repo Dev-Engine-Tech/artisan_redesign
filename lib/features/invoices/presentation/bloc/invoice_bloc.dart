@@ -15,7 +15,8 @@ part 'invoice_event.dart';
 part 'invoice_state.dart';
 
 // ✅ WEEK 4: Added CachedBlocMixin for automatic caching
-class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> with CachedBlocMixin {
+class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState>
+    with CachedBlocMixin {
   final GetInvoices getInvoices;
   final usecase.CreateInvoice createInvoice;
   final usecase.SendInvoice sendInvoice;
@@ -44,7 +45,8 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> with CachedBlocMixin 
       emit(InvoiceLoading());
 
       // ✅ WEEK 4: Added caching with 3 minute TTL for invoices
-      final cacheKey = 'invoices_p${event.page}_l${event.limit}_s${event.status?.name ?? 'all'}';
+      final cacheKey =
+          'invoices_p${event.page}_l${event.limit}_s${event.status?.name ?? 'all'}';
 
       final invoices = await executeWithCache(
         cacheKey: cacheKey,
@@ -55,7 +57,8 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> with CachedBlocMixin 
         ),
         // Cache as JSON; restore to domain invoices
         fromJson: (json) => (json as List)
-            .map((e) => InvoiceModel.fromJson(e as Map<String, dynamic>).toEntity())
+            .map((e) =>
+                InvoiceModel.fromJson(e as Map<String, dynamic>).toEntity())
             .toList(),
         toJson: (invoices) => invoices
             .map((inv) => InvoiceModel.fromEntity(inv as Invoice).toJson())

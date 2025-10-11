@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:artisans_circle/core/api/endpoints.dart';
 import 'package:artisans_circle/features/notifications/data/models/notification_model.dart';
 import 'notification_remote_data_source.dart';
+import 'dart:io' show HttpStatus;
 
 class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   final Dio dio;
@@ -84,6 +85,37 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       }
     } catch (e) {
       throw Exception('Error fetching notification: $e');
+    }
+  }
+
+  @override
+  Future<void> registerDeviceToken({
+    required String token,
+    required String deviceType,
+    String? deviceId,
+  }) async {
+    final payload = <String, dynamic>{
+      'token': token,
+      'device_type': deviceType,
+      if (deviceId != null && deviceId.isNotEmpty) 'device_id': deviceId,
+    };
+
+    final response = await dio.post(ApiEndpoints.deviceTokensRegister, data: payload);
+    // Accept 201 Created or 200 OK
+    final status = response.statusCode ?? 0;
+    if (status != HttpStatus.created && status != HttpStatus.ok) {
+      throw Exception('Failed to register device token (${response.statusCode})');
+    }
+  }
+
+  @override
+  Future<void> sendTestPush({required String title, required String body}) async {
+    final response = await dio.post(ApiEndpoints.testPushNotification, data: {
+      'title': title,
+      'body': body,
+    });
+    if ((response.statusCode ?? 0) >= 400) {
+      throw Exception('Failed to send test push');
     }
   }
 }

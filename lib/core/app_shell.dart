@@ -17,6 +17,7 @@ import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/widgets/youtube_video_popup.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/sign_in_page.dart';
+import 'package:artisans_circle/core/services/push_registration_service.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 class AppShell extends StatefulWidget {
@@ -62,6 +63,11 @@ class _AppShellState extends State<AppShell> {
     _jobBloc = getIt<JobBloc>();
     _accountBloc = getIt<AccountBloc>();
     _catalogRequestsBloc = getIt<CatalogRequestsBloc>();
+
+    // Attempt push registration early; safe to call multiple times
+    try {
+      getIt<PushRegistrationService>().registerIfPossible();
+    } catch (_) {}
 
     // After first frame, check if we should show the instructional video.
     // This covers the fresh-login case where AppShell is pushed after auth succeeds.
@@ -168,9 +174,17 @@ class _AppShellState extends State<AppShell> {
               debugPrint(
                   '🎥 AppShell: Fresh login detected, showing instructional video...');
               _triggerVideoCheckIfNeeded();
+              // Register push token after fresh login
+              try {
+                getIt<PushRegistrationService>().registerIfPossible();
+              } catch (_) {}
             } else if (state is AuthAuthenticated && !state.isFreshLogin) {
               debugPrint(
                   '🔄 AppShell: Automatic login detected, skipping video');
+              // Ensure token is registered on auto-login as well
+              try {
+                getIt<PushRegistrationService>().registerIfPossible();
+              } catch (_) {}
             }
             // Handle logout - navigate back to sign in page
             else if (state is AuthUnauthenticated) {

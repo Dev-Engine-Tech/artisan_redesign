@@ -101,10 +101,12 @@ class CatalogItemModel extends CatalogItem {
       ownerName: ownerName,
       status: json['status']?.toString(),
       projectStatus: json['project_status']?.toString(),
-      instantSelling: toBool(catalogData['instant_selling'] ?? json['instant_selling']),
+      instantSelling:
+          toBool(catalogData['instant_selling'] ?? json['instant_selling']),
       brand: (catalogData['brand'] ?? json['brand'])?.toString(),
       condition: (catalogData['condition'] ?? json['condition'])?.toString(),
-      salesCategory: (catalogData['sales_category'] ?? json['sales_category'])?.toString(),
+      salesCategory:
+          (catalogData['sales_category'] ?? json['sales_category'])?.toString(),
       warranty: toBool(catalogData['warranty'] ?? json['warranty']),
       delivery: toBool(catalogData['delivery'] ?? json['delivery']),
     );

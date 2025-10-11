@@ -24,17 +24,29 @@ class JobApplication extends Equatable {
   });
 
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
       'job': job,
       'duration': duration,
       'proposal': proposal,
       'payment_type': paymentType,
       'desired_pay': desiredPay,
-      'milestones': milestones.map((m) => m.toJson()).toList(),
-      'materials': materials.map((m) => m.toJson()).toList(),
-      'attachments': attachments,
-      if (inspection != null) 'inspection': inspection!.toJson(),
     };
+    final ms = milestones.map((m) => m.toJson()).toList();
+    if (ms.isNotEmpty) {
+      map['milestones'] = ms;
+    }
+
+    // Only include optional arrays when not empty to avoid forcing input server-side.
+    if (materials.isNotEmpty) {
+      map['materials'] = materials.map((m) => m.toJson()).toList();
+    }
+    if (attachments.isNotEmpty) {
+      map['attachments'] = attachments;
+    }
+    if (inspection != null) {
+      map['inspection'] = inspection!.toJson();
+    }
+    return map;
   }
 
   @override
@@ -86,7 +98,6 @@ class JobMilestone extends Equatable {
 
   Map<String, dynamic> toJson() => {
         'description': description,
-        'material': description,
         'due_date':
             '${dueDate.year.toString().padLeft(4, '0')}-${dueDate.month.toString().padLeft(2, '0')}-${dueDate.day.toString().padLeft(2, '0')}',
         'amount': amount,

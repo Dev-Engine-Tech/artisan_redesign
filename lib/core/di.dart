@@ -39,6 +39,7 @@ import 'package:artisans_circle/core/services/banner_service.dart';
 import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
+import 'package:artisans_circle/core/services/push_registration_service.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
@@ -518,6 +519,12 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => NotificationRepositoryImpl(
         remoteDataSource: getIt<NotificationRemoteDataSource>()),
   );
+
+  // Push registration service (FCM token → backend)
+  getIt.registerLazySingleton<PushRegistrationService>(() => PushRegistrationService(
+        remote: getIt<NotificationRemoteDataSource>(),
+        secureStorage: getIt<SecureStorage>(),
+      ));
 
   // Invoice feature
   getIt.registerLazySingleton<InvoiceRepository>(

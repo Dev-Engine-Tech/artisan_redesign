@@ -54,8 +54,9 @@ class InvoiceFormState extends Equatable {
       customers: customers ?? this.customers,
       loadingCustomers: loadingCustomers ?? this.loadingCustomers,
       customersError: customersError ?? this.customersError,
-      selectedCustomer:
-          clearSelectedCustomer ? null : (selectedCustomer ?? this.selectedCustomer),
+      selectedCustomer: clearSelectedCustomer
+          ? null
+          : (selectedCustomer ?? this.selectedCustomer),
       catalogs: catalogs ?? this.catalogs,
       loadingCatalogs: loadingCatalogs ?? this.loadingCatalogs,
       catalogsError: catalogsError ?? this.catalogsError,
@@ -130,7 +131,8 @@ class InvoiceLineData extends Equatable {
   }
 
   @override
-  List<Object?> get props => [label, quantity, unitPrice, catalogId, discount, taxRate];
+  List<Object?> get props =>
+      [label, quantity, unitPrice, catalogId, discount, taxRate];
 }
 
 class InvoiceSectionData extends Equatable {
@@ -139,7 +141,8 @@ class InvoiceSectionData extends Equatable {
 
   const InvoiceSectionData({required this.description, this.items = const []});
 
-  InvoiceSectionData copyWith({String? description, List<InvoiceLineData>? items}) {
+  InvoiceSectionData copyWith(
+      {String? description, List<InvoiceLineData>? items}) {
     return InvoiceSectionData(
       description: description ?? this.description,
       items: items ?? this.items,
@@ -163,7 +166,8 @@ class InvoiceMaterialData extends Equatable {
 
   double get subtotal => quantity * unitPrice;
 
-  InvoiceMaterialData copyWith({String? description, double? quantity, double? unitPrice}) {
+  InvoiceMaterialData copyWith(
+      {String? description, double? quantity, double? unitPrice}) {
     return InvoiceMaterialData(
       description: description ?? this.description,
       quantity: quantity ?? this.quantity,
@@ -180,9 +184,11 @@ class InvoiceMeasurementData extends Equatable {
   final double quantity;
   final String uom;
 
-  const InvoiceMeasurementData({required this.item, required this.quantity, required this.uom});
+  const InvoiceMeasurementData(
+      {required this.item, required this.quantity, required this.uom});
 
-  InvoiceMeasurementData copyWith({String? item, double? quantity, String? uom}) {
+  InvoiceMeasurementData copyWith(
+      {String? item, double? quantity, String? uom}) {
     return InvoiceMeasurementData(
       item: item ?? this.item,
       quantity: quantity ?? this.quantity,

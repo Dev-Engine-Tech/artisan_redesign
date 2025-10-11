@@ -104,6 +104,18 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
 
   // Removed unused _addAttachment helper to satisfy analyzer
 
+  // Map UI selections to API codes
+  String _durationApiValue(String? raw) {
+    final s = (raw ?? '').trim().toLowerCase();
+    if (s.contains('24') || s.contains('day')) return '<day';
+    if (s.contains('week')) return '<week';
+    if (s.contains('1-3') || s.contains('1 - 3')) return '<3months';
+    if (s.contains('3+') || s.contains('>3')) return '>3months';
+    if (s.contains('less') && s.contains('month')) return '<month';
+    // Fallback to a safe bucket expected by API filters
+    return '<month';
+  }
+
   void _submitApplication() {
     // Validation remains local
     if (_proposalController.text.trim().isEmpty) {
@@ -114,12 +126,6 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
     if (_paymentMethod == PaymentMethod.byMilestone && _milestones.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please add at least one milestone')));
-      return;
-    }
-    // Materials are required by API
-    if (_materials.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please add at least one material item')));
       return;
     }
 
@@ -135,6 +141,7 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
     final paymentTypeStr =
         _paymentMethod == PaymentMethod.byProject ? 'project' : 'milestone';
 
+    // Materials are optional. If provided, include valid ones; otherwise send none.
     final materials = _materials
         .where((m) => m.descriptionController.text.trim().isNotEmpty)
         .map((m) => JobMaterial(
@@ -146,11 +153,6 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
             ))
         .where((m) => m.price > 0)
         .toList();
-    if (materials.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Add at least one material with a cost > 0')));
-      return;
-    }
     final milestones = _milestones
         .where((ms) => ms.date != null)
         .map((ms) => JobMilestone(
@@ -160,13 +162,17 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
             ))
         .toList();
 
+    final uiDuration = _selectedDuration?.trim().isNotEmpty == true
+        ? _selectedDuration
+        : (widget.job.duration.trim().isNotEmpty
+            ? widget.job.duration
+            : 'Less than a month');
+    // What we show may differ from what API expects; send API code value
+    final normalizedDuration = _durationApiValue(uiDuration);
+
     final application = JobApplication(
       job: jobIdInt,
-      duration: _selectedDuration?.trim().isNotEmpty == true
-          ? _selectedDuration!.trim()
-          : (widget.job.duration.trim().isNotEmpty
-              ? widget.job.duration
-              : 'Less than 1 month'),
+      duration: normalizedDuration,
       proposal: _proposalController.text.trim(),
       paymentType: paymentTypeStr,
       desiredPay: (int.tryParse(_desiredPayController.text.trim()) ??
@@ -479,10 +485,16 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                   initialValue: _selectedDuration,
                   items: const [
                     DropdownMenuItem(
-                        value: 'Less than 1 month',
-                        child: Text('Less than 1 month')),
+                        value: 'Less than 24hrs',
+                        child: Text('Less than 24hrs')),
                     DropdownMenuItem(
-                        value: '1-3 months', child: Text('1-3 months')),
+                        value: 'Less than a week',
+                        child: Text('Less than a week')),
+                    DropdownMenuItem(
+                        value: 'Less than a month',
+                        child: Text('Less than a month')),
+                    DropdownMenuItem(
+                        value: '1 - 3 months', child: Text('1 - 3 months')),
                     DropdownMenuItem(
                         value: '3+ months', child: Text('3+ months')),
                   ],
@@ -505,7 +517,7 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Material List (required)',
+                    const Text('Material List (optional)',
                         style: TextStyle(fontWeight: FontWeight.w700)),
                     ElevatedButton(
                       onPressed: _addMaterial,

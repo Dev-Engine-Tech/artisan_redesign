@@ -11,7 +11,8 @@ import 'package:get_it/get_it.dart';
 class _FakeGetCustomers extends GetCustomers {
   _FakeGetCustomers() : super((_) => throw UnimplementedError());
   @override
-  Future<List<Customer>> call({int page = 1, int limit = 50, String? searchQuery}) async {
+  Future<List<Customer>> call(
+      {int page = 1, int limit = 50, String? searchQuery}) async {
     return [
       Customer(
         id: '1',
@@ -38,14 +39,16 @@ void main() {
   setUpAll(() {
     if (!getIt.isRegistered<GetMyCatalogItems>()) {
       final fakeRepo = _FakeCatalogRepository();
-      getIt.registerLazySingleton<GetMyCatalogItems>(() => GetMyCatalogItems(fakeRepo));
+      getIt.registerLazySingleton<GetMyCatalogItems>(
+          () => GetMyCatalogItems(fakeRepo));
     }
     if (!getIt.isRegistered<GetCustomers>()) {
       getIt.registerLazySingleton<GetCustomers>(() => _FakeGetCustomers());
     }
   });
 
-  testWidgets('customer picker selects customer and fills address', (tester) async {
+  testWidgets('customer picker selects customer and fills address',
+      (tester) async {
     await tester.pumpWidget(const MaterialApp(home: CreateInvoicePage()));
     await tester.pumpAndSettle();
 
@@ -83,7 +86,8 @@ void main() {
     expect(find.text('My Service'), findsWidgets);
   });
 
-  testWidgets('catalog selection uses priceMax then falls back to priceMin', (tester) async {
+  testWidgets('catalog selection uses priceMax then falls back to priceMin',
+      (tester) async {
     await tester.pumpWidget(const MaterialApp(home: CreateInvoicePage()));
     await tester.pumpAndSettle();
 
@@ -120,7 +124,20 @@ void main() {
 
 class _FakeCatalogRepository implements CatalogRepository {
   @override
-  Future<CatalogItem> createCatalog({required String title, required String subCategoryId, required String description, int? priceMin, int? priceMax, String? projectTimeline, List<String> imagePaths = const [], bool instantSelling = false, String? brand, String? condition, String? salesCategory, bool warranty = false, bool delivery = false}) async {
+  Future<CatalogItem> createCatalog(
+      {required String title,
+      required String subCategoryId,
+      required String description,
+      int? priceMin,
+      int? priceMax,
+      String? projectTimeline,
+      List<String> imagePaths = const [],
+      bool instantSelling = false,
+      String? brand,
+      String? condition,
+      String? salesCategory,
+      bool warranty = false,
+      bool delivery = false}) async {
     throw UnimplementedError();
   }
 
@@ -128,7 +145,8 @@ class _FakeCatalogRepository implements CatalogRepository {
   Future<bool> deleteCatalog(String id) async => throw UnimplementedError();
 
   @override
-  Future<List<CatalogItem>> getCatalogByUser(String userId, {int page = 1}) async {
+  Future<List<CatalogItem>> getCatalogByUser(String userId,
+      {int page = 1}) async {
     throw UnimplementedError();
   }
 
@@ -163,7 +181,21 @@ class _FakeCatalogRepository implements CatalogRepository {
   }
 
   @override
-  Future<CatalogItem> updateCatalog({required String id, String? title, String? subCategoryId, String? description, int? priceMin, int? priceMax, String? projectTimeline, List<String> newImagePaths = const [], bool? instantSelling, String? brand, String? condition, String? salesCategory, bool? warranty, bool? delivery}) async {
+  Future<CatalogItem> updateCatalog(
+      {required String id,
+      String? title,
+      String? subCategoryId,
+      String? description,
+      int? priceMin,
+      int? priceMax,
+      String? projectTimeline,
+      List<String> newImagePaths = const [],
+      bool? instantSelling,
+      String? brand,
+      String? condition,
+      String? salesCategory,
+      bool? warranty,
+      bool? delivery}) async {
     throw UnimplementedError();
   }
 }

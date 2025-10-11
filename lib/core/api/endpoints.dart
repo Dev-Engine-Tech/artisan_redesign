@@ -1,6 +1,6 @@
 class ApiEndpoints {
   // Base URLs
-  static const String baseUrl = 'https://artisansbridge.azurewebsites.net';
+  static const String baseUrl = 'https://apistaging.artisansbridge.com';
 
   // Auth endpoints
   static const String login = '/auth/login/';
@@ -90,6 +90,8 @@ class ApiEndpoints {
   static const String markNotificationAsRead = '/notifications/mark-as-read/';
   static const String markAllNotificationsAsRead =
       '/notifications/mark-all-as-read/';
+  static const String deviceTokensRegister = '/user/api/device-tokens/register/';
+  static const String testPushNotification = '/user/api/test-push-notification/';
 
   // File Upload endpoints
   static const String uploadImage = '/upload/image/';

@@ -31,7 +31,8 @@ class ChatManager {
       }
     } catch (e) {
       // AuthBloc not available in context
-      throw StateError('Cannot access chat: User is not authenticated. AuthBloc not available in context.');
+      throw StateError(
+          'Cannot access chat: User is not authenticated. AuthBloc not available in context.');
     }
     throw StateError('Cannot access chat: User is not authenticated');
   }

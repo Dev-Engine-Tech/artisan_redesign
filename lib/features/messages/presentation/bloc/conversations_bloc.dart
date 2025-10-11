@@ -20,8 +20,9 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       emit(ConversationsLoading());
       await _sub?.cancel();
       try {
-        _sub = repository.watchConversations(currentUserId: currentUserId).listen(
-            (data) {
+        _sub = repository
+            .watchConversations(currentUserId: currentUserId)
+            .listen((data) {
           add(ConversationsUpdated(data));
         }, onError: (e) {
           add(ConversationsFailed(e.toString()));

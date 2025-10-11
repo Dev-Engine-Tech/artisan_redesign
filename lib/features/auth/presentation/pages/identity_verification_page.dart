@@ -63,7 +63,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               hintStyle: TextStyle(color: Colors.grey[400]),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
-              prefixIcon: prefixIcon != null 
+              prefixIcon: prefixIcon != null
                   ? Icon(prefixIcon, color: Colors.grey[400])
                   : null,
             ),
@@ -110,7 +110,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               hintStyle: TextStyle(color: Colors.grey[400]),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
-              prefixIcon: prefixIcon != null 
+              prefixIcon: prefixIcon != null
                   ? Icon(prefixIcon, color: Colors.grey[400])
                   : null,
             ),
@@ -132,9 +132,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               : Colors.grey[50],
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: _docType == value 
-                ? AppColors.orange 
-                : Colors.grey[200]!,
+            color: _docType == value ? AppColors.orange : Colors.grey[200]!,
           ),
         ),
         child: Row(
@@ -144,7 +142,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                 label,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: _docType == value 
+                  color: _docType == value
                       ? AppColors.brownHeader
                       : Colors.grey[700],
                 ),
@@ -156,9 +154,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: _docType == value 
-                      ? AppColors.orange 
-                      : Colors.grey[400]!,
+                  color:
+                      _docType == value ? AppColors.orange : Colors.grey[400]!,
                   width: 2,
                 ),
               ),
@@ -227,9 +224,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 40),
-                    
+
                     // Title and subtitle
                     const Text(
                       'Identity Verification',
@@ -240,9 +237,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                         height: 1.2,
                       ),
                     ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     Text(
                       'Verify your identity to access all features and build trust with potential clients.',
                       style: TextStyle(
@@ -253,7 +250,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                   ],
                 ),
               ),
-              
+
               // Form section
               Expanded(
                 child: Container(
@@ -282,9 +279,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                             color: AppColors.orange,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 24),
-                        
+
                         const Text(
                           'Government ID Required',
                           style: TextStyle(
@@ -293,9 +290,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                             color: AppColors.brownHeader,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 8),
-                        
+
                         Text(
                           'Upload a government-issued ID and take a selfie to complete your verification',
                           textAlign: TextAlign.center,
@@ -304,9 +301,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                             fontSize: 16,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 32),
-                        
+
                         Form(
                           key: _formKey,
                           child: Column(
@@ -317,9 +314,12 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                 hint: 'Select your country',
                                 value: _country,
                                 items: const [
-                                  DropdownMenuItem(value: 'NG', child: Text('Nigeria')),
-                                  DropdownMenuItem(value: 'GH', child: Text('Ghana')),
-                                  DropdownMenuItem(value: 'KE', child: Text('Kenya')),
+                                  DropdownMenuItem(
+                                      value: 'NG', child: Text('Nigeria')),
+                                  DropdownMenuItem(
+                                      value: 'GH', child: Text('Ghana')),
+                                  DropdownMenuItem(
+                                      value: 'KE', child: Text('Kenya')),
                                 ],
                                 onChanged: (v) => setState(() => _country = v),
                                 validator: (v) => (v == null || v.isEmpty)
@@ -327,9 +327,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     : null,
                                 prefixIcon: Icons.flag_outlined,
                               ),
-                              
+
                               const SizedBox(height: 24),
-                              
+
                               // Document type selection
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,28 +343,31 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 12),
-                                  _docOption('NIN', 'National Identification Number (NIN)'),
-                                  _docOption('PVC', "Permanent Voter's Card (PVC)"),
+                                  _docOption('NIN',
+                                      'National Identification Number (NIN)'),
+                                  _docOption(
+                                      'PVC', "Permanent Voter's Card (PVC)"),
                                   _docOption('PPT', 'International Passport'),
                                   _docOption('DL', "Driver's License"),
                                 ],
                               ),
-                              
+
                               const SizedBox(height: 24),
-                              
+
                               // Document number field
                               _buildTextField(
                                 controller: _idController,
                                 label: 'Document Number',
                                 hint: 'e.g A120000045',
                                 prefixIcon: Icons.numbers_outlined,
-                                validator: (v) => (v == null || v.trim().isEmpty)
-                                    ? 'Please enter document number'
-                                    : null,
+                                validator: (v) =>
+                                    (v == null || v.trim().isEmpty)
+                                        ? 'Please enter document number'
+                                        : null,
                               ),
-                              
+
                               const SizedBox(height: 24),
-                              
+
                               // Upload document button
                               Container(
                                 width: double.infinity,
@@ -384,26 +387,26 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                       _uploadedDocumentPath = fakePath;
                                     });
                                     if (mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                              content:
-                                                  Text('Document uploaded successfully')));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Document uploaded successfully')));
                                     }
                                   },
                                   icon: Icon(
-                                    _uploadedDocumentPath != null 
+                                    _uploadedDocumentPath != null
                                         ? Icons.check_circle_outline
                                         : Icons.upload_file_outlined,
-                                    color: _uploadedDocumentPath != null 
+                                    color: _uploadedDocumentPath != null
                                         ? Colors.green
                                         : AppColors.orange,
                                   ),
                                   label: Text(
-                                    _uploadedDocumentPath != null 
+                                    _uploadedDocumentPath != null
                                         ? 'Document Uploaded'
                                         : 'Upload Document',
                                     style: TextStyle(
-                                      color: _uploadedDocumentPath != null 
+                                      color: _uploadedDocumentPath != null
                                           ? Colors.green
                                           : AppColors.brownHeader,
                                       fontWeight: FontWeight.w500,
@@ -413,13 +416,14 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     backgroundColor: Colors.transparent,
                                     side: BorderSide.none,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12)),
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
                                   ),
                                 ),
                               ),
-                              
+
                               const SizedBox(height: 24),
-                              
+
                               // Selfie capture section
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -439,18 +443,23 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     decoration: BoxDecoration(
                                       color: Colors.grey[50],
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.grey[200]!),
+                                      border:
+                                          Border.all(color: Colors.grey[200]!),
                                     ),
                                     child: OutlinedButton.icon(
                                       onPressed: () async {
-                                        final result = await Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (_) => const SelfieCapturePage()));
-                                        if (result != null && result is String) {
+                                        final result = await Navigator.of(
+                                                context)
+                                            .push(MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const SelfieCapturePage()));
+                                        if (result != null &&
+                                            result is String) {
                                           if (mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                    content: Text('Selfie captured successfully')));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'Selfie captured successfully')));
                                           }
                                         }
                                       },
@@ -469,17 +478,19 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                         backgroundColor: Colors.transparent,
                                         side: BorderSide.none,
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12)),
+                                            borderRadius:
+                                                BorderRadius.circular(12)),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              
+
                               const SizedBox(height: 32),
-                              
+
                               // Submit button
-                              BlocConsumer<VerificationCubit, VerificationState>(
+                              BlocConsumer<VerificationCubit,
+                                  VerificationState>(
                                 listener: (context, state) {
                                   if (state.error != null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -494,7 +505,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                       onPressed: state.submitting
                                           ? null
                                           : () async {
-                                              if (!_formKey.currentState!.validate()) {
+                                              if (!_formKey.currentState!
+                                                  .validate()) {
                                                 return;
                                               }
                                               if (!state.identitySubmitted) {
@@ -511,8 +523,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
                                                   const SnackBar(
-                                                    content:
-                                                        Text('Please capture a selfie'),
+                                                    content: Text(
+                                                        'Please capture a selfie'),
                                                   ),
                                                 );
                                                 return;
@@ -538,7 +550,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                         backgroundColor: AppColors.orange,
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius:
+                                              BorderRadius.circular(16),
                                         ),
                                         elevation: 0,
                                       ),
@@ -556,9 +569,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                   );
                                 },
                               ),
-                              
+
                               const SizedBox(height: 32),
-                              
+
                               // Info card
                               Container(
                                 padding: const EdgeInsets.all(16),

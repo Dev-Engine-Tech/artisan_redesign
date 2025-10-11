@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
-import '../../domain/entities/invoice.dart' show InvoiceItem; // not used, placeholder
+import '../../domain/entities/invoice.dart'
+    show InvoiceItem; // not used, placeholder
 import '../cubit/invoice_form_cubit.dart';
 
 class LabelCell extends StatelessWidget {
@@ -43,7 +44,8 @@ class LabelCell extends StatelessWidget {
             labelText: 'Label',
             hintText: 'Enter description or pick from catalog',
             isDense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: const OutlineInputBorder(),
             suffixIcon: readOnly
                 ? null
@@ -69,105 +71,113 @@ class LabelCell extends StatelessWidget {
       builder: (ctx) {
         final searchController = TextEditingController();
         return BlocProvider.value(
-          value: cubit,
-          child: BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
-          builder: (blocCtx, state) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: StatefulBuilder(builder: (sheetCtx, setSheetState) {
-                  List filtered() {
-                    final q = searchController.text.trim().toLowerCase();
-                    return state.catalogs
-                        .where((c) => c.title.toLowerCase().contains(q) ||
-                            c.description.toLowerCase().contains(q))
-                        .toList();
-                  }
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 4,
-                      width: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text('Select from Catalog',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (_) => setSheetState(() {}),
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.search),
-                          hintText: 'Search catalog...',
-                          border: OutlineInputBorder(),
-                          isDense: true,
+            value: cubit,
+            child: BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
+                builder: (blocCtx, state) {
+              return SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: StatefulBuilder(builder: (sheetCtx, setSheetState) {
+                    List filtered() {
+                      final q = searchController.text.trim().toLowerCase();
+                      return state.catalogs
+                          .where((c) =>
+                              c.title.toLowerCase().contains(q) ||
+                              c.description.toLowerCase().contains(q))
+                          .toList();
+                    }
+
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 8),
+                        Container(
+                          height: 4,
+                          width: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    if (state.loadingCatalogs)
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator(),
-                      )
-                    else if (state.catalogsError != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(state.catalogsError!,
-                            style: const TextStyle(color: Colors.red)),
-                      )
-                    else
-                      Flexible(
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: filtered().length,
-                          separatorBuilder: (_, __) => const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final c = filtered()[index];
-                            final priceText = (c.priceMax != null || c.priceMin != null)
-                                ? 'NGN ${(c.priceMax ?? c.priceMin).toString()}'
-                                : '—';
-                            return ListTile(
-                              leading:
-                                  const Icon(Icons.inventory_2_outlined),
-                              title: Text(c.title,
-                                  maxLines: 1, overflow: TextOverflow.ellipsis),
-                              subtitle: Text(priceText),
-                              onTap: () {
-                                Navigator.pop(context);
-                                // Update controllers based on selection
-                                labelController.text = c.title;
-                                final current = double.tryParse(
-                                        unitPriceController.text) ??
-                                    0.0;
-                                final suggested = blocCtx.read<InvoiceFormCubit>().suggestedPriceFromCatalog(c);
-                                if (current == 0 && suggested > 0) {
-                                  unitPriceController.text = suggested.toString();
-                                }
-                                onCatalogChanged?.call(c.id);
+                        const SizedBox(height: 12),
+                        const Text('Select from Catalog',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (_) => setSheetState(() {}),
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.search),
+                              hintText: 'Search catalog...',
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        if (state.loadingCatalogs)
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(),
+                          )
+                        else if (state.catalogsError != null)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(state.catalogsError!,
+                                style: const TextStyle(color: Colors.red)),
+                          )
+                        else
+                          Flexible(
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: filtered().length,
+                              separatorBuilder: (_, __) =>
+                                  const Divider(height: 1),
+                              itemBuilder: (context, index) {
+                                final c = filtered()[index];
+                                final priceText = (c.priceMax != null ||
+                                        c.priceMin != null)
+                                    ? 'NGN ${(c.priceMax ?? c.priceMin).toString()}'
+                                    : '—';
+                                return ListTile(
+                                  leading:
+                                      const Icon(Icons.inventory_2_outlined),
+                                  title: Text(c.title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis),
+                                  subtitle: Text(priceText),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    // Update controllers based on selection
+                                    labelController.text = c.title;
+                                    final current = double.tryParse(
+                                            unitPriceController.text) ??
+                                        0.0;
+                                    final suggested = blocCtx
+                                        .read<InvoiceFormCubit>()
+                                        .suggestedPriceFromCatalog(c);
+                                    if (current == 0 && suggested > 0) {
+                                      unitPriceController.text =
+                                          suggested.toString();
+                                    }
+                                    onCatalogChanged?.call(c.id);
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-                      ),
-                    const SizedBox(height: 8),
-                  ],
-                  );
-                }),
-              ),
-            );
-          })
-        );
+                            ),
+                          ),
+                        const SizedBox(height: 8),
+                      ],
+                    );
+                  }),
+                ),
+              );
+            }));
       },
     );
   }
