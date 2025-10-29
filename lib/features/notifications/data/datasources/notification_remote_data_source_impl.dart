@@ -1,29 +1,17 @@
-import 'package:dio/dio.dart';
 import 'package:artisans_circle/core/api/endpoints.dart';
 import 'package:artisans_circle/features/notifications/data/models/notification_model.dart';
+import 'package:artisans_circle/core/data/base_remote_data_source.dart';
 import 'notification_remote_data_source.dart';
-import 'dart:io' show HttpStatus;
 
-class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
-  final Dio dio;
-
-  NotificationRemoteDataSourceImpl(this.dio);
+class NotificationRemoteDataSourceImpl extends BaseRemoteDataSource
+    implements NotificationRemoteDataSource {
+  NotificationRemoteDataSourceImpl(super.dio);
 
   @override
-  Future<List<NotificationModel>> getNotifications() async {
-    try {
-      final response = await dio.get(ApiEndpoints.notifications);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data['results'] ?? response.data;
-        return data.map((json) => NotificationModel.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to fetch notifications');
-      }
-    } catch (e) {
-      throw Exception('Error fetching notifications: $e');
-    }
-  }
+  Future<List<NotificationModel>> getNotifications() => getList(
+        ApiEndpoints.notifications,
+        fromJson: NotificationModel.fromJson,
+      );
 
   @override
   Future<int> getUnreadCount() async {
@@ -42,33 +30,15 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   }
 
   @override
-  Future<void> markAsRead(String notificationId) async {
-    try {
-      final response = await dio.post(
+  Future<void> markAsRead(String notificationId) => postVoid(
         ApiEndpoints.markNotificationAsRead,
         data: {'notification_id': notificationId},
       );
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to mark notification as read');
-      }
-    } catch (e) {
-      throw Exception('Error marking notification as read: $e');
-    }
-  }
-
   @override
-  Future<void> markAllAsRead() async {
-    try {
-      final response = await dio.post(ApiEndpoints.markAllNotificationsAsRead);
-
-      if (response.statusCode != 200) {
-        throw Exception('Failed to mark all notifications as read');
-      }
-    } catch (e) {
-      throw Exception('Error marking all notifications as read: $e');
-    }
-  }
+  Future<void> markAllAsRead() => postVoid(
+        ApiEndpoints.markAllNotificationsAsRead,
+      );
 
   @override
   Future<NotificationModel?> getNotificationById(String notificationId) async {
@@ -93,29 +63,23 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     required String token,
     required String deviceType,
     String? deviceId,
-  }) async {
-    final payload = <String, dynamic>{
-      'token': token,
-      'device_type': deviceType,
-      if (deviceId != null && deviceId.isNotEmpty) 'device_id': deviceId,
-    };
-
-    final response = await dio.post(ApiEndpoints.deviceTokensRegister, data: payload);
-    // Accept 201 Created or 200 OK
-    final status = response.statusCode ?? 0;
-    if (status != HttpStatus.created && status != HttpStatus.ok) {
-      throw Exception('Failed to register device token (${response.statusCode})');
-    }
-  }
+  }) =>
+      postVoid(
+        ApiEndpoints.deviceTokensRegister,
+        data: {
+          'token': token,
+          'device_type': deviceType,
+          if (deviceId != null && deviceId.isNotEmpty) 'device_id': deviceId,
+        },
+      );
 
   @override
-  Future<void> sendTestPush({required String title, required String body}) async {
-    final response = await dio.post(ApiEndpoints.testPushNotification, data: {
-      'title': title,
-      'body': body,
-    });
-    if ((response.statusCode ?? 0) >= 400) {
-      throw Exception('Failed to send test push');
-    }
-  }
+  Future<void> sendTestPush({required String title, required String body}) =>
+      postVoid(
+        ApiEndpoints.testPushNotification,
+        data: {
+          'title': title,
+          'body': body,
+        },
+      );
 }

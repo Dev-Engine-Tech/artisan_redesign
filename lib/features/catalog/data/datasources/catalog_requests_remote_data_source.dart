@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../../core/api/endpoints.dart';
+import '../../../../core/data/base_remote_data_source.dart';
 import '../models/catalog_request_model.dart';
 
 abstract class CatalogRequestsRemoteDataSource {
@@ -9,10 +10,9 @@ abstract class CatalogRequestsRemoteDataSource {
       {required bool approve, String? reason, String? message});
 }
 
-class CatalogRequestsRemoteDataSourceImpl
+class CatalogRequestsRemoteDataSourceImpl extends BaseRemoteDataSource
     implements CatalogRequestsRemoteDataSource {
-  final Dio dio;
-  CatalogRequestsRemoteDataSourceImpl(this.dio);
+  CatalogRequestsRemoteDataSourceImpl(super.dio);
 
   @override
   Future<(List<CatalogRequestModel>, String?)> fetchRequests(
@@ -64,37 +64,27 @@ class CatalogRequestsRemoteDataSourceImpl
   }
 
   @override
-  Future<CatalogRequestModel> fetchRequestDetails(String id) async {
-    final resp = await dio.get('${ApiEndpoints.catalogRequestDetails}$id/');
-    if (resp.statusCode != null &&
-        resp.statusCode! >= 200 &&
-        resp.statusCode! < 300) {
-      final data = resp.data is Map
-          ? Map<String, dynamic>.from(resp.data)
-          : <String, dynamic>{};
-      // ignore: avoid_print
-
-      return CatalogRequestModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: resp.requestOptions,
-        response: resp,
-        error: 'Failed to fetch request details');
-  }
+  Future<CatalogRequestModel> fetchRequestDetails(String id) => get(
+        '${ApiEndpoints.catalogRequestDetails}$id/',
+        fromJson: CatalogRequestModel.fromJson,
+      );
 
   @override
   Future<bool> respond(String id,
       {required bool approve, String? reason, String? message}) async {
-    final body = {
-      'request_id': id,
-      'action': approve ? 'approve' : 'decline',
-      if (!approve && reason != null) 'decline_reason': reason,
-      if (!approve && message != null) 'decline_message': message,
-    };
-    final resp =
-        await dio.post(ApiEndpoints.respondToCatalogRequest, data: body);
-    return resp.statusCode != null &&
-        resp.statusCode! >= 200 &&
-        resp.statusCode! < 300;
+    try {
+      await postVoid(
+        ApiEndpoints.respondToCatalogRequest,
+        data: {
+          'request_id': id,
+          'action': approve ? 'approve' : 'decline',
+          if (!approve && reason != null) 'decline_reason': reason,
+          if (!approve && message != null) 'decline_message': message,
+        },
+      );
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 }

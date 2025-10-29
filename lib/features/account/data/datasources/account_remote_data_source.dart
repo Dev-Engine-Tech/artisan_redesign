@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../../../core/api/endpoints.dart';
+import '../../../../core/data/base_remote_data_source.dart';
 import '../models/user_profile_model.dart';
 import '../models/earnings_model.dart';
 import '../models/bank_account_model.dart';
@@ -42,9 +43,9 @@ abstract class AccountRemoteDataSource {
       {required String bankCode, required String accountNumber});
   Future<BankAccountModel> addBankAccount({
     required String bankName,
-    String? bankCode,
     required String accountName,
     required String accountNumber,
+    String? bankCode,
   });
   Future<void> deleteBankAccount(String id);
 
@@ -57,9 +58,9 @@ abstract class AccountRemoteDataSource {
   Future<bool> verifyWithdrawalPin(String pin);
 }
 
-class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
-  final Dio dio;
-  AccountRemoteDataSourceImpl(this.dio);
+class AccountRemoteDataSourceImpl extends BaseRemoteDataSource
+    implements AccountRemoteDataSource {
+  AccountRemoteDataSourceImpl(super.dio);
 
   // Simple in-memory cache for bank list to reduce network calls.
   List<BankInfoModel>? _bankListCache;
@@ -67,21 +68,10 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   static const Duration _bankListTtl = Duration(hours: 12);
 
   @override
-  Future<UserProfileModel> getUserProfile() async {
-    final response = await dio.get(ApiEndpoints.userProfile);
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> getUserProfile() => get(
+        ApiEndpoints.userProfile,
+        fromJson: UserProfileModel.fromJson,
+      );
 
   @override
   Future<UserProfileModel> updateUserProfile({
@@ -104,228 +94,93 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       payload['years_of_experience'] = yearsOfExperience;
     }
 
-    final response = await dio.put(ApiEndpoints.updateProfile, data: payload);
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
+    return put(
+      ApiEndpoints.updateProfile,
+      fromJson: UserProfileModel.fromJson,
+      data: payload,
+    );
   }
 
   @override
-  Future<EarningsModel> getEarnings() async {
-    final response = await dio.get(ApiEndpoints.userEarnings);
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return EarningsModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<EarningsModel> getEarnings() => get(
+        ApiEndpoints.userEarnings,
+        fromJson: EarningsModel.fromJson,
+      );
 
   @override
   Future<List<TransactionModel>> getTransactions(
-      {int page = 1, int limit = 20}) async {
-    final response = await dio.get(
-      ApiEndpoints.transactionHistory,
-      queryParameters: {'page': page, 'limit': limit},
-    );
-    if (_ok(response.statusCode)) {
-      final dynamic data = response.data;
-      final List list = data is Map && data['transactions'] is List
-          ? (data['transactions'] as List)
-          : (data is List ? data : <dynamic>[]);
-      return list
-          .map((e) => TransactionModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+          {int page = 1, int limit = 20}) =>
+      getList(
+        ApiEndpoints.transactionHistory,
+        fromJson: TransactionModel.fromJson,
+        queryParams: {'page': page, 'limit': limit},
+      );
 
   @override
-  Future<void> requestWithdrawal(double amount) async {
-    final response =
-        await dio.post(ApiEndpoints.withdrawEarnings, data: {'amount': amount});
-    if (_ok(response.statusCode)) return;
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<void> requestWithdrawal(double amount) => postVoid(
+        ApiEndpoints.withdrawEarnings,
+        data: {'amount': amount},
+      );
 
   @override
-  Future<UserProfileModel> addWorkExperience(WorkExperienceModel work) async {
-    final response =
-        await dio.post('/user/work-experience', data: work.toJson());
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> addWorkExperience(WorkExperienceModel work) => post(
+        '/user/work-experience',
+        fromJson: UserProfileModel.fromJson,
+        data: work.toJson(),
+      );
 
   @override
-  Future<UserProfileModel> updateWorkExperience(
-      WorkExperienceModel work) async {
-    final response =
-        await dio.put('/user/work-experience/${work.id}', data: work.toJson());
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> updateWorkExperience(WorkExperienceModel work) => put(
+        '/user/work-experience/${work.id}',
+        fromJson: UserProfileModel.fromJson,
+        data: work.toJson(),
+      );
 
   @override
-  Future<UserProfileModel> deleteWorkExperience(String id) async {
-    final response = await dio.delete('/user/work-experience/$id');
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> deleteWorkExperience(String id) => delete(
+        '/user/work-experience/$id',
+        fromJson: UserProfileModel.fromJson,
+      );
 
   @override
-  Future<UserProfileModel> addEducation(EducationModel edu) async {
-    final response = await dio.post('/user/education', data: edu.toJson());
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> addEducation(EducationModel edu) => post(
+        '/user/education',
+        fromJson: UserProfileModel.fromJson,
+        data: edu.toJson(),
+      );
 
   @override
-  Future<UserProfileModel> updateEducation(EducationModel edu) async {
-    final response =
-        await dio.put('/user/education/${edu.id}', data: edu.toJson());
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> updateEducation(EducationModel edu) => put(
+        '/user/education/${edu.id}',
+        fromJson: UserProfileModel.fromJson,
+        data: edu.toJson(),
+      );
 
   @override
-  Future<UserProfileModel> deleteEducation(String id) async {
-    final response = await dio.delete('/user/education/$id');
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> deleteEducation(String id) => delete(
+        '/user/education/$id',
+        fromJson: UserProfileModel.fromJson,
+      );
 
   @override
-  Future<UserProfileModel> addSkill(String skill) async {
-    final response = await dio.post('/user/skills', data: {'skill': skill});
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> addSkill(String skill) => post(
+        '/user/skills',
+        fromJson: UserProfileModel.fromJson,
+        data: {'skill': skill},
+      );
 
   @override
-  Future<UserProfileModel> removeSkill(String skill) async {
-    final response = await dio.delete('/user/skills', data: {'skill': skill});
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return UserProfileModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<UserProfileModel> removeSkill(String skill) => delete(
+        '/user/skills',
+        fromJson: UserProfileModel.fromJson,
+        data: {'skill': skill},
+      );
 
   @override
-  Future<List<BankAccountModel>> getBankAccounts() async {
-    final response = await dio.get(ApiEndpoints.getBankAccounts);
-    if (_ok(response.statusCode)) {
-      final dynamic data = response.data;
-      final List list = data is Map && data['results'] is List
-          ? (data['results'] as List)
-          : (data is List ? data : <dynamic>[]);
-      return list
-          .map((e) => BankAccountModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<List<BankAccountModel>> getBankAccounts() => getList(
+        ApiEndpoints.getBankAccounts,
+        fromJson: BankAccountModel.fromJson,
+      );
 
   // Bank list and verification
   @override
@@ -340,7 +195,9 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
     try {
       final response = await dio.get(ApiEndpoints.getBankList);
-      if (_ok(response.statusCode)) {
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
         final data = response.data;
         final List list = data is List
             ? data
@@ -383,7 +240,9 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     try {
       final response = await dio.post(ApiEndpoints.verifyBankAccount,
           data: {'bank_code': bankCode, 'account_number': accountNumber});
-      if (_ok(response.statusCode)) {
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
         final data = response.data;
         if (data is Map && data['account_name'] != null) {
           return data['account_name'].toString();
@@ -410,9 +269,9 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   @override
   Future<BankAccountModel> addBankAccount({
     required String bankName,
-    String? bankCode,
     required String accountName,
     required String accountNumber,
+    String? bankCode,
   }) async {
     final payload = <String, dynamic>{
       'bank_name': bankName,
@@ -422,57 +281,36 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     if (bankCode != null && bankCode.isNotEmpty) {
       payload['bank_code'] = bankCode;
     }
-    final response = await dio.post(ApiEndpoints.addBankAccount, data: payload);
-    if (_ok(response.statusCode)) {
-      final data = response.data is Map<String, dynamic>
-          ? response.data
-          : (response.data is Map
-              ? Map<String, dynamic>.from(response.data)
-              : <String, dynamic>{});
-      return BankAccountModel.fromJson(data);
-    }
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
+    return post(
+      ApiEndpoints.addBankAccount,
+      fromJson: BankAccountModel.fromJson,
+      data: payload,
+    );
   }
 
   @override
-  Future<void> deleteBankAccount(String id) async {
-    final url = '${ApiEndpoints.deleteBankAccount}$id/';
-    final response = await dio.delete(url);
-    if (_ok(response.statusCode)) return;
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<void> deleteBankAccount(String id) => deleteVoid(
+        '${ApiEndpoints.deleteBankAccount}$id/',
+      );
 
   @override
   Future<void> changePassword(
-      {required String oldPassword, required String newPassword}) async {
-    final response = await dio.post(ApiEndpoints.changePassword, data: {
-      'old_password': oldPassword,
-      'new_password': newPassword,
-    });
-    if (_ok(response.statusCode)) return;
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+          {required String oldPassword, required String newPassword}) =>
+      postVoid(
+        ApiEndpoints.changePassword,
+        data: {
+          'old_password': oldPassword,
+          'new_password': newPassword,
+        },
+      );
 
   @override
-  Future<void> deleteAccount({String? otp}) async {
-    final response = await dio.post(ApiEndpoints.deleteAccount, data: {
-      if (otp != null) 'token': otp,
-    });
-    if (_ok(response.statusCode)) return;
-    throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse);
-  }
+  Future<void> deleteAccount({String? otp}) => postVoid(
+        ApiEndpoints.deleteAccount,
+        data: {
+          if (otp != null) 'token': otp,
+        },
+      );
 
   @override
   Future<String> uploadProfileImage(String imagePath) async {
@@ -481,7 +319,9 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     });
     final response =
         await dio.post(ApiEndpoints.uploadProfilePicture, data: form);
-    if (_ok(response.statusCode)) {
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
       final data = response.data;
       if (data is Map) {
         return (data['image_url'] ?? data['profile_image'] ?? '').toString();
@@ -496,17 +336,21 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
   @override
   Future<bool> setWithdrawalPin(String pin) async {
-    final response =
-        await dio.post(ApiEndpoints.setWithdrawalPin, data: {'pin': pin});
-    return _ok(response.statusCode);
+    try {
+      await postVoid(ApiEndpoints.setWithdrawalPin, data: {'pin': pin});
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   @override
   Future<bool> verifyWithdrawalPin(String pin) async {
-    final response =
-        await dio.post(ApiEndpoints.validateWithdrawalPin, data: {'pin': pin});
-    return _ok(response.statusCode);
+    try {
+      await postVoid(ApiEndpoints.validateWithdrawalPin, data: {'pin': pin});
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
-
-  bool _ok(int? status) => status != null && status >= 200 && status < 300;
 }

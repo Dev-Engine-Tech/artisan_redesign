@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../models/job_model.dart';
 import '../../../../core/api/endpoints.dart';
+import '../../../../core/data/base_remote_data_source.dart';
 import '../../domain/entities/job_application.dart';
 
 abstract class JobRemoteDataSource {
@@ -33,10 +34,9 @@ abstract class JobRemoteDataSource {
   Future<bool> acceptAgreement(String projectId);
 }
 
-class JobRemoteDataSourceImpl implements JobRemoteDataSource {
-  final Dio dio;
-
-  JobRemoteDataSourceImpl(this.dio);
+class JobRemoteDataSourceImpl extends BaseRemoteDataSource
+    implements JobRemoteDataSource {
+  JobRemoteDataSourceImpl(super.dio);
 
   @override
   Future<List<JobModel>> fetchJobs({
@@ -337,46 +337,24 @@ class JobRemoteDataSourceImpl implements JobRemoteDataSource {
 
   @override
   Future<bool> requestChange(String jobId, {required String reason}) async {
-    final payload = <String, dynamic>{'reason': reason};
-
-    final response =
-        await dio.post(ApiEndpoints.jobRequestChangeById(jobId), data: payload);
-
-    if (response.statusCode != null &&
-        response.statusCode! >= 200 &&
-        response.statusCode! < 300) {
-      final data = response.data;
-      if (data == null) {
-        return true;
-      }
-      if (data is Map && (data['success'] == true || data['status'] == 'ok')) {
-        return true;
-      }
-      return false;
-    } else {
+    try {
+      await postVoid(
+        ApiEndpoints.jobRequestChangeById(jobId),
+        data: {'reason': reason},
+      );
+      return true;
+    } catch (_) {
       return false;
     }
   }
 
   @override
   Future<bool> acceptAgreement(String projectId) async {
-    final url = ApiEndpoints.acceptAgreementByProjectId(projectId);
-    final response = await dio.post(url);
-    if (response.statusCode != null &&
-        response.statusCode! >= 200 &&
-        response.statusCode! < 300) {
-      final data = response.data;
-      if (data == null) {
-        return true;
-      }
-      if (data is Map &&
-          (data['success'] == true ||
-              data['status'] == 'ok' ||
-              data['detail'] != null)) {
-        return true;
-      }
-      return true; // optimistic
+    try {
+      await postVoid(ApiEndpoints.acceptAgreementByProjectId(projectId));
+      return true;
+    } catch (_) {
+      return false;
     }
-    return false;
   }
 }

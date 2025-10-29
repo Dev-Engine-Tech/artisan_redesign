@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../../core/api/endpoints.dart';
+import '../../../../core/data/base_remote_data_source.dart';
 import '../models/catalog_item_model.dart';
 
 abstract class CatalogRemoteDataSource {
@@ -43,80 +44,25 @@ abstract class CatalogRemoteDataSource {
   Future<bool> deleteCatalog(String id);
 }
 
-class CatalogRemoteDataSourceImpl implements CatalogRemoteDataSource {
-  final Dio dio;
-  CatalogRemoteDataSourceImpl(this.dio);
-
-  List<CatalogItemModel> _parseList(dynamic data) {
-    // Print structure for debugging
-    // ignore: avoid_print
-
-    if (data is List) {
-      return data
-          .map((e) =>
-              CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList();
-    }
-    if (data is Map) {
-      List? list;
-      if (data['results'] is List) list = data['results'] as List;
-      list ??= data['data'] as List?;
-      list ??= data['items'] as List?;
-      // Handle nested container like { catalog_products: { results: [...] } }
-      final cp = data['catalog_products'];
-      if (list == null && cp is Map && cp['results'] is List) {
-        list = cp['results'] as List;
-      }
-      if (list == null && cp is List) {
-        list = cp;
-      }
-      // Some APIs return { catalogs: [...] }
-      if (list == null && data['catalogs'] is List) {
-        list = data['catalogs'] as List;
-      }
-      if (list != null) {
-        return list
-            .map((e) =>
-                CatalogItemModel.fromJson(Map<String, dynamic>.from(e as Map)))
-            .toList();
-      }
-    }
-    throw DioException(
-        requestOptions: RequestOptions(path: ''),
-        error: 'Unexpected catalog response shape');
-  }
+class CatalogRemoteDataSourceImpl extends BaseRemoteDataSource
+    implements CatalogRemoteDataSource {
+  CatalogRemoteDataSourceImpl(super.dio);
 
   @override
-  Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1}) async {
-    final resp = await dio
-        .get(ApiEndpoints.myCatalogItems, queryParameters: {'page': page});
-    if (resp.statusCode != null &&
-        resp.statusCode! >= 200 &&
-        resp.statusCode! < 300) {
-      return _parseList(resp.data);
-    }
-    throw DioException(
-        requestOptions: resp.requestOptions,
-        response: resp,
-        error: 'Failed to fetch my catalog');
-  }
+  Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1}) => getList(
+        ApiEndpoints.myCatalogItems,
+        fromJson: CatalogItemModel.fromJson,
+        queryParams: {'page': page},
+      );
 
   @override
   Future<List<CatalogItemModel>> getCatalogByUser(String userId,
-      {int page = 1}) async {
-    final url = ApiEndpoints.catalogByUser;
-    final resp =
-        await dio.get(url, queryParameters: {'user_id': userId, 'page': page});
-    if (resp.statusCode != null &&
-        resp.statusCode! >= 200 &&
-        resp.statusCode! < 300) {
-      return _parseList(resp.data);
-    }
-    throw DioException(
-        requestOptions: resp.requestOptions,
-        response: resp,
-        error: 'Failed to fetch user catalog');
-  }
+          {int page = 1}) =>
+      getList(
+        ApiEndpoints.catalogByUser,
+        fromJson: CatalogItemModel.fromJson,
+        queryParams: {'user_id': userId, 'page': page},
+      );
 
   @override
   Future<CatalogItemModel> createCatalog({
