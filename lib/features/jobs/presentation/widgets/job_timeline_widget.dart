@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_material_management_widget.dart';
@@ -526,58 +527,27 @@ class JobTimelineWidget extends StatelessWidget {
   Widget _buildActionButtons(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Show progress submission modal
-            },
-            icon: const Icon(Icons.upload, size: 18),
-            label: const Text('Submit Progress Update'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              elevation: 0,
-            ),
-          ),
+        PrimaryButton(
+          text: 'Submit Progress Update',
+          onPressed: () {
+            Navigator.of(context).pop();
+            // Show progress submission modal
+          },
         ),
         const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
+              child: OutlinedAppButton(
+                text: 'Pause Project',
                 onPressed: () => _pauseProject(context),
-                icon: const Icon(Icons.pause, size: 16),
-                label: const Text('Pause Project'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.orange.shade700,
-                  side: BorderSide(color: Colors.orange.shade300),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: OutlinedButton.icon(
+              child: OutlinedAppButton(
+                text: 'Mark Complete',
                 onPressed: () => _completeProject(context),
-                icon: const Icon(Icons.check_circle, size: 16),
-                label: const Text('Mark Complete'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.green.shade700,
-                  side: BorderSide(color: Colors.green.shade300),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
               ),
             ),
           ],
@@ -594,18 +564,18 @@ class JobTimelineWidget extends StatelessWidget {
         content: const Text(
             'Are you sure you want to pause this project? You can resume it later.'),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
           ),
-          TextButton(
+          TextAppButton(
+            text: 'Pause',
             onPressed: () {
               context.read<JobBloc>().add(PauseJobEvent(jobId: job.id));
               Navigator.of(context).pop();
               Navigator.of(context).pop();
               onStatusUpdate();
             },
-            child: const Text('Pause'),
           ),
         ],
       ),
@@ -620,18 +590,18 @@ class JobTimelineWidget extends StatelessWidget {
         content: const Text(
             'Are you sure you want to mark this project as complete? This action cannot be undone.'),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
           ),
-          TextButton(
+          TextAppButton(
+            text: 'Complete',
             onPressed: () {
               context.read<JobBloc>().add(CompleteJobEvent(jobId: job.id));
               Navigator.of(context).pop();
               Navigator.of(context).pop();
               onStatusUpdate();
             },
-            child: const Text('Complete'),
           ),
         ],
       ),

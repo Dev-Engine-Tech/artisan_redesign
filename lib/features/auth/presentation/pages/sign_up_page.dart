@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/signup_cubit.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/signup_state.dart';
@@ -90,57 +91,6 @@ class _SignUpViewState extends State<_SignUpView> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    TextInputType? keyboardType,
-    int? maxLength,
-    Widget? suffixIcon,
-    IconData? prefixIcon,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: TextFormField(
-            controller: controller,
-            obscureText: obscureText,
-            keyboardType: keyboardType,
-            maxLength: maxLength,
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey[400]),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(16),
-              prefixIcon: prefixIcon != null
-                  ? Icon(prefixIcon, color: Colors.grey[400])
-                  : null,
-              suffixIcon: suffixIcon,
-              counterText: '',
-            ),
-            validator: validator,
-          ),
-        ),
-      ],
-    );
-  }
 
   bool _isValidPhone(String phone) {
     final p = phone.replaceAll(' ', '');
@@ -329,48 +279,46 @@ class _SignUpViewState extends State<_SignUpView> {
         children: [
           const SizedBox(height: 8),
 
-          _buildTextField(
+          CustomTextFormField(
             controller: _firstController,
             label: 'First Name',
             hint: 'Enter your first name',
             prefixIcon: Icons.person_outline,
-            validator: (v) => (v == null || v.trim().isEmpty)
-                ? 'Please enter first name'
-                : null,
+            showLabel: true,
+            required: true,
           ),
 
           const SizedBox(height: 20),
 
-          _buildTextField(
+          CustomTextFormField(
             controller: _lastController,
             label: 'Last Name',
             hint: 'Enter your last name',
             prefixIcon: Icons.person_outline,
-            validator: (v) => (v == null || v.trim().isEmpty)
-                ? 'Please enter last name'
-                : null,
+            showLabel: true,
+            required: true,
           ),
 
           const SizedBox(height: 20),
 
-          _buildTextField(
+          CustomTextFormField(
             controller: _identifierController,
             label: 'Email Address',
             hint: 'Enter your email address',
             prefixIcon: Icons.email_outlined,
             keyboardType: TextInputType.emailAddress,
-            validator: (v) => (v == null || v.trim().isEmpty)
-                ? 'Please enter email address'
-                : null,
+            showLabel: true,
+            required: true,
           ),
 
           const SizedBox(height: 20),
 
-          _buildTextField(
+          CustomTextFormField(
             controller: _referralController,
             label: 'Referral Code (Optional)',
             hint: 'Enter referral code if you have one',
             prefixIcon: Icons.card_giftcard_outlined,
+            showLabel: true,
           ),
 
           const SizedBox(height: 20),
@@ -420,43 +368,25 @@ class _SignUpViewState extends State<_SignUpView> {
           const SizedBox(height: 32),
 
           // Continue button
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKeyStep0.currentState!.validate() &&
-                    state.termsAccepted) {
-                  cubit.updateName(
-                    firstName: _firstController.text.trim(),
-                    lastName: _lastController.text.trim(),
-                  );
-                  cubit.updateIdentifier(_identifierController.text.trim());
-                  cubit.updateReferral(_referralController.text.trim());
-                  cubit.nextStep();
-                } else if (!state.termsAccepted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Please accept terms and conditions')),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Continue',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text: 'Continue',
+            onPressed: () {
+              if (_formKeyStep0.currentState!.validate() &&
+                  state.termsAccepted) {
+                cubit.updateName(
+                  firstName: _firstController.text.trim(),
+                  lastName: _lastController.text.trim(),
+                );
+                cubit.updateIdentifier(_identifierController.text.trim());
+                cubit.updateReferral(_referralController.text.trim());
+                cubit.nextStep();
+              } else if (!state.termsAccepted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('Please accept terms and conditions')),
+                );
+              }
+            },
           ),
 
           const SizedBox(height: 24),
@@ -485,58 +415,20 @@ class _SignUpViewState extends State<_SignUpView> {
           Row(
             children: [
               Expanded(
-                child: Container(
-                  height: 56,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: TextButton.icon(
-                    onPressed: () => context
-                        .read<AuthBloc>()
-                        .add(AuthSignInWithGoogleRequested()),
-                    icon: Image.asset(
-                      'assets/google_logo.png',
-                      width: 24,
-                      height: 24,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.g_mobiledata, size: 24),
-                    ),
-                    label: const Text(
-                      'Google',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                child: TextAppButton(
+                  text: 'Google',
+                  onPressed: () => context
+                      .read<AuthBloc>()
+                      .add(AuthSignInWithGoogleRequested()),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Container(
-                  height: 56,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: TextButton.icon(
-                    onPressed: () => context
-                        .read<AuthBloc>()
-                        .add(AuthSignInWithAppleRequested()),
-                    icon: const Icon(
-                      Icons.apple,
-                      size: 24,
-                      color: Colors.black87,
-                    ),
-                    label: const Text(
-                      'Apple',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                child: TextAppButton(
+                  text: 'Apple',
+                  onPressed: () => context
+                      .read<AuthBloc>()
+                      .add(AuthSignInWithAppleRequested()),
                 ),
               ),
             ],
@@ -552,12 +444,13 @@ class _SignUpViewState extends State<_SignUpView> {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          _buildTextField(
+          CustomTextFormField(
             controller: _passwordController,
             label: 'Password',
             hint: 'Enter your password',
             prefixIcon: Icons.lock_outline,
             obscureText: _obscurePassword,
+            showLabel: true,
             suffixIcon: IconButton(
               icon: Icon(
                 _obscurePassword
@@ -573,12 +466,13 @@ class _SignUpViewState extends State<_SignUpView> {
                 : null,
           ),
           const SizedBox(height: 20),
-          _buildTextField(
+          CustomTextFormField(
             controller: _confirmController,
             label: 'Confirm Password',
             hint: 'Confirm your password',
             prefixIcon: Icons.lock_outline,
             obscureText: _obscureConfirmPassword,
+            showLabel: true,
             suffixIcon: IconButton(
               icon: Icon(
                 _obscureConfirmPassword
@@ -594,32 +488,14 @@ class _SignUpViewState extends State<_SignUpView> {
                 : null,
           ),
           const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKeyStep1.currentState!.validate()) {
-                  cubit.setPassword(_passwordController.text);
-                  cubit.nextStep();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Continue',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text: 'Continue',
+            onPressed: () {
+              if (_formKeyStep1.currentState!.validate()) {
+                cubit.setPassword(_passwordController.text);
+                cubit.nextStep();
+              }
+            },
           ),
         ],
       ),
@@ -630,98 +506,58 @@ class _SignUpViewState extends State<_SignUpView> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        _buildTextField(
+        CustomTextFormField(
           controller: _phoneController,
           label: 'Phone Number',
           hint: '+234 7039193613',
           prefixIcon: Icons.phone_outlined,
           keyboardType: TextInputType.phone,
+          showLabel: true,
         ),
         const SizedBox(height: 24),
         if (!state.otpSent) ...[
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () async {
-                final phone = _phoneController.text.trim();
-                final phoneOk = _isValidPhone(phone);
-                if (!phoneOk) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Enter a valid phone number')),
-                  );
-                  return;
-                }
-                await cubit.sendOtp(phone);
-                if (!mounted) return;
+          PrimaryButton(
+            text: 'Send Verification Code',
+            onPressed: () async {
+              final phone = _phoneController.text.trim();
+              final phoneOk = _isValidPhone(phone);
+              if (!phoneOk) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('OTP: ${cubit.state.generatedOtp}')),
+                  const SnackBar(content: Text('Enter a valid phone number')),
                 );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Send Verification Code',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+                return;
+              }
+              await cubit.sendOtp(phone);
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('OTP: ${cubit.state.generatedOtp}')),
+              );
+            },
           ),
         ] else ...[
-          _buildTextField(
+          CustomTextFormField(
             controller: _otpController,
             label: 'Verification Code',
             hint: 'Enter 4-digit code',
             prefixIcon: Icons.security_outlined,
             keyboardType: TextInputType.number,
             maxLength: 4,
+            showLabel: true,
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                final code = _otpController.text.trim();
-                if (cubit.verifyOtp(code)) {
-                  cubit.nextStep();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Verify Phone Number',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text: 'Verify Phone Number',
+            onPressed: () {
+              final code = _otpController.text.trim();
+              if (cubit.verifyOtp(code)) {
+                cubit.nextStep();
+              }
+            },
           ),
           const SizedBox(height: 16),
-          TextButton(
+          TextAppButton(
+            text: 'Resend Code',
             onPressed: () => cubit.sendOtp(_phoneController.text.trim()),
-            child: Text(
-              'Resend Code',
-              style: TextStyle(
-                color: AppColors.orange,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
           ),
         ],
       ],
@@ -732,7 +568,7 @@ class _SignUpViewState extends State<_SignUpView> {
     return Column(
       children: [
         const SizedBox(height: 8),
-        _buildTextField(
+        CustomTextFormField(
           controller: _pinController,
           label: 'Withdrawal PIN',
           hint: 'Enter 4-digit PIN',
@@ -740,46 +576,29 @@ class _SignUpViewState extends State<_SignUpView> {
           keyboardType: TextInputType.number,
           maxLength: 4,
           obscureText: true,
+          showLabel: true,
         ),
         const SizedBox(height: 32),
-        SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: ElevatedButton(
-            onPressed: () async {
-              final pin = _pinController.text.trim();
-              if (pin.length != 4) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Enter 4-digit PIN')),
-                );
-                return;
-              }
-              cubit.setPin(pin);
-              await cubit.finalizeSignUp();
-              if (!mounted) return;
-              if (cubit.state.createdUser != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Account created successfully!')),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 0,
-            ),
-            child: const Text(
-              'Create Account',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+        PrimaryButton(
+          text: 'Create Account',
+          onPressed: () async {
+            final pin = _pinController.text.trim();
+            if (pin.length != 4) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Enter 4-digit PIN')),
+              );
+              return;
+            }
+            cubit.setPin(pin);
+            await cubit.finalizeSignUp();
+            if (!mounted) return;
+            if (cubit.state.createdUser != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Account created successfully!')),
+              );
+            }
+          },
         ),
       ],
     );
@@ -838,64 +657,31 @@ class _SignUpViewState extends State<_SignUpView> {
               const Spacer(),
 
               // Action buttons
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider(
-                          create: (_) => VerificationCubit(),
-                          child: const IdentityVerificationPage(),
-                        ),
+              PrimaryButton(
+                text: 'Verify Identity',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider(
+                        create: (_) => VerificationCubit(),
+                        child: const IdentityVerificationPage(),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.orange,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
                     ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Verify Identity',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                  );
+                },
               ),
 
               const SizedBox(height: 16),
 
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const AppShell()),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.brownHeader,
-                    side: BorderSide(color: AppColors.brownHeader),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Text(
-                    'Skip for Now',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+              OutlinedAppButton(
+                text: 'Skip for Now',
+                borderColor: AppColors.brownHeader,
+                foregroundColor: AppColors.brownHeader,
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const AppShell()),
+                  );
+                },
               ),
             ],
           ),

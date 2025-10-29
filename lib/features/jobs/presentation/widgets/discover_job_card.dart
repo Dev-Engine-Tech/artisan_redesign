@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
+import 'package:artisans_circle/core/widgets/optimized_image.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/services/job_share_service.dart';
@@ -66,13 +67,12 @@ class DiscoverJobCard extends StatelessWidget {
                         topRight: Radius.circular(16),
                       ),
                       child: job.thumbnailUrl.isNotEmpty
-                          ? Image.network(
-                              sanitizeImageUrl(job.thumbnailUrl),
+                          ? OptimizedImage(
+                              imageUrl: sanitizeImageUrl(job.thumbnailUrl),
                               fit: BoxFit.cover,
                               width: double.infinity,
                               height: 180,
-                              errorBuilder: (c, e, s) =>
-                                  _buildSubtlePlaceholder(context),
+                              errorWidget: _buildSubtlePlaceholder(context),
                             )
                           : _buildSubtlePlaceholder(context),
                     ),

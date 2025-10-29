@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/components/components.dart';
 import '../../domain/entities/user_profile.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
@@ -125,38 +126,50 @@ class _WorkFormState extends State<_WorkForm> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          TextField(
-              controller: title,
-              decoration: const InputDecoration(labelText: 'Job Title')),
+          CustomTextField(
+            controller: title,
+            label: 'Job Title',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
-          TextField(
-              controller: company,
-              decoration: const InputDecoration(labelText: 'Company')),
+          CustomTextField(
+            controller: company,
+            label: 'Company',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
-          TextField(
-              controller: location,
-              decoration: const InputDecoration(labelText: 'Location')),
+          CustomTextField(
+            controller: location,
+            label: 'Location',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
-          TextField(
-              controller: description,
-              maxLines: 3,
-              decoration: const InputDecoration(labelText: 'Description')),
+          CustomTextField(
+            controller: description,
+            maxLines: 3,
+            label: 'Description',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                  child: OutlinedButton(
-                      onPressed: () => _pickDate(true),
-                      child: Text(startDate == null
-                          ? 'Start Date'
-                          : startDate!.toLocal().toString().split(' ').first))),
+                child: OutlinedAppButton(
+                  text: startDate == null
+                      ? 'Start Date'
+                      : startDate!.toLocal().toString().split(' ').first,
+                  onPressed: () => _pickDate(true),
+                ),
+              ),
               const SizedBox(width: 8),
               Expanded(
-                  child: OutlinedButton(
-                      onPressed: () => _pickDate(false),
-                      child: Text(endDate == null
-                          ? 'End Date'
-                          : endDate!.toLocal().toString().split(' ').first))),
+                child: OutlinedAppButton(
+                  text: endDate == null
+                      ? 'End Date'
+                      : endDate!.toLocal().toString().split(' ').first,
+                  onPressed: () => _pickDate(false),
+                ),
+              ),
             ],
           ),
           SwitchListTile(
@@ -165,7 +178,8 @@ class _WorkFormState extends State<_WorkForm> {
             title: const Text("I'm currently working here"),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
+          PrimaryButton(
+            text: widget.existing == null ? 'Add' : 'Save',
             onPressed: () {
               if (startDate == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -204,8 +218,7 @@ class _WorkFormState extends State<_WorkForm> {
               }
               Navigator.pop(context);
             },
-            child: Text(widget.existing == null ? 'Add' : 'Save'),
-          )
+          ),
         ],
       ),
     );

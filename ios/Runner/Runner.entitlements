@@ -7,5 +7,9 @@
   <array>
     <string>Default</string>
   </array>
+  <!-- Enable Apple Push Notifications (APNs). Xcode/Signing will set the correct
+       environment (development/production) based on the provisioning profile. -->
+  <key>aps-environment</key>
+  <string>development</string>
 </dict>
 </plist>

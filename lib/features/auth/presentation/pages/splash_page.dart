@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_event.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
@@ -155,32 +156,14 @@ class _SplashPageState extends State<SplashPage> {
                             const SizedBox(height: 32),
 
                             // Get Started button
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (_) => const SignInPage()),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.orange,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: const Text(
-                                  'Join the Circle',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            PrimaryButton(
+                              text: 'Join the Circle',
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (_) => const SignInPage()),
+                                );
+                              },
                             ),
                           ],
                         ),

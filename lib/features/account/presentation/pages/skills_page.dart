@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/components/components.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
@@ -54,14 +55,14 @@ class _SkillsPageState extends State<SkillsPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: CustomTextField(
                         controller: ctr,
-                        decoration:
-                            const InputDecoration(hintText: 'Add a skill'),
+                        hint: 'Add a skill',
                       ),
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton(
+                    PrimaryButton(
+                      text: 'Add',
                       onPressed: () {
                         final val = ctr.text.trim();
                         if (val.isNotEmpty) {
@@ -69,8 +70,7 @@ class _SkillsPageState extends State<SkillsPage> {
                           ctr.clear();
                         }
                       },
-                      child: const Text('Add'),
-                    )
+                    ),
                   ],
                 )
               ],

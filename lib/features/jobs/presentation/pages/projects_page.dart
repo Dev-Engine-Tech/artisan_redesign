@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/catalog/presentation/pages/catalog_item_details_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/upload_catalogue_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_page.dart';
@@ -66,21 +67,12 @@ class _CatalogPageState extends State<CatalogPage>
                   ?.copyWith(color: Colors.black54),
             ),
             const SizedBox(height: 12),
-            OutlinedButton(
+            OutlinedAppButton(
+              text: 'Upload Catalogue',
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const UploadCataloguePage()));
               },
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                side: BorderSide(color: AppColors.orange, width: 1.5),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: Text('Upload Catalogue',
-                  style: TextStyle(
-                      color: AppColors.orange, fontWeight: FontWeight.w600)),
             ),
           ],
         ),

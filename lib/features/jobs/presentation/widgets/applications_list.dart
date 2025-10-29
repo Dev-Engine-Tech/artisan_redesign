@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/application_card.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/agreement_page.dart';
@@ -64,13 +65,9 @@ class _ApplicationsListState extends State<ApplicationsList> {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Retry',
               onPressed: widget.onRefresh,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Retry'),
             ),
           ],
         ),

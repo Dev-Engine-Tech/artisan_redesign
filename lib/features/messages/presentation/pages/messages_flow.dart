@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/utils/phone_number_filter.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/messages/domain/entities/conversation.dart'
     as domain;
 import 'package:artisans_circle/features/messages/domain/entities/message.dart'
@@ -99,15 +100,9 @@ class MessagesListPage extends StatelessWidget {
                     const Text('Please sign in to view your messages',
                         style: TextStyle(color: Colors.black54)),
                     const SizedBox(height: 24),
-                    ElevatedButton(
+                    PrimaryButton(
+                      text: 'Go Back',
                       onPressed: () => Navigator.of(context).maybePop(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.orange,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 12),
-                      ),
-                      child: const Text('Go Back'),
                     ),
                   ],
                 ),
@@ -540,13 +535,14 @@ class _ChatPageState extends State<ChatPage> {
           title: const Text('Phone Number Detected'),
           content: Text(PhoneNumberFilter.getPhoneNumberWarningMessage()),
           actions: [
-            TextButton(
+            TextAppButton(
+              text: 'OK',
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('OK'),
             ),
-            TextButton(
+            TextAppButton(
+              text: 'Remove & Continue',
               onPressed: () {
                 // Remove phone numbers and update the text field
                 String cleanedText =
@@ -554,7 +550,6 @@ class _ChatPageState extends State<ChatPage> {
                 _controller.text = cleanedText;
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Remove & Continue'),
             ),
           ],
         );
@@ -606,15 +601,9 @@ class _ChatPageState extends State<ChatPage> {
                 style: TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
+              PrimaryButton(
+                text: 'Go Back',
                 onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.orange,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                ),
-                child: const Text('Go Back'),
               ),
             ],
           ),
@@ -737,15 +726,10 @@ class _ChatPageState extends State<ChatPage> {
                                         const TextStyle(color: Colors.black54),
                                     textAlign: TextAlign.center),
                                 const SizedBox(height: 16),
-                                ElevatedButton.icon(
+                                PrimaryButton(
+                                  text: 'Retry',
                                   onPressed: () =>
                                       context.read<ChatBloc>().add(ChatRetry()),
-                                  icon: const Icon(Icons.refresh),
-                                  label: const Text('Retry'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.orange,
-                                    foregroundColor: Colors.white,
-                                  ),
                                 ),
                               ],
                             ),
@@ -986,12 +970,11 @@ class _ChatPageState extends State<ChatPage> {
                                                                 children: [
                                                                   Expanded(
                                                                     child:
-                                                                        OutlinedButton(
+                                                                        OutlinedAppButton(
+                                                                      text: 'Cancel',
                                                                       onPressed:
                                                                           () =>
                                                                               Navigator.pop(ctx),
-                                                                      child: const Text(
-                                                                          'Cancel'),
                                                                     ),
                                                                   ),
                                                                   const SizedBox(
@@ -999,7 +982,8 @@ class _ChatPageState extends State<ChatPage> {
                                                                           12),
                                                                   Expanded(
                                                                     child:
-                                                                        ElevatedButton(
+                                                                        PrimaryButton(
+                                                                      text: 'Forward (${selected.length})',
                                                                       onPressed: selected
                                                                               .isEmpty
                                                                           ? null
@@ -1008,8 +992,6 @@ class _ChatPageState extends State<ChatPage> {
                                                                               final list = (context.read<ConversationsBloc>().state as ConversationsLoaded).conversations.where((c) => selected.contains(c.id)).toList();
                                                                               Navigator.pop(ctx, list);
                                                                             },
-                                                                      child: Text(
-                                                                          'Forward (${selected.length})'),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -1089,15 +1071,15 @@ class _ChatPageState extends State<ChatPage> {
                                               content: const Text(
                                                   'This will remove the message from your device.'),
                                               actions: [
-                                                TextButton(
+                                                TextAppButton(
+                                                  text: 'Cancel',
                                                   onPressed: () =>
                                                       Navigator.pop(ctx, false),
-                                                  child: const Text('Cancel'),
                                                 ),
-                                                TextButton(
+                                                TextAppButton(
+                                                  text: 'Delete',
                                                   onPressed: () =>
                                                       Navigator.pop(ctx, true),
-                                                  child: const Text('Delete'),
                                                 ),
                                               ],
                                             ),
@@ -1178,15 +1160,15 @@ class _ChatPageState extends State<ChatPage> {
                                               content: const Text(
                                                   'This will permanently delete the message for all participants.'),
                                               actions: [
-                                                TextButton(
+                                                TextAppButton(
+                                                  text: 'Cancel',
                                                   onPressed: () =>
                                                       Navigator.pop(ctx, false),
-                                                  child: const Text('Cancel'),
                                                 ),
-                                                TextButton(
+                                                TextAppButton(
+                                                  text: 'Delete',
                                                   onPressed: () =>
                                                       Navigator.pop(ctx, true),
-                                                  child: const Text('Delete'),
                                                 ),
                                               ],
                                             ),

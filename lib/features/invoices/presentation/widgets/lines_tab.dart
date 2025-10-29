@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
 import 'label_cell.dart';
 import 'line_item_modal.dart';
@@ -122,15 +123,14 @@ class LinesTab extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: TextButton.icon(
+                  child: TextAppButton(
+                    text: 'Add Line',
                     onPressed: () async {
                       final created = await showLineItemModal(context);
                       if (created != null) {
                         cubit.addLineToSectionData(si, created);
                       }
                     },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Line'),
                   ),
                 ),
               ),
@@ -177,27 +177,19 @@ class LinesTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  ElevatedButton.icon(
+                  OutlinedAppButton(
+                    text: 'Add Line',
                     onPressed: () async {
                       final created = await showLineItemModal(context);
                       if (created != null) {
                         cubit.addIndependentLineData(created);
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF654321)),
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text('Add Line',
-                        style: TextStyle(color: Colors.white)),
                   ),
                   const SizedBox(width: 8),
-                  ElevatedButton.icon(
+                  PrimaryButton(
+                    text: 'Add Section',
                     onPressed: cubit.addSection,
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.orange),
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text('Add Section',
-                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),

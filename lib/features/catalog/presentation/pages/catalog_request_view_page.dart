@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';
 import '../widgets/material_management_widget.dart';
@@ -82,10 +83,10 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                     const SizedBox(height: 16),
                     Text('Error: ${state.message}'),
                     const SizedBox(height: 16),
-                    ElevatedButton(
+                    PrimaryButton(
+                      text: 'Retry',
                       onPressed: () =>
                           bloc.add(LoadCatalogRequestDetails(widget.requestId)),
-                      child: const Text('Retry'),
                     ),
                   ],
                 ),
@@ -440,57 +441,31 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
 
   Widget _buildActionButtons(BuildContext context, CatalogRequest request) {
     if (request.isArtisanApproved) {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: () {
-            // Already approved, maybe allow to revoke?
-          },
-          style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: const Text('Already Approved'),
-        ),
+      return OutlinedAppButton(
+        text: 'Already Approved',
+        onPressed: () {
+          // Already approved, maybe allow to revoke?
+        },
       );
     }
 
     return Row(
       children: [
         Expanded(
-          child: ElevatedButton(
+          child: PrimaryButton(
+            text: 'Approve',
             onPressed: () {
               context
                   .read<CatalogRequestsBloc>()
                   .add(ApproveRequestEvent(request.id));
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: const Text('Approve', style: TextStyle(fontSize: 16)),
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: OutlinedButton(
+          child: OutlinedAppButton(
+            text: 'Decline',
             onPressed: () => _showDeclineDialog(context, request),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              side: BorderSide(color: Colors.red.shade300),
-            ),
-            child: Text(
-              'Decline',
-              style: TextStyle(fontSize: 16, color: Colors.red.shade600),
-            ),
           ),
         ),
       ],
@@ -570,11 +545,12 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           ],
         ),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Decline',
             onPressed: () {
               if (reasonController.text.trim().isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -594,8 +570,6 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   );
               Navigator.of(dialogContext).pop();
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Decline'),
           ),
         ],
       ),

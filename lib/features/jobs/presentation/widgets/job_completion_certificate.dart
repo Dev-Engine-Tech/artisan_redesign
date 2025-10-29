@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 
 class JobCompletionCertificate extends StatelessWidget {
@@ -257,36 +258,16 @@ class JobCompletionCertificate extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton.icon(
+                  child: OutlinedAppButton(
+                    text: 'Download',
                     onPressed: () => _downloadCertificate(context),
-                    icon: const Icon(Icons.download, size: 16),
-                    label: const Text('Download'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.orange,
-                      side: BorderSide(
-                          color: AppColors.orange.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: PrimaryButton(
+                    text: 'Share',
                     onPressed: () => _shareCertificate(context),
-                    icon: const Icon(Icons.share, size: 16),
-                    label: const Text('Share'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.orange,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 0,
-                    ),
                   ),
                 ),
               ],

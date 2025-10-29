@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 
 /// Inline filter controls that can be embedded in the Discover page.
 /// Accepts an optional onApply callback which receives a Map of selected filters.
@@ -140,18 +141,9 @@ class _FilterInlineState extends State<FilterInline> {
                 )),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
+                  child: PrimaryButton(
+                    text: 'Done',
                     onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF213447),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
-                    child: const SizedBox(
-                        width: double.infinity,
-                        child: Center(
-                            child: Text('Done',
-                                style: TextStyle(color: Colors.white)))),
                   ),
                 )
               ],
@@ -289,7 +281,8 @@ class _FilterInlineState extends State<FilterInline> {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: 'Apply Filters',
               onPressed: () {
                 final filters = {
                   'category': _selectedCategory,
@@ -302,14 +295,6 @@ class _FilterInlineState extends State<FilterInline> {
                 };
                 if (widget.onApply != null) widget.onApply!(filters);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF213447),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Apply Filter',
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ),
           const SizedBox(height: 12),

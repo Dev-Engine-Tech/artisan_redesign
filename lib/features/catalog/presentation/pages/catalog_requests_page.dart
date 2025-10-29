@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';
 import '../widgets/catalog_request_card.dart';
@@ -69,11 +70,11 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
                   itemBuilder: (context, index) {
                     if (index == items.length) {
                       if (_next != null) {
-                        return TextButton(
+                        return TextAppButton(
+                          text: 'Load more',
                           // ✅ PERFORMANCE FIX: Load more for pagination is intentional
                           onPressed: () =>
                               bloc.add(LoadCatalogRequests(next: _next)),
-                          child: const Text('Load more'),
                         );
                       }
                       return const SizedBox.shrink();

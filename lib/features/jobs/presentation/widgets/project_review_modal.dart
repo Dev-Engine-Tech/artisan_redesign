@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 
 class ProjectReviewModal extends StatelessWidget {
@@ -206,36 +207,18 @@ class ProjectReviewModal extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton.icon(
+                  child: OutlinedAppButton(
+                    text: 'Share Review',
+                    icon: Icons.share,
                     onPressed: () => _shareReview(context),
-                    icon: const Icon(Icons.share, size: 16),
-                    label: const Text('Share Review'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.orange,
-                      side: BorderSide(
-                          color: AppColors.orange.withValues(alpha: 0.5)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: PrimaryButton(
+                    text: 'Respond',
+                    icon: Icons.reply,
                     onPressed: () => _respondToReview(context),
-                    icon: const Icon(Icons.reply, size: 16),
-                    label: const Text('Respond'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.orange,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 0,
-                    ),
                   ),
                 ),
               ],
@@ -275,11 +258,12 @@ class ProjectReviewModal extends StatelessWidget {
           ],
         ),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Send',
             onPressed: () {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -289,11 +273,6 @@ class ProjectReviewModal extends StatelessWidget {
                 ),
               );
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Send'),
           ),
         ],
       ),

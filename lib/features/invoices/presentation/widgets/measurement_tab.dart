@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
 
 class MeasurementTab extends StatelessWidget {
@@ -58,13 +59,9 @@ class MeasurementTab extends StatelessWidget {
           children.add(
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: ElevatedButton.icon(
+              child: PrimaryButton(
+                text: 'Add Measurement',
                 onPressed: cubit.addMeasurement,
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: AppColors.orange),
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Add Measurement',
-                    style: TextStyle(color: Colors.white)),
               ),
             ),
           );

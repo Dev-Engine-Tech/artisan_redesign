@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/components/components.dart';
 import '../../domain/entities/user_profile.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
@@ -57,63 +58,64 @@ class _AboutMePageState extends State<AboutMePage> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            TextField(
+            CustomTextField(
               controller: jobTitle,
-              decoration: const InputDecoration(labelText: 'Job Title'),
+              label: 'Job Title',
+              showLabel: true,
             ),
             const SizedBox(height: 12),
-            TextField(
+            CustomTextField(
               controller: location,
-              decoration: const InputDecoration(labelText: 'Location'),
+              label: 'Location',
+              showLabel: true,
             ),
             const SizedBox(height: 12),
-            TextField(
+            CustomTextField(
               controller: phone,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(labelText: 'Phone'),
+              label: 'Phone',
+              showLabel: true,
             ),
             const SizedBox(height: 12),
-            TextField(
+            CustomTextField(
               controller: bio,
               maxLines: 5,
-              decoration: const InputDecoration(labelText: 'Bio'),
+              label: 'Bio',
+              showLabel: true,
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  final p = phone.text.trim();
-                  if (p.isNotEmpty) {
-                    bool ok = true;
+            PrimaryButton(
+              text: 'Save',
+              onPressed: () {
+                final p = phone.text.trim();
+                if (p.isNotEmpty) {
+                  bool ok = true;
+                  try {
+                    PhoneNumber.parse(p);
+                  } catch (_) {
                     try {
-                      PhoneNumber.parse(p);
+                      PhoneNumber.parse(p, callerCountry: IsoCode.NG);
                     } catch (_) {
-                      try {
-                        PhoneNumber.parse(p, callerCountry: IsoCode.NG);
-                      } catch (_) {
-                        ok = false;
-                      }
-                    }
-                    if (!ok) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Enter a valid phone number'),
-                        ),
-                      );
-                      return;
+                      ok = false;
                     }
                   }
-                  context.read<AccountBloc>().add(AccountUpdateProfile(
-                        bio: bio.text.trim(),
-                        jobTitle: jobTitle.text.trim(),
-                        location: location.text.trim(),
-                        phone: p,
-                      ));
-                },
-                child: const Text('Save'),
-              ),
-            )
+                  if (!ok) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Enter a valid phone number'),
+                      ),
+                    );
+                    return;
+                  }
+                }
+                context.read<AccountBloc>().add(AccountUpdateProfile(
+                      bio: bio.text.trim(),
+                      jobTitle: jobTitle.text.trim(),
+                      location: location.text.trim(),
+                      phone: p,
+                    ));
+              },
+            ),
           ],
         ),
       ),

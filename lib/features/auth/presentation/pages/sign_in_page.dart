@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_event.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
@@ -241,109 +242,42 @@ class _SignInPageState extends State<SignInPage> {
                               child: Column(
                                 children: [
                                   // Email field
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Email Address',
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[50],
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              color: Colors.grey[200]!),
-                                        ),
-                                        child: TextFormField(
-                                          controller: _identifierController,
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                'micahmad@potarastudio.com',
-                                            hintStyle: TextStyle(
-                                                color: Colors.grey[400]),
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                const EdgeInsets.all(16),
-                                            prefixIcon: Icon(
-                                              Icons.email_outlined,
-                                              color: Colors.grey[400],
-                                            ),
-                                          ),
-                                          validator: (v) => (v == null ||
-                                                  v.trim().isEmpty)
-                                              ? 'Please enter email or phone'
-                                              : null,
-                                        ),
-                                      ),
-                                    ],
+                                  CustomTextFormField(
+                                    label: 'Email Address',
+                                    hint: 'micahmad@potarastudio.com',
+                                    prefixIcon: Icons.email_outlined,
+                                    controller: _identifierController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    showLabel: true,
+                                    validator: (v) => (v == null ||
+                                            v.trim().isEmpty)
+                                        ? 'Please enter email or phone'
+                                        : null,
                                   ),
 
                                   const SizedBox(height: 20),
 
                                   // Password field
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Password',
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                  CustomTextFormField(
+                                    label: 'Password',
+                                    hint: 'micahmad#',
+                                    prefixIcon: Icons.lock_outline,
+                                    controller: _passwordController,
+                                    obscureText: _obscurePassword,
+                                    showLabel: true,
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        color: Colors.grey[400],
                                       ),
-                                      const SizedBox(height: 8),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[50],
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                              color: Colors.grey[200]!),
-                                        ),
-                                        child: TextFormField(
-                                          controller: _passwordController,
-                                          obscureText: _obscurePassword,
-                                          decoration: InputDecoration(
-                                            hintText: 'micahmad#',
-                                            hintStyle: TextStyle(
-                                                color: Colors.grey[400]),
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                const EdgeInsets.all(16),
-                                            prefixIcon: Icon(
-                                              Icons.lock_outline,
-                                              color: Colors.grey[400],
-                                            ),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(
-                                                _obscurePassword
-                                                    ? Icons.visibility_outlined
-                                                    : Icons
-                                                        .visibility_off_outlined,
-                                                color: Colors.grey[400],
-                                              ),
-                                              onPressed: () => setState(() =>
-                                                  _obscurePassword =
-                                                      !_obscurePassword),
-                                            ),
-                                          ),
-                                          validator: (v) => (v == null ||
-                                                  v.length < 6)
-                                              ? 'Password must be at least 6 characters'
-                                              : null,
-                                        ),
-                                      ),
-                                    ],
+                                      onPressed: () => setState(() =>
+                                          _obscurePassword = !_obscurePassword),
+                                    ),
+                                    validator: (v) => (v == null || v.length < 6)
+                                        ? 'Password must be at least 6 characters'
+                                        : null,
                                   ),
 
                                   const SizedBox(height: 16),
@@ -369,15 +303,9 @@ class _SignInPageState extends State<SignInPage> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      TextButton(
+                                      TextAppButton(
+                                        text: 'Forgot Password?',
                                         onPressed: () {},
-                                        child: Text(
-                                          'Forgot Password?',
-                                          style: TextStyle(
-                                            color: AppColors.orange,
-                                            fontSize: 14,
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -385,28 +313,9 @@ class _SignInPageState extends State<SignInPage> {
                                   const SizedBox(height: 24),
 
                                   // Login button
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 56,
-                                    child: ElevatedButton(
-                                      onPressed: _submit,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.orange,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        elevation: 0,
-                                      ),
-                                      child: const Text(
-                                        'Login',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
+                                  PrimaryButton(
+                                    text: 'Login',
+                                    onPressed: _submit,
                                   ),
 
                                   const SizedBox(height: 24),
@@ -440,66 +349,22 @@ class _SignInPageState extends State<SignInPage> {
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: Container(
-                                          height: 56,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey[300]!),
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                          child: TextButton.icon(
-                                            onPressed: () => context
-                                                .read<AuthBloc>()
-                                                .add(
-                                                    AuthSignInWithGoogleRequested()),
-                                            icon: Image.asset(
-                                              'assets/google_logo.png',
-                                              width: 24,
-                                              height: 24,
-                                              errorBuilder: (context, error,
-                                                      stackTrace) =>
-                                                  const Icon(Icons.g_mobiledata,
-                                                      size: 24),
-                                            ),
-                                            label: const Text(
-                                              'Google',
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
+                                        child: TextAppButton(
+                                          text: 'Google',
+                                          onPressed: () => context
+                                              .read<AuthBloc>()
+                                              .add(
+                                                  AuthSignInWithGoogleRequested()),
                                         ),
                                       ),
                                       const SizedBox(width: 16),
                                       Expanded(
-                                        child: Container(
-                                          height: 56,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey[300]!),
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                          child: TextButton.icon(
-                                            onPressed: () => context
-                                                .read<AuthBloc>()
-                                                .add(
-                                                    AuthSignInWithAppleRequested()),
-                                            icon: const Icon(
-                                              Icons.apple,
-                                              size: 24,
-                                              color: Colors.black87,
-                                            ),
-                                            label: const Text(
-                                              'Apple',
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
+                                        child: TextAppButton(
+                                          text: 'Apple',
+                                          onPressed: () => context
+                                              .read<AuthBloc>()
+                                              .add(
+                                                  AuthSignInWithAppleRequested()),
                                         ),
                                       ),
                                     ],

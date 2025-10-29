@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_details_page.dart';
@@ -189,55 +190,17 @@ class JobCard extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 2,
-                      child: SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed:
-                              primaryAction ?? _getPrimaryAction(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _getPrimaryButtonColor(),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: Text(primaryLabel ?? _getPrimaryLabel(),
-                              style: const TextStyle(fontSize: 16)),
-                        ),
+                      child: PrimaryButton(
+                        text: primaryLabel ?? _getPrimaryLabel(),
+                        onPressed: primaryAction ?? _getPrimaryAction(context),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       flex: 1,
-                      child: SizedBox(
-                        height: 48,
-                        child: OutlinedButton(
-                          onPressed:
-                              secondaryAction ?? _getSecondaryAction(context),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: AppColors.softPeach,
-                            side: BorderSide.none,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            foregroundColor: AppColors.brownHeader,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.reviews,
-                                  size: 16, color: AppColors.orange),
-                              const SizedBox(width: 6),
-                              Text(secondaryLabel ?? _getSecondaryLabel(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(color: AppColors.brownHeader)),
-                            ],
-                          ),
-                        ),
+                      child: OutlinedAppButton(
+                        text: secondaryLabel ?? _getSecondaryLabel(),
+                        onPressed: secondaryAction ?? _getSecondaryAction(context),
                       ),
                     ),
                   ],
@@ -435,11 +398,12 @@ class JobCard extends StatelessWidget {
             content:
                 const Text('Are you sure you want to reject this agreement?'),
             actions: [
-              TextButton(
+              TextAppButton(
+                text: 'Cancel',
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
               ),
-              TextButton(
+              TextAppButton(
+                text: 'Reject',
                 onPressed: () {
                   Navigator.pop(context);
                   // TODO: Implement reject agreement logic
@@ -447,7 +411,6 @@ class JobCard extends StatelessWidget {
                     const SnackBar(content: Text('Agreement rejected')),
                   );
                 },
-                child: const Text('Reject'),
               ),
             ],
           ),

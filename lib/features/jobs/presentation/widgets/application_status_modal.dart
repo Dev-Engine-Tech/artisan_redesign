@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 
 enum ApplicationActionType {
@@ -220,40 +221,16 @@ class ApplicationStatusModal extends StatelessWidget {
         buttons = [
           if (onSecondaryAction != null)
             Expanded(
-              child: OutlinedButton(
+              child: OutlinedAppButton(
+                text: 'View Details',
                 onPressed: onSecondaryAction,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  side: BorderSide(color: AppColors.softBorder),
-                ),
-                child: const Text(
-                  'View Details',
-                  style: TextStyle(color: Colors.black87),
-                ),
               ),
             ),
           if (onSecondaryAction != null) const SizedBox(width: 12),
           Expanded(
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: 'Start Project',
               onPressed: onPrimaryAction ?? () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green.shade500,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Start Project',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
           ),
         ];
@@ -261,26 +238,9 @@ class ApplicationStatusModal extends StatelessWidget {
 
       case ApplicationActionType.rejected:
         buttons = [
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onPrimaryAction ?? () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Find Other Jobs',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text: 'Find Other Jobs',
+            onPressed: onPrimaryAction ?? () => Navigator.of(context).pop(),
           ),
         ];
         break;
@@ -288,40 +248,16 @@ class ApplicationStatusModal extends StatelessWidget {
       case ApplicationActionType.changeRequested:
         buttons = [
           Expanded(
-            child: OutlinedButton(
+            child: OutlinedAppButton(
+              text: 'Later',
               onPressed: () => Navigator.of(context).pop(),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                side: BorderSide(color: AppColors.softBorder),
-              ),
-              child: const Text(
-                'Later',
-                style: TextStyle(color: Colors.black87),
-              ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: 'View Changes',
               onPressed: onPrimaryAction ?? () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange.shade500,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'View Changes',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
           ),
         ];
@@ -332,46 +268,20 @@ class ApplicationStatusModal extends StatelessWidget {
         buttons = [
           if (onSecondaryAction != null)
             Expanded(
-              child: OutlinedButton(
+              child: OutlinedAppButton(
+                text: actionType == ApplicationActionType.completed
+                    ? 'View Receipt'
+                    : 'Message Client',
                 onPressed: onSecondaryAction,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  side: BorderSide(color: AppColors.softBorder),
-                ),
-                child: Text(
-                  actionType == ApplicationActionType.completed
-                      ? 'View Receipt'
-                      : 'Message Client',
-                  style: const TextStyle(color: Colors.black87),
-                ),
               ),
             ),
           if (onSecondaryAction != null) const SizedBox(width: 12),
           Expanded(
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: actionType == ApplicationActionType.completed
+                  ? 'OK'
+                  : 'View Project',
               onPressed: onPrimaryAction ?? () => Navigator.of(context).pop(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: actionType == ApplicationActionType.completed
-                    ? Colors.green.shade600
-                    : Colors.blue.shade500,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                actionType == ApplicationActionType.completed
-                    ? 'OK'
-                    : 'View Project',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
           ),
         ];
@@ -380,26 +290,9 @@ class ApplicationStatusModal extends StatelessWidget {
 
     if (buttons.isEmpty) {
       buttons = [
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              elevation: 0,
-            ),
-            child: const Text(
-              'OK',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+        PrimaryButton(
+          text: 'OK',
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ];
     }

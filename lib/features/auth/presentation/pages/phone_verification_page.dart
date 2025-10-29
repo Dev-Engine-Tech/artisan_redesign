@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_event.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
@@ -33,51 +34,6 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
     super.dispose();
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    TextInputType? keyboardType,
-    IconData? prefixIcon,
-    int? maxLength,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: TextFormField(
-            controller: controller,
-            keyboardType: keyboardType,
-            maxLength: maxLength,
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey[400]),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(16),
-              prefixIcon: prefixIcon != null
-                  ? Icon(prefixIcon, color: Colors.grey[400])
-                  : null,
-              counterText: '',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,117 +177,77 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                           const SizedBox(height: 32),
 
                           // Phone number field
-                          _buildTextField(
+                          CustomTextFormField(
                             controller: _phoneController,
                             label: 'Phone Number',
                             hint: '+234 703 919 3613',
                             keyboardType: TextInputType.phone,
                             prefixIcon: Icons.phone_outlined,
+                            showLabel: true,
                           ),
 
                           const SizedBox(height: 24),
 
                           if (!_otpSent) ...[
                             // Send OTP button
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  final phone = _phoneController.text.trim();
-                                  if (phone.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Please enter your phone number')),
-                                    );
-                                    return;
-                                  }
-                                  context.read<AuthBloc>().add(
-                                      AuthResendOtpRequested(phone: phone));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.orange,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: const Text(
-                                  'Send Verification Code',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            PrimaryButton(
+                              text: 'Send Verification Code',
+                              onPressed: () {
+                                final phone = _phoneController.text.trim();
+                                if (phone.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Please enter your phone number')),
+                                  );
+                                  return;
+                                }
+                                context.read<AuthBloc>().add(
+                                    AuthResendOtpRequested(phone: phone));
+                              },
                             ),
                           ] else ...[
                             // OTP input field
-                            _buildTextField(
+                            CustomTextFormField(
                               controller: _codeController,
                               label: 'Verification Code',
                               hint: 'Enter 4-digit code',
                               keyboardType: TextInputType.number,
                               prefixIcon: Icons.security_outlined,
                               maxLength: 4,
+                              showLabel: true,
                             ),
 
                             const SizedBox(height: 24),
 
                             // Verify button
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  final code = _codeController.text.trim();
-                                  if (code.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Enter the verification code')));
-                                    return;
-                                  }
-                                  context.read<AuthBloc>().add(
-                                      AuthOtpVerificationRequested(otp: code));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.orange,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: const Text(
-                                  'Verify Account',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            PrimaryButton(
+                              text: 'Verify Account',
+                              onPressed: () {
+                                final code = _codeController.text.trim();
+                                if (code.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Enter the verification code')));
+                                  return;
+                                }
+                                context.read<AuthBloc>().add(
+                                    AuthOtpVerificationRequested(otp: code));
+                              },
                             ),
 
                             const SizedBox(height: 16),
 
                             // Resend code button
-                            TextButton(
+                            TextAppButton(
+                              text: 'Resend Code',
                               onPressed: () {
                                 final phone = _phoneController.text.trim();
                                 context.read<AuthBloc>().add(
                                     AuthResendOtpRequested(
                                         phone: phone.isEmpty ? null : phone));
                               },
-                              child: Text(
-                                'Resend Code',
-                                style: TextStyle(
-                                  color: AppColors.orange,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
                             ),
                           ],
 

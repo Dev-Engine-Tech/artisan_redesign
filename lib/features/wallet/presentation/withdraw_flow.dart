@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 /// Simple withdraw flow used by the Home page Withdraw button.
@@ -139,20 +140,12 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 18),
-                child: ElevatedButton(
+                child: PrimaryButton(
+                  text: 'Next',
                   onPressed: () {
                     Navigator.of(context).pop(); // close confirm sheet
                     _showPinModal(amount, account);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF213447),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Center(
-                      child: Text('Next',
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
                 ),
               ),
             ],
@@ -269,19 +262,12 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               ),
             ),
             const SizedBox(height: 28),
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Next',
               onPressed: () {
                 // open select-account sheet
                 _showSelectAccountSheet();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF213447),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Next',
-                  style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ],
         ),
@@ -459,18 +445,10 @@ class _WithdrawSuccessPage extends StatelessWidget {
             const Spacer(),
             Padding(
               padding: const EdgeInsets.all(18.0),
-              child: ElevatedButton(
+              child: PrimaryButton(
+                text: 'Continue',
                 onPressed: () =>
                     Navigator.of(context).popUntil((r) => r.isFirst),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF213447),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Center(
-                    child: Text('Continue',
-                        style: TextStyle(fontSize: 16, color: Colors.white))),
               ),
             ),
           ],

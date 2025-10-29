@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_state.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_event.dart';
@@ -210,13 +211,13 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  PrimaryButton(
+                    text: 'Retry',
                     onPressed: () {
                       // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
                       context.read<AccountBloc>().add(
                           const AccountLoadTransactions(page: 1, limit: 20));
                     },
-                    child: const Text('Retry'),
                   ),
                 ],
               ),

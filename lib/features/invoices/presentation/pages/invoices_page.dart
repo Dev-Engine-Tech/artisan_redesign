@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/invoice.dart';
 import '../bloc/invoice_bloc.dart';
 import 'create_invoice_page.dart';
@@ -155,19 +156,19 @@ class _InvoicesPageState extends State<InvoicesPage> {
                 Row(
                   children: [
                     if (invoice.status == InvoiceStatus.draft) ...[
-                      TextButton(
+                      TextAppButton(
+                        text: 'Send',
                         onPressed: () {
                           // TODO: Implement send invoice
                         },
-                        child: const Text('Send'),
                       ),
                       const SizedBox(width: 8),
                     ],
-                    TextButton(
+                    TextAppButton(
+                      text: 'View',
                       onPressed: () {
                         _navigateToInvoiceDetail(context, invoice);
                       },
-                      child: const Text('View'),
                     ),
                   ],
                 ),
@@ -258,11 +259,11 @@ class _InvoicesPageState extends State<InvoicesPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
-                      ElevatedButton(
+                      PrimaryButton(
+                        text: 'Retry',
                         onPressed: () {
                           context.read<InvoiceBloc>().add(const LoadInvoices());
                         },
-                        child: const Text('Retry'),
                       ),
                     ],
                   ),
@@ -297,15 +298,11 @@ class _InvoicesPageState extends State<InvoicesPage> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
-                        ElevatedButton.icon(
+                        PrimaryButton(
+                          text: 'Create Invoice',
                           onPressed: () {
                             _navigateToCreateInvoice(context);
                           },
-                          icon: const Icon(Icons.add),
-                          label: const Text('Create Invoice'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.orange,
-                          ),
                         ),
                       ],
                     ),

@@ -1,7 +1,7 @@
 /// API endpoint constants following the artisan app backend structure
 class ApiEndpoints {
   // Base URL
-  static const String baseUrl = 'https://apistaging.artisansbridge.com';
+  static const String baseUrl = 'https://apiprod.artisansbridge.com';
 
   // Auth endpoints
   static const String auth = 'auth';

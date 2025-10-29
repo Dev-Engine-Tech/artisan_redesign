@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_material_management_widget.dart';
@@ -409,10 +410,10 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                             ]),
                       ),
                     ),
-                  TextButton.icon(
+                  TextAppButton(
+                    text: 'Add milestone',
+                    icon: Icons.add,
                     onPressed: _addMilestone,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add milestone'),
                   ),
                 ] else ...[
                   const SizedBox(height: 8),
@@ -519,12 +520,10 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                   children: [
                     const Text('Material List (optional)',
                         style: TextStyle(fontWeight: FontWeight.w700)),
-                    ElevatedButton(
+                    PrimaryButton(
+                      text: 'Add Materials',
                       onPressed: _addMaterial,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.orange),
-                      child: const Text('Add Materials'),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -619,16 +618,9 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
 
                 const SizedBox(height: 20),
 
-                ElevatedButton(
+                PrimaryButton(
+                  text: 'Apply Now',
                   onPressed: _submitApplication,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF213447),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text('Apply Now',
-                      style: TextStyle(fontSize: 16, color: Colors.white)),
                 ),
                 const SizedBox(height: 40),
               ],

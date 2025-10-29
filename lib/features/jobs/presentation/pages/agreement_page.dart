@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
@@ -102,40 +103,20 @@ class AgreementPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Dispatch AcceptAgreementEvent; the BlocListener in AgreementContent
-                  // will pop with `true` when the operation completes successfully.
-                  context
-                      .read<JobBloc>()
-                      .add(AcceptAgreementEvent(jobId: job.id));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF9A4B20),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text('Accept and request payment',
-                    style: TextStyle(fontSize: 16)),
-              ),
+            PrimaryButton(
+              text: 'Accept and request payment',
+              onPressed: () {
+                // Dispatch AcceptAgreementEvent; the BlocListener in AgreementContent
+                // will pop with `true` when the operation completes successfully.
+                context
+                    .read<JobBloc>()
+                    .add(AcceptAgreementEvent(jobId: job.id));
+              },
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(context).pop('request_changes'),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: AppColors.cardBackground,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text('Request Changes',
-                    style: TextStyle(fontSize: 16, color: Colors.black87)),
-              ),
+            OutlinedAppButton(
+              text: 'Request Changes',
+              onPressed: () => Navigator.of(context).pop('request_changes'),
             ),
           ],
         ),
@@ -496,39 +477,19 @@ class AgreementContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Dispatch AcceptAgreementEvent; the BlocListener will pop with true when accepted
-                    context
-                        .read<JobBloc>()
-                        .add(AcceptAgreementEvent(jobId: job.id));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9A4B20),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text('Accept and request payment',
-                      style: TextStyle(fontSize: 16)),
-                ),
+              PrimaryButton(
+                text: 'Accept and request payment',
+                onPressed: () {
+                  // Dispatch AcceptAgreementEvent; the BlocListener will pop with true when accepted
+                  context
+                      .read<JobBloc>()
+                      .add(AcceptAgreementEvent(jobId: job.id));
+                },
               ),
               const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop('request_changes'),
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: AppColors.cardBackground,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text('Request Changes',
-                      style: TextStyle(fontSize: 16, color: Colors.black87)),
-                ),
+              OutlinedAppButton(
+                text: 'Request Changes',
+                onPressed: () => Navigator.of(context).pop('request_changes'),
               ),
               const SizedBox(height: 24),
             ],

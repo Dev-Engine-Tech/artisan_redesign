@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 
 import '../../../../core/di.dart';
+import '../../../../core/components/components.dart';
 import '../../domain/entities/bank_account.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
@@ -128,15 +129,12 @@ class _AddBankPageState extends State<AddBankPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed:
-                              isVerified ? () => _showAddDialog(context) : null,
-                          child: Text(isVerified
-                              ? 'Add another bank account'
-                              : 'Verify your identity to add bank'),
-                        ),
+                      child: OutlinedAppButton(
+                        text: isVerified
+                            ? 'Add another bank account'
+                            : 'Verify your identity to add bank',
+                        onPressed:
+                            isVerified ? () => _showAddDialog(context) : null,
                       ),
                     )
                   ],
@@ -148,7 +146,7 @@ class _AddBankPageState extends State<AddBankPage> {
                   if (overlayBusy)
                     Positioned.fill(
                       child: Container(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         child: const Center(
                           child: SizedBox(
                             width: 28,
@@ -290,20 +288,14 @@ class _AddBankPageState extends State<AddBankPage> {
                                 banksErrorMessage ?? 'Unable to load banks.',
                                 style: const TextStyle(color: Colors.red)),
                           ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              minimumSize: const Size(0, 36),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
+                          TextAppButton(
+                            text: 'Retry',
                             onPressed: () {
                               banksError = false;
                               _bloc.add(AccountLoadBankList());
                               _banksLoading = true;
                               setStateDialog(() {});
                             },
-                            child: const Text('Retry'),
                           )
                         ],
                       ),
@@ -421,11 +413,12 @@ class _AddBankPageState extends State<AddBankPage> {
                 ),
               ),
               actions: [
-                TextButton(
+                TextAppButton(
+                  text: 'Cancel',
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Cancel'),
                 ),
-                ElevatedButton(
+                PrimaryButton(
+                  text: 'Save',
                   onPressed: (selected != null &&
                           numberCtr.text.trim().length == 10 &&
                           (verifiedName != null && verifiedName!.isNotEmpty))
@@ -441,7 +434,6 @@ class _AddBankPageState extends State<AddBankPage> {
                               ));
                         }
                       : null,
-                  child: const Text('Save'),
                 ),
               ],
             ),
@@ -501,9 +493,10 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-                onPressed: onAdd,
-                child: Text(verified ? 'Add bank account' : 'Verify identity'))
+            PrimaryButton(
+              text: verified ? 'Add bank account' : 'Verify identity',
+              onPressed: onAdd,
+            ),
           ],
         ),
       ),

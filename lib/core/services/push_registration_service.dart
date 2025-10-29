@@ -11,6 +11,9 @@ import 'package:artisans_circle/features/notifications/data/datasources/notifica
 
 class PushRegistrationService {
   static const _deviceIdKey = 'device_id';
+  static const _lastStatusKey = 'push_last_status'; // success | error
+  static const _lastStatusAtKey = 'push_last_status_at';
+  static const _lastErrorKey = 'push_last_error';
 
   final NotificationRemoteDataSource remote;
   final SecureStorage secureStorage;
@@ -59,10 +62,15 @@ class PushRegistrationService {
         return;
       }
 
-      await secureStorage.setFirebaseToken(token);
+      await secureStorage.setFcmToken(token);
 
       final deviceType = _platformDeviceType();
       final deviceId = await _getOrCreateDeviceId();
+
+      debugPrint('Registering device token with backend…');
+      debugPrint(' • deviceType=$deviceType');
+      debugPrint(' • deviceId=$deviceId');
+      debugPrint(' • fcmToken=${token.substring(0, token.length > 12 ? 12 : token.length)}…');
 
       await remote.registerDeviceToken(
         token: token,
@@ -70,22 +78,73 @@ class PushRegistrationService {
         deviceId: deviceId,
       );
 
+      // Persist last successful registration metadata
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_lastStatusKey, 'success');
+        await prefs.setString(
+            _lastStatusAtKey, DateTime.now().toIso8601String());
+        await prefs.remove(_lastErrorKey);
+      } catch (_) {}
+
+      debugPrint('✅ Push registration successful');
+
       // Listen for token refresh
       FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
         try {
-          await secureStorage.setFirebaseToken(newToken);
+          await secureStorage.setFcmToken(newToken);
           await remote.registerDeviceToken(
             token: newToken,
             deviceType: deviceType,
             deviceId: deviceId,
           );
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(_lastStatusKey, 'success');
+            await prefs.setString(
+                _lastStatusAtKey, DateTime.now().toIso8601String());
+            await prefs.remove(_lastErrorKey);
+          } catch (_) {}
+          debugPrint('🔄 FCM token refreshed and re-registered');
         } catch (e) {
           debugPrint('FCM token refresh registration failed: $e');
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(_lastStatusKey, 'error');
+            await prefs.setString(
+                _lastStatusAtKey, DateTime.now().toIso8601String());
+            await prefs.setString(_lastErrorKey, e.toString());
+          } catch (_) {}
         }
       });
     } catch (e) {
       debugPrint('PushRegistrationService error: $e');
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_lastStatusKey, 'error');
+        await prefs.setString(
+            _lastStatusAtKey, DateTime.now().toIso8601String());
+        await prefs.setString(_lastErrorKey, e.toString());
+      } catch (_) {}
     }
   }
-}
 
+  /// Returns a snapshot of current push registration diagnostics.
+  Future<Map<String, String>> getDiagnostics() async {
+    final prefs = await SharedPreferences.getInstance();
+    final fcmToken = await secureStorage.getFcmToken();
+    final deviceId = prefs.getString(_deviceIdKey);
+    final deviceType = _platformDeviceType();
+    final status = prefs.getString(_lastStatusKey);
+    final statusAt = prefs.getString(_lastStatusAtKey);
+    final lastError = prefs.getString(_lastErrorKey);
+    return {
+      if (fcmToken != null) 'fcmToken': fcmToken,
+      if (deviceId != null) 'deviceId': deviceId,
+      'deviceType': deviceType,
+      if (status != null) 'lastStatus': status,
+      if (statusAt != null) 'lastStatusAt': statusAt,
+      if (lastError != null) 'lastError': lastError,
+    };
+  }
+}

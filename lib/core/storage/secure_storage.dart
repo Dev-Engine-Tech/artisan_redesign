@@ -6,7 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SecureStorage {
   static const String _accessTokenKey = 'access_token';
   static const String _refreshTokenKey = 'refresh_token';
+  // Firebase custom auth token (used for FirebaseAuth sign-in)
   static const String _firebaseTokenKey = 'firebase_token';
+  // FCM/APNs device token (used for push notifications)
+  static const String _fcmTokenKey = 'fcm_token';
   static const String _userIdKey = 'user_id';
   static const String _isLoggedInKey = 'is_logged_in';
   static const String _pinIdKey = 'pin_id';
@@ -50,6 +53,16 @@ class SecureStorage {
     await _secureStorage.write(key: _firebaseTokenKey, value: token);
   }
 
+  /// Get stored FCM device token
+  Future<String?> getFcmToken() async {
+    return await _secureStorage.read(key: _fcmTokenKey);
+  }
+
+  /// Store FCM device token
+  Future<void> setFcmToken(String token) async {
+    await _secureStorage.write(key: _fcmTokenKey, value: token);
+  }
+
   /// Get stored PIN ID (for OTP verification)
   Future<String?> getPinId() async {
     return await _secureStorage.read(key: _pinIdKey);
@@ -87,6 +100,7 @@ class SecureStorage {
     await _secureStorage.delete(key: _accessTokenKey);
     await _secureStorage.delete(key: _refreshTokenKey);
     await _secureStorage.delete(key: _firebaseTokenKey);
+    await _secureStorage.delete(key: _fcmTokenKey);
     await _secureStorage.delete(key: _userIdKey);
     await _secureStorage.delete(key: _pinIdKey);
 

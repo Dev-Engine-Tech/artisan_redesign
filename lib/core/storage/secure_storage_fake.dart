@@ -30,6 +30,14 @@ class SecureStorageFake extends SecureStorage {
   }
 
   @override
+  Future<String?> getFcmToken() async => _store['fcm_token'];
+
+  @override
+  Future<void> setFcmToken(String token) async {
+    _store['fcm_token'] = token;
+  }
+
+  @override
   Future<String?> getPinId() async => _store['pin_id'];
 
   @override

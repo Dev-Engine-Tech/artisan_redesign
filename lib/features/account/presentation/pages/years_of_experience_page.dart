@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
@@ -54,23 +55,20 @@ class _YearsOfExperiencePageState extends State<YearsOfExperiencePage> {
                 decoration: const InputDecoration(hintText: 'e.g., 3'),
               ),
               const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final n = int.tryParse(yearsCtr.text.trim());
-                    if (n == null || n < 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Enter a valid number')),
-                      );
-                      return;
-                    }
-                    context.read<AccountBloc>().add(AccountUpdateProfile(
-                          yearsOfExperience: n,
-                        ));
-                  },
-                  child: const Text('Save'),
-                ),
+              PrimaryButton(
+                text: 'Save',
+                onPressed: () {
+                  final n = int.tryParse(yearsCtr.text.trim());
+                  if (n == null || n < 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Enter a valid number')),
+                    );
+                    return;
+                  }
+                  context.read<AccountBloc>().add(AccountUpdateProfile(
+                        yearsOfExperience: n,
+                      ));
+                },
               )
             ],
           ),

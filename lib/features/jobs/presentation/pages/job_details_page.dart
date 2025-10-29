@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
@@ -143,16 +144,9 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       ],
                     ),
                   ),
-                  ElevatedButton(
+                  PrimaryButton(
+                    text: 'View Profile',
                     onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF213447),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: const Text('View Profile'),
                   ),
                 ],
               ),
@@ -371,7 +365,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
             const SizedBox(height: 12),
 
             // Secondary action: open direct chat with job owner / client
-            ElevatedButton.icon(
+            OutlinedAppButton(
+              text: 'Message',
               onPressed: () {
                 final conv = domain.Conversation(
                   id: 'job_${job.id}',
@@ -388,15 +383,6 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                   job: job,
                 );
               },
-              icon: const Icon(Icons.chat_bubble_outline),
-              label: const Text('Message', style: TextStyle(fontSize: 16)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.softPink,
-                foregroundColor: AppColors.brownHeader,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
             ),
 
             const SizedBox(height: 24),
@@ -428,26 +414,9 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                     const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: ElevatedButton(
+                      child: OutlinedAppButton(
+                        text: 'See More (29)',
                         onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.softPink,
-                          foregroundColor: AppColors.brownHeader,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text('See More'),
-                            SizedBox(width: 8),
-                            Text('29',
-                                style: TextStyle(
-                                    backgroundColor: Color(0xFFE9692D),
-                                    color: Colors.white)),
-                          ],
-                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -465,7 +434,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
   Widget _buildPrimaryActionButtons(BuildContext context, Job job) {
     // Not applied yet → Apply
     if (!job.applied) {
-      return ElevatedButton(
+      return PrimaryButton(
+        text: 'Apply',
         onPressed: () {
           // Provide the current JobBloc to the apply sheet
           showModalBottomSheet(
@@ -500,13 +470,6 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
             },
           );
         },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF9A4B20),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        child: const Text('Apply', style: TextStyle(fontSize: 16)),
       );
     }
 
@@ -515,7 +478,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       return Row(
         children: [
           Expanded(
-            child: OutlinedButton(
+            child: OutlinedAppButton(
+              text: 'Request Changes',
               onPressed: () async {
                 // Navigate to request change page
                 Navigator.of(context).push(MaterialPageRoute(
@@ -525,42 +489,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                   ),
                 ));
               },
-              style: OutlinedButton.styleFrom(
-                backgroundColor: AppColors.cardBackground,
-                side: BorderSide(color: AppColors.softBorder),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: Text(
-                'Request Changes',
-                style: TextStyle(
-                  color: AppColors.brownHeader,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: 'View Agreement',
               onPressed: () {
                 _showAgreementModal(context, job.agreement!);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text(
-                'View Agreement',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
             ),
           ),
         ],
@@ -569,107 +506,59 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
 
     // Change request exists → View Change Request
     if (job.changeRequest != null) {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => DraggableScrollableSheet(
-                expand: false,
-                initialChildSize: 0.9,
-                minChildSize: 0.5,
-                maxChildSize: 0.95,
-                builder: (context, controller) => ChangeRequestStatusModal(
-                  job: job,
-                  changeRequest: job.changeRequest!,
-                ),
+      return OutlinedAppButton(
+        text: 'View Change Request',
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.9,
+              minChildSize: 0.5,
+              maxChildSize: 0.95,
+              builder: (context, controller) => ChangeRequestStatusModal(
+                job: job,
+                changeRequest: job.changeRequest!,
               ),
-            );
-          },
-          style: OutlinedButton.styleFrom(
-            backgroundColor: Colors.orange.withValues(alpha: 0.1),
-            side: BorderSide(color: Colors.orange.shade200),
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          child: Text(
-            'View Change Request',
-            style: TextStyle(
-              color: Colors.orange.shade700,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
             ),
-          ),
-        ),
+          );
+        },
       );
     }
 
     // Accepted / in progress → Open Project
     if (job.status == JobStatus.accepted ||
         job.status == JobStatus.inProgress) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => const OngoingJobsPage(),
-            ));
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          child: const Text('Open Project',
-              style: TextStyle(fontSize: 16, color: Colors.white)),
-        ),
+      return PrimaryButton(
+        text: 'Open Project',
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const OngoingJobsPage(),
+          ));
+        },
       );
     }
 
     // Completed → View Summary (simple placeholder)
     if (job.status == JobStatus.completed) {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => JobSummaryPage(job: job),
-              ),
-            );
-          },
-          style: OutlinedButton.styleFrom(
-            backgroundColor: AppColors.cardBackground,
-            side: BorderSide(color: AppColors.softBorder),
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          child: const Text('View Summary',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-        ),
+      return OutlinedAppButton(
+        text: 'View Summary',
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => JobSummaryPage(job: job),
+            ),
+          );
+        },
       );
     }
 
     // Default (applied but waiting) → disable button
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        child: const Text('Waiting Agreement',
-            style: TextStyle(fontSize: 16, color: Colors.white)),
-      ),
+    return PrimaryButton(
+      text: 'Waiting Agreement',
+      onPressed: null,
     );
   }
 
@@ -797,22 +686,12 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                     ),
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Open full agreement modal
-                    _showAgreementModal(context, agreement);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Review Agreement'),
-                ),
+              PrimaryButton(
+                text: 'Review Agreement',
+                onPressed: () {
+                  // Open full agreement modal
+                  _showAgreementModal(context, agreement);
+                },
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/notifications/domain/entities/notification.dart'
     as entities;
 import 'package:artisans_circle/features/notifications/presentation/widgets/notification_item.dart';
@@ -90,15 +91,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
         centerTitle: true,
         actions: [
           if (_notifications.any((n) => !n.read))
-            TextButton(
+            TextAppButton(
+              text: 'Mark all read',
               onPressed: _markAllAsRead,
-              child: const Text(
-                'Mark all read',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-              ),
             ),
         ],
       ),

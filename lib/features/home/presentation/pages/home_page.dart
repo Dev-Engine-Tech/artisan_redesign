@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
@@ -321,9 +322,10 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           content: const Text(
               'Agreement accepted. Payment requested and client notified. Proceed once deposit is made.'),
           actions: [
-            TextButton(
-                onPressed: () => Navigator.of(c).pop(),
-                child: const Text('OK')),
+            TextAppButton(
+              text: 'OK',
+              onPressed: () => Navigator.of(c).pop(),
+            ),
           ],
         ),
       );
@@ -718,7 +720,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
+                  child: OutlinedAppButton(
+                    text: 'Withdraw',
                     onPressed: () {
                       final accountBloc = BlocProvider.of<AccountBloc>(context);
                       final state = accountBloc.state;
@@ -730,27 +733,12 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
 
                       showWithdrawFlow(context, earnings: earnings);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      side: const BorderSide(color: Colors.white24),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      elevation: 0,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.arrow_upward, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text('Withdraw', style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton(
+                  child: OutlinedAppButton(
+                    text: 'History',
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -761,23 +749,6 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      side: const BorderSide(color: Colors.white24),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      elevation: 0,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.receipt_long, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text('Transactions',
-                            style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
                   ),
                 ),
               ],

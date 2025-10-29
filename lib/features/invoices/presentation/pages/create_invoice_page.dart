@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../core/theme.dart';
+import '../../../../core/components/components.dart';
 import '../../domain/entities/invoice.dart';
 import '../../../catalog/domain/entities/catalog_item.dart';
 import '../../../catalog/domain/usecases/get_my_catalog_items.dart';
@@ -375,20 +376,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     // Always show Share button
     buttons.add(
       Expanded(
-        child: ElevatedButton.icon(
+        child: OutlinedAppButton(
+          text: 'Share',
           onPressed: _shareInvoice,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF654321),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          icon: const Icon(Icons.share, color: Colors.white),
-          label: const Text(
-            'Share',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-          ),
         ),
       ),
     );
@@ -401,21 +391,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
             widget.invoice?.status == InvoiceStatus.validated)) {
       buttons.add(
         Expanded(
-          child: ElevatedButton.icon(
+          child: OutlinedAppButton(
+            text: 'Create Job',
             onPressed: _createJob,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            icon: const Icon(Icons.work, color: Colors.white),
-            label: const Text(
-              'Create Job',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
           ),
         ),
       );
@@ -448,21 +426,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
       buttons.add(
         Expanded(
-          child: ElevatedButton.icon(
+          child: PrimaryButton(
+            text: buttonText,
             onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            icon: const Icon(Icons.check, color: Colors.white),
-            label: Text(
-              buttonText,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w600),
-            ),
           ),
         ),
       );
@@ -681,8 +647,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         title: const Text('Edit Section'),
         content: const Text('Section editing is handled in Lines tab.'),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text('OK'))
+          TextAppButton(
+            text: 'OK',
+            onPressed: () => Navigator.pop(context),
+          ),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 
@@ -217,46 +218,16 @@ class ApplicationCard extends StatelessWidget {
       return Row(
         children: [
           Expanded(
-            child: OutlinedButton(
+            child: OutlinedAppButton(
+              text: 'Request Changes',
               onPressed: onChangeRequestTap,
-              style: OutlinedButton.styleFrom(
-                backgroundColor: AppColors.cardBackground,
-                side: BorderSide(color: AppColors.softBorder),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Request Changes',
-                style: TextStyle(
-                  color: AppColors.brownHeader,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: 'View Agreement',
               onPressed: onAgreementTap,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'View Agreement',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
             ),
           ),
         ],
@@ -264,78 +235,24 @@ class ApplicationCard extends StatelessWidget {
     }
 
     if (job.status == JobStatus.changeRequested) {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: onTap,
-          style: OutlinedButton.styleFrom(
-            backgroundColor: Colors.orange.withValues(alpha: 0.1),
-            side: BorderSide(color: Colors.orange.shade200),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: Text(
-            'View Change Request',
-            style: TextStyle(
-              color: Colors.orange.shade700,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+      return OutlinedAppButton(
+        text: 'View Change Request',
+        onPressed: onTap,
       );
     }
 
     if (job.status == JobStatus.accepted ||
         job.status == JobStatus.inProgress) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: onTap,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.orange,
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            elevation: 0,
-          ),
-          child: const Text(
-            'Open Project',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+      return PrimaryButton(
+        text: 'Open Project',
+        onPressed: onTap,
       );
     }
 
     if (job.status == JobStatus.completed) {
-      return SizedBox(
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: onTap,
-          style: OutlinedButton.styleFrom(
-            backgroundColor: AppColors.cardBackground,
-            side: BorderSide(color: AppColors.softBorder),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: const Text(
-            'View Summary',
-            style: TextStyle(
-              color: AppColors.brownHeader,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+      return OutlinedAppButton(
+        text: 'View Summary',
+        onPressed: onTap,
       );
     }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/image_url.dart';
@@ -102,33 +103,18 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
               ),
             ),
             const SizedBox(height: 18),
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Edit Catalogue',
               onPressed: () {
                 // placeholder edit
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9A4B20),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child:
-                  const Text('Edit Catalogue', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(height: 12),
-            ElevatedButton.icon(
+            SecondaryButton(
+              text: 'Delete Catalogue',
               onPressed: () {
                 // placeholder delete
               },
-              icon: const Icon(Icons.delete_outline),
-              label: const Text('Delete Catalogue',
-                  style: TextStyle(fontSize: 16)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEB2D2D),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
             ),
             const SizedBox(height: 18),
             // Additional details preserved

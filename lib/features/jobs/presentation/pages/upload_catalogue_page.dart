@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/create_catalog.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/update_catalog.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
@@ -424,24 +425,15 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                   const Text(
                       'Copy and paste images, videos or any file from your device.'),
                   const SizedBox(height: 8),
-                  ElevatedButton(
+                  OutlinedAppButton(
+                    text: 'Upload Media',
                     onPressed: () async {
                       // final files = await _picker.pickMultiImage(); // Temporarily disabled
                       // if (files != null && files.isNotEmpty) {
                       //   setState(() => _media.addAll(files.map((f) => f.path)));
                       // }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: BorderSide(color: AppColors.orange),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: Text('Upload Media',
-                        style: TextStyle(color: AppColors.orange)),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -464,15 +456,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton(
+          child: PrimaryButton(
+            text: 'Proceed',
             onPressed: _next,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF9A4B20),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            child: const Text('Proceed'),
           ),
         ),
         const SizedBox(height: 20),
@@ -716,15 +702,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton(
+          child: PrimaryButton(
+            text: 'Proceed',
             onPressed: _next,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF9A4B20),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            child: const Text('Proceed'),
           ),
         ),
         const SizedBox(height: 12),
@@ -864,7 +844,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 ? [const Text('No skills selected')]
                 : _selectedSkills.map((s) => Chip(label: Text(s))).toList()),
         const SizedBox(height: 18),
-        ElevatedButton(
+        SecondaryButton(
+          text: 'Edit',
           onPressed: () {
             // edit — go back to first step
             setState(() {
@@ -872,24 +853,11 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             });
             _pageController.jumpToPage(0);
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF213447),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          child: const Text('Edit'),
         ),
         const SizedBox(height: 12),
-        ElevatedButton(
+        PrimaryButton(
+          text: 'Submit',
           onPressed: _submit,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF9A4B20),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          child: const Text('Submit'),
         ),
         const SizedBox(height: 40),
       ],

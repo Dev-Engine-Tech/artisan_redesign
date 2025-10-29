@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/agreement.dart';
 import '../../domain/entities/job.dart';
 import '../bloc/job_bloc.dart';
@@ -361,45 +362,15 @@ class AgreementModal extends StatelessWidget {
       child: Column(
         children: [
           // Accept button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _showAcceptConfirmation(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Accept Agreement',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
+          PrimaryButton(
+            text: 'Accept Agreement',
+            onPressed: () => _showAcceptConfirmation(context),
           ),
           const SizedBox(height: 12),
           // Request changes button
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => _showChangeRequestModal(context),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                side: BorderSide(color: Colors.orange.shade300),
-              ),
-              child: Text(
-                'Request Changes',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.orange.shade700,
-                ),
-              ),
-            ),
+          OutlinedAppButton(
+            text: 'Request Changes',
+            onPressed: () => _showChangeRequestModal(context),
           ),
         ],
       ),
@@ -415,11 +386,12 @@ class AgreementModal extends StatelessWidget {
           'Are you sure you want to accept this agreement? This action cannot be undone.',
         ),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Accept',
             onPressed: () {
               Navigator.of(dialogContext).pop();
               context.read<JobBloc>().add(AcceptAgreementEvent(jobId: job.id));
@@ -429,8 +401,6 @@ class AgreementModal extends StatelessWidget {
                     content: Text('Agreement accepted successfully!')),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            child: const Text('Accept'),
           ),
         ],
       ),
@@ -682,32 +652,16 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
             child: Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: OutlinedAppButton(
+                    text: 'Cancel',
                     onPressed: () => Navigator.of(context).pop(),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text('Cancel'),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: ElevatedButton(
+                  child: PrimaryButton(
+                    text: 'Submit Request',
                     onPressed: _submitChangeRequest,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Submit Request',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
                   ),
                 ),
               ],

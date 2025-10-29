@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 
@@ -164,16 +165,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ],
                     ),
                   ),
-                  ElevatedButton(
+                  PrimaryButton(
+                    text: 'View Profile',
                     onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF213447),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                    child: const Text('View Profile'),
                   ),
                 ],
               ),
@@ -352,7 +346,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             const SizedBox(height: 8),
 
             // Accept / Reject
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Accept Request',
               onPressed: () {
                 final amount = _deliveryChargeController.text.trim();
                 // For now just navigate to a summary screen with the values;
@@ -364,32 +359,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   ),
                 ));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9A4B20),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child:
-                  const Text('Accept Request', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 12),
 
-            OutlinedButton(
+            OutlinedAppButton(
+              text: 'Reject Request',
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Request rejected')));
               },
-              style: OutlinedButton.styleFrom(
-                backgroundColor: AppColors.softPink,
-                foregroundColor: AppColors.brownHeader,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child:
-                  const Text('Reject Request', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 40),
@@ -504,19 +483,13 @@ class OrderSummaryPage extends StatelessWidget {
             ),
 
             const SizedBox(height: 18),
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Submit',
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Order confirmed')));
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9A4B20),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Submit', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(height: 12),
           ],

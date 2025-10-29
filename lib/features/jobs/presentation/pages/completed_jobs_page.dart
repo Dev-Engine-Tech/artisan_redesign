@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
@@ -451,21 +452,12 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Retry',
             onPressed: () {
               // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
               context.read<JobBloc>().add(LoadCompletedJobs());
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text(
-              'Retry',
-              style: TextStyle(color: Colors.white),
-            ),
           ),
         ],
       ),
@@ -859,35 +851,16 @@ class CompletedJobCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: OutlinedButton.icon(
+            child: OutlinedAppButton(
+              text: 'Payment Details',
               onPressed: onViewDetails,
-              icon: const Icon(Icons.receipt, size: 16),
-              label: const Text('Payment Details'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.brownHeader,
-                side: BorderSide(color: AppColors.softBorder),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: ElevatedButton.icon(
+            child: PrimaryButton(
+              text: 'Certificate',
               onPressed: onViewCertificate,
-              icon: const Icon(Icons.workspace_premium, size: 16),
-              label: const Text('Certificate'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
             ),
           ),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/components/components.dart';
 import '../../domain/entities/user_profile.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
@@ -122,44 +123,55 @@ class _EduFormState extends State<_EduForm> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          TextField(
-              controller: school,
-              decoration: const InputDecoration(labelText: 'School')),
+          CustomTextField(
+            controller: school,
+            label: 'School',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
-          TextField(
-              controller: field,
-              decoration: const InputDecoration(labelText: 'Field of Study')),
+          CustomTextField(
+            controller: field,
+            label: 'Field of Study',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
-          TextField(
-              controller: degree,
-              decoration:
-                  const InputDecoration(labelText: 'Degree (optional)')),
+          CustomTextField(
+            controller: degree,
+            label: 'Degree (optional)',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
-          TextField(
-              controller: description,
-              maxLines: 3,
-              decoration:
-                  const InputDecoration(labelText: 'Description (optional)')),
+          CustomTextField(
+            controller: description,
+            maxLines: 3,
+            label: 'Description (optional)',
+            showLabel: true,
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
-                  child: OutlinedButton(
-                      onPressed: () => _pickDate(true),
-                      child: Text(startDate == null
-                          ? 'Start Date'
-                          : startDate!.toLocal().toString().split(' ').first))),
+                child: OutlinedAppButton(
+                  text: startDate == null
+                      ? 'Start Date'
+                      : startDate!.toLocal().toString().split(' ').first,
+                  onPressed: () => _pickDate(true),
+                ),
+              ),
               const SizedBox(width: 8),
               Expanded(
-                  child: OutlinedButton(
-                      onPressed: () => _pickDate(false),
-                      child: Text(endDate == null
-                          ? 'End Date'
-                          : endDate!.toLocal().toString().split(' ').first))),
+                child: OutlinedAppButton(
+                  text: endDate == null
+                      ? 'End Date'
+                      : endDate!.toLocal().toString().split(' ').first,
+                  onPressed: () => _pickDate(false),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
+          PrimaryButton(
+            text: widget.existing == null ? 'Add' : 'Save',
             onPressed: () {
               if (startDate == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -204,8 +216,7 @@ class _EduFormState extends State<_EduForm> {
               }
               Navigator.pop(context);
             },
-            child: Text(widget.existing == null ? 'Add' : 'Save'),
-          )
+          ),
         ],
       ),
     );

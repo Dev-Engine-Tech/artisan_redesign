@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/core/app_shell.dart';
 
 class VerificationSubmittedPage extends StatelessWidget {
@@ -39,24 +40,15 @@ class VerificationSubmittedPage extends StatelessWidget {
                 style: TextStyle(color: Colors.black54, fontSize: 15),
               ),
               const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to app home and remove previous routes so the flow doesn't flash back.
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => const AppShell()),
-                      (route) => false,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E3A59),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: const Text('Continue', style: TextStyle(fontSize: 18)),
-                ),
+              PrimaryButton(
+                text: 'Continue',
+                onPressed: () {
+                  // Navigate to app home and remove previous routes so the flow doesn't flash back.
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const AppShell()),
+                    (route) => false,
+                  );
+                },
               ),
             ],
           ),

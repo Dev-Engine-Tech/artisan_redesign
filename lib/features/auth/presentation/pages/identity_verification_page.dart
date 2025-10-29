@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/verification_cubit.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_event.dart';
@@ -26,51 +27,6 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   void dispose() {
     _idController.dispose();
     super.dispose();
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    TextInputType? keyboardType,
-    IconData? prefixIcon,
-    String? Function(String?)? validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: TextFormField(
-            controller: controller,
-            keyboardType: keyboardType,
-            validator: validator,
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey[400]),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.all(16),
-              prefixIcon: prefixIcon != null
-                  ? Icon(prefixIcon, color: Colors.grey[400])
-                  : null,
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _buildDropdownField({
@@ -355,7 +311,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                               const SizedBox(height: 24),
 
                               // Document number field
-                              _buildTextField(
+                              CustomTextFormField(
                                 controller: _idController,
                                 label: 'Document Number',
                                 hint: 'e.g A120000045',
@@ -364,62 +320,34 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     (v == null || v.trim().isEmpty)
                                         ? 'Please enter document number'
                                         : null,
+                                showLabel: true,
                               ),
 
                               const SizedBox(height: 24),
 
                               // Upload document button
-                              Container(
-                                width: double.infinity,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[50],
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.grey[200]!),
-                                ),
-                                child: OutlinedButton.icon(
-                                  onPressed: () async {
-                                    final fakePath =
-                                        'local://id_${DateTime.now().millisecondsSinceEpoch}.jpg';
-                                    await verificationCubit.submitIdentity(
-                                        idDocumentPath: fakePath);
-                                    setState(() {
-                                      _uploadedDocumentPath = fakePath;
-                                    });
-                                    if (mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'Document uploaded successfully')));
-                                    }
-                                  },
-                                  icon: Icon(
-                                    _uploadedDocumentPath != null
-                                        ? Icons.check_circle_outline
-                                        : Icons.upload_file_outlined,
-                                    color: _uploadedDocumentPath != null
-                                        ? Colors.green
-                                        : AppColors.orange,
-                                  ),
-                                  label: Text(
-                                    _uploadedDocumentPath != null
-                                        ? 'Document Uploaded'
-                                        : 'Upload Document',
-                                    style: TextStyle(
-                                      color: _uploadedDocumentPath != null
-                                          ? Colors.green
-                                          : AppColors.brownHeader,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    side: BorderSide.none,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                  ),
-                                ),
+                              OutlinedAppButton(
+                                text: _uploadedDocumentPath != null
+                                    ? 'Document Uploaded'
+                                    : 'Upload Document',
+                                icon: _uploadedDocumentPath != null
+                                    ? Icons.check_circle_outline
+                                    : Icons.upload_file_outlined,
+                                onPressed: () async {
+                                  final fakePath =
+                                      'local://id_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                                  await verificationCubit.submitIdentity(
+                                      idDocumentPath: fakePath);
+                                  setState(() {
+                                    _uploadedDocumentPath = fakePath;
+                                  });
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                'Document uploaded successfully')));
+                                  }
+                                },
                               ),
 
                               const SizedBox(height: 24),
@@ -437,51 +365,23 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 12),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[50],
-                                      borderRadius: BorderRadius.circular(12),
-                                      border:
-                                          Border.all(color: Colors.grey[200]!),
-                                    ),
-                                    child: OutlinedButton.icon(
-                                      onPressed: () async {
-                                        final result = await Navigator.of(
-                                                context)
-                                            .push(MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const SelfieCapturePage()));
-                                        if (result != null &&
-                                            result is String) {
-                                          if (mounted) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        'Selfie captured successfully')));
-                                          }
+                                  OutlinedAppButton(
+                                    text: 'Take Selfie',
+                                    icon: Icons.camera_alt_outlined,
+                                    onPressed: () async {
+                                      final result = await Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const SelfieCapturePage()));
+                                      if (result != null && result is String) {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      'Selfie captured successfully')));
                                         }
-                                      },
-                                      icon: Icon(
-                                        Icons.camera_alt_outlined,
-                                        color: AppColors.orange,
-                                      ),
-                                      label: Text(
-                                        'Take Selfie',
-                                        style: TextStyle(
-                                          color: AppColors.brownHeader,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                        backgroundColor: Colors.transparent,
-                                        side: BorderSide.none,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12)),
-                                      ),
-                                    ),
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
@@ -498,74 +398,53 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                   }
                                 },
                                 builder: (context, state) {
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    height: 56,
-                                    child: ElevatedButton(
-                                      onPressed: state.submitting
-                                          ? null
-                                          : () async {
-                                              if (!_formKey.currentState!
-                                                  .validate()) {
-                                                return;
-                                              }
-                                              if (!state.identitySubmitted) {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        'Please upload your ID document'),
-                                                  ),
-                                                );
-                                                return;
-                                              }
-                                              if (!state.selfieCaptured) {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        'Please capture a selfie'),
-                                                  ),
-                                                );
-                                                return;
-                                              }
-                                              await context
-                                                  .read<VerificationCubit>()
-                                                  .finalizeVerification();
-                                              if (!mounted) return;
-                                              try {
-                                                context
-                                                    .read<AuthBloc>()
-                                                    .add(AuthMarkVerified());
-                                              } catch (_) {}
-                                              if (!mounted) return;
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      const VerificationSubmittedPage(),
+                                  return PrimaryButton(
+                                    text: 'Submit Verification',
+                                    onPressed: state.submitting
+                                        ? null
+                                        : () async {
+                                            if (!_formKey.currentState!
+                                                .validate()) {
+                                              return;
+                                            }
+                                            if (!state.identitySubmitted) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Please upload your ID document'),
                                                 ),
                                               );
-                                            },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.orange,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        elevation: 0,
-                                      ),
-                                      child: state.submitting
-                                          ? const CircularProgressIndicator(
-                                              color: Colors.white)
-                                          : const Text(
-                                              'Submit Verification',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
+                                              return;
+                                            }
+                                            if (!state.selfieCaptured) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Please capture a selfie'),
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            await context
+                                                .read<VerificationCubit>()
+                                                .finalizeVerification();
+                                            if (!mounted) return;
+                                            try {
+                                              context
+                                                  .read<AuthBloc>()
+                                                  .add(AuthMarkVerified());
+                                            } catch (_) {}
+                                            if (!mounted) return;
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const VerificationSubmittedPage(),
                                               ),
-                                            ),
-                                    ),
+                                            );
+                                          },
+                                    isLoading: state.submitting,
                                   );
                                 },
                               ),

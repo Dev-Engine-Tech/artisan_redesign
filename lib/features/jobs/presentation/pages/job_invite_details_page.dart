@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/messages/presentation/pages/messages_flow.dart';
 import 'package:artisans_circle/features/messages/domain/entities/conversation.dart'
     as domain;
@@ -137,24 +138,18 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
             const SizedBox(height: 12),
 
             // Primary actions (Accept / Message)
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Accept Invite',
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Invite accepted')));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9A4B20),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child:
-                  const Text('Accept Invite', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 12),
 
-            ElevatedButton(
+            OutlinedAppButton(
+              text: 'Message',
               onPressed: () {
                 // Open direct chat for this invite (passes job context)
                 final conv = domain.Conversation(
@@ -172,13 +167,6 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                   job: job,
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF213447),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text('Message', style: TextStyle(fontSize: 16)),
             ),
 
             const SizedBox(height: 20),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/customer.dart';
 import '../../data/repositories/customer_repository_fake.dart';
 
@@ -85,7 +86,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.subtleBorder.withOpacity(0.3),
+            color: AppColors.subtleBorder.withValues(alpha: 0.3),
             blurRadius: 15,
             offset: const Offset(0, 5),
             spreadRadius: -3,
@@ -121,71 +122,6 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    String? hint,
-    TextInputType keyboardType = TextInputType.text,
-    bool required = false,
-    int maxLines = 1,
-    String? Function(String?)? validator,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        validator: validator ??
-            (required
-                ? (value) {
-                    if (value?.isEmpty ?? true) {
-                      return '$label is required';
-                    }
-                    return null;
-                  }
-                : null),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          prefixIcon: Container(
-            margin: const EdgeInsets.all(12),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.orange.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              icon,
-              size: 18,
-              color: AppColors.orange,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.orange, width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
-          ),
-          filled: true,
-          fillColor: Colors.grey.shade50,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        ),
-      ),
-    );
-  }
 
   String? _validateEmail(String? value) {
     if (value?.isEmpty ?? true) {
@@ -337,35 +273,38 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                     title: 'Basic Information',
                     subtitle: 'Essential customer details',
                     children: [
-                      _buildTextField(
+                      CustomTextFormField(
                         controller: _nameController,
                         label: 'Full Name',
-                        icon: Icons.person_outline,
+                        prefixIcon: Icons.person_outline,
                         hint: 'Enter customer\'s full name',
                         required: true,
+                        style: CustomTextFieldStyle.outlined,
                       ),
-                      _buildTextField(
+                      CustomTextFormField(
                         controller: _emailController,
                         label: 'Email Address',
-                        icon: Icons.email_outlined,
+                        prefixIcon: Icons.email_outlined,
                         hint: 'customer@example.com',
                         keyboardType: TextInputType.emailAddress,
-                        required: true,
                         validator: _validateEmail,
+                        style: CustomTextFieldStyle.outlined,
                       ),
-                      _buildTextField(
+                      CustomTextFormField(
                         controller: _phoneController,
                         label: 'Phone Number',
-                        icon: Icons.phone_outlined,
+                        prefixIcon: Icons.phone_outlined,
                         hint: '+234 801 234 5678',
                         keyboardType: TextInputType.phone,
                         validator: _validatePhone,
+                        style: CustomTextFieldStyle.outlined,
                       ),
-                      _buildTextField(
+                      CustomTextFormField(
                         controller: _companyController,
                         label: 'Company (Optional)',
-                        icon: Icons.business_outlined,
+                        prefixIcon: Icons.business_outlined,
                         hint: 'Company or organization name',
+                        style: CustomTextFieldStyle.outlined,
                       ),
                     ],
                   ),
@@ -375,29 +314,32 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                     title: 'Address Information',
                     subtitle: 'Location and contact details',
                     children: [
-                      _buildTextField(
+                      CustomTextFormField(
                         controller: _addressController,
                         label: 'Street Address',
-                        icon: Icons.home_outlined,
+                        prefixIcon: Icons.home_outlined,
                         hint: 'Enter street address',
+                        style: CustomTextFieldStyle.outlined,
                       ),
                       Row(
                         children: [
                           Expanded(
-                            child: _buildTextField(
+                            child: CustomTextFormField(
                               controller: _cityController,
                               label: 'City',
-                              icon: Icons.location_city_outlined,
+                              prefixIcon: Icons.location_city_outlined,
                               hint: 'City',
+                              style: CustomTextFieldStyle.outlined,
                             ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: _buildTextField(
+                            child: CustomTextFormField(
                               controller: _stateController,
                               label: 'State',
-                              icon: Icons.map_outlined,
+                              prefixIcon: Icons.map_outlined,
                               hint: 'State',
+                              style: CustomTextFieldStyle.outlined,
                             ),
                           ),
                         ],
@@ -405,20 +347,22 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: _buildTextField(
+                            child: CustomTextFormField(
                               controller: _countryController,
                               label: 'Country',
-                              icon: Icons.public_outlined,
+                              prefixIcon: Icons.public_outlined,
                               hint: 'Country',
+                              style: CustomTextFieldStyle.outlined,
                             ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: _buildTextField(
+                            child: CustomTextFormField(
                               controller: _postalCodeController,
                               label: 'Postal Code',
-                              icon: Icons.markunread_mailbox_outlined,
+                              prefixIcon: Icons.markunread_mailbox_outlined,
                               hint: '100001',
+                              style: CustomTextFieldStyle.outlined,
                             ),
                           ),
                         ],
@@ -431,12 +375,13 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                     title: 'Additional Information',
                     subtitle: 'Notes and special instructions',
                     children: [
-                      _buildTextField(
+                      CustomTextFormField(
                         controller: _notesController,
                         label: 'Notes (Optional)',
-                        icon: Icons.note_outlined,
+                        prefixIcon: Icons.note_outlined,
                         hint: 'Any special notes about this customer',
                         maxLines: 4,
+                        style: CustomTextFieldStyle.outlined,
                       ),
                     ],
                   ),
@@ -446,39 +391,10 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                   // Save Button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _saveCustomer,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.orange,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Text(
-                                _isEditing
-                                    ? 'Update Customer'
-                                    : 'Create Customer',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                      ),
+                    child: PrimaryButton(
+                      text: _isEditing ? 'Update Customer' : 'Create Customer',
+                      onPressed: _saveCustomer,
+                      isLoading: _isLoading,
                     ),
                   ),
 

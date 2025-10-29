@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
@@ -209,11 +210,11 @@ class JobsTabContent extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                ElevatedButton(
+                PrimaryButton(
+                  text: 'Retry',
                   onPressed: () {
                     context.read<JobBloc>().add(LoadJobs());
                   },
-                  child: const Text('Retry'),
                 ),
               ],
             ),
@@ -496,11 +497,11 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
                           color: AppColors.darkBlue.withValues(alpha: 0.7),
                           fontSize: 16)),
                   const SizedBox(height: 8),
-                  ElevatedButton(
+                  PrimaryButton(
+                    text: 'Retry',
                     onPressed: () => context
                         .read<CatalogRequestsBloc>()
                         .add(LoadCatalogRequests()),
-                    child: const Text('Retry'),
                   ),
                 ],
               ),
@@ -557,13 +558,14 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
                                 content: const Text(
                                     'Are you sure you want to reject this request?'),
                                 actions: [
-                                  TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(ctx, false),
-                                      child: const Text('Cancel')),
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(ctx, true),
-                                      child: const Text('Reject')),
+                                  TextAppButton(
+                                    text: 'Cancel',
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                  ),
+                                  TextAppButton(
+                                    text: 'Reject',
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                  ),
                                 ],
                               ),
                             );

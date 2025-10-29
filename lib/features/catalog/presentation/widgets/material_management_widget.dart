@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';
 
@@ -128,9 +129,9 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
             ),
             if (widget.isEditable) ...[
               if (_hasChanges) ...[
-                TextButton(
+                TextAppButton(
+                  text: 'Save',
                   onPressed: _saveMaterials,
-                  child: const Text('Save'),
                 ),
                 const SizedBox(width: 8),
               ],
@@ -359,25 +360,16 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
     return Row(
       children: [
         Expanded(
-          child: OutlinedButton.icon(
+          child: OutlinedAppButton(
+            text: 'Save Changes',
             onPressed: _hasChanges ? _saveMaterials : null,
-            icon: const Icon(Icons.save),
-            label: const Text('Save Changes'),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: ElevatedButton.icon(
+          child: PrimaryButton(
+            text: 'Send to Client',
             onPressed: _sendToClient,
-            icon: const Icon(Icons.send),
-            label: const Text('Send to Client'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
           ),
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/image_url.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/usecases/delete_catalog.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/upload_catalogue_page.dart';
 import '../../domain/entities/catalog_item.dart';
@@ -93,7 +94,8 @@ class CatalogItemDetailsPage extends StatelessWidget {
                   ]),
             ),
             const SizedBox(height: 18),
-            ElevatedButton(
+            PrimaryButton(
+              text: 'Edit',
               onPressed: () async {
                 // Open edit flow
                 final changed = await Navigator.of(context).push<bool>(
@@ -105,12 +107,10 @@ class CatalogItemDetailsPage extends StatelessWidget {
                       const SnackBar(content: Text('Catalogue updated')));
                 }
               },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF9A4B20)),
-              child: const Text('Edit Catalogue'),
             ),
             const SizedBox(height: 12),
-            ElevatedButton.icon(
+            SecondaryButton(
+              text: 'Delete Catalogue',
               onPressed: () async {
                 final ok = await getIt<DeleteCatalog>().call(item.id);
                 if (context.mounted) {
@@ -124,10 +124,6 @@ class CatalogItemDetailsPage extends StatelessWidget {
                   }
                 }
               },
-              icon: const Icon(Icons.delete_outline),
-              label: const Text('Delete Catalogue'),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEB2D2D)),
             ),
           ],
         ),

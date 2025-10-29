@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
@@ -341,18 +342,9 @@ class _FilterPageState extends State<FilterPage> {
                 )),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
+                  child: PrimaryButton(
+                    text: 'Done',
                     onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF213447),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
-                    child: const SizedBox(
-                        width: double.infinity,
-                        child: Center(
-                            child: Text('Done',
-                                style: TextStyle(color: Colors.white)))),
                   ),
                 )
               ],
@@ -452,24 +444,9 @@ class _FilterPageState extends State<FilterPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
+                    child: PrimaryButton(
+                      text: 'Done',
                       onPressed: () => Navigator.of(context).pop(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF213447),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const SizedBox(
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
-                            'Done',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
                     ),
                   )
                 ],
@@ -697,7 +674,8 @@ class _FilterPageState extends State<FilterPage> {
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: ElevatedButton(
+              child: PrimaryButton(
+                text: 'Apply Filter',
                 onPressed: () {
                   // Collect filter in a simple map and return to caller
                   final filters = {
@@ -714,14 +692,6 @@ class _FilterPageState extends State<FilterPage> {
                   };
                   Navigator.of(context).pop(filters);
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF213447),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text('Apply Filter',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ),
             const SizedBox(height: 24),

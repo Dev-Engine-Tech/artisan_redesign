@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 
 class DiscoverTabView extends StatefulWidget {
   final List<DiscoverTab> tabs;
@@ -218,13 +219,9 @@ class DiscoverTabContent extends StatelessWidget {
               ),
               if (onRetry != null) ...[
                 const SizedBox(height: 16),
-                ElevatedButton(
+                PrimaryButton(
+                  text: 'Try Again',
                   onPressed: onRetry,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.orange,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Try Again'),
                 ),
               ],
             ],

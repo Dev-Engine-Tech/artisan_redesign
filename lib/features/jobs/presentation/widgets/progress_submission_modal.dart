@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 
@@ -65,18 +66,18 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
         title: const Text('Add Progress Photo'),
         content: const Text('In a real app, this would open image picker'),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
           ),
-          TextButton(
+          TextAppButton(
+            text: 'Add Sample Image',
             onPressed: () {
               setState(() {
                 _imageUrls.add('https://via.placeholder.com/300x200');
               });
               Navigator.of(context).pop();
             },
-            child: const Text('Add Sample Image'),
           ),
         ],
       ),
@@ -346,20 +347,11 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                           ),
                           const SizedBox(height: 12),
                         ],
-                        OutlinedButton.icon(
-                          onPressed: _addImage,
-                          icon: const Icon(Icons.add_a_photo, size: 20),
-                          label: Text(_imageUrls.isEmpty
+                        OutlinedAppButton(
+                          text: _imageUrls.isEmpty
                               ? 'Add Progress Photos'
-                              : 'Add More Photos'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.orange,
-                            side: BorderSide(color: AppColors.orange),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
+                              : 'Add More Photos',
+                          onPressed: _addImage,
                         ),
                         const SizedBox(height: 100),
                       ],
@@ -378,37 +370,10 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                       ),
                     ],
                   ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isSubmitting ? null : _submitProgress,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.orange,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: _isSubmitting
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
-                            )
-                          : const Text(
-                              'Submit Progress Update',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                    ),
+                  child: PrimaryButton(
+                    text: 'Submit Progress Update',
+                    onPressed: _isSubmitting ? null : _submitProgress,
+                    isLoading: _isSubmitting,
                   ),
                 ),
               ],
@@ -460,29 +425,12 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  widget.onSubmitted();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.orange,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+            PrimaryButton(
+              text: 'Continue',
+              onPressed: () {
+                Navigator.of(context).pop();
+                widget.onSubmitted();
+              },
             ),
           ],
         ),

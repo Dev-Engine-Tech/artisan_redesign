@@ -73,5 +73,12 @@
 		<string>google</string>
 		<string>com.googleusercontent.apps.1025352562164-691cmsv71snn3s9igp09tat8l6fq1nsp</string>
 	</array>
+
+	<!-- Enable background modes for remote notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
 </dict>
 </plist>

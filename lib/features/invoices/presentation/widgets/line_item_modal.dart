@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
 import 'label_cell.dart';
 
@@ -188,14 +189,15 @@ class _LineItemFormState extends State<_LineItemForm> {
                     Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton(
+                          child: OutlinedAppButton(
+                            text: 'Cancel',
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel'),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: ElevatedButton.icon(
+                          child: PrimaryButton(
+                            text: 'Save',
                             onPressed: () {
                               final item = InvoiceLineData(
                                 label: _label.text.trim(),
@@ -207,9 +209,6 @@ class _LineItemFormState extends State<_LineItemForm> {
                               );
                               Navigator.of(context).pop(item);
                             },
-                            icon: const Icon(Icons.check, color: Colors.white),
-                            label: const Text('Save',
-                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],

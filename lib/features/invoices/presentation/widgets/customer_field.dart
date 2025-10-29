@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
 
 class CustomerField extends StatelessWidget {
@@ -103,17 +104,12 @@ class CustomerField extends StatelessWidget {
                       ],
                     ),
                   ),
-                  TextButton(
+                  TextAppButton(
+                    text: 'Clear',
                     onPressed: () {
                       context.read<InvoiceFormCubit>().clearCustomer();
                       customerController.clear();
                     },
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size(0, 28),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      foregroundColor: Colors.red,
-                    ),
-                    child: const Text('Clear', style: TextStyle(fontSize: 12)),
                   ),
                 ],
               ),

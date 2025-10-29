@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 
@@ -119,23 +120,12 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 style: TextStyle(color: Colors.black54),
               ),
               const SizedBox(height: 18),
-              SizedBox(
-                width: 120,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.darkBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: () {
-                    Navigator.of(ctx).pop(); // close dialog
-                    Navigator.of(context).pop(); // close change request page
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text('OK', style: TextStyle(fontSize: 16)),
-                  ),
-                ),
+              PrimaryButton(
+                text: 'OK',
+                onPressed: () {
+                  Navigator.of(ctx).pop(); // close dialog
+                  Navigator.of(context).pop(); // close change request page
+                },
               ),
             ],
           ),
@@ -362,21 +352,10 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
         ),
         bottomNavigationBar: SafeArea(
           minimum: const EdgeInsets.all(16),
-          child: SizedBox(
-            height: 56,
-            child: ElevatedButton(
-              onPressed: _submitting ? null : _submit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.darkBlue,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: _submitting
-                  ? const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-                  : const Text('Submit Request',
-                      style: TextStyle(fontSize: 18)),
-            ),
+          child: PrimaryButton(
+            text: 'Submit Request',
+            onPressed: _submitting ? null : _submit,
+            isLoading: _submitting,
           ),
         ),
       ),

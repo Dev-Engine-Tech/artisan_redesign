@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme.dart';
 import '../../../../core/di.dart';
+import '../../../../core/components/components.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../domain/entities/user_profile.dart';
@@ -20,6 +21,9 @@ import 'contact_us_page.dart';
 import '../widgets/image_preview_page.dart';
 import 'raise_ticket_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter/services.dart';
+import '../../../../core/services/push_registration_service.dart';
+import '../../../../features/notifications/data/datasources/notification_remote_data_source.dart';
 
 class SupportAccountPage extends StatefulWidget {
   const SupportAccountPage({super.key});
@@ -113,6 +117,11 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                   ),
                 ),
                 _MenuTile(
+                  icon: Icons.notifications_active_outlined,
+                  title: 'Push Diagnostics',
+                  onTap: () => _showPushDiagnostics(context),
+                ),
+                _MenuTile(
                   icon: Icons.confirmation_number_outlined,
                   title: 'Raise a ticket',
                   onTap: () {
@@ -152,6 +161,121 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
       ),
     );
   }
+
+  Future<void> _showPushDiagnostics(BuildContext context) async {
+    final svc = getIt<PushRegistrationService>();
+    final remote = getIt<NotificationRemoteDataSource>();
+    Map<String, String> diag = {};
+    try {
+      diag = await svc.getDiagnostics();
+    } catch (_) {}
+
+    // Build friendly labels
+    String fcmToken = diag['fcmToken'] ?? '—';
+    String fcmTokenShort = fcmToken.isEmpty
+        ? '—'
+        : '${fcmToken.substring(0, fcmToken.length > 20 ? 20 : fcmToken.length)}…';
+    final deviceId = diag['deviceId'] ?? '—';
+    final deviceType = diag['deviceType'] ?? '—';
+    final lastStatus = diag['lastStatus'] ?? '—';
+    final lastStatusAt = diag['lastStatusAt'] ?? '—';
+    final lastError = diag['lastError'];
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Push Diagnostics'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _kv('Device type', deviceType),
+            _kv('Device ID', deviceId),
+            Row(
+              children: [
+                Expanded(child: _kv('FCM token', fcmTokenShort)),
+                IconButton(
+                  tooltip: 'Copy full token',
+                  icon: const Icon(Icons.copy, size: 18),
+                  onPressed: fcmToken == '—'
+                      ? null
+                      : () async {
+                          await Clipboard.setData(ClipboardData(text: fcmToken));
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('FCM token copied')),
+                            );
+                          }
+                        },
+                ),
+              ],
+            ),
+            _kv('Last status', lastStatus),
+            _kv('Last status at', lastStatusAt),
+            if (lastError != null && lastError.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  'Last error: $lastError',
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          TextAppButton(
+            text: 'Register Again',
+            onPressed: () async {
+              try {
+                await getIt<PushRegistrationService>().registerIfPossible();
+                if (context.mounted) {
+                  Navigator.of(ctx).pop();
+                  _showPushDiagnostics(context); // refresh
+                }
+              } catch (_) {}
+            },
+          ),
+          TextAppButton(
+            text: 'Send Test Push',
+            onPressed: () async {
+              try {
+                await remote.sendTestPush(title: 'Test', body: 'Hello from app');
+                if (context.mounted) {
+                  Navigator.of(ctx).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Test push requested')),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  Navigator.of(ctx).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to request test push: $e')),
+                  );
+                }
+              }
+            },
+          ),
+          TextAppButton(
+            text: 'Close',
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _kv(String k, String v) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 120, child: Text(k, style: const TextStyle(fontWeight: FontWeight.w600))),
+            const SizedBox(width: 8),
+            Expanded(child: Text(v)),
+          ],
+        ),
+      );
 
   Future<void> _checkForUpdates(BuildContext context) async {
     try {
@@ -199,27 +323,33 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-                controller: oldCtr,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: 'Old Password')),
+            CustomTextField(
+              controller: oldCtr,
+              obscureText: true,
+              label: 'Old Password',
+              showLabel: true,
+            ),
             const SizedBox(height: 8),
-            TextField(
-                controller: newCtr,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: 'New Password')),
+            CustomTextField(
+              controller: newCtr,
+              obscureText: true,
+              label: 'New Password',
+              showLabel: true,
+            ),
           ],
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          ElevatedButton(
+          TextAppButton(
+            text: 'Cancel',
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          PrimaryButton(
+            text: 'Update',
             onPressed: () {
               Navigator.pop(ctx);
               context.read<AccountBloc>().add(AccountChangePassword(
                   oldPassword: oldCtr.text, newPassword: newCtr.text));
             },
-            child: const Text('Update'),
           ),
         ],
       ),
@@ -237,22 +367,25 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
           children: [
             const Text('This action cannot be undone'),
             const SizedBox(height: 8),
-            TextField(
-                controller: otpCtr,
-                decoration: const InputDecoration(labelText: 'OTP (optional)')),
+            CustomTextField(
+              controller: otpCtr,
+              label: 'OTP (optional)',
+              showLabel: true,
+            ),
           ],
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+          TextAppButton(
+            text: 'Cancel',
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          PrimaryButton(
+            text: 'Delete',
             onPressed: () {
               Navigator.pop(ctx);
               context.read<AccountBloc>().add(AccountDeleteAccount(
                   otp: otpCtr.text.isEmpty ? null : otpCtr.text));
             },
-            child: const Text('Delete'),
           ),
         ],
       ),

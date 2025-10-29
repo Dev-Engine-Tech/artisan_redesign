@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../pages/catalog_request_view_page.dart';
 
@@ -286,26 +287,16 @@ class CatalogRequestCard extends StatelessWidget {
   /// Builds action buttons based on request status
   Widget _buildActionButtons(BuildContext context) {
     if (request.isBothApproved) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () {
-            // Navigate to request details
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => CatalogRequestViewPage(requestId: request.id),
-              ),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+      return PrimaryButton(
+        text: 'View Details',
+        onPressed: () {
+          // Navigate to request details
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => CatalogRequestViewPage(requestId: request.id),
             ),
-          ),
-          child: const Text('View Details'),
-        ),
+          );
+        },
       );
     }
 
@@ -313,40 +304,28 @@ class CatalogRequestCard extends StatelessWidget {
       children: [
         if (!request.isArtisanApproved) ...[
           Expanded(
-            child: ElevatedButton(
+            child: PrimaryButton(
+              text: 'Approve',
               onPressed: () {
                 // Handle approve action
                 _handleApprove(context);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('Approve', style: TextStyle(fontSize: 14)),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: OutlinedButton(
+            child: OutlinedAppButton(
+              text: 'Decline',
               onPressed: () {
                 // Handle decline action
                 _handleDecline(context);
               },
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('Decline', style: TextStyle(fontSize: 14)),
             ),
           ),
         ] else ...[
           Expanded(
-            child: OutlinedButton(
+            child: OutlinedAppButton(
+              text: 'View Details',
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -355,13 +334,6 @@ class CatalogRequestCard extends StatelessWidget {
                   ),
                 );
               },
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('View Details'),
             ),
           ),
         ],
@@ -404,19 +376,18 @@ class CatalogRequestCard extends StatelessWidget {
         title: const Text('Decline Request'),
         content: const Text('Are you sure you want to decline this request?'),
         actions: [
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Decline',
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Request declined')),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Decline'),
           ),
         ],
       ),

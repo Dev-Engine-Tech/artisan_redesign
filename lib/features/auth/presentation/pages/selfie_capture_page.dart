@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/verification_cubit.dart';
 import 'package:artisans_circle/core/theme.dart';
 
@@ -151,34 +152,14 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton.icon(
-                        onPressed: _capture,
-                        icon: const Icon(Icons.camera_alt),
-                        label: const Text('Capture',
-                            style: TextStyle(fontSize: 16)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2E3A59),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
+                    PrimaryButton(
+                      text: 'Capture',
+                      onPressed: _capture,
                     ),
                     const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: const Text('Cancel'),
-                      ),
+                    OutlinedAppButton(
+                      text: 'Cancel',
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),

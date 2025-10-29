@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di.dart';
+import '../../../../core/components/components.dart';
 import '../../domain/entities/earnings.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
@@ -88,12 +89,9 @@ class _MyEarningsPageState extends State<MyEarningsPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => _showWithdrawDialog(context),
-                    child: const Text('Request Withdrawal'),
-                  ),
+                child: PrimaryButton(
+                  text: 'Request Withdrawal',
+                  onPressed: () => _showWithdrawDialog(context),
                 ),
               )
             ],
@@ -118,9 +116,12 @@ class _MyEarningsPageState extends State<MyEarningsPage> {
           decoration: const InputDecoration(hintText: 'Amount'),
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          ElevatedButton(
+          TextAppButton(
+            text: 'Cancel',
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          PrimaryButton(
+            text: 'Submit',
             onPressed: () {
               final amount = double.tryParse(ctr.text.trim());
               if (amount != null && amount > 0) {
@@ -130,7 +131,6 @@ class _MyEarningsPageState extends State<MyEarningsPage> {
                     .add(AccountRequestWithdrawal(amount));
               }
             },
-            child: const Text('Submit'),
           ),
         ],
       ),
@@ -206,9 +206,12 @@ extension on _MyEarningsPageState {
           decoration: const InputDecoration(hintText: '4-digit PIN'),
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          TextAppButton(
+            text: 'Verify',
             onPressed: () async {
               final pin = pinCtr.text.trim();
               if (pin.length != 4) return;
@@ -216,14 +219,13 @@ extension on _MyEarningsPageState {
               Navigator.pop(ctx);
               ok = true; // proceed; bloc will show error if invalid
             },
-            child: const Text('Verify'),
           ),
-          TextButton(
+          TextAppButton(
+            text: 'Set PIN',
             onPressed: () async {
               Navigator.pop(ctx);
               await _promptSetPin(context);
             },
-            child: const Text('Set PIN'),
           ),
         ],
       ),
@@ -254,9 +256,12 @@ extension on _MyEarningsPageState {
           ],
         ),
         actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          TextButton(
+          TextAppButton(
+            text: 'Cancel',
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          TextAppButton(
+            text: 'Save',
             onPressed: () {
               if (a.text.trim().length != 4 || a.text.trim() != b.text.trim())
                 return;
@@ -265,7 +270,6 @@ extension on _MyEarningsPageState {
                   .add(AccountSetWithdrawalPin(a.text.trim()));
               Navigator.pop(ctx);
             },
-            child: const Text('Save'),
           ),
         ],
       ),

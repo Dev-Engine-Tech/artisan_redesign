@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
@@ -323,21 +324,12 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          PrimaryButton(
+            text: 'Retry',
             onPressed: () {
               // ✅ PERFORMANCE FIX: Force refresh on error retry is intentional
               context.read<JobBloc>().add(LoadOngoingJobs());
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.orange,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text(
-              'Retry',
-              style: TextStyle(color: Colors.white),
-            ),
           ),
         ],
       ),
@@ -621,35 +613,16 @@ class OngoingJobCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: OutlinedButton.icon(
+            child: OutlinedAppButton(
+              text: 'Submit Progress',
               onPressed: () => _showProgressSubmission(context),
-              icon: const Icon(Icons.upload, size: 16),
-              label: const Text('Submit Progress'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.brownHeader,
-                side: BorderSide(color: AppColors.softBorder),
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: ElevatedButton.icon(
+            child: PrimaryButton(
+              text: 'View Details',
               onPressed: () => _showJobDetails(context),
-              icon: const Icon(Icons.visibility, size: 16),
-              label: const Text('View Details'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
             ),
           ),
         ],
