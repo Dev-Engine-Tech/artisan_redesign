@@ -1,6 +1,6 @@
 class ApiEndpoints {
   // Base URLs
-  static const String baseUrl = 'https://apiprod.artisansbridge.com';
+  static const String baseUrl = 'https://apistaging.artisansbridge.com';
 
   // Auth endpoints
   static const String login = '/auth/login/';

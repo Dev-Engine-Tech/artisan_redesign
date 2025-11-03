@@ -58,10 +58,15 @@ class MeasurementTab extends StatelessWidget {
         if (!readOnly)
           children.add(
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: PrimaryButton(
-                text: 'Add Measurement',
-                onPressed: cubit.addMeasurement,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedAppButton(
+                  text: 'Add Measurement',
+                  height: 40,
+                  width: 180,
+                  onPressed: cubit.addMeasurement,
+                ),
               ),
             ),
           );

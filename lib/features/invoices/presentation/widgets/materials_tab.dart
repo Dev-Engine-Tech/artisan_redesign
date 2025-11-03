@@ -63,10 +63,15 @@ class MaterialsTab extends StatelessWidget {
         if (!readOnly)
           children.add(
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: PrimaryButton(
-                text: 'Add Material',
-                onPressed: cubit.addMaterial,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedAppButton(
+                  text: 'Add Material',
+                  height: 40,
+                  width: 160,
+                  onPressed: cubit.addMaterial,
+                ),
               ),
             ),
           );

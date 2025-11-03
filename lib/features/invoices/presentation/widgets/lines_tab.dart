@@ -123,8 +123,10 @@ class LinesTab extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: TextAppButton(
+                  child: OutlinedAppButton(
                     text: 'Add Line',
+                    height: 36,
+                    width: 130,
                     onPressed: () async {
                       final created = await showLineItemModal(context);
                       if (created != null) {
@@ -177,8 +179,10 @@ class LinesTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  OutlinedAppButton(
+                  PrimaryButton(
                     text: 'Add Line',
+                    height: 40,
+                    width: 140,
                     onPressed: () async {
                       final created = await showLineItemModal(context);
                       if (created != null) {
@@ -187,8 +191,10 @@ class LinesTab extends StatelessWidget {
                     },
                   ),
                   const SizedBox(width: 8),
-                  PrimaryButton(
+                  OutlinedAppButton(
                     text: 'Add Section',
+                    height: 40,
+                    width: 140,
                     onPressed: cubit.addSection,
                   ),
                 ],

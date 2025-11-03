@@ -45,6 +45,12 @@ class LoginStateService {
     await prefs.setString(_lastLoginMethodKey, method);
     await prefs.setInt(
         _lastLoginTimestampKey, DateTime.now().millisecondsSinceEpoch);
+
+    // Reset the instructional video flag for fresh logins so it can show once
+    // after each manual/Google/Apple sign-in. Do not reset for automatic logins.
+    if (method != loginMethodAutomatic) {
+      await prefs.remove(_hasSeenInstructionalVideoKey);
+    }
   }
 
   /// Check if the current login session should show the instructional video
