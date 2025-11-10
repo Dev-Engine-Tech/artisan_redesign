@@ -10,6 +10,7 @@ import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_bloc.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
+import 'package:artisans_circle/core/utils/responsive.dart';
 
 /// Projects page (catalogue) with tabbed interface:
 /// - Catalog: Upload and manage catalog items
@@ -55,7 +56,7 @@ class _CatalogPageState extends State<CatalogPage>
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppColors.softBorder),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLG,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -66,7 +67,7 @@ class _CatalogPageState extends State<CatalogPage>
                   .bodyMedium
                   ?.copyWith(color: Colors.black54),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             OutlinedAppButton(
               text: 'Upload Catalogue',
               onPressed: () {
@@ -87,13 +88,13 @@ class _CatalogPageState extends State<CatalogPage>
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.radiusLG,
           border: Border.all(color: AppColors.subtleBorder),
         ),
         child: Row(
           children: [
             const Icon(Icons.search, color: Colors.black26),
-            const SizedBox(width: 8),
+            AppSpacing.spaceSM,
             Expanded(
               child: Text('Search products, services and artisans',
                   style: Theme.of(context)
@@ -101,12 +102,11 @@ class _CatalogPageState extends State<CatalogPage>
                       .bodyMedium
                       ?.copyWith(color: Colors.black38)),
             ),
-            const SizedBox(width: 8),
+            AppSpacing.spaceSM,
             Container(
               margin: const EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
-                  color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(8)),
+                  color: AppColors.softPink, borderRadius: AppRadius.radiusMD),
               child: IconButton(
                 icon:
                     const Icon(Icons.filter_list, color: AppColors.brownHeader),
@@ -126,20 +126,20 @@ class _CatalogPageState extends State<CatalogPage>
         height: 160,
         decoration: BoxDecoration(
             color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLG,
         child: Row(
           children: [
-            Expanded(
+            const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text('Discover Your Ideal\nJob match',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
                           fontSize: 20)),
-                  SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Text(
                       'Find rewarding projects, connect with clients, and take your career to new heights.',
                       style: TextStyle(color: Colors.white70, fontSize: 13)),
@@ -152,7 +152,8 @@ class _CatalogPageState extends State<CatalogPage>
                 height: 86,
                 decoration: const BoxDecoration(
                     color: Colors.white24,
-                    borderRadius: BorderRadius.all(Radius.circular(12)))),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(AppRadius.lg)))),
           ],
         ),
       ),
@@ -169,7 +170,7 @@ class _CatalogPageState extends State<CatalogPage>
           elevation: 0,
           backgroundColor: Colors.transparent,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
+            padding: EdgeInsets.only(left: context.responsiveSpacing(12)),
             child: Container(
               decoration: BoxDecoration(
                   color: AppColors.softPink,
@@ -180,55 +181,69 @@ class _CatalogPageState extends State<CatalogPage>
               ),
             ),
           ),
-          title: const Text('Projects',
+          title: Text('Projects',
               style: TextStyle(
                   color: Colors.black87,
-                  fontSize: 20,
+                  fontSize: context.responsiveFontSize(20),
                   fontWeight: FontWeight.w600)),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(50),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.softBorder),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: AppColors.orange,
-                  borderRadius: BorderRadius.circular(10),
+            child: Center(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: context.maxContentWidth,
                 ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.black54,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                margin: EdgeInsets.symmetric(
+                  horizontal: context.responsiveSpacing(16),
                 ),
-                unselectedLabelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: AppRadius.radiusLG,
+                  border: Border.all(color: AppColors.softBorder),
                 ),
-                tabs: const [
-                  Tab(text: 'Catalogue'),
-                  Tab(text: 'Ongoing'),
-                  Tab(text: 'Completed'),
-                ],
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
+                    color: AppColors.orange,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.black54,
+                  labelStyle: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: context.responsiveFontSize(14),
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: context.responsiveFontSize(14),
+                  ),
+                  tabs: const [
+                    Tab(text: 'Catalogue'),
+                    Tab(text: 'Ongoing'),
+                    Tab(text: 'Completed'),
+                  ],
+                ),
               ),
             ),
           ),
         ),
         body: SafeArea(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              _buildCatalogTab(),
-              const OngoingJobsPage(),
-              const CompletedJobsPage(),
-            ],
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: context.maxContentWidth,
+              ),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildCatalogTab(),
+                  const OngoingJobsPage(),
+                  const CompletedJobsPage(),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -239,13 +254,13 @@ class _CatalogPageState extends State<CatalogPage>
     return BlocBuilder<CatalogBloc, CatalogState>(
       builder: (context, state) {
         final header = <Widget>[
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _searchBar(context),
           const SizedBox(height: 14),
           _hero(context),
           const SizedBox(height: 14),
           _uploadPanel(context),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
         ];
 
         if (state is CatalogLoading || state is CatalogInitial) {
@@ -313,13 +328,22 @@ class _CatalogPageState extends State<CatalogPage>
 
   Widget _catalogTile(CatalogItem item) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(
+        horizontal: context.responsiveSpacing(16),
+        vertical: context.responsiveSpacing(8),
+      ),
       child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: Responsive.cardElevation(context),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            context.responsiveBorderRadius(12),
+          ),
+        ),
         color: Colors.white,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(
+            context.responsiveBorderRadius(12),
+          ),
           onTap: () async {
             final changed = await Navigator.of(context).push<bool>(
               MaterialPageRoute(
@@ -335,10 +359,11 @@ class _CatalogPageState extends State<CatalogPage>
             children: [
               // Large image banner
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(context.responsiveBorderRadius(12)),
+                ),
                 child: Container(
-                  height: 180,
+                  height: context.isTablet ? 240 : 180,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
@@ -351,9 +376,10 @@ class _CatalogPageState extends State<CatalogPage>
                         : null,
                   ),
                   child: item.imageUrl == null || item.imageUrl!.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Icon(Icons.image_outlined,
-                              size: 48, color: Colors.grey),
+                              size: context.responsiveIconSize(48),
+                              color: Colors.grey),
                         )
                       : null,
                 ),
@@ -361,21 +387,21 @@ class _CatalogPageState extends State<CatalogPage>
 
               // Content section
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: context.responsivePadding,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Title and vendor
                     Text(
                       item.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                        fontSize: context.responsiveFontSize(16),
                         color: Colors.black87,
                       ),
                     ),
                     if (item.ownerName != null) ...[
-                      const SizedBox(height: 4),
+                      AppSpacing.spaceXS,
                       Text(
                         item.ownerName!,
                         style: const TextStyle(
@@ -385,7 +411,7 @@ class _CatalogPageState extends State<CatalogPage>
                       ),
                     ],
 
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
 
                     // Price and timeline row
                     Row(
@@ -404,7 +430,7 @@ class _CatalogPageState extends State<CatalogPage>
                               item.priceMin != null && item.priceMax != null
                                   ? '₦${item.priceMin} - ₦${item.priceMax}'
                                   : '₦${item.priceMin ?? item.priceMax}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: AppColors.brownHeader,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
@@ -418,12 +444,12 @@ class _CatalogPageState extends State<CatalogPage>
                     ),
 
                     if (item.projectTimeline != null) ...[
-                      const SizedBox(height: 8),
+                      AppSpacing.spaceSM,
                       Row(
                         children: [
                           const Icon(Icons.schedule,
                               size: 16, color: Colors.black54),
-                          const SizedBox(width: 4),
+                          AppSpacing.spaceXS,
                           Text(
                             'Duration: ${item.projectTimeline}',
                             style: const TextStyle(

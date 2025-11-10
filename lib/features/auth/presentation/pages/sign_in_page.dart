@@ -75,7 +75,7 @@ class _SignInPageState extends State<SignInPage> {
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -100,7 +100,7 @@ class _SignInPageState extends State<SignInPage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppRadius.radiusLG,
                         ),
                         child: IconButton(
                           icon: const Icon(
@@ -125,7 +125,7 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      AppSpacing.spaceSM,
 
                       Text(
                         'Sign in-up to enjoy the best managing experience',
@@ -155,10 +155,10 @@ class _SignInPageState extends State<SignInPage> {
                           children: [
                             // Tab selector
                             Container(
-                              padding: const EdgeInsets.all(4),
+                              padding: AppSpacing.paddingXS,
                               decoration: BoxDecoration(
                                 color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: AppRadius.radiusLG,
                               ),
                               child: Row(
                                 children: [
@@ -173,8 +173,7 @@ class _SignInPageState extends State<SignInPage> {
                                           color: _selectedTab == 0
                                               ? Colors.white
                                               : Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
+                                          borderRadius: AppRadius.radiusMD,
                                           boxShadow: _selectedTab == 0
                                               ? [
                                                   BoxShadow(
@@ -214,8 +213,7 @@ class _SignInPageState extends State<SignInPage> {
                                           color: _selectedTab == 1
                                               ? Colors.white
                                               : Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(8),
+                                          borderRadius: AppRadius.radiusMD,
                                         ),
                                         child: Text(
                                           'Register',
@@ -234,7 +232,7 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                             ),
 
-                            const SizedBox(height: 32),
+                            AppSpacing.spaceXXXL,
 
                             // Form
                             Form(
@@ -249,13 +247,13 @@ class _SignInPageState extends State<SignInPage> {
                                     controller: _identifierController,
                                     keyboardType: TextInputType.emailAddress,
                                     showLabel: true,
-                                    validator: (v) => (v == null ||
-                                            v.trim().isEmpty)
-                                        ? 'Please enter email or phone'
-                                        : null,
+                                    validator: (v) =>
+                                        (v == null || v.trim().isEmpty)
+                                            ? 'Please enter email or phone'
+                                            : null,
                                   ),
 
-                                  const SizedBox(height: 20),
+                                  AppSpacing.spaceXL,
 
                                   // Password field
                                   CustomTextFormField(
@@ -275,12 +273,13 @@ class _SignInPageState extends State<SignInPage> {
                                       onPressed: () => setState(() =>
                                           _obscurePassword = !_obscurePassword),
                                     ),
-                                    validator: (v) => (v == null || v.length < 6)
+                                    validator: (v) => (v == null ||
+                                            v.length < 6)
                                         ? 'Password must be at least 6 characters'
                                         : null,
                                   ),
 
-                                  const SizedBox(height: 16),
+                                  AppSpacing.spaceLG,
 
                                   // Remember me and Forgot password
                                   Row(
@@ -290,8 +289,7 @@ class _SignInPageState extends State<SignInPage> {
                                         onChanged: (v) => setState(
                                             () => _remember = v ?? false),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
+                                          borderRadius: AppRadius.radiusSM,
                                         ),
                                         activeColor: AppColors.orange,
                                       ),
@@ -310,7 +308,7 @@ class _SignInPageState extends State<SignInPage> {
                                     ],
                                   ),
 
-                                  const SizedBox(height: 24),
+                                  AppSpacing.spaceXXL,
 
                                   // Login button
                                   PrimaryButton(
@@ -318,7 +316,7 @@ class _SignInPageState extends State<SignInPage> {
                                     onPressed: _submit,
                                   ),
 
-                                  const SizedBox(height: 24),
+                                  AppSpacing.spaceXXL,
 
                                   // Or login with
                                   Row(
@@ -343,7 +341,7 @@ class _SignInPageState extends State<SignInPage> {
                                     ],
                                   ),
 
-                                  const SizedBox(height: 24),
+                                  AppSpacing.spaceXXL,
 
                                   // Social login buttons
                                   Row(
@@ -357,7 +355,7 @@ class _SignInPageState extends State<SignInPage> {
                                                   AuthSignInWithGoogleRequested()),
                                         ),
                                       ),
-                                      const SizedBox(width: 16),
+                                      AppSpacing.spaceLG,
                                       Expanded(
                                         child: TextAppButton(
                                           text: 'Apple',

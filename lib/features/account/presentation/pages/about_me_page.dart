@@ -7,6 +7,8 @@ import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
+import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class AboutMePage extends StatefulWidget {
   final UserProfile? initial;
@@ -56,34 +58,34 @@ class _AboutMePageState extends State<AboutMePage> {
           }
         },
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: context.responsivePadding,
           children: [
             CustomTextField(
               controller: jobTitle,
               label: 'Job Title',
               showLabel: true,
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             CustomTextField(
               controller: location,
               label: 'Location',
               showLabel: true,
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             CustomTextField(
               controller: phone,
               keyboardType: TextInputType.phone,
               label: 'Phone',
               showLabel: true,
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             CustomTextField(
               controller: bio,
               maxLines: 5,
               label: 'Bio',
               showLabel: true,
             ),
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
             PrimaryButton(
               text: 'Save',
               onPressed: () {

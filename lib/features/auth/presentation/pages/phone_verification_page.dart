@@ -5,6 +5,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_event.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
+import '../../../../core/utils/responsive.dart';
 
 class PhoneVerificationPage extends StatefulWidget {
   final String? initialPhone;
@@ -34,7 +35,6 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
@@ -54,7 +54,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -81,7 +81,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             height: 40,
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: AppRadius.radiusLG,
                             ),
                             child: IconButton(
                               icon: const Icon(
@@ -108,7 +108,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      AppSpacing.spaceSM,
 
                       Text(
                         'Your account is inactive. Verify your phone number to activate and start using all features.',
@@ -139,18 +139,18 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                           Container(
                             width: 80,
                             height: 80,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppColors.lightPeach,
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.verified_user_outlined,
                               size: 40,
                               color: AppColors.orange,
                             ),
                           ),
 
-                          const SizedBox(height: 24),
+                          AppSpacing.spaceXXL,
 
                           const Text(
                             'Phone Verification',
@@ -161,7 +161,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             ),
                           ),
 
-                          const SizedBox(height: 8),
+                          AppSpacing.spaceSM,
 
                           Text(
                             _otpSent
@@ -174,7 +174,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             ),
                           ),
 
-                          const SizedBox(height: 32),
+                          AppSpacing.spaceXXXL,
 
                           // Phone number field
                           CustomTextFormField(
@@ -186,7 +186,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             showLabel: true,
                           ),
 
-                          const SizedBox(height: 24),
+                          AppSpacing.spaceXXL,
 
                           if (!_otpSent) ...[
                             // Send OTP button
@@ -202,8 +202,9 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                   );
                                   return;
                                 }
-                                context.read<AuthBloc>().add(
-                                    AuthResendOtpRequested(phone: phone));
+                                context
+                                    .read<AuthBloc>()
+                                    .add(AuthResendOtpRequested(phone: phone));
                               },
                             ),
                           ] else ...[
@@ -218,7 +219,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                               showLabel: true,
                             ),
 
-                            const SizedBox(height: 24),
+                            AppSpacing.spaceXXL,
 
                             // Verify button
                             PrimaryButton(
@@ -237,7 +238,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                               },
                             ),
 
-                            const SizedBox(height: 16),
+                            AppSpacing.spaceLG,
 
                             // Resend code button
                             TextAppButton(
@@ -251,23 +252,23 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             ),
                           ],
 
-                          const SizedBox(height: 32),
+                          AppSpacing.spaceXXXL,
 
                           // Info card
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: context.responsivePadding,
                             decoration: BoxDecoration(
                               color: AppColors.lightPeach,
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: AppRadius.radiusLG,
                             ),
-                            child: Row(
+                            child: const Row(
                               children: [
                                 Icon(
                                   Icons.info_outline,
                                   color: AppColors.orange,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 12),
+                                AppSpacing.spaceMD,
                                 Expanded(
                                   child: Text(
                                     'Verification helps secure your account and enables you to receive important notifications about jobs and payments.',

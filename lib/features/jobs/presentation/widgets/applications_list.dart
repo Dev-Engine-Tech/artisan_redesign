@@ -15,8 +15,8 @@ class ApplicationsList extends StatefulWidget {
   final Function(Job)? onApplicationUpdate;
 
   const ApplicationsList({
-    super.key,
     required this.applications,
+    super.key,
     this.isLoading = false,
     this.error,
     this.onRefresh,
@@ -46,7 +46,7 @@ class _ApplicationsListState extends State<ApplicationsList> {
               size: 64,
               color: Colors.red.shade300,
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               'Error loading applications',
               style: TextStyle(
@@ -55,7 +55,7 @@ class _ApplicationsListState extends State<ApplicationsList> {
                 color: Colors.red.shade700,
               ),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
               widget.error!,
               textAlign: TextAlign.center,
@@ -64,7 +64,7 @@ class _ApplicationsListState extends State<ApplicationsList> {
                 fontSize: 14,
               ),
             ),
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
             PrimaryButton(
               text: 'Retry',
               onPressed: widget.onRefresh,
@@ -84,7 +84,7 @@ class _ApplicationsListState extends State<ApplicationsList> {
               size: 64,
               color: Colors.grey.shade400,
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               'No applications found',
               style: TextStyle(
@@ -93,7 +93,7 @@ class _ApplicationsListState extends State<ApplicationsList> {
                 color: Colors.grey.shade700,
               ),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
               'Start applying to jobs to see them here',
               style: TextStyle(
@@ -111,7 +111,7 @@ class _ApplicationsListState extends State<ApplicationsList> {
         widget.onRefresh?.call();
       },
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: AppSpacing.paddingLG,
         itemCount: widget.applications.length,
         itemBuilder: (context, index) {
           final application = widget.applications[index];

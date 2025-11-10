@@ -103,7 +103,7 @@ class _CustomersPageState extends State<CustomersPage> {
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
         side: BorderSide(
           color: AppColors.subtleBorder.withOpacity(0.5),
           width: 1,
@@ -111,9 +111,9 @@ class _CustomersPageState extends State<CustomersPage> {
       ),
       child: InkWell(
         onTap: () => _viewCustomerDetails(customer),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: AppSpacing.paddingXL,
           child: Row(
             children: [
               // Avatar
@@ -129,7 +129,7 @@ class _CustomersPageState extends State<CustomersPage> {
                       AppColors.orange.withOpacity(0.6),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusXL,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.orange.withOpacity(0.3),
@@ -150,7 +150,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 ),
               ),
 
-              const SizedBox(width: 16),
+              AppSpacing.spaceLG,
 
               // Customer Info
               Expanded(
@@ -176,7 +176,7 @@ class _CustomersPageState extends State<CustomersPage> {
                           ),
                           decoration: BoxDecoration(
                             color: Colors.green.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                             border: Border.all(
                               color: Colors.green.withOpacity(0.3),
                               width: 1,
@@ -193,7 +193,7 @@ class _CustomersPageState extends State<CustomersPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    AppSpacing.spaceXS,
                     if (customer.company?.isNotEmpty == true) ...[
                       Text(
                         customer.company!,
@@ -212,7 +212,7 @@ class _CustomersPageState extends State<CustomersPage> {
                         color: Colors.grey.shade600,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     Row(
                       children: [
                         Icon(
@@ -220,7 +220,7 @@ class _CustomersPageState extends State<CustomersPage> {
                           size: 14,
                           color: Colors.grey.shade600,
                         ),
-                        const SizedBox(width: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           _formatCurrency(customer.totalAmount),
                           style: TextStyle(
@@ -235,7 +235,7 @@ class _CustomersPageState extends State<CustomersPage> {
                           size: 14,
                           color: Colors.grey.shade600,
                         ),
-                        const SizedBox(width: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           customer.lastInvoiceDate != null
                               ? _formatDate(customer.lastInvoiceDate!)
@@ -251,7 +251,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 ),
               ),
 
-              const SizedBox(width: 8),
+              AppSpacing.spaceSM,
 
               // Chevron
               Icon(
@@ -329,11 +329,11 @@ class _CustomersPageState extends State<CustomersPage> {
           // Search Bar
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: AppSpacing.horizontalXXL,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusXL,
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.subtleBorder.withOpacity(0.3),
@@ -348,14 +348,14 @@ class _CustomersPageState extends State<CustomersPage> {
                     hintText: 'Search customers...',
                     prefixIcon: Icon(Icons.search, color: Colors.grey),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
+                    contentPadding: AppSpacing.paddingLG,
                   ),
                 ),
               ),
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          const SliverToBoxAdapter(child: AppSpacing.spaceXXL),
 
           // Customer List
           _isLoading
@@ -373,14 +373,14 @@ class _CustomersPageState extends State<CustomersPage> {
                               size: 64,
                               color: Colors.grey.shade400,
                             ),
-                            const SizedBox(height: 16),
+                            AppSpacing.spaceLG,
                             Text(
                               _searchQuery.isEmpty
                                   ? 'No customers yet'
                                   : 'No customers found',
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            const SizedBox(height: 8),
+                            AppSpacing.spaceSM,
                             Text(
                               _searchQuery.isEmpty
                                   ? 'Create your first customer to get started'

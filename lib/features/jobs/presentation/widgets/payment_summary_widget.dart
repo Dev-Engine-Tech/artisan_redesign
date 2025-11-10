@@ -7,20 +7,20 @@ class PaymentSummaryWidget extends StatelessWidget {
   final Job job;
 
   const PaymentSummaryWidget({
-    super.key,
     required this.job,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
       ),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.paddingXXL,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
           color: Colors.white,
         ),
         child: Column(
@@ -34,7 +34,7 @@ class PaymentSummaryWidget extends StatelessWidget {
                   color: AppColors.orange,
                   size: 24,
                 ),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 const Text(
                   'Payment Summary',
                   style: TextStyle(
@@ -50,13 +50,13 @@ class PaymentSummaryWidget extends StatelessWidget {
                   style: IconButton.styleFrom(
                     backgroundColor: AppColors.cardBackground,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            AppSpacing.spaceXL,
             _buildPaymentItem('Project', job.title),
             _buildPaymentItem('Category', job.category),
             const Divider(height: 32),
@@ -77,7 +77,7 @@ class PaymentSummaryWidget extends StatelessWidget {
                 _formatDate(job.completedDate!),
               ),
             ],
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
             Row(
               children: [
                 Expanded(
@@ -86,7 +86,7 @@ class PaymentSummaryWidget extends StatelessWidget {
                     onPressed: () => _downloadInvoice(context),
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppSpacing.spaceMD,
                 Expanded(
                   child: PrimaryButton(
                     text: 'Share Details',
@@ -123,7 +123,7 @@ class PaymentSummaryWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             child: Text(
               value,

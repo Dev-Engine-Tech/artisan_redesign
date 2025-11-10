@@ -9,9 +9,9 @@ class ApiClient {
   final String baseUrl;
 
   ApiClient({
+    required this.baseUrl,
     http.Client? httpClient,
     SecureStorage? secureStorage,
-    required this.baseUrl,
   })  : _httpClient = httpClient ?? http.Client(),
         _secureStorage = secureStorage ?? SecureStorage();
 

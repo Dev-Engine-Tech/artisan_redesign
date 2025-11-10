@@ -14,9 +14,9 @@ class MaterialManagementWidget extends StatefulWidget {
   final Function(List<CatalogMaterial>)? onMaterialsChanged;
 
   const MaterialManagementWidget({
-    super.key,
     required this.requestId,
     required this.initialMaterials,
+    super.key,
     this.isEditable = true,
     this.onMaterialsChanged,
   });
@@ -133,7 +133,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                   text: 'Save',
                   onPressed: _saveMaterials,
                 ),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
               ],
               IconButton(
                 onPressed: _addMaterial,
@@ -144,7 +144,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
           ],
         ),
 
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
 
         // Materials list
         if (_materials.isEmpty)
@@ -161,7 +161,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
 
         // Action buttons
         if (widget.isEditable && _materials.isNotEmpty) ...[
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           _buildActionButtons(),
         ],
       ],
@@ -171,10 +171,10 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
   Widget _buildEmptyState() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(32),
+      padding: AppSpacing.paddingXXXL,
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
@@ -184,14 +184,14 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
             size: 48,
             color: Colors.grey.shade400,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Text(
             'No materials added yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.grey.shade600,
                 ),
           ),
-          const SizedBox(height: 4),
+          AppSpacing.spaceXS,
           Text(
             widget.isEditable
                 ? 'Tap the + button to add materials'
@@ -210,10 +210,10 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
       child: Column(
@@ -240,7 +240,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
             ],
           ),
 
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
 
           // Description field
           TextField(
@@ -257,7 +257,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
             onChanged: (_) => _onMaterialChanged(),
           ),
 
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
 
           // Quantity and price row
           Row(
@@ -277,7 +277,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                   onChanged: (_) => _onMaterialChanged(),
                 ),
               ),
-              const SizedBox(width: 12),
+              AppSpacing.spaceMD,
               Expanded(
                 flex: 3,
                 child: TextField(
@@ -298,14 +298,14 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
 
           // Total for this material
           if (material.hasValidData) ...[
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Align(
               alignment: Alignment.centerRight,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.radiusSM,
                 ),
                 child: Text(
                   'Total: ₦${material.totalPrice.toStringAsFixed(0)}',
@@ -329,10 +329,10 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
 
     return Container(
       margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: Colors.green.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: Colors.green.shade200),
       ),
       child: Row(
@@ -365,7 +365,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
             onPressed: _hasChanges ? _saveMaterials : null,
           ),
         ),
-        const SizedBox(width: 12),
+        AppSpacing.spaceMD,
         Expanded(
           child: PrimaryButton(
             text: 'Send to Client',

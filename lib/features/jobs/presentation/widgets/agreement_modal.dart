@@ -5,6 +5,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/agreement.dart';
 import '../../domain/entities/job.dart';
 import '../bloc/job_bloc.dart';
+import 'change_request_modal.dart';
 
 /// Modal for displaying and interacting with job agreements
 /// Matches the artisan_app design patterns for agreement flows
@@ -14,9 +15,9 @@ class AgreementModal extends StatelessWidget {
   final VoidCallback? onClose;
 
   const AgreementModal({
-    super.key,
     required this.job,
     required this.agreement,
+    super.key,
     this.onClose,
   });
 
@@ -25,7 +26,8 @@ class AgreementModal extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -34,7 +36,7 @@ class AgreementModal extends StatelessWidget {
           Container(
             width: 40,
             height: 4,
-            margin: const EdgeInsets.symmetric(vertical: 12),
+            margin: AppSpacing.verticalMD,
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
               borderRadius: BorderRadius.circular(2),
@@ -43,7 +45,7 @@ class AgreementModal extends StatelessWidget {
 
           // Header
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: AppSpacing.horizontalXL,
             child: Row(
               children: [
                 Expanded(
@@ -67,29 +69,29 @@ class AgreementModal extends StatelessWidget {
           // Content
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: AppSpacing.paddingXL,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Job title section
                   _buildJobHeader(context),
-                  const SizedBox(height: 20),
+                  AppSpacing.spaceXL,
 
                   // Agreement details
                   _buildAgreementDetails(context),
-                  const SizedBox(height: 20),
+                  AppSpacing.spaceXL,
 
                   // Payment breakdown
                   _buildPaymentBreakdown(context),
-                  const SizedBox(height: 20),
+                  AppSpacing.spaceXL,
 
                   // Timeline section
                   _buildTimeline(context),
-                  const SizedBox(height: 20),
+                  AppSpacing.spaceXL,
 
                   // Terms section
                   _buildTermsSection(context),
-                  const SizedBox(height: 32),
+                  AppSpacing.spaceXXXL,
                 ],
               ),
             ),
@@ -104,10 +106,10 @@ class AgreementModal extends StatelessWidget {
 
   Widget _buildJobHeader(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.softPink,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +120,7 @@ class AgreementModal extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 4),
+          AppSpacing.spaceXS,
           Text(
             job.category,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -132,10 +134,10 @@ class AgreementModal extends StatelessWidget {
 
   Widget _buildAgreementDetails(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
       child: Column(
@@ -147,22 +149,22 @@ class AgreementModal extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _buildDetailRow('Agreement ID', '#${agreement.id}'),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _buildDetailRow('Status', agreement.status),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _buildDetailRow(
               'Total Amount', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
           if (agreement.comment.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             Text(
               'Client Comments:',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
             ),
-            const SizedBox(height: 4),
+            AppSpacing.spaceXS,
             Text(
               agreement.comment,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -177,10 +179,10 @@ class AgreementModal extends StatelessWidget {
 
   Widget _buildPaymentBreakdown(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
       child: Column(
@@ -192,7 +194,7 @@ class AgreementModal extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -208,7 +210,7 @@ class AgreementModal extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -252,10 +254,10 @@ class AgreementModal extends StatelessWidget {
 
   Widget _buildTimeline(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
       child: Column(
@@ -267,12 +269,12 @@ class AgreementModal extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           if (agreement.startDate != null)
             _buildDetailRow('Start Date', _formatDate(agreement.startDate!)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _buildDetailRow('Delivery Date', _formatDate(agreement.deliveryDate)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _buildDetailRow('Duration', job.duration),
         ],
       ),
@@ -281,10 +283,10 @@ class AgreementModal extends StatelessWidget {
 
   Widget _buildTermsSection(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: Colors.orange.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: Colors.orange.shade200),
       ),
       child: Column(
@@ -293,7 +295,7 @@ class AgreementModal extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.info_outline, color: Colors.orange.shade700, size: 20),
-              const SizedBox(width: 8),
+              AppSpacing.spaceSM,
               Text(
                 'Important Terms',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -303,7 +305,7 @@ class AgreementModal extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             '• Payment will be released upon successful project completion\n'
             '• Changes to scope may affect timeline and pricing\n'
@@ -348,7 +350,7 @@ class AgreementModal extends StatelessWidget {
 
   Widget _buildActionButtons(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: AppSpacing.paddingXL,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -366,7 +368,7 @@ class AgreementModal extends StatelessWidget {
             text: 'Accept Agreement',
             onPressed: () => _showAcceptConfirmation(context),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           // Request changes button
           OutlinedAppButton(
             text: 'Request Changes',
@@ -419,284 +421,5 @@ class AgreementModal extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
-}
-
-/// Modal for requesting changes to agreements
-class ChangeRequestModal extends StatefulWidget {
-  final Job job;
-
-  const ChangeRequestModal({
-    super.key,
-    required this.job,
-  });
-
-  @override
-  State<ChangeRequestModal> createState() => _ChangeRequestModalState();
-}
-
-class _ChangeRequestModalState extends State<ChangeRequestModal> {
-  final _reasonController = TextEditingController();
-  final _proposedChangesController = TextEditingController();
-  String _selectedCategory = 'Timeline';
-
-  final List<String> _categories = [
-    'Timeline',
-    'Payment',
-    'Scope of Work',
-    'Materials',
-    'Other',
-  ];
-
-  @override
-  void dispose() {
-    _reasonController.dispose();
-    _proposedChangesController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle bar
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Request Changes',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-          ),
-
-          const Divider(height: 1),
-
-          // Content
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'What would you like to change about this agreement?',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Category selection
-                  Text(
-                    'Category',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.subtleBorder),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _selectedCategory,
-                        isExpanded: true,
-                        items: _categories
-                            .map(
-                              (category) => DropdownMenuItem(
-                                value: category,
-                                child: Text(category),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() => _selectedCategory = value);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Proposed changes
-                  Text(
-                    'Proposed Changes',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 120,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.subtleBorder),
-                    ),
-                    child: TextField(
-                      controller: _proposedChangesController,
-                      maxLines: null,
-                      expands: true,
-                      decoration: const InputDecoration.collapsed(
-                        hintText:
-                            'Describe the specific changes you would like to make...',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Reason
-                  Text(
-                    'Reason for Changes',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 100,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.subtleBorder),
-                    ),
-                    child: TextField(
-                      controller: _reasonController,
-                      maxLines: null,
-                      expands: true,
-                      decoration: const InputDecoration.collapsed(
-                        hintText: 'Explain why these changes are necessary...',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Info section
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue.shade200),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline,
-                            color: Colors.blue.shade700, size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'The client will review your change request and respond accordingly.',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.blue.shade700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Action buttons
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedAppButton(
-                    text: 'Cancel',
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: PrimaryButton(
-                    text: 'Submit Request',
-                    onPressed: _submitChangeRequest,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _submitChangeRequest() {
-    if (_proposedChangesController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please describe the proposed changes')),
-      );
-      return;
-    }
-
-    if (_reasonController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Please provide a reason for the changes')),
-      );
-      return;
-    }
-
-    // Submit the change request
-    context.read<JobBloc>().add(RequestChangeEvent(
-          jobId: widget.job.id,
-          reason: _reasonController.text.trim(),
-        ));
-
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Change request submitted successfully!')),
-    );
   }
 }

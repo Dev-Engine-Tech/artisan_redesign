@@ -18,10 +18,10 @@ class CompatRadio<T> extends StatelessWidget {
   final bool autofocus;
 
   const CompatRadio({
-    super.key,
     required this.value,
     required this.groupValue,
     required this.onChanged,
+    super.key,
     this.fillColor,
     this.mouseCursor,
     this.focusColor,
@@ -62,10 +62,10 @@ class CompatRadioListTile<T> extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
 
   const CompatRadioListTile({
-    super.key,
     required this.value,
     required this.groupValue,
     required this.onChanged,
+    super.key,
     this.title,
     this.subtitle,
     this.dense = false,

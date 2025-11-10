@@ -78,7 +78,7 @@ class _SignUpViewState extends State<_SignUpView> {
           final active = i <= step;
           return Expanded(
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
+              margin: AppSpacing.horizontalXS,
               height: 4,
               decoration: BoxDecoration(
                 color: active ? AppColors.orange : Colors.grey[300],
@@ -90,7 +90,6 @@ class _SignUpViewState extends State<_SignUpView> {
       ),
     );
   }
-
 
   bool _isValidPhone(String phone) {
     final p = phone.replaceAll(' ', '');
@@ -156,7 +155,7 @@ class _SignUpViewState extends State<_SignUpView> {
 
         return Scaffold(
           body: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -183,7 +182,7 @@ class _SignUpViewState extends State<_SignUpView> {
                               height: 40,
                               decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: AppRadius.radiusLG,
                               ),
                               child: IconButton(
                                 icon: const Icon(
@@ -206,7 +205,7 @@ class _SignUpViewState extends State<_SignUpView> {
                         // Step indicator
                         _stepIndicator(state.step),
 
-                        const SizedBox(height: 24),
+                        AppSpacing.spaceXXL,
 
                         // Title and subtitle
                         Text(
@@ -219,7 +218,7 @@ class _SignUpViewState extends State<_SignUpView> {
                           ),
                         ),
 
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
 
                         Text(
                           _getStepSubtitle(state.step),
@@ -277,7 +276,7 @@ class _SignUpViewState extends State<_SignUpView> {
       key: _formKeyStep0,
       child: Column(
         children: [
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
 
           CustomTextFormField(
             controller: _firstController,
@@ -288,7 +287,7 @@ class _SignUpViewState extends State<_SignUpView> {
             required: true,
           ),
 
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
 
           CustomTextFormField(
             controller: _lastController,
@@ -299,7 +298,7 @@ class _SignUpViewState extends State<_SignUpView> {
             required: true,
           ),
 
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
 
           CustomTextFormField(
             controller: _identifierController,
@@ -311,7 +310,7 @@ class _SignUpViewState extends State<_SignUpView> {
             required: true,
           ),
 
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
 
           CustomTextFormField(
             controller: _referralController,
@@ -321,7 +320,7 @@ class _SignUpViewState extends State<_SignUpView> {
             showLabel: true,
           ),
 
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
 
           // Terms and conditions
           Row(
@@ -330,13 +329,13 @@ class _SignUpViewState extends State<_SignUpView> {
                 value: state.termsAccepted,
                 onChanged: (v) => cubit.toggleTerms(v ?? false),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.radiusSM,
                 ),
                 activeColor: AppColors.orange,
               ),
               Expanded(
                 child: Text.rich(
-                  TextSpan(
+                  const TextSpan(
                     text: 'I agree to the ',
                     children: [
                       TextSpan(
@@ -346,7 +345,7 @@ class _SignUpViewState extends State<_SignUpView> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const TextSpan(text: ' and '),
+                      TextSpan(text: ' and '),
                       TextSpan(
                         text: 'Privacy Policy',
                         style: TextStyle(
@@ -365,7 +364,7 @@ class _SignUpViewState extends State<_SignUpView> {
             ],
           ),
 
-          const SizedBox(height: 32),
+          AppSpacing.spaceXXXL,
 
           // Continue button
           PrimaryButton(
@@ -389,14 +388,14 @@ class _SignUpViewState extends State<_SignUpView> {
             },
           ),
 
-          const SizedBox(height: 24),
+          AppSpacing.spaceXXL,
 
           // Or register with
           Row(
             children: [
               Expanded(child: Divider(color: Colors.grey[300])),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: AppSpacing.horizontalLG,
                 child: Text(
                   'Or register with',
                   style: TextStyle(
@@ -409,7 +408,7 @@ class _SignUpViewState extends State<_SignUpView> {
             ],
           ),
 
-          const SizedBox(height: 24),
+          AppSpacing.spaceXXL,
 
           // Social login buttons
           Row(
@@ -422,7 +421,7 @@ class _SignUpViewState extends State<_SignUpView> {
                       .add(AuthSignInWithGoogleRequested()),
                 ),
               ),
-              const SizedBox(width: 16),
+              AppSpacing.spaceLG,
               Expanded(
                 child: TextAppButton(
                   text: 'Apple',
@@ -443,7 +442,7 @@ class _SignUpViewState extends State<_SignUpView> {
       key: _formKeyStep1,
       child: Column(
         children: [
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           CustomTextFormField(
             controller: _passwordController,
             label: 'Password',
@@ -465,7 +464,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 ? 'Password must be at least 6 characters'
                 : null,
           ),
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
           CustomTextFormField(
             controller: _confirmController,
             label: 'Confirm Password',
@@ -487,7 +486,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 ? 'Passwords do not match'
                 : null,
           ),
-          const SizedBox(height: 32),
+          AppSpacing.spaceXXXL,
           PrimaryButton(
             text: 'Continue',
             onPressed: () {
@@ -505,7 +504,7 @@ class _SignUpViewState extends State<_SignUpView> {
   Widget _buildStep2(SignUpState state, SignUpCubit cubit) {
     return Column(
       children: [
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         CustomTextFormField(
           controller: _phoneController,
           label: 'Phone Number',
@@ -514,7 +513,7 @@ class _SignUpViewState extends State<_SignUpView> {
           keyboardType: TextInputType.phone,
           showLabel: true,
         ),
-        const SizedBox(height: 24),
+        AppSpacing.spaceXXL,
         if (!state.otpSent) ...[
           PrimaryButton(
             text: 'Send Verification Code',
@@ -544,7 +543,7 @@ class _SignUpViewState extends State<_SignUpView> {
             maxLength: 4,
             showLabel: true,
           ),
-          const SizedBox(height: 24),
+          AppSpacing.spaceXXL,
           PrimaryButton(
             text: 'Verify Phone Number',
             onPressed: () {
@@ -554,7 +553,7 @@ class _SignUpViewState extends State<_SignUpView> {
               }
             },
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           TextAppButton(
             text: 'Resend Code',
             onPressed: () => cubit.sendOtp(_phoneController.text.trim()),
@@ -567,7 +566,7 @@ class _SignUpViewState extends State<_SignUpView> {
   Widget _buildStep3(SignUpState state, SignUpCubit cubit) {
     return Column(
       children: [
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         CustomTextFormField(
           controller: _pinController,
           label: 'Withdrawal PIN',
@@ -578,7 +577,7 @@ class _SignUpViewState extends State<_SignUpView> {
           obscureText: true,
           showLabel: true,
         ),
-        const SizedBox(height: 32),
+        AppSpacing.spaceXXXL,
         PrimaryButton(
           text: 'Create Account',
           onPressed: () async {
@@ -594,8 +593,7 @@ class _SignUpViewState extends State<_SignUpView> {
             if (!mounted) return;
             if (cubit.state.createdUser != null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Account created successfully!')),
+                const SnackBar(content: Text('Account created successfully!')),
               );
             }
           },
@@ -618,7 +616,7 @@ class _SignUpViewState extends State<_SignUpView> {
               Container(
                 width: 120,
                 height: 120,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.orange,
                   shape: BoxShape.circle,
                 ),
@@ -629,7 +627,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 ),
               ),
 
-              const SizedBox(height: 32),
+              AppSpacing.spaceXXXL,
 
               const Text(
                 'Welcome to\nArtisans Circle!',
@@ -642,7 +640,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               Text(
                 'Your account has been created successfully. Start showcasing your skills and connecting with clients.',
@@ -671,7 +669,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 },
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               OutlinedAppButton(
                 text: 'Skip for Now',

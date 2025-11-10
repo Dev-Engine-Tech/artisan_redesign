@@ -22,15 +22,15 @@ class InvoiceRepositoryFake implements InvoiceRepository {
         clientEmail: 'john.doe@example.com',
         issueDate: now.subtract(const Duration(days: 7)),
         dueDate: now.add(const Duration(days: 23)),
-        items: [
-          const InvoiceItemModel(
+        items: const [
+          InvoiceItemModel(
             id: '1',
             description: 'Home Electrical Work',
             quantity: 1,
             unitPrice: 250000,
             amount: 250000,
           ),
-          const InvoiceItemModel(
+          InvoiceItemModel(
             id: '2',
             description: 'Materials and Components',
             quantity: 1,
@@ -55,8 +55,8 @@ class InvoiceRepositoryFake implements InvoiceRepository {
         clientEmail: 'jane.smith@example.com',
         issueDate: now.subtract(const Duration(days: 3)),
         dueDate: now.add(const Duration(days: 27)),
-        items: [
-          const InvoiceItemModel(
+        items: const [
+          InvoiceItemModel(
             id: '3',
             description: 'Furniture Design and Creation',
             quantity: 2,
@@ -81,8 +81,8 @@ class InvoiceRepositoryFake implements InvoiceRepository {
         clientEmail: 'mike.johnson@example.com',
         issueDate: now.subtract(const Duration(days: 45)),
         dueDate: now.subtract(const Duration(days: 15)),
-        items: [
-          const InvoiceItemModel(
+        items: const [
+          InvoiceItemModel(
             id: '4',
             description: 'Plumbing Installation',
             quantity: 1,

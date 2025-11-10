@@ -11,8 +11,8 @@ class ApplicationCard extends StatelessWidget {
   final VoidCallback? onChangeRequestTap;
 
   const ApplicationCard({
-    super.key,
     required this.job,
+    super.key,
     this.onTap,
     this.onAgreementTap,
     this.onChangeRequestTap,
@@ -24,7 +24,7 @@ class ApplicationCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -35,9 +35,9 @@ class ApplicationCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLG,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -57,7 +57,7 @@ class ApplicationCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           job.category,
                           style:
@@ -68,26 +68,26 @@ class ApplicationCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.spaceSM,
                   _buildStatusChip(job.status),
                 ],
               ),
-              const SizedBox(height: 12),
+              AppSpacing.spaceMD,
               Text(
                 job.description,
                 style: Theme.of(context).textTheme.bodyMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 12),
+              AppSpacing.spaceMD,
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on_outlined,
                     size: 16,
                     color: Colors.black54,
                   ),
-                  const SizedBox(width: 4),
+                  AppSpacing.spaceXS,
                   Expanded(
                     child: Text(
                       job.address,
@@ -100,15 +100,15 @@ class ApplicationCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.access_time,
                     size: 16,
                     color: Colors.black54,
                   ),
-                  const SizedBox(width: 4),
+                  AppSpacing.spaceXS,
                   Text(
                     job.duration,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -129,7 +129,7 @@ class ApplicationCard extends StatelessWidget {
                 ],
               ),
               if (_shouldShowActionButtons()) ...[
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
                 _buildActionButtons(context),
               ],
             ],
@@ -181,7 +181,7 @@ class ApplicationCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       child: Text(
         statusText,
@@ -223,7 +223,7 @@ class ApplicationCard extends StatelessWidget {
               onPressed: onChangeRequestTap,
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             child: PrimaryButton(
               text: 'View Agreement',

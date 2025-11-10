@@ -61,7 +61,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState>
                 InvoiceModel.fromJson(e as Map<String, dynamic>).toEntity())
             .toList(),
         toJson: (invoices) => invoices
-            .map((inv) => InvoiceModel.fromEntity(inv as Invoice).toJson())
+            .map((inv) => InvoiceModel.fromEntity(inv).toJson())
             .toList(),
         ttl: const Duration(minutes: 3),
       );

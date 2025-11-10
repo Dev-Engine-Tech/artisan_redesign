@@ -130,7 +130,8 @@ class AccountRemoteDataSourceImpl extends BaseRemoteDataSource
       );
 
   @override
-  Future<UserProfileModel> updateWorkExperience(WorkExperienceModel work) => put(
+  Future<UserProfileModel> updateWorkExperience(WorkExperienceModel work) =>
+      put(
         '/user/work-experience/${work.id}',
         fromJson: UserProfileModel.fromJson,
         data: work.toJson(),

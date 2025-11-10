@@ -35,9 +35,9 @@ abstract class AccountRepository {
   Future<List<BankAccount>> getBankAccounts();
   Future<BankAccount> addBankAccount({
     required String bankName,
-    String? bankCode,
     required String accountName,
     required String accountNumber,
+    String? bankCode,
   });
   Future<void> deleteBankAccount(String id);
 

@@ -35,7 +35,7 @@ void main() {
   late MockRequestChange mockRequestChange;
   late JobBloc bloc;
 
-  final sampleJob = Job(
+  final sampleJob = const Job(
     id: '1',
     title: 'Test Job',
     category: 'Carpentry',
@@ -52,7 +52,7 @@ void main() {
     registerFallbackValue(LoadJobs());
     registerFallbackValue(RefreshJobs());
     registerFallbackValue(ApplyToJobEvent(
-      application: JobApplication(
+      application: const JobApplication(
         job: 1,
         duration: '2 days',
         proposal: 'test',
@@ -149,10 +149,10 @@ void main() {
       whenListen(
         mockBloc,
         Stream<JobState>.fromIterable([
-          JobStateApplying(),
+          const JobStateApplying(),
           JobStateChangeRequested(jobs: [sampleJob], jobId: sampleJob.id),
         ]),
-        initialState: JobStateInitial(),
+        initialState: const JobStateInitial(),
       );
 
       await tester.pumpWidget(

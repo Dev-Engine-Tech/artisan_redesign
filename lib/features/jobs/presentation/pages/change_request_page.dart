@@ -5,11 +5,12 @@ import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
+import '../../../../core/utils/responsive.dart';
 
 class ChangeRequestPage extends StatefulWidget {
   final Job job;
 
-  const ChangeRequestPage({super.key, required this.job});
+  const ChangeRequestPage({required this.job, super.key});
 
   @override
   State<ChangeRequestPage> createState() => _ChangeRequestPageState();
@@ -107,13 +108,13 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 child: const Icon(Icons.check_circle_outline,
                     size: 72, color: Color(0xFF6B4CD6)),
               ),
-              const SizedBox(height: 12),
+              AppSpacing.spaceMD,
               const Text(
                 'Request Sent',
                 style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              AppSpacing.spaceMD,
               const Text(
                 'Your change request has been sent successfully and the client has been notified.',
                 textAlign: TextAlign.center,
@@ -185,13 +186,13 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
           child: Form(
             key: _formKey,
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: context.responsivePadding,
               children: [
                 // Agreement summary card
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                     border: Border.all(color: AppColors.subtleBorder),
                   ),
                   padding: const EdgeInsets.all(14),
@@ -205,13 +206,13 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                             style: const TextStyle(
                                 color: Color(0xFF9A4B20),
                                 fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
                         const Text('Agreed Delivery Date',
                             style: TextStyle(color: Colors.black54)),
                         const SizedBox(height: 6),
                         const Text('30/04/2024',
                             style: TextStyle(color: Colors.black87)),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
                         const Text('Comment',
                             style: TextStyle(color: Colors.black54)),
                         const SizedBox(height: 6),
@@ -219,11 +220,11 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                             style: const TextStyle(color: Colors.black87)),
                       ]),
                 ),
-                const SizedBox(height: 20),
+                AppSpacing.spaceXL,
 
                 const Text('Proposed Changes',
                     style: TextStyle(color: Colors.black54)),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 DropdownButtonFormField<String>(
                   initialValue: _proposedChange,
                   decoration: InputDecoration(
@@ -232,8 +233,9 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 16),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColors.subtleBorder)),
+                        borderRadius: AppRadius.radiusMD,
+                        borderSide:
+                            const BorderSide(color: AppColors.subtleBorder)),
                   ),
                   hint: const Text('Select'),
                   items: const [
@@ -251,20 +253,20 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                     if (v != 'delivery') _selectedDate = null;
                   }),
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
 
                 // Dynamic fields based on selected proposed change
                 if (_proposedChange == 'price') ...[
                   const Text('Proposed Price',
                       style: TextStyle(color: Colors.black54)),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(color: AppColors.subtleBorder),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: AppSpacing.horizontalSM,
                     child: TextFormField(
                       controller: _priceController,
                       keyboardType: TextInputType.number,
@@ -284,11 +286,11 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.spaceMD,
                 ] else if (_proposedChange == 'delivery') ...[
                   const Text('Proposed Delivery Date',
                       style: TextStyle(color: Colors.black54)),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   GestureDetector(
                     onTap: _pickDate,
                     child: Container(
@@ -313,12 +315,12 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.spaceMD,
                 ],
 
                 const Text('Explain reasons for the proposed changes',
                     style: TextStyle(color: Colors.black54)),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -351,7 +353,7 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
           ),
         ),
         bottomNavigationBar: SafeArea(
-          minimum: const EdgeInsets.all(16),
+          minimum: AppSpacing.paddingLG,
           child: PrimaryButton(
             text: 'Submit Request',
             onPressed: _submitting ? null : _submit,

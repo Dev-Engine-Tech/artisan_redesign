@@ -9,8 +9,8 @@ class ChangeRequestModal extends StatefulWidget {
   final Job job;
 
   const ChangeRequestModal({
-    super.key,
     required this.job,
+    super.key,
   });
 
   @override
@@ -92,7 +92,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(20),
+                top: Radius.circular(AppRadius.xxl),
               ),
             ),
             child: Column(
@@ -110,7 +110,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
 
                 // Header
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: AppSpacing.paddingXL,
                   child: Row(
                     children: [
                       Expanded(
@@ -127,7 +127,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                     color: AppColors.brownHeader,
                                   ),
                             ),
-                            const SizedBox(height: 4),
+                            AppSpacing.spaceXS,
                             Text(
                               'Specify what changes you need for this project',
                               style: Theme.of(context)
@@ -146,7 +146,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                         style: IconButton.styleFrom(
                           backgroundColor: AppColors.cardBackground,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                           ),
                         ),
                       ),
@@ -160,14 +160,14 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                     key: _formKey,
                     child: ListView(
                       controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: AppSpacing.horizontalXL,
                       children: [
                         // Job info card
                         Container(
-                          padding: const EdgeInsets.all(16),
+                          padding: AppSpacing.paddingLG,
                           decoration: BoxDecoration(
                             color: AppColors.cardBackground,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.radiusLG,
                             border: Border.all(color: AppColors.softBorder),
                           ),
                           child: Column(
@@ -183,7 +183,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                       color: AppColors.brownHeader,
                                     ),
                               ),
-                              const SizedBox(height: 4),
+                              AppSpacing.spaceXS,
                               Text(
                                 widget.job.category,
                                 style: Theme.of(context)
@@ -193,7 +193,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                       color: Colors.black54,
                                     ),
                               ),
-                              const SizedBox(height: 8),
+                              AppSpacing.spaceSM,
                               Row(
                                 children: [
                                   Text(
@@ -224,7 +224,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                           ),
                         ),
 
-                        const SizedBox(height: 20),
+                        AppSpacing.spaceXL,
 
                         // Change type selection
                         Text(
@@ -235,7 +235,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                     color: AppColors.brownHeader,
                                   ),
                         ),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
 
                         ..._changeTypes.map((changeType) {
                           return Container(
@@ -246,9 +246,9 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                   _selectedChangeType = changeType['value'];
                                 });
                               },
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: AppRadius.radiusMD,
                               child: Container(
-                                padding: const EdgeInsets.all(12),
+                                padding: AppSpacing.paddingMD,
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: _selectedChangeType ==
@@ -260,7 +260,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                         ? 2
                                         : 1,
                                   ),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: AppRadius.radiusMD,
                                   color: _selectedChangeType ==
                                           changeType['value']
                                       ? AppColors.orange.withValues(alpha: 0.05)
@@ -294,7 +294,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                             )
                                           : null,
                                     ),
-                                    const SizedBox(width: 12),
+                                    AppSpacing.spaceMD,
                                     Expanded(
                                       child: Text(
                                         changeType['label']!,
@@ -320,7 +320,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                           );
                         }),
 
-                        const SizedBox(height: 20),
+                        AppSpacing.spaceXL,
 
                         // Reason text field
                         Text(
@@ -331,12 +331,12 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                                     color: AppColors.brownHeader,
                                   ),
                         ),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
 
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: AppColors.softBorder),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                           ),
                           child: TextFormField(
                             controller: _reasonController,
@@ -345,7 +345,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                               hintText:
                                   'Please provide detailed explanation of the changes needed...',
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16),
+                              contentPadding: AppSpacing.paddingLG,
                             ),
                             validator: (value) {
                               if (value == null || value.trim().length < 20) {
@@ -365,7 +365,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
 
                 // Submit button
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: AppSpacing.paddingXL,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -396,7 +396,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -414,7 +414,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                 color: Colors.green.shade600,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               'Request Sent!',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -422,7 +422,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                     color: AppColors.brownHeader,
                   ),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             Text(
               'Your change request has been submitted successfully. The client will be notified and will respond soon.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -430,7 +430,7 @@ class _ChangeRequestModalState extends State<ChangeRequestModal> {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
             PrimaryButton(
               text: 'OK',
               onPressed: () {

@@ -5,6 +5,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class YearsOfExperiencePage extends StatefulWidget {
   final int? initial;
@@ -48,7 +49,7 @@ class _YearsOfExperiencePageState extends State<YearsOfExperiencePage> {
             children: [
               const Text(
                   'How many years of professional experience do you have?'),
-              const SizedBox(height: 12),
+              AppSpacing.spaceMD,
               TextField(
                 controller: yearsCtr,
                 keyboardType: TextInputType.number,

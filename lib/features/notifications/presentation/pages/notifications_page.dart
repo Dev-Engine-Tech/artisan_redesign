@@ -113,7 +113,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         size: 64,
                         color: Colors.grey,
                       ),
-                      SizedBox(height: 16),
+                      AppSpacing.spaceLG,
                       Text(
                         'No notifications yet',
                         style: TextStyle(
@@ -122,7 +122,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      AppSpacing.spaceSM,
                       Text(
                         'You\'ll see updates about your jobs here',
                         style: TextStyle(
@@ -136,11 +136,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
               : Scrollbar(
                   controller: _scrollController,
                   thickness: 4,
-                  radius: const Radius.circular(8),
+                  radius: const Radius.circular(AppRadius.md),
                   child: ListView.builder(
                     controller: _scrollController,
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: AppSpacing.verticalSM,
                     itemCount: _notifications.length,
                     itemBuilder: (context, index) {
                       final notification = _notifications[index];

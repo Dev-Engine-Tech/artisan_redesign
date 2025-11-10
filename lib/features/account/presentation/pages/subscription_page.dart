@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme.dart';
 import '../../../../core/components/components.dart';
+import '../../../../core/utils/responsive.dart';
 
 class SubscriptionModal {
   static void show(BuildContext context) {
@@ -29,9 +30,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.lightPeach,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       child: Column(
         children: [
@@ -47,7 +49,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
           ),
           // Header
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: context.responsivePadding,
             child: Row(
               children: [
                 IconButton(
@@ -75,7 +77,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             children: List.generate(
                 3,
                 (index) => Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      margin: AppSpacing.horizontalXS,
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
@@ -86,14 +88,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       ),
                     )),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           // Monthly/Yearly toggle
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(4),
+            margin: AppSpacing.horizontalLG,
+            padding: AppSpacing.paddingXS,
             decoration: BoxDecoration(
               color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.radiusMD,
             ),
             child: Row(
               children: [
@@ -101,7 +103,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   child: GestureDetector(
                     onTap: () => setState(() => _isYearly = false),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: AppSpacing.verticalSM,
                       decoration: BoxDecoration(
                         color: !_isYearly ? Colors.white : Colors.transparent,
                         borderRadius: BorderRadius.circular(6),
@@ -131,7 +133,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   child: GestureDetector(
                     onTap: () => setState(() => _isYearly = true),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: AppSpacing.verticalSM,
                       decoration: BoxDecoration(
                         color: _isYearly ? Colors.white : Colors.transparent,
                         borderRadius: BorderRadius.circular(6),
@@ -160,7 +162,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           // Content
           Expanded(
             child: PageView(
@@ -265,8 +267,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     required String period,
     required LinearGradient gradient,
     required String buttonText,
-    String? savePercent,
     required List<String> features,
+    String? savePercent,
     bool isHierarchical = false,
     String? previousPlan,
   }) {
@@ -274,7 +276,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         gradient: gradient,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.radiusXXL,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -284,7 +286,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.paddingXXL,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +297,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.orange,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.radiusLG,
                   ),
                   child: Text(
                     'Save $savePercent',
@@ -306,7 +308,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     ),
                   ),
                 ),
-              if (savePercent != null) const SizedBox(height: 16),
+              if (savePercent != null) AppSpacing.spaceLG,
               Text(
                 title,
                 style: const TextStyle(
@@ -315,7 +317,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Text(
                 description,
                 style: TextStyle(
@@ -324,7 +326,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   height: 1.4,
                 ),
               ),
-              const SizedBox(height: 24),
+              AppSpacing.spaceXXL,
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -336,7 +338,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  AppSpacing.spaceXS,
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
@@ -349,12 +351,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              AppSpacing.spaceXXL,
               OutlinedAppButton(
                 text: buttonText,
                 onPressed: () {},
               ),
-              const SizedBox(height: 24),
+              AppSpacing.spaceXXL,
               const Text(
                 'Features Included',
                 style: TextStyle(
@@ -363,7 +365,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
               if (isHierarchical && previousPlan != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
@@ -372,7 +374,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                     ),
                     child: Text(
                       'Everything in $previousPlan Plan +',
@@ -411,7 +413,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               size: 14,
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
           Expanded(
             child: Text(
               feature,

@@ -7,9 +7,9 @@ class AddBankAccount {
 
   Future<BankAccount> call({
     required String bankName,
-    String? bankCode,
     required String accountName,
     required String accountNumber,
+    String? bankCode,
   }) =>
       repository.addBankAccount(
         bankName: bankName,

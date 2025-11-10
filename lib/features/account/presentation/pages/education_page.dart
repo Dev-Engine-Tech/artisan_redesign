@@ -6,6 +6,8 @@ import '../../domain/entities/user_profile.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
+import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class EducationPage extends StatelessWidget {
   final List<Education> items;
@@ -28,8 +30,9 @@ class EducationPage extends StatelessWidget {
         builder: (context, state) {
           final list =
               (state is AccountProfileLoaded) ? state.profile.education : items;
-          if (list.isEmpty)
+          if (list.isEmpty) {
             return const Center(child: Text('No education yet'));
+          }
           return ListView.builder(
             itemCount: list.length,
             itemBuilder: (_, i) => _EduTile(edu: list[i]),
@@ -110,8 +113,9 @@ class _EduFormState extends State<_EduForm> {
         initialDate: initial,
         firstDate: DateTime(1980),
         lastDate: DateTime(now.year + 5));
-    if (picked != null)
+    if (picked != null) {
       setState(() => isStart ? startDate = picked : endDate = picked);
+    }
   }
 
   @override
@@ -120,104 +124,110 @@ class _EduFormState extends State<_EduForm> {
       appBar: AppBar(
           title: Text(
               widget.existing == null ? 'Add Education' : 'Edit Education')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          CustomTextField(
-            controller: school,
-            label: 'School',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          CustomTextField(
-            controller: field,
-            label: 'Field of Study',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          CustomTextField(
-            controller: degree,
-            label: 'Degree (optional)',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          CustomTextField(
-            controller: description,
-            maxLines: 3,
-            label: 'Description (optional)',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          Row(
+      body: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+          child: ListView(
+            padding: context.responsivePadding,
             children: [
-              Expanded(
-                child: OutlinedAppButton(
-                  text: startDate == null
-                      ? 'Start Date'
-                      : startDate!.toLocal().toString().split(' ').first,
-                  onPressed: () => _pickDate(true),
-                ),
+              CustomTextField(
+                controller: school,
+                label: 'School',
+                showLabel: true,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedAppButton(
-                  text: endDate == null
-                      ? 'End Date'
-                      : endDate!.toLocal().toString().split(' ').first,
-                  onPressed: () => _pickDate(false),
-                ),
+              AppSpacing.spaceMD,
+              CustomTextField(
+                controller: field,
+                label: 'Field of Study',
+                showLabel: true,
+              ),
+              AppSpacing.spaceMD,
+              CustomTextField(
+                controller: degree,
+                label: 'Degree (optional)',
+                showLabel: true,
+              ),
+              AppSpacing.spaceMD,
+              CustomTextField(
+                controller: description,
+                maxLines: 3,
+                label: 'Description (optional)',
+                showLabel: true,
+              ),
+              AppSpacing.spaceMD,
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedAppButton(
+                      text: startDate == null
+                          ? 'Start Date'
+                          : startDate!.toLocal().toString().split(' ').first,
+                      onPressed: () => _pickDate(true),
+                    ),
+                  ),
+                  AppSpacing.spaceSM,
+                  Expanded(
+                    child: OutlinedAppButton(
+                      text: endDate == null
+                          ? 'End Date'
+                          : endDate!.toLocal().toString().split(' ').first,
+                      onPressed: () => _pickDate(false),
+                    ),
+                  ),
+                ],
+              ),
+              AppSpacing.spaceXXL,
+              PrimaryButton(
+                text: widget.existing == null ? 'Add' : 'Save',
+                onPressed: () {
+                  if (startDate == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Select start date')),
+                    );
+                    return;
+                  }
+                  if (endDate != null && endDate!.isBefore(startDate!)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text('End date cannot be before start date')),
+                    );
+                    return;
+                  }
+                  if (widget.existing == null) {
+                    context.read<AccountBloc>().add(AccountAddEducation(
+                          schoolName: school.text.trim(),
+                          fieldOfStudy: field.text.trim(),
+                          degree: degree.text.trim().isEmpty
+                              ? null
+                              : degree.text.trim(),
+                          startDate: startDate!,
+                          endDate: endDate,
+                          description: description.text.trim().isEmpty
+                              ? null
+                              : description.text.trim(),
+                        ));
+                  } else {
+                    context.read<AccountBloc>().add(AccountUpdateEducation(
+                          id: widget.existing!.id,
+                          schoolName: school.text.trim(),
+                          fieldOfStudy: field.text.trim(),
+                          degree: degree.text.trim().isEmpty
+                              ? null
+                              : degree.text.trim(),
+                          startDate: startDate ?? widget.existing!.startDate,
+                          endDate: endDate,
+                          description: description.text.trim().isEmpty
+                              ? null
+                              : description.text.trim(),
+                        ));
+                  }
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          PrimaryButton(
-            text: widget.existing == null ? 'Add' : 'Save',
-            onPressed: () {
-              if (startDate == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Select start date')),
-                );
-                return;
-              }
-              if (endDate != null && endDate!.isBefore(startDate!)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('End date cannot be before start date')),
-                );
-                return;
-              }
-              if (widget.existing == null) {
-                context.read<AccountBloc>().add(AccountAddEducation(
-                      schoolName: school.text.trim(),
-                      fieldOfStudy: field.text.trim(),
-                      degree: degree.text.trim().isEmpty
-                          ? null
-                          : degree.text.trim(),
-                      startDate: startDate!,
-                      endDate: endDate,
-                      description: description.text.trim().isEmpty
-                          ? null
-                          : description.text.trim(),
-                    ));
-              } else {
-                context.read<AccountBloc>().add(AccountUpdateEducation(
-                      id: widget.existing!.id,
-                      schoolName: school.text.trim(),
-                      fieldOfStudy: field.text.trim(),
-                      degree: degree.text.trim().isEmpty
-                          ? null
-                          : degree.text.trim(),
-                      startDate: startDate ?? widget.existing!.startDate,
-                      endDate: endDate,
-                      description: description.text.trim().isEmpty
-                          ? null
-                          : description.text.trim(),
-                    ));
-              }
-              Navigator.pop(context);
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

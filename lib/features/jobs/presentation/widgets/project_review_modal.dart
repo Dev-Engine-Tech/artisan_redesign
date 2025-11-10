@@ -7,20 +7,20 @@ class ProjectReviewModal extends StatelessWidget {
   final Job job;
 
   const ProjectReviewModal({
-    super.key,
     required this.job,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
       ),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.paddingXXL,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
           color: Colors.white,
         ),
         child: Column(
@@ -34,7 +34,7 @@ class ProjectReviewModal extends StatelessWidget {
                   color: AppColors.orange,
                   size: 24,
                 ),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 const Text(
                   'Client Review',
                   style: TextStyle(
@@ -50,20 +50,20 @@ class ProjectReviewModal extends StatelessWidget {
                   style: IconButton.styleFrom(
                     backgroundColor: AppColors.cardBackground,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            AppSpacing.spaceXL,
 
             // Project Info
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLG,
               decoration: BoxDecoration(
                 color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.radiusLG,
                 border: Border.all(color: AppColors.softBorder),
               ),
               child: Column(
@@ -77,7 +77,7 @@ class ProjectReviewModal extends StatelessWidget {
                       color: AppColors.brownHeader,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.spaceXS,
                   Text(
                     job.category,
                     style: const TextStyle(
@@ -86,12 +86,12 @@ class ProjectReviewModal extends StatelessWidget {
                     ),
                   ),
                   if (job.clientName != null) ...[
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     Row(
                       children: [
                         const Icon(Icons.person,
                             size: 16, color: Colors.black54),
-                        const SizedBox(width: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           'Client: ${job.clientName}',
                           style: const TextStyle(
@@ -106,7 +106,7 @@ class ProjectReviewModal extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            AppSpacing.spaceXL,
 
             // Rating Section
             if (job.rating != null) ...[
@@ -118,7 +118,7 @@ class ProjectReviewModal extends StatelessWidget {
                   color: AppColors.brownHeader,
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Row(
                 children: [
                   ...List.generate(5, (index) {
@@ -130,7 +130,7 @@ class ProjectReviewModal extends StatelessWidget {
                       size: 24,
                     );
                   }),
-                  const SizedBox(width: 8),
+                  AppSpacing.spaceSM,
                   Text(
                     '${job.rating?.toStringAsFixed(1)} out of 5',
                     style: const TextStyle(
@@ -141,7 +141,7 @@ class ProjectReviewModal extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
             ],
 
             // Review Text
@@ -154,13 +154,13 @@ class ProjectReviewModal extends StatelessWidget {
                   color: AppColors.brownHeader,
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: AppSpacing.paddingLG,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusLG,
                   border: Border.all(color: AppColors.softBorder),
                 ),
                 child: Text(
@@ -175,10 +175,10 @@ class ProjectReviewModal extends StatelessWidget {
             ] else ...[
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: AppSpacing.paddingXXL,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusLG,
                   border: Border.all(color: AppColors.softBorder),
                 ),
                 child: Column(
@@ -188,7 +188,7 @@ class ProjectReviewModal extends StatelessWidget {
                       size: 48,
                       color: Colors.grey.shade400,
                     ),
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     Text(
                       'No review provided yet',
                       style: TextStyle(
@@ -201,7 +201,7 @@ class ProjectReviewModal extends StatelessWidget {
               ),
             ],
 
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
 
             // Action Buttons
             Row(
@@ -213,7 +213,7 @@ class ProjectReviewModal extends StatelessWidget {
                     onPressed: () => _shareReview(context),
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppSpacing.spaceMD,
                 Expanded(
                   child: PrimaryButton(
                     text: 'Respond',

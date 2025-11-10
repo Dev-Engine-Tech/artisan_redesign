@@ -5,7 +5,7 @@ void main() {
   group('Result', () {
     group('Success', () {
       const testData = 'test data';
-      final success = Success(testData);
+      final success = const Success(testData);
 
       test('should be recognized as success', () {
         expect(success.isSuccess, isTrue);
@@ -219,7 +219,7 @@ void main() {
 
     group('Result chaining', () {
       test('should chain multiple successful operations', () {
-        final result = Success('hello')
+        final result = const Success('hello')
             .map<String>((data) => data.toUpperCase())
             .map<int>((data) => data.length)
             .map<String>((data) => 'Length: $data');
@@ -229,7 +229,7 @@ void main() {
       });
 
       test('should stop chaining on first failure', () {
-        final result = Success('hello')
+        final result = const Success('hello')
             .map<String>((data) => data.toUpperCase())
             .map<int>((data) => throw Exception('error'))
             .map<String>((data) => 'Length: $data');
@@ -239,7 +239,7 @@ void main() {
       });
 
       test('should chain with flatMap', () {
-        final result = Success(5)
+        final result = const Success(5)
             .flatMap<String>((data) => Success('Number: $data'))
             .flatMap<int>((data) => Success(data.length));
 
@@ -248,7 +248,7 @@ void main() {
       });
 
       test('should handle failure in flatMap chain', () {
-        final result = Success(5)
+        final result = const Success(5)
             .flatMap<String>((data) => Success('Number: $data'))
             .flatMap<int>((data) => Failure(AppFailure.validation('Invalid')));
 

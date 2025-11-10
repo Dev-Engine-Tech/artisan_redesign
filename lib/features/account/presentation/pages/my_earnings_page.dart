@@ -7,6 +7,8 @@ import '../../domain/entities/earnings.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
+import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class MyEarningsPage extends StatefulWidget {
   const MyEarningsPage({super.key});
@@ -161,23 +163,23 @@ class _EarningsBody extends StatelessWidget {
       return Center(child: Text(err.message));
     }
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       children: [
         if (earnings != null) ...[
           Row(
             children: [
               _StatCard(title: 'Total', value: earnings.total),
-              const SizedBox(width: 12),
+              AppSpacing.spaceMD,
               _StatCard(title: 'Available', value: earnings.available),
-              const SizedBox(width: 12),
+              AppSpacing.spaceMD,
               _StatCard(title: 'Pending', value: earnings.pending),
             ],
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
         ],
         Text('Transaction History',
             style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         ...tx.map((t) => Card(
               child: ListTile(
                 title: Text('${t.currency} ${t.amount.toStringAsFixed(2)}'),
@@ -263,8 +265,9 @@ extension on _MyEarningsPageState {
           TextAppButton(
             text: 'Save',
             onPressed: () {
-              if (a.text.trim().length != 4 || a.text.trim() != b.text.trim())
+              if (a.text.trim().length != 4 || a.text.trim() != b.text.trim()) {
                 return;
+              }
               context
                   .read<AccountBloc>()
                   .add(AccountSetWithdrawalPin(a.text.trim()));
@@ -292,7 +295,7 @@ class _StatCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title, style: Theme.of(context).textTheme.bodySmall),
-              const SizedBox(height: 4),
+              AppSpacing.spaceXS,
               Text(value.toStringAsFixed(2),
                   style: Theme.of(context).textTheme.titleMedium),
             ],

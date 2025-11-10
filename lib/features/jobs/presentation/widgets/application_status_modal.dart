@@ -19,9 +19,9 @@ class ApplicationStatusModal extends StatelessWidget {
   final VoidCallback? onSecondaryAction;
 
   const ApplicationStatusModal({
-    super.key,
     required this.job,
     required this.actionType,
+    super.key,
     this.additionalMessage,
     this.onPrimaryAction,
     this.onSecondaryAction,
@@ -30,11 +30,11 @@ class ApplicationStatusModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: AppSpacing.paddingXXL,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+          top: Radius.circular(AppRadius.xxl),
         ),
       ),
       child: Column(
@@ -54,12 +54,12 @@ class ApplicationStatusModal extends StatelessWidget {
           // Status icon
           _buildStatusIcon(),
 
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
 
           // Title and message
           _buildContent(context),
 
-          const SizedBox(height: 24),
+          AppSpacing.spaceXXL,
 
           // Action buttons
           _buildActionButtons(context),
@@ -148,7 +148,7 @@ class ApplicationStatusModal extends StatelessWidget {
               ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         Text(
           message,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -159,12 +159,12 @@ class ApplicationStatusModal extends StatelessWidget {
         ),
 
         // Job info
-        const SizedBox(height: 20),
+        AppSpacing.spaceXL,
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLG,
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             border: Border.all(color: AppColors.softBorder),
           ),
           child: Column(
@@ -177,14 +177,14 @@ class ApplicationStatusModal extends StatelessWidget {
                       color: AppColors.brownHeader,
                     ),
               ),
-              const SizedBox(height: 4),
+              AppSpacing.spaceXS,
               Text(
                 job.category,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Colors.black54,
                     ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -226,7 +226,7 @@ class ApplicationStatusModal extends StatelessWidget {
                 onPressed: onSecondaryAction,
               ),
             ),
-          if (onSecondaryAction != null) const SizedBox(width: 12),
+          if (onSecondaryAction != null) AppSpacing.spaceMD,
           Expanded(
             child: PrimaryButton(
               text: 'Start Project',
@@ -253,7 +253,7 @@ class ApplicationStatusModal extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
           Expanded(
             child: PrimaryButton(
               text: 'View Changes',
@@ -275,7 +275,7 @@ class ApplicationStatusModal extends StatelessWidget {
                 onPressed: onSecondaryAction,
               ),
             ),
-          if (onSecondaryAction != null) const SizedBox(width: 12),
+          if (onSecondaryAction != null) AppSpacing.spaceMD,
           Expanded(
             child: PrimaryButton(
               text: actionType == ApplicationActionType.completed

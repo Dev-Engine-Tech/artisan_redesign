@@ -7,8 +7,8 @@ class NotificationIcon extends StatelessWidget {
   final VoidCallback? onTap;
 
   const NotificationIcon({
-    super.key,
     required this.unreadCount,
+    super.key,
     this.onTap,
   });
 
@@ -42,7 +42,7 @@ class NotificationIcon extends StatelessWidget {
             right: 6,
             top: 6,
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: AppSpacing.paddingXS,
               decoration: const BoxDecoration(
                 color: AppColors.orange,
                 shape: BoxShape.circle,

@@ -10,13 +10,13 @@ class InvoiceMenuCard extends StatefulWidget {
   final VoidCallback onTap;
 
   const InvoiceMenuCard({
-    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.accentColor,
     required this.count,
     required this.onTap,
+    super.key,
   });
 
   @override
@@ -87,7 +87,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppRadius.radiusXXL,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.subtleBorder.withOpacity(0.3),
@@ -110,8 +110,8 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
+                borderRadius: AppRadius.radiusXXL,
+                child: SizedBox(
                   height: 160,
                   child: Stack(
                     children: [
@@ -137,7 +137,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
 
                       // Main content
                       Padding(
-                        padding: const EdgeInsets.all(24),
+                        padding: AppSpacing.paddingXXL,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -157,7 +157,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                                         widget.accentColor.withOpacity(0.1),
                                       ],
                                     ),
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: AppRadius.radiusXL,
                                     border: Border.all(
                                       color:
                                           widget.accentColor.withOpacity(0.2),
@@ -177,7 +177,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                                   ),
                                   decoration: BoxDecoration(
                                     color: widget.accentColor.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: AppRadius.radiusXXL,
                                     border: Border.all(
                                       color:
                                           widget.accentColor.withOpacity(0.2),
@@ -196,7 +196,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                               ],
                             ),
 
-                            const SizedBox(height: 20),
+                            AppSpacing.spaceXL,
 
                             // Title and subtitle
                             Expanded(
@@ -213,7 +213,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                                       height: 1.2,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  AppSpacing.spaceXS,
                                   Text(
                                     widget.subtitle,
                                     style: TextStyle(
@@ -236,7 +236,7 @@ class _InvoiceMenuCardState extends State<InvoiceMenuCard>
                           child: Container(
                             decoration: BoxDecoration(
                               color: widget.accentColor.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: AppRadius.radiusXXL,
                             ),
                           ),
                         ),

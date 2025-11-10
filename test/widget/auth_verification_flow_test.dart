@@ -37,7 +37,7 @@ void main() {
       final verificationCubit = VerificationCubit(
           idDelay: Duration.zero,
           selfieDelay: Duration.zero,
-          finalizeDelay: Duration(milliseconds: 10));
+          finalizeDelay: const Duration(milliseconds: 10));
       final mockAuthBloc = MockAuthBloc();
 
       // Make mockAuthBloc.stream produce an initial AuthInitial state so BlocProvider can read it.

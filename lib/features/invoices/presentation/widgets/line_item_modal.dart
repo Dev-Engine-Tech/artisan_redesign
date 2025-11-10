@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
 import 'label_cell.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 Future<InvoiceLineData?> showLineItemModal(
   BuildContext context, {
@@ -14,7 +15,7 @@ Future<InvoiceLineData?> showLineItemModal(
     isScrollControlled: true,
     backgroundColor: Colors.white,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
     ),
     builder: (ctx) {
       return BlocProvider.value(
@@ -110,14 +111,14 @@ class _LineItemFormState extends State<_LineItemForm> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     LabelCell(
                       labelController: _label,
                       unitPriceController: _price,
                       catalogId: _catalogId,
                       onCatalogChanged: (id) => setState(() => _catalogId = id),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     Row(
                       children: [
                         Expanded(
@@ -132,7 +133,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                             onChanged: (_) => setState(() {}),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppSpacing.spaceMD,
                         Expanded(
                           child: TextField(
                             controller: _price,
@@ -147,7 +148,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     Row(
                       children: [
                         Expanded(
@@ -162,7 +163,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                             onChanged: (_) => setState(() {}),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppSpacing.spaceMD,
                         Expanded(
                           child: TextField(
                             controller: _taxRatePct,
@@ -177,7 +178,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
@@ -185,7 +186,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     Row(
                       children: [
                         Expanded(
@@ -194,7 +195,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppSpacing.spaceMD,
                         Expanded(
                           child: PrimaryButton(
                             text: 'Save',

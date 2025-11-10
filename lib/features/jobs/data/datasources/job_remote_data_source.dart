@@ -63,11 +63,13 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
       if (search != null && search.isNotEmpty) qp['search'] = search;
       if (match != null) qp['match'] = match;
       if (saved != null) qp['saved'] = saved;
-      if (postedDate != null && postedDate.isNotEmpty)
+      if (postedDate != null && postedDate.isNotEmpty) {
         qp['posted_date'] = postedDate;
+      }
       if (workMode != null && workMode.isNotEmpty) qp['work_mode'] = workMode;
-      if (budgetType != null && budgetType.isNotEmpty)
+      if (budgetType != null && budgetType.isNotEmpty) {
         qp['budget_type'] = budgetType;
+      }
       if (duration != null && duration.isNotEmpty) qp['duration'] = duration;
       if (category != null && category.isNotEmpty) {
         // Prefer sub_categories for jobs (CSV of subcategory IDs)
@@ -245,7 +247,7 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
     }
 
     // Helper to map human-friendly duration to API codes used in some variants
-    String _durationCode(String value) {
+    String durationCode(String value) {
       final s = value.trim().toLowerCase();
       if (s.contains('24') || s.contains('day')) return '<day';
       if (s.contains('week')) return '<week';
@@ -313,7 +315,7 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
             final Map<String, dynamic> fallbackPayload =
                 Map.of(applicationData);
             final current = fallbackPayload['duration'] as String;
-            final code = _durationCode(current);
+            final code = durationCode(current);
             fallbackPayload['duration'] = code;
             // Some backends accept alternate keys; include them defensively.
             fallbackPayload['project_timeline'] = code;

@@ -2,36 +2,21 @@ import '../../domain/entities/user_profile.dart';
 
 class UserProfileModel extends UserProfile {
   const UserProfileModel({
-    required String id,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? phone,
-    String? profileImage,
-    String? jobTitle,
-    String? bio,
-    String? location,
-    List<String> skills = const [],
-    bool isVerified = false,
-    List<WorkExperience> workExperience = const [],
-    List<Education> education = const [],
-    int? yearsOfExperience,
-  }) : super(
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          phone: phone,
-          profileImage: profileImage,
-          jobTitle: jobTitle,
-          bio: bio,
-          location: location,
-          skills: skills,
-          isVerified: isVerified,
-          workExperience: workExperience,
-          education: education,
-          yearsOfExperience: yearsOfExperience,
-        );
+    required super.id,
+    super.firstName,
+    super.lastName,
+    super.email,
+    super.phone,
+    super.profileImage,
+    super.jobTitle,
+    super.bio,
+    super.location,
+    super.skills,
+    super.isVerified,
+    super.workExperience,
+    super.education,
+    super.yearsOfExperience,
+  });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
@@ -89,24 +74,15 @@ class UserProfileModel extends UserProfile {
 
 class WorkExperienceModel extends WorkExperience {
   const WorkExperienceModel({
-    required String id,
-    required String jobTitle,
-    required String companyName,
-    String? location,
-    String? description,
-    required DateTime startDate,
-    DateTime? endDate,
-    bool isCurrent = false,
-  }) : super(
-          id: id,
-          jobTitle: jobTitle,
-          companyName: companyName,
-          location: location,
-          description: description,
-          startDate: startDate,
-          endDate: endDate,
-          isCurrent: isCurrent,
-        );
+    required super.id,
+    required super.jobTitle,
+    required super.companyName,
+    required super.startDate,
+    super.location,
+    super.description,
+    super.endDate,
+    super.isCurrent,
+  });
 
   factory WorkExperienceModel.fromJson(Map<String, dynamic> json) {
     return WorkExperienceModel(
@@ -138,22 +114,14 @@ class WorkExperienceModel extends WorkExperience {
 
 class EducationModel extends Education {
   const EducationModel({
-    required String id,
-    required String schoolName,
-    required String fieldOfStudy,
-    String? degree,
-    required DateTime startDate,
-    DateTime? endDate,
-    String? description,
-  }) : super(
-          id: id,
-          schoolName: schoolName,
-          fieldOfStudy: fieldOfStudy,
-          degree: degree,
-          startDate: startDate,
-          endDate: endDate,
-          description: description,
-        );
+    required super.id,
+    required super.schoolName,
+    required super.fieldOfStudy,
+    required super.startDate,
+    super.degree,
+    super.endDate,
+    super.description,
+  });
 
   factory EducationModel.fromJson(Map<String, dynamic> json) {
     return EducationModel(

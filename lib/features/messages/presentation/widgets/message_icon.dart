@@ -45,7 +45,7 @@ class MessageIcon extends StatelessWidget {
                       () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => MessagesListPage(),
+                            builder: (_) => const MessagesListPage(),
                           ),
                         );
                       },
@@ -56,7 +56,7 @@ class MessageIcon extends StatelessWidget {
                   right: 6,
                   top: 6,
                   child: Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: AppSpacing.paddingXS,
                     decoration: const BoxDecoration(
                       color: AppColors.orange,
                       shape: BoxShape.circle,

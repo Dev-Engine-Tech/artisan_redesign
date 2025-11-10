@@ -5,6 +5,7 @@ import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.
 import 'package:artisans_circle/features/account/presentation/bloc/account_state.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_event.dart';
 import 'package:artisans_circle/core/theme.dart';
+import '../../../../core/utils/responsive.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
@@ -56,14 +57,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       size: 64,
                       color: Colors.grey[400],
                     ),
-                    const SizedBox(height: 16),
+                    AppSpacing.spaceLG,
                     Text(
                       'No transactions yet',
                       style: textTheme.titleLarge?.copyWith(
                         color: Colors.grey[600],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     Text(
                       'Your transaction history will appear here',
                       style: textTheme.bodyMedium?.copyWith(
@@ -83,18 +84,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     .add(const AccountLoadTransactions(page: 1, limit: 20));
               },
               child: ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: context.responsivePadding,
                 itemCount: transactions.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
+                separatorBuilder: (context, index) => AppSpacing.spaceMD,
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
 
                   return Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: context.responsivePadding,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.radiusLG,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.05),
@@ -113,7 +113,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             color: transaction.amount > 0
                                 ? Colors.green.withOpacity(0.1)
                                 : Colors.red.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: AppRadius.radiusXXXL,
                           ),
                           child: Icon(
                             transaction.amount > 0
@@ -124,7 +124,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                 : Colors.red,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        AppSpacing.spaceMD,
                         // Transaction details
                         Expanded(
                           child: Column(
@@ -139,7 +139,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              AppSpacing.spaceXS,
                               Text(
                                 '${transaction.date.day}/${transaction.date.month}/${transaction.date.year}',
                                 style: textTheme.bodySmall?.copyWith(
@@ -195,14 +195,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     size: 64,
                     color: Colors.grey[400],
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
                   Text(
                     'Error loading transactions',
                     style: textTheme.titleLarge?.copyWith(
                       color: Colors.grey[600],
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Text(
                     state.message,
                     style: textTheme.bodyMedium?.copyWith(
@@ -210,7 +210,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
                   PrimaryButton(
                     text: 'Retry',
                     onPressed: () {

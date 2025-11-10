@@ -104,8 +104,9 @@ class PhoneNumberFilter {
     if (_isSequential(digits)) return false;
 
     // Skip common non-phone number patterns
-    if (digits == '1000' || digits == '2023' || digits == '123456')
+    if (digits == '1000' || digits == '2023' || digits == '123456') {
       return false;
+    }
 
     return true;
   }

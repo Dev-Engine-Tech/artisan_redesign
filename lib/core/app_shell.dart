@@ -18,6 +18,7 @@ import 'package:artisans_circle/core/widgets/youtube_video_popup.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:artisans_circle/core/services/push_registration_service.dart';
+import 'package:artisans_circle/core/utils/responsive.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 class AppShell extends StatefulWidget {
@@ -196,97 +197,169 @@ class _AppShellState extends State<AppShell> {
             }
           },
           child: Builder(
-            builder: (context) => IndexedStack(
-              index: _selectedIndex,
-              children: List.generate(5, (index) => _getPage(index, context)),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          child: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.only(top: 8),
-            child: BottomNavigationBar(
-              currentIndex: _selectedIndex,
-              onTap: _onItemTapped,
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              elevation: 0,
-              selectedItemColor: AppColors.orange,
-              unselectedItemColor: Colors.grey[500],
-              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
-              showUnselectedLabels: true,
-              iconSize: 26,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.home_outlined),
-                  activeIcon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        color: AppColors.softPink,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.home_outlined,
-                        color: AppColors.orange),
+            builder: (context) => Row(
+              children: [
+                // Show navigation rail on tablet/desktop
+                if (context.isTabletOrDesktop)
+                  NavigationRail(
+                    selectedIndex: _selectedIndex,
+                    onDestinationSelected: _onItemTapped,
+                    backgroundColor: Colors.white,
+                    selectedIconTheme: const IconThemeData(
+                      color: AppColors.orange,
+                      size: 28,
+                    ),
+                    unselectedIconTheme: IconThemeData(
+                      color: Colors.grey[500],
+                      size: 26,
+                    ),
+                    selectedLabelTextStyle: const TextStyle(
+                      color: AppColors.orange,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                    unselectedLabelTextStyle: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                    labelType: context.isLargeTablet || context.isDesktop
+                        ? NavigationRailLabelType.all
+                        : NavigationRailLabelType.selected,
+                    destinations: const [
+                      NavigationRailDestination(
+                        icon: Icon(Icons.home_outlined),
+                        selectedIcon: Icon(Icons.home),
+                        label: Text('Home'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.explore_outlined),
+                        selectedIcon: Icon(Icons.explore),
+                        label: Text('Discover'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.grid_view_outlined),
+                        selectedIcon: Icon(Icons.grid_view),
+                        label: Text('Catalogue'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.receipt_long_outlined),
+                        selectedIcon: Icon(Icons.receipt_long),
+                        label: Text('Invoice'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.person_outline),
+                        selectedIcon: Icon(Icons.person),
+                        label: Text('Support'),
+                      ),
+                    ],
                   ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.explore_outlined),
-                  activeIcon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        color: AppColors.softPink,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.explore_outlined,
-                        color: AppColors.orange),
+
+                // Vertical divider
+                if (context.isTabletOrDesktop)
+                  const VerticalDivider(thickness: 1, width: 1),
+
+                // Main content
+                Expanded(
+                  child: IndexedStack(
+                    index: _selectedIndex,
+                    children:
+                        List.generate(5, (index) => _getPage(index, context)),
                   ),
-                  label: 'Discover',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.grid_view_outlined),
-                  activeIcon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        color: AppColors.softPink,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.grid_view_outlined,
-                        color: AppColors.orange),
-                  ),
-                  label: 'Catalogue',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.receipt_long_outlined),
-                  activeIcon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        color: AppColors.softPink,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.receipt_long_outlined,
-                        color: AppColors.orange),
-                  ),
-                  label: 'Invoice',
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.person_outline),
-                  activeIcon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        color: AppColors.softPink,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.person_outline,
-                        color: AppColors.orange),
-                  ),
-                  label: 'Support',
                 ),
               ],
             ),
           ),
         ),
       ),
+      // Only show bottom nav on mobile
+      bottomNavigationBar: context.isMobile
+          ? SafeArea(
+              top: false,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppRadius.xxl)),
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.only(top: 8),
+                  child: BottomNavigationBar(
+                    currentIndex: _selectedIndex,
+                    onTap: _onItemTapped,
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Colors.white,
+                    elevation: 0,
+                    selectedItemColor: AppColors.orange,
+                    unselectedItemColor: Colors.grey[500],
+                    selectedLabelStyle:
+                        const TextStyle(fontWeight: FontWeight.w600),
+                    showUnselectedLabels: true,
+                    iconSize: 26,
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.home_outlined),
+                        activeIcon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              color: AppColors.softPink,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Icon(Icons.home_outlined,
+                              color: AppColors.orange),
+                        ),
+                        label: 'Home',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.explore_outlined),
+                        activeIcon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              color: AppColors.softPink,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Icon(Icons.explore_outlined,
+                              color: AppColors.orange),
+                        ),
+                        label: 'Discover',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.grid_view_outlined),
+                        activeIcon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              color: AppColors.softPink,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Icon(Icons.grid_view_outlined,
+                              color: AppColors.orange),
+                        ),
+                        label: 'Catalogue',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.receipt_long_outlined),
+                        activeIcon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              color: AppColors.softPink,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Icon(Icons.receipt_long_outlined,
+                              color: AppColors.orange),
+                        ),
+                        label: 'Invoice',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.person_outline),
+                        activeIcon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              color: AppColors.softPink,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Icon(Icons.person_outline,
+                              color: AppColors.orange),
+                        ),
+                        label: 'Support',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }

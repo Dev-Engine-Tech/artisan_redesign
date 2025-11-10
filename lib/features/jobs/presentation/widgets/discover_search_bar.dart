@@ -12,8 +12,8 @@ class DiscoverSearchBar extends StatelessWidget {
   final bool showFilterBadge;
 
   const DiscoverSearchBar({
-    super.key,
     required this.controller,
+    super.key,
     this.onChanged,
     this.onSubmitted,
     this.onFilterTap,
@@ -34,7 +34,7 @@ class DiscoverSearchBar extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.radiusLG,
                 border: Border.all(color: AppColors.subtleBorder),
               ),
               child: TextField(
@@ -76,13 +76,13 @@ class DiscoverSearchBar extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
 
           // Filter button
           Container(
             decoration: BoxDecoration(
               color: AppColors.softPink,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusLG,
             ),
             child: Stack(
               children: [
@@ -93,7 +93,7 @@ class DiscoverSearchBar extends StatelessWidget {
                     color: AppColors.brownHeader,
                     size: 24,
                   ),
-                  padding: const EdgeInsets.all(12),
+                  padding: AppSpacing.paddingMD,
                 ),
 
                 // Filter count badge
@@ -102,7 +102,7 @@ class DiscoverSearchBar extends StatelessWidget {
                     right: 8,
                     top: 8,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: AppSpacing.paddingXS,
                       decoration: const BoxDecoration(
                         color: AppColors.orange,
                         shape: BoxShape.circle,
@@ -138,9 +138,9 @@ class SearchSuggestions extends StatelessWidget {
   final bool isVisible;
 
   const SearchSuggestions({
-    super.key,
     required this.suggestions,
     required this.onSuggestionTap,
+    super.key,
     this.isVisible = false,
   });
 
@@ -151,10 +151,10 @@ class SearchSuggestions extends StatelessWidget {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: AppSpacing.horizontalLG,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
         boxShadow: [
           BoxShadow(
@@ -196,9 +196,9 @@ class PopularSearches extends StatelessWidget {
   final ValueChanged<String> onSearchTap;
 
   const PopularSearches({
-    super.key,
     required this.popularSearches,
     required this.onSearchTap,
+    super.key,
   });
 
   static const List<String> defaultSearches = [
@@ -230,7 +230,7 @@ class PopularSearches extends StatelessWidget {
               color: AppColors.brownHeader,
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -244,13 +244,13 @@ class PopularSearches extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: AppRadius.radiusXXL,
                     border: Border.all(color: AppColors.subtleBorder),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.trending_up,
                         size: 16,
                         color: AppColors.orange,

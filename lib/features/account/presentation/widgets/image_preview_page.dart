@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ImagePreviewPage extends StatelessWidget {
   final String imageUrl;
   final String? heroTag;
-  const ImagePreviewPage({super.key, required this.imageUrl, this.heroTag});
+  const ImagePreviewPage({required this.imageUrl, super.key, this.heroTag});
 
   @override
   Widget build(BuildContext context) {

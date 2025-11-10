@@ -7,21 +7,21 @@ class JobCompletionCertificate extends StatelessWidget {
   final Job job;
 
   const JobCompletionCertificate({
-    super.key,
     required this.job,
+    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
       ),
       child: Container(
         width: double.maxFinite,
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.paddingXXL,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
           color: Colors.white,
         ),
         child: Column(
@@ -34,7 +34,7 @@ class JobCompletionCertificate extends StatelessWidget {
                   color: AppColors.orange,
                   size: 24,
                 ),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 const Text(
                   'Completion Certificate',
                   style: TextStyle(
@@ -50,18 +50,18 @@ class JobCompletionCertificate extends StatelessWidget {
                   style: IconButton.styleFrom(
                     backgroundColor: AppColors.cardBackground,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            AppSpacing.spaceXL,
 
             // Certificate Content
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: AppSpacing.paddingXXL,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -71,7 +71,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     Colors.amber.shade50,
                   ],
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.radiusLG,
                 border: Border.all(
                     color: AppColors.orange.withValues(alpha: 0.2), width: 2),
               ),
@@ -79,21 +79,21 @@ class JobCompletionCertificate extends StatelessWidget {
                 children: [
                   // Header
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: AppSpacing.paddingLG,
                     decoration: BoxDecoration(
                       color: AppColors.orange,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.verified,
                           color: Colors.white,
                           size: 28,
                         ),
-                        const SizedBox(width: 8),
-                        const Text(
+                        AppSpacing.spaceSM,
+                        Text(
                           'PROJECT COMPLETED',
                           style: TextStyle(
                             color: Colors.white,
@@ -106,7 +106,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  AppSpacing.spaceXXL,
 
                   // Certificate Body
                   Text(
@@ -116,14 +116,14 @@ class JobCompletionCertificate extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
 
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                       border: Border.all(color: AppColors.softBorder),
                     ),
                     child: const Text(
@@ -137,7 +137,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
 
                   Text(
                     'has successfully completed the project',
@@ -146,13 +146,13 @@ class JobCompletionCertificate extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
 
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: AppSpacing.paddingMD,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: AppRadius.radiusMD,
                       border: Border.all(color: AppColors.softBorder),
                     ),
                     child: Column(
@@ -166,7 +166,7 @@ class JobCompletionCertificate extends StatelessWidget {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           job.category,
                           style: TextStyle(
@@ -178,7 +178,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
 
                   // Project Details
                   Row(
@@ -214,7 +214,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  AppSpacing.spaceXL,
 
                   // Completion Date
                   if (job.completedDate != null) ...[
@@ -228,7 +228,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     ),
                   ],
 
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
 
                   // Verification Code
                   Container(
@@ -252,7 +252,7 @@ class JobCompletionCertificate extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
 
             // Action Buttons
             Row(
@@ -263,7 +263,7 @@ class JobCompletionCertificate extends StatelessWidget {
                     onPressed: () => _downloadCertificate(context),
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppSpacing.spaceMD,
                 Expanded(
                   child: PrimaryButton(
                     text: 'Share',
@@ -286,7 +286,7 @@ class JobCompletionCertificate extends StatelessWidget {
           size: 20,
           color: AppColors.orange,
         ),
-        const SizedBox(height: 4),
+        AppSpacing.spaceXS,
         Text(
           label,
           style: TextStyle(

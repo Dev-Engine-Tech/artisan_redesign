@@ -6,10 +6,11 @@ import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';
 import '../widgets/material_management_widget.dart';
+import '../../../../core/utils/responsive.dart';
 
 class CatalogRequestViewPage extends StatefulWidget {
   final String requestId;
-  const CatalogRequestViewPage({super.key, required this.requestId});
+  const CatalogRequestViewPage({required this.requestId, super.key});
 
   @override
   State<CatalogRequestViewPage> createState() => _CatalogRequestViewPageState();
@@ -80,9 +81,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   children: [
                     Icon(Icons.error_outline,
                         size: 64, color: Colors.grey.shade400),
-                    const SizedBox(height: 16),
+                    AppSpacing.spaceLG,
                     Text('Error: ${state.message}'),
-                    const SizedBox(height: 16),
+                    AppSpacing.spaceLG,
                     PrimaryButton(
                       text: 'Retry',
                       onPressed: () =>
@@ -104,34 +105,34 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
 
   Widget _buildRequestDetails(BuildContext context, CatalogRequest request) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: context.responsivePadding,
       children: [
         // Header card with title and status
         _buildHeaderCard(context, request),
-        const SizedBox(height: 16),
+        AppSpacing.spaceLG,
 
         // Client information (if available)
         if (request.client != null) ...[
           _buildClientCard(context, request.client!),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
         ],
 
         // Request description
         _buildDescriptionCard(context, request),
-        const SizedBox(height: 16),
+        AppSpacing.spaceLG,
 
         // Delivery information
         if (request.deliveryDateTime != null) ...[
           _buildDeliveryCard(context, request),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
         ],
 
         // Materials section
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: context.responsivePadding,
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             border: Border.all(color: AppColors.subtleBorder),
           ),
           child: MaterialManagementWidget(
@@ -140,16 +141,16 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             isEditable: !request.isArtisanApproved,
           ),
         ),
-        const SizedBox(height: 16),
+        AppSpacing.spaceLG,
 
         // Approval status
         _buildApprovalStatusCard(context, request),
-        const SizedBox(height: 16),
+        AppSpacing.spaceLG,
 
         // Action buttons
         if (!request.isBothApproved) ...[
           _buildActionButtons(context, request),
-          const SizedBox(height: 24),
+          AppSpacing.spaceXXL,
         ],
       ],
     );
@@ -159,10 +160,10 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -180,11 +181,11 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             ],
           ),
           if (request.createdAt != null) ...[
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Row(
               children: [
                 Icon(Icons.schedule, size: 16, color: Colors.grey.shade600),
-                const SizedBox(width: 4),
+                AppSpacing.spaceXS,
                 Text(
                   'Created: ${_formatDate(request.createdAt!)}',
                   style: TextStyle(
@@ -204,10 +205,10 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -217,7 +218,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Row(
             children: [
               CircleAvatar(
@@ -229,7 +230,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   size: 24,
                 ),
               ),
-              const SizedBox(width: 12),
+              AppSpacing.spaceMD,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,12 +243,12 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       ),
                     ),
                     if (client.email?.isNotEmpty == true) ...[
-                      const SizedBox(height: 4),
+                      AppSpacing.spaceXS,
                       Row(
                         children: [
                           Icon(Icons.email,
                               size: 14, color: Colors.grey.shade600),
-                          const SizedBox(width: 4),
+                          AppSpacing.spaceXS,
                           Text(
                             client.email!,
                             style: TextStyle(
@@ -259,12 +260,12 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       ),
                     ],
                     if (client.phone?.isNotEmpty == true) ...[
-                      const SizedBox(height: 4),
+                      AppSpacing.spaceXS,
                       Row(
                         children: [
                           Icon(Icons.phone,
                               size: 14, color: Colors.grey.shade600),
-                          const SizedBox(width: 4),
+                          AppSpacing.spaceXS,
                           Text(
                             client.phone!,
                             style: TextStyle(
@@ -289,10 +290,10 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -302,7 +303,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             request.description.isNotEmpty
                 ? request.description
@@ -320,10 +321,10 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -333,11 +334,12 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Row(
             children: [
-              Icon(Icons.local_shipping, size: 20, color: AppColors.orange),
-              const SizedBox(width: 8),
+              const Icon(Icons.local_shipping,
+                  size: 20, color: AppColors.orange),
+              AppSpacing.spaceSM,
               Text(
                 'Expected Delivery: ${_formatDate(request.deliveryDateTime!)}',
                 style: Theme.of(context).textTheme.bodyMedium,
@@ -354,10 +356,10 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -367,11 +369,11 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   fontWeight: FontWeight.w700,
                 ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Row(
             children: [
               _buildApprovalIndicator('Artisan', request.isArtisanApproved),
-              const SizedBox(width: 24),
+              AppSpacing.spaceXXL,
               _buildApprovalIndicator('Client', request.isClientApproved),
               const Spacer(),
               Container(
@@ -380,7 +382,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                   color: request.isBothApproved
                       ? Colors.green.withValues(alpha: 0.1)
                       : Colors.orange.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusLG,
                   border: Border.all(
                     color: request.isBothApproved
                         ? Colors.green.withValues(alpha: 0.3)
@@ -426,7 +428,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                 )
               : null,
         ),
-        const SizedBox(width: 8),
+        AppSpacing.spaceSM,
         Text(
           label,
           style: TextStyle(
@@ -461,7 +463,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             },
           ),
         ),
-        const SizedBox(width: 16),
+        AppSpacing.spaceLG,
         Expanded(
           child: OutlinedAppButton(
             text: 'Decline',
@@ -494,7 +496,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: statusColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: statusColor.withValues(alpha: 0.3)),
       ),
       child: Text(
@@ -524,7 +526,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('Please provide a reason for declining this request:'),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             TextField(
               controller: reasonController,
               decoration: const InputDecoration(
@@ -533,7 +535,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
               ),
               maxLines: 2,
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             TextField(
               controller: messageController,
               decoration: const InputDecoration(

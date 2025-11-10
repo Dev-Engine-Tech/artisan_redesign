@@ -14,7 +14,7 @@ class MeasurementTab extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<InvoiceFormCubit>();
         final children = <Widget>[
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
@@ -55,7 +55,7 @@ class MeasurementTab extends StatelessWidget {
           ));
         }
 
-        if (!readOnly)
+        if (!readOnly) {
           children.add(
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -70,6 +70,7 @@ class MeasurementTab extends StatelessWidget {
               ),
             ),
           );
+        }
         return ListView(padding: EdgeInsets.zero, children: children);
       },
     );
@@ -117,8 +118,9 @@ class _MeasurementRowState extends State<_MeasurementRow> {
   void didUpdateWidget(covariant _MeasurementRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.item != widget.item) _item.text = widget.item;
-    if (oldWidget.quantity != widget.quantity)
+    if (oldWidget.quantity != widget.quantity) {
       _qty.text = widget.quantity.toString();
+    }
     if (oldWidget.uom != widget.uom) _uom.text = widget.uom;
   }
 
@@ -153,7 +155,7 @@ class _MeasurementRowState extends State<_MeasurementRow> {
               onChanged: widget.onItemChanged,
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 1,
             child: TextField(
@@ -164,7 +166,7 @@ class _MeasurementRowState extends State<_MeasurementRow> {
               onChanged: (v) => widget.onQtyChanged(double.tryParse(v) ?? 0),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 2,
             child: TextField(

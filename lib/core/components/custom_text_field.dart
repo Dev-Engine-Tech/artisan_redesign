@@ -102,7 +102,7 @@ class CustomTextField extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           field,
         ],
       );
@@ -125,30 +125,30 @@ class CustomTextField extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[50],
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.orange, width: 2),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[300]!),
           ),
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: AppSpacing.paddingLG,
         );
 
       case CustomTextFieldStyle.outlined:
@@ -158,11 +158,11 @@ class CustomTextField extends StatelessWidget {
           hintStyle: TextStyle(color: Colors.grey[400]),
           prefixIcon: prefixIcon != null
               ? Container(
-                  margin: const EdgeInsets.all(12),
-                  padding: const EdgeInsets.all(8),
+                  margin: AppSpacing.paddingMD,
+                  padding: AppSpacing.paddingSM,
                   decoration: BoxDecoration(
                     color: AppColors.orange.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                   ),
                   child: Icon(
                     prefixIcon,
@@ -174,30 +174,30 @@ class CustomTextField extends StatelessWidget {
           suffixIcon: suffixIcon,
           filled: false,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.orange, width: 2),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[300]!),
           ),
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: AppSpacing.paddingLG,
         );
     }
   }
@@ -299,7 +299,7 @@ class CustomTextFormField extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           field,
         ],
       );
@@ -329,30 +329,30 @@ class CustomTextFormField extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[50],
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[200]!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.orange, width: 2),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[300]!),
           ),
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: AppSpacing.paddingLG,
         );
 
       case CustomTextFieldStyle.outlined:
@@ -362,11 +362,11 @@ class CustomTextFormField extends StatelessWidget {
           hintStyle: TextStyle(color: Colors.grey[400]),
           prefixIcon: prefixIcon != null
               ? Container(
-                  margin: const EdgeInsets.all(12),
-                  padding: const EdgeInsets.all(8),
+                  margin: AppSpacing.paddingMD,
+                  padding: AppSpacing.paddingSM,
                   decoration: BoxDecoration(
                     color: AppColors.orange.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                   ),
                   child: Icon(
                     prefixIcon,
@@ -378,30 +378,30 @@ class CustomTextFormField extends StatelessWidget {
           suffixIcon: suffixIcon,
           filled: false,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.orange, width: 2),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: const BorderSide(color: AppColors.danger, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             borderSide: BorderSide(color: Colors.grey[300]!),
           ),
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: AppSpacing.paddingLG,
         );
     }
   }

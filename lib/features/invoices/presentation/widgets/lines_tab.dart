@@ -16,7 +16,7 @@ class LinesTab extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<InvoiceFormCubit>();
         final children = <Widget>[
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
@@ -116,7 +116,7 @@ class LinesTab extends StatelessWidget {
               onDelete: () => cubit.removeLineFromSection(si, li),
             ));
           }
-          if (!readOnly)
+          if (!readOnly) {
             children.add(
               Padding(
                 padding:
@@ -137,6 +137,7 @@ class LinesTab extends StatelessWidget {
                 ),
               ),
             );
+          }
         }
 
         // Independent lines
@@ -173,7 +174,7 @@ class LinesTab extends StatelessWidget {
           ));
         }
 
-        if (!readOnly)
+        if (!readOnly) {
           children.add(
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -190,7 +191,7 @@ class LinesTab extends StatelessWidget {
                       }
                     },
                   ),
-                  const SizedBox(width: 8),
+                  AppSpacing.spaceSM,
                   OutlinedAppButton(
                     text: 'Add Section',
                     height: 40,
@@ -201,16 +202,17 @@ class LinesTab extends StatelessWidget {
               ),
             ),
           );
+        }
 
         // Lines summary (base, discount, tax, total)
         children.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: AppSpacing.paddingMD,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.radiusMD,
                 color: Colors.white,
               ),
               child: BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
@@ -312,10 +314,12 @@ class _LineRowState extends State<_LineRow> {
   void didUpdateWidget(covariant _LineRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.label != widget.label) _label.text = widget.label;
-    if (oldWidget.quantity != widget.quantity)
+    if (oldWidget.quantity != widget.quantity) {
       _qty.text = widget.quantity.toString();
-    if (oldWidget.unitPrice != widget.unitPrice)
+    }
+    if (oldWidget.unitPrice != widget.unitPrice) {
       _price.text = widget.unitPrice.toString();
+    }
   }
 
   @override
@@ -349,7 +353,7 @@ class _LineRowState extends State<_LineRow> {
               onCatalogChanged: widget.onCatalogChanged,
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 1,
             child: TextField(
@@ -366,7 +370,7 @@ class _LineRowState extends State<_LineRow> {
               onChanged: (v) => widget.onQtyChanged(double.tryParse(v) ?? 0),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 2,
             child: TextField(
@@ -383,7 +387,7 @@ class _LineRowState extends State<_LineRow> {
               onChanged: (v) => widget.onPriceChanged(double.tryParse(v) ?? 0),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 2,
             child: Container(

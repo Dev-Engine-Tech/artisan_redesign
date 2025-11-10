@@ -10,8 +10,8 @@ class JobMaterialManagementWidget extends StatefulWidget {
   final String title;
 
   const JobMaterialManagementWidget({
-    super.key,
     required this.materials,
+    super.key,
     this.readOnly = true,
     this.onMaterialsChanged,
     this.title = 'Material List',
@@ -97,37 +97,37 @@ class _JobMaterialManagementWidgetState
             if (!widget.readOnly)
               IconButton(
                 onPressed: _addMaterial,
-                icon: Icon(
+                icon: const Icon(
                   Icons.add_circle_outline,
                   color: AppColors.orange,
                 ),
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.softPeach,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                   ),
                 ),
               ),
           ],
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         if (_materials.isEmpty)
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: AppSpacing.paddingXXL,
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.radiusMD,
               border: Border.all(color: AppColors.softBorder),
             ),
             child: Center(
               child: Column(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.inventory_2_outlined,
                     size: 48,
                     color: Colors.black26,
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Text(
                     widget.readOnly
                         ? 'No materials specified'
@@ -137,7 +137,7 @@ class _JobMaterialManagementWidgetState
                         ),
                   ),
                   if (!widget.readOnly) ...[
-                    const SizedBox(height: 4),
+                    AppSpacing.spaceXS,
                     Text(
                       'Tap the + button to add materials',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -153,7 +153,7 @@ class _JobMaterialManagementWidgetState
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.radiusMD,
               border: Border.all(color: AppColors.softBorder),
             ),
             child: Column(
@@ -161,10 +161,10 @@ class _JobMaterialManagementWidgetState
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppColors.cardBackground,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(8),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(AppRadius.md),
                     ),
                   ),
                   child: Row(
@@ -234,7 +234,7 @@ class _JobMaterialManagementWidgetState
                   decoration: BoxDecoration(
                     color: AppColors.softPeach.withValues(alpha: 0.3),
                     borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(8),
+                      bottom: Radius.circular(AppRadius.md),
                     ),
                   ),
                   child: Row(

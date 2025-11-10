@@ -15,6 +15,7 @@ import 'years_of_experience_page.dart';
 // import 'package:image_picker/image_picker.dart';
 import '../widgets/image_preview_page.dart';
 // import 'package:image_cropper/image_cropper.dart';
+import '../../../../core/utils/responsive.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({super.key});
@@ -112,187 +113,194 @@ class _ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+        child: ListView(
+          padding: context.responsivePadding,
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        if (profile.profileImage != null &&
-                            profile.profileImage!.isNotEmpty) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => ImagePreviewPage(
-                                  imageUrl: profile.profileImage!,
-                                  heroTag: 'profile_photo')));
-                        }
-                      },
-                      child: CircleAvatar(
-                        radius: 32,
-                        backgroundColor: AppColors.softPink,
-                        child: profile.profileImage != null &&
-                                profile.profileImage!.isNotEmpty
-                            ? Hero(
-                                tag: 'profile_photo',
-                                child: ClipOval(
-                                  child: Image.network(
-                                    profile.profileImage!,
-                                    width: 64,
-                                    height: 64,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => const Icon(
-                                        Icons.person_outline,
-                                        color: AppColors.orange),
-                                  ),
-                                ),
-                              )
-                            : const Icon(Icons.person_outline,
-                                color: AppColors.orange),
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (profile.profileImage != null &&
+                                profile.profileImage!.isNotEmpty) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => ImagePreviewPage(
+                                      imageUrl: profile.profileImage!,
+                                      heroTag: 'profile_photo')));
+                            }
+                          },
+                          child: CircleAvatar(
+                            radius: 32,
+                            backgroundColor: AppColors.softPink,
+                            child: profile.profileImage != null &&
+                                    profile.profileImage!.isNotEmpty
+                                ? Hero(
+                                    tag: 'profile_photo',
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        profile.profileImage!,
+                                        width: 64,
+                                        height: 64,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) =>
+                                            const Icon(Icons.person_outline,
+                                                color: AppColors.orange),
+                                      ),
+                                    ),
+                                  )
+                                : const Icon(Icons.person_outline,
+                                    color: AppColors.orange),
+                          ),
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () async {
+                              // pick & upload photo
+                              final picker = await _pickImagePath();
+                              if (picker != null && context.mounted) {
+                                context
+                                    .read<AccountBloc>()
+                                    .add(AccountUploadProfileImage(picker));
+                              }
+                            },
+                            child: const CircleAvatar(
+                              radius: 12,
+                              backgroundColor: AppColors.orange,
+                              child: Icon(Icons.camera_alt,
+                                  size: 14, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    AppSpacing.spaceMD,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              profile.fullName.isNotEmpty
+                                  ? profile.fullName
+                                  : 'Unnamed',
+                              style: Theme.of(context).textTheme.titleMedium),
+                          if (profile.email != null) Text(profile.email!),
+                          if (profile.phone != null) Text(profile.phone!),
+                        ],
                       ),
                     ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () async {
-                          // pick & upload photo
-                          final picker = await _pickImagePath();
-                          if (picker != null && context.mounted) {
-                            context
-                                .read<AccountBloc>()
-                                .add(AccountUploadProfileImage(picker));
-                          }
-                        },
-                        child: const CircleAvatar(
-                          radius: 12,
-                          backgroundColor: AppColors.orange,
-                          child: Icon(Icons.camera_alt,
-                              size: 14, color: Colors.white),
-                        ),
-                      ),
-                    )
                   ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          profile.fullName.isNotEmpty
-                              ? profile.fullName
-                              : 'Unnamed',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      if (profile.email != null) Text(profile.email!),
-                      if (profile.phone != null) Text(profile.phone!),
-                    ],
+              ),
+            ),
+            AppSpacing.spaceLG,
+            Card(
+              child: ListTile(
+                title: const Text('About'),
+                subtitle: Text(profile.bio ?? '—'),
+                trailing: const Icon(Icons.edit),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AccountBloc>(),
+                      child: AboutMePage(initial: profile),
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Card(
-          child: ListTile(
-            title: const Text('About'),
-            subtitle: Text(profile.bio ?? '—'),
-            trailing: const Icon(Icons.edit),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<AccountBloc>(),
-                  child: AboutMePage(initial: profile),
+            Card(
+              child: ListTile(
+                title: const Text('Job Title'),
+                subtitle: Text(profile.jobTitle ?? '—'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: const Text('Location'),
+                subtitle: Text(profile.location ?? '—'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                title: const Text('Years of experience'),
+                subtitle: Text(profile.yearsOfExperience?.toString() ?? '—'),
+                trailing: const Icon(Icons.edit),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AccountBloc>(),
+                      child: YearsOfExperiencePage(
+                          initial: profile.yearsOfExperience),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('Job Title'),
-            subtitle: Text(profile.jobTitle ?? '—'),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('Location'),
-            subtitle: Text(profile.location ?? '—'),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('Years of experience'),
-            subtitle: Text(profile.yearsOfExperience?.toString() ?? '—'),
-            trailing: const Icon(Icons.edit),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<AccountBloc>(),
-                  child:
-                      YearsOfExperiencePage(initial: profile.yearsOfExperience),
+            Card(
+              child: ListTile(
+                title: const Text('Work Experience'),
+                subtitle: Text('${profile.workExperience.length} items'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AccountBloc>(),
+                      child: WorkExperiencePage(items: profile.workExperience),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('Work Experience'),
-            subtitle: Text('${profile.workExperience.length} items'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<AccountBloc>(),
-                  child: WorkExperiencePage(items: profile.workExperience),
+            Card(
+              child: ListTile(
+                title: const Text('Education/Certification'),
+                subtitle: Text('${profile.education.length} items'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AccountBloc>(),
+                      child: EducationPage(items: profile.education),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('Education/Certification'),
-            subtitle: Text('${profile.education.length} items'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<AccountBloc>(),
-                  child: EducationPage(items: profile.education),
+            Card(
+              child: ListTile(
+                title: const Text('Skills'),
+                subtitle: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: profile.skills.isEmpty
+                      ? [const Text('—')]
+                      : profile.skills
+                          .map((s) => Chip(label: Text(s)))
+                          .toList(),
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<AccountBloc>(),
+                      child: SkillsPage(initial: profile.skills),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
-        Card(
-          child: ListTile(
-            title: const Text('Skills'),
-            subtitle: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: profile.skills.isEmpty
-                  ? [const Text('—')]
-                  : profile.skills.map((s) => Chip(label: Text(s))).toList(),
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<AccountBloc>(),
-                  child: SkillsPage(initial: profile.skills),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

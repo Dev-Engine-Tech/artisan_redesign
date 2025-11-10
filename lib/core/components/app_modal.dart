@@ -14,8 +14,8 @@ import '../theme.dart';
 class AppBottomSheet {
   static Future<T?> show<T>({
     required BuildContext context,
-    String? title,
     required Widget child,
+    String? title,
     bool isScrollControlled = true,
     bool isDismissible = true,
     bool enableDrag = true,
@@ -49,12 +49,12 @@ class AppBottomSheetContent extends StatelessWidget {
   final bool showDragHandle;
 
   const AppBottomSheetContent({
+    required this.child,
     super.key,
     this.title,
     this.height,
     this.padding,
     this.showDragHandle = true,
-    required this.child,
   });
 
   @override
@@ -63,7 +63,7 @@ class AppBottomSheetContent extends StatelessWidget {
       height: height,
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       child: SafeArea(
         child: Column(
@@ -139,9 +139,9 @@ class AppModal extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const AppModal({
-    super.key,
     required this.title,
     required this.child,
+    super.key,
     this.actions,
     this.showCloseButton = true,
     this.onClose,
@@ -175,13 +175,13 @@ class AppModal extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: padding ?? const EdgeInsets.all(24),
+              padding: padding ?? AppSpacing.paddingXXL,
               child: child,
             ),
           ),
           if (actions != null && actions!.isNotEmpty)
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: AppSpacing.paddingXXL,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -228,8 +228,8 @@ class AppModal extends StatelessWidget {
 class QuickActionSheet {
   static Future<T?> show<T>({
     required BuildContext context,
-    String? title,
     required List<QuickAction> actions,
+    String? title,
     bool showCancelButton = true,
   }) {
     return showModalBottomSheet<T>(
@@ -238,7 +238,8 @@ class QuickActionSheet {
       builder: (context) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
         ),
         child: SafeArea(
           child: Column(
@@ -289,7 +290,7 @@ class QuickActionSheet {
                 ),
               ],
 
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
             ],
           ),
         ),

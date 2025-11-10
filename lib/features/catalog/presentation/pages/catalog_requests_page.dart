@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
-import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';

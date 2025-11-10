@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme.dart';
 
 /// Temporary stub for RaiseTicketPage while webview is disabled
 class RaiseTicketPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _RaiseTicketPageState extends State<RaiseTicketPage> {
               size: 100,
               color: Colors.grey,
             ),
-            SizedBox(height: 20),
+            AppSpacing.spaceXL,
             Text(
               'Support Ticket Feature Temporarily Unavailable',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

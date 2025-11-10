@@ -3,11 +3,11 @@ import '../../domain/entities/agreement.dart';
 class AgreementModel extends Agreement {
   const AgreementModel({
     required super.id,
-    super.startDate,
     required super.deliveryDate,
     required super.agreedPayment,
     required super.comment,
     required super.status,
+    super.startDate,
   });
 
   factory AgreementModel.fromJson(Map<String, dynamic> json) {

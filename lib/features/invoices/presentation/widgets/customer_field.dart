@@ -6,9 +6,9 @@ import '../cubit/invoice_form_cubit.dart';
 
 class CustomerField extends StatelessWidget {
   const CustomerField({
-    super.key,
     required this.customerController,
     required this.addressController,
+    super.key,
     this.readOnly = false,
   });
 
@@ -24,8 +24,8 @@ class CustomerField extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Text(
                   'Customer',
                   style: TextStyle(
@@ -34,11 +34,11 @@ class CustomerField extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(width: 4),
+                AppSpacing.spaceXS,
                 Icon(Icons.help_outline, size: 16, color: Colors.grey),
               ],
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             TextFormField(
               controller: customerController,
               readOnly: readOnly,
@@ -46,15 +46,15 @@ class CustomerField extends StatelessWidget {
                 hintText: 'Select or enter a customer…',
                 hintStyle: const TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.radiusSM,
                   borderSide: BorderSide(color: Colors.grey.shade300),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.radiusSM,
                   borderSide: BorderSide(color: Colors.grey.shade300),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: AppRadius.radiusSM,
                   borderSide: const BorderSide(color: AppColors.orange),
                 ),
                 contentPadding:
@@ -84,14 +84,14 @@ class CustomerField extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
                       border: Border.all(color: Colors.blue.withOpacity(0.4)),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: AppRadius.radiusLG,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.person_outline,
                             size: 14, color: Colors.blue),
-                        const SizedBox(width: 4),
+                        AppSpacing.spaceXS,
                         ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 220),
                           child: Text(
@@ -125,7 +125,7 @@ class CustomerField extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (ctx) {
         final searchController = TextEditingController();
@@ -152,7 +152,7 @@ class CustomerField extends StatelessWidget {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Container(
                           height: 4,
                           width: 36,
@@ -161,11 +161,11 @@ class CustomerField extends StatelessWidget {
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
                         const Text('Select Customer',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: TextField(
@@ -179,7 +179,7 @@ class CustomerField extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         if (state.loadingCustomers)
                           const Padding(
                             padding: EdgeInsets.all(16.0),
@@ -224,7 +224,7 @@ class CustomerField extends StatelessWidget {
                               },
                             ),
                           ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                       ],
                     );
                   }),

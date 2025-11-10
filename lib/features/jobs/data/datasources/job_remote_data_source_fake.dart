@@ -58,7 +58,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
     ),
 
     // Job with changeRequested status - should show "View Change Request" button
-    JobModel(
+    const JobModel(
       id: 'app_2',
       title: 'Plumbing System Repair',
       category: 'Plumbing',
@@ -74,7 +74,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
     ),
 
     // Job with accepted status - should show minimal buttons (just tap to view details)
-    JobModel(
+    const JobModel(
       id: 'app_3',
       title: 'Electrical Wiring Installation',
       category: 'Electrical',
@@ -90,7 +90,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
     ),
 
     // Job with inProgress status
-    JobModel(
+    const JobModel(
       id: 'app_4',
       title: 'Furniture Assembly',
       category: 'Furniture',
@@ -106,7 +106,7 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
     ),
 
     // Completed job
-    JobModel(
+    const JobModel(
       id: 'app_5',
       title: 'Tile Installation',
       category: 'Tiling',

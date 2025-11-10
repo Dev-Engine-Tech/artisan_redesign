@@ -12,10 +12,10 @@ class JobTimelineWidget extends StatelessWidget {
   final VoidCallback onStatusUpdate;
 
   const JobTimelineWidget({
-    super.key,
     required this.job,
     required this.scrollController,
     required this.onStatusUpdate,
+    super.key,
   });
 
   @override
@@ -32,7 +32,7 @@ class JobTimelineWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(20),
+          padding: AppSpacing.paddingXL,
           child: Row(
             children: [
               Expanded(
@@ -46,7 +46,7 @@ class JobTimelineWidget extends StatelessWidget {
                             color: AppColors.brownHeader,
                           ),
                     ),
-                    const SizedBox(height: 4),
+                    AppSpacing.spaceXS,
                     Text(
                       'Track progress and manage project milestones',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -62,7 +62,7 @@ class JobTimelineWidget extends StatelessWidget {
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.cardBackground,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                   ),
                 ),
               ),
@@ -72,18 +72,18 @@ class JobTimelineWidget extends StatelessWidget {
         Expanded(
           child: ListView(
             controller: scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: AppSpacing.horizontalXL,
             children: [
               _buildProjectHeader(),
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
               _buildProgressSection(),
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
               _buildAgreementSection(),
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
               _buildMaterialsSection(),
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
               _buildTimelineSection(),
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
               _buildActionButtons(context),
               const SizedBox(height: 40),
             ],
@@ -95,10 +95,10 @@ class JobTimelineWidget extends StatelessWidget {
 
   Widget _buildProjectHeader() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.softBorder),
       ),
       child: Column(
@@ -118,7 +118,7 @@ class JobTimelineWidget extends StatelessWidget {
                         color: AppColors.brownHeader,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    AppSpacing.spaceXS,
                     Text(
                       job.category,
                       style: const TextStyle(
@@ -134,7 +134,7 @@ class JobTimelineWidget extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusLG,
                 ),
                 child: Text(
                   'Active',
@@ -147,7 +147,7 @@ class JobTimelineWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Text(
             job.description,
             style: const TextStyle(
@@ -155,7 +155,7 @@ class JobTimelineWidget extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Row(
             children: [
               Expanded(
@@ -189,7 +189,7 @@ class JobTimelineWidget extends StatelessWidget {
         Row(
           children: [
             Icon(icon, size: 16, color: Colors.black54),
-            const SizedBox(width: 4),
+            AppSpacing.spaceXS,
             Text(
               label,
               style: const TextStyle(
@@ -199,7 +199,7 @@ class JobTimelineWidget extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        AppSpacing.spaceXS,
         Text(
           value,
           style: const TextStyle(
@@ -216,10 +216,10 @@ class JobTimelineWidget extends StatelessWidget {
     final progressList = job.progressUpdates ?? [];
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.softBorder),
       ),
       child: Column(
@@ -228,7 +228,7 @@ class JobTimelineWidget extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.trending_up, color: AppColors.orange),
-              const SizedBox(width: 8),
+              AppSpacing.spaceSM,
               const Text(
                 'Progress Updates',
                 style: TextStyle(
@@ -240,7 +240,7 @@ class JobTimelineWidget extends StatelessWidget {
               const Spacer(),
               Text(
                 '${progressList.length} updates',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black54,
                   fontSize: 12,
                 ),
@@ -248,8 +248,8 @@ class JobTimelineWidget extends StatelessWidget {
             ],
           ),
           if (progressList.isEmpty) ...[
-            const SizedBox(height: 16),
-            Center(
+            AppSpacing.spaceLG,
+            const Center(
               child: Column(
                 children: [
                   Icon(
@@ -257,7 +257,7 @@ class JobTimelineWidget extends StatelessWidget {
                     size: 48,
                     color: Colors.black26,
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Text(
                     'No progress updates yet',
                     style: TextStyle(
@@ -269,7 +269,7 @@ class JobTimelineWidget extends StatelessWidget {
               ),
             ),
           ] else ...[
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             ...progressList.map((update) => _buildProgressItem(update)),
           ],
         ],
@@ -280,10 +280,10 @@ class JobTimelineWidget extends StatelessWidget {
   Widget _buildProgressItem(Map<String, dynamic> update) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
+      padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.radiusMD,
         border: Border.all(color: AppColors.softBorder),
       ),
       child: Column(
@@ -316,7 +316,7 @@ class JobTimelineWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             update['description'] ?? 'Progress update',
             style: const TextStyle(
@@ -331,20 +331,20 @@ class JobTimelineWidget extends StatelessWidget {
 
   Widget _buildAgreementSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.softBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(Icons.description, color: AppColors.orange),
-              const SizedBox(width: 8),
-              const Text(
+              Icon(Icons.description, color: AppColors.orange),
+              AppSpacing.spaceSM,
+              Text(
                 'Agreement Details',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
@@ -354,7 +354,7 @@ class JobTimelineWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           if (job.agreement != null) ...[
             _buildAgreementItem(
                 'Amount', 'NGN ${job.agreement!.amount ?? job.minBudget}'),
@@ -362,7 +362,7 @@ class JobTimelineWidget extends StatelessWidget {
             if (job.agreement!.description != null)
               _buildAgreementItem('Description', job.agreement!.description!),
           ] else ...[
-            Center(
+            const Center(
               child: Column(
                 children: [
                   Icon(
@@ -370,7 +370,7 @@ class JobTimelineWidget extends StatelessWidget {
                     size: 48,
                     color: Colors.black26,
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Text(
                     'No agreement details available',
                     style: TextStyle(
@@ -403,7 +403,7 @@ class JobTimelineWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             child: Text(
               value,
@@ -429,20 +429,20 @@ class JobTimelineWidget extends StatelessWidget {
 
   Widget _buildTimelineSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.softBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(Icons.schedule, color: AppColors.orange),
-              const SizedBox(width: 8),
-              const Text(
+              Icon(Icons.schedule, color: AppColors.orange),
+              AppSpacing.spaceSM,
+              Text(
                 'Project Timeline',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
@@ -452,7 +452,7 @@ class JobTimelineWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           _buildTimelineItem(
             'Project Started',
             'Agreement accepted and work began',
@@ -495,7 +495,7 @@ class JobTimelineWidget extends StatelessWidget {
               color: isCompleted ? Colors.white : Colors.grey.shade600,
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -511,7 +511,7 @@ class JobTimelineWidget extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   description,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black54,
                     fontSize: 12,
                   ),
@@ -534,7 +534,7 @@ class JobTimelineWidget extends StatelessWidget {
             // Show progress submission modal
           },
         ),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Row(
           children: [
             Expanded(
@@ -543,7 +543,7 @@ class JobTimelineWidget extends StatelessWidget {
                 onPressed: () => _pauseProject(context),
               ),
             ),
-            const SizedBox(width: 8),
+            AppSpacing.spaceSM,
             Expanded(
               child: OutlinedAppButton(
                 text: 'Mark Complete',

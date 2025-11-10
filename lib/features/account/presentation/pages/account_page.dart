@@ -24,6 +24,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/services/push_registration_service.dart';
 import '../../../../features/notifications/data/datasources/notification_remote_data_source.dart';
+import '../../../../core/utils/responsive.dart';
 
 class SupportAccountPage extends StatefulWidget {
   const SupportAccountPage({super.key});
@@ -75,86 +76,97 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
             UserProfile? profile;
             if (state is AccountProfileLoaded) profile = state.profile;
 
-            return ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _HeaderCard(profile: profile),
-                const SizedBox(height: 16),
-                _SectionTitle('Account'),
-                _MenuTile(
-                  icon: Icons.person_outline,
-                  title: 'My Profile',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const MyProfilePage()),
-                  ),
+            return Center(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: context.maxContentWidth,
                 ),
-                _MenuTile(
-                  icon: Icons.account_balance_wallet_outlined,
-                  title: 'My Earnings',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const MyEarningsPage()),
-                  ),
+                child: ListView(
+                  padding: context.responsivePadding,
+                  children: [
+                    _HeaderCard(profile: profile),
+                    AppSpacing.spaceLG,
+                    const _SectionTitle('Account'),
+                    _MenuTile(
+                      icon: Icons.person_outline,
+                      title: 'My Profile',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => const MyProfilePage()),
+                      ),
+                    ),
+                    _MenuTile(
+                      icon: Icons.account_balance_wallet_outlined,
+                      title: 'My Earnings',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => const MyEarningsPage()),
+                      ),
+                    ),
+                    _MenuTile(
+                      icon: Icons.account_balance_outlined,
+                      title: 'Add Bank',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const AddBankPage()),
+                      ),
+                    ),
+                    _MenuTile(
+                      icon: Icons.credit_card_outlined,
+                      title: 'Subscription',
+                      onTap: () => SubscriptionModal.show(context),
+                    ),
+                    AppSpacing.spaceMD,
+                    const _SectionTitle('Help'),
+                    _MenuTile(
+                      icon: Icons.support_agent,
+                      title: 'Contact Us',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => const ContactUsPage()),
+                      ),
+                    ),
+                    _MenuTile(
+                      icon: Icons.notifications_active_outlined,
+                      title: 'Push Diagnostics',
+                      onTap: () => _showPushDiagnostics(context),
+                    ),
+                    _MenuTile(
+                      icon: Icons.confirmation_number_outlined,
+                      title: 'Raise a ticket',
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const RaiseTicketPage()),
+                        );
+                      },
+                    ),
+                    _MenuTile(
+                      icon: Icons.update_rounded,
+                      title: 'Check For Updates',
+                      onTap: () => _checkForUpdates(context),
+                    ),
+                    AppSpacing.spaceMD,
+                    const _SectionTitle('Security'),
+                    _MenuTile(
+                      icon: Icons.lock_outline,
+                      title: 'Change Password',
+                      onTap: () => _showChangePasswordDialog(context),
+                    ),
+                    _MenuTile(
+                      icon: Icons.logout,
+                      title: 'Log Out',
+                      onTap: () =>
+                          context.read<AuthBloc>().add(AuthSignedOut()),
+                    ),
+                    _MenuTile(
+                      icon: Icons.delete_outline,
+                      title: 'Delete Account',
+                      isDestructive: true,
+                      onTap: () => _showDeleteAccountDialog(context),
+                    ),
+                  ],
                 ),
-                _MenuTile(
-                  icon: Icons.account_balance_outlined,
-                  title: 'Add Bank',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AddBankPage()),
-                  ),
-                ),
-                _MenuTile(
-                  icon: Icons.credit_card_outlined,
-                  title: 'Subscription',
-                  onTap: () => SubscriptionModal.show(context),
-                ),
-                const SizedBox(height: 12),
-                _SectionTitle('Help'),
-                _MenuTile(
-                  icon: Icons.support_agent,
-                  title: 'Contact Us',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ContactUsPage()),
-                  ),
-                ),
-                _MenuTile(
-                  icon: Icons.notifications_active_outlined,
-                  title: 'Push Diagnostics',
-                  onTap: () => _showPushDiagnostics(context),
-                ),
-                _MenuTile(
-                  icon: Icons.confirmation_number_outlined,
-                  title: 'Raise a ticket',
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (_) => const RaiseTicketPage()),
-                    );
-                  },
-                ),
-                _MenuTile(
-                  icon: Icons.update_rounded,
-                  title: 'Check For Updates',
-                  onTap: () => _checkForUpdates(context),
-                ),
-                const SizedBox(height: 12),
-                _SectionTitle('Security'),
-                _MenuTile(
-                  icon: Icons.lock_outline,
-                  title: 'Change Password',
-                  onTap: () => _showChangePasswordDialog(context),
-                ),
-                _MenuTile(
-                  icon: Icons.logout,
-                  title: 'Log Out',
-                  onTap: () => context.read<AuthBloc>().add(AuthSignedOut()),
-                ),
-                _MenuTile(
-                  icon: Icons.delete_outline,
-                  title: 'Delete Account',
-                  isDestructive: true,
-                  onTap: () => _showDeleteAccountDialog(context),
-                ),
-              ],
+              ),
             );
           },
         ),
@@ -200,7 +212,8 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                   onPressed: fcmToken == '—'
                       ? null
                       : () async {
-                          await Clipboard.setData(ClipboardData(text: fcmToken));
+                          await Clipboard.setData(
+                              ClipboardData(text: fcmToken));
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('FCM token copied')),
@@ -239,7 +252,8 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
             text: 'Send Test Push',
             onPressed: () async {
               try {
-                await remote.sendTestPush(title: 'Test', body: 'Hello from app');
+                await remote.sendTestPush(
+                    title: 'Test', body: 'Hello from app');
                 if (context.mounted) {
                   Navigator.of(ctx).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -266,12 +280,15 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
   }
 
   Widget _kv(String k, String v) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: AppSpacing.verticalXS,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 120, child: Text(k, style: const TextStyle(fontWeight: FontWeight.w600))),
-            const SizedBox(width: 8),
+            SizedBox(
+                width: 120,
+                child: Text(k,
+                    style: const TextStyle(fontWeight: FontWeight.w600))),
+            AppSpacing.spaceSM,
             Expanded(child: Text(v)),
           ],
         ),
@@ -329,7 +346,7 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
               label: 'Old Password',
               showLabel: true,
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             CustomTextField(
               controller: newCtr,
               obscureText: true,
@@ -366,7 +383,7 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text('This action cannot be undone'),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             CustomTextField(
               controller: otpCtr,
               label: 'OTP (optional)',
@@ -485,7 +502,7 @@ class _HeaderCard extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(width: 12),
+            AppSpacing.spaceMD,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,7 +561,7 @@ class _MenuTile extends StatelessWidget {
           decoration: BoxDecoration(
               color: AppColors.badgeBackground,
               borderRadius: BorderRadius.circular(10)),
-          padding: const EdgeInsets.all(8),
+          padding: AppSpacing.paddingSM,
           child: Icon(icon,
               color: isDestructive ? AppColors.danger : AppColors.orange),
         ),

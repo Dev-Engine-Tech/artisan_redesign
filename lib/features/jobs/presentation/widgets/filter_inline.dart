@@ -72,7 +72,8 @@ class _FilterInlineState extends State<FilterInline> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
       builder: (c) {
         String query = '';
         return StatefulBuilder(builder: (context, setModalState) {
@@ -107,13 +108,13 @@ class _FilterInlineState extends State<FilterInline> {
                       filled: true,
                       fillColor: AppColors.cardBackground,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.radiusMD,
                           borderSide: BorderSide.none),
                     ),
                     onChanged: (v) => setModalState(() => query = v),
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 Flexible(
                     child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 360),
@@ -192,7 +193,7 @@ class _FilterInlineState extends State<FilterInline> {
               filled: true,
               fillColor: AppColors.cardBackground,
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.radiusMD,
                   borderSide: BorderSide.none),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -232,13 +233,13 @@ class _FilterInlineState extends State<FilterInline> {
               filled: true,
               fillColor: AppColors.cardBackground,
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.radiusMD,
                   borderSide: BorderSide.none),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           const Text('Local Government',
               style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
@@ -248,7 +249,7 @@ class _FilterInlineState extends State<FilterInline> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
                   color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: AppRadius.radiusMD,
                   border: Border.all(color: AppColors.subtleBorder)),
               child: Row(
                 children: [
@@ -261,7 +262,7 @@ class _FilterInlineState extends State<FilterInline> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _buildSectionTitle('Budget Type'),
           ..._budgetType.keys.map((k) => CheckboxListTile(
                 value: _budgetType[k],
@@ -278,7 +279,7 @@ class _FilterInlineState extends State<FilterInline> {
                 title: Text(k),
                 controlAffinity: ListTileControlAffinity.leading,
               )),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: PrimaryButton(
@@ -297,7 +298,7 @@ class _FilterInlineState extends State<FilterInline> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
         ],
       ),
     );

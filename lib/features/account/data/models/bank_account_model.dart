@@ -2,18 +2,12 @@ import '../../domain/entities/bank_account.dart';
 
 class BankAccountModel extends BankAccount {
   const BankAccountModel({
-    required String id,
-    required String bankName,
-    String? bankCode,
-    required String accountName,
-    required String accountNumber,
-  }) : super(
-          id: id,
-          bankName: bankName,
-          bankCode: bankCode,
-          accountName: accountName,
-          accountNumber: accountNumber,
-        );
+    required super.id,
+    required super.bankName,
+    required super.accountName,
+    required super.accountNumber,
+    super.bankCode,
+  });
 
   factory BankAccountModel.fromJson(Map<String, dynamic> json) {
     return BankAccountModel(
@@ -40,8 +34,7 @@ class BankAccountModel extends BankAccount {
 }
 
 class BankInfoModel extends BankInfo {
-  const BankInfoModel({required String name, required String code})
-      : super(name: name, code: code);
+  const BankInfoModel({required super.name, required super.code});
 
   factory BankInfoModel.fromJson(Map<String, dynamic> json) {
     return BankInfoModel(

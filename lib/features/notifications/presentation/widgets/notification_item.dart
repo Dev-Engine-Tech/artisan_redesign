@@ -8,8 +8,8 @@ class NotificationItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   const NotificationItem({
-    super.key,
     required this.notification,
+    super.key,
     this.onTap,
   });
 
@@ -19,7 +19,7 @@ class NotificationItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: notification.read ? Colors.white : Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(
           color:
               notification.read ? Colors.grey.shade200 : Colors.blue.shade200,
@@ -37,9 +37,9 @@ class NotificationItem extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.radiusLG,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.paddingLG,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -57,7 +57,7 @@ class NotificationItem extends StatelessWidget {
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppSpacing.spaceMD,
 
                 // Notification content
                 Expanded(
@@ -76,7 +76,7 @@ class NotificationItem extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 4),
+                      AppSpacing.spaceXS,
 
                       // Type/Category
                       Text(
@@ -88,7 +88,7 @@ class NotificationItem extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 8),
+                      AppSpacing.spaceSM,
 
                       // Time ago
                       Text(

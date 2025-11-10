@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({required this.title, super.key});
 
   final String title;
 
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'App is running successfully on iOS!',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20),
+            AppSpacing.spaceXL,
             const Text(
               'You have pushed the button this many times:',
             ),

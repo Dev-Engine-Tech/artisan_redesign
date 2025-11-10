@@ -6,6 +6,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/invoice.dart';
 import '../bloc/invoice_bloc.dart';
 import 'create_invoice_page.dart';
+import '../../../../core/utils/responsive.dart';
 
 class InvoicesPage extends StatefulWidget {
   final InvoiceStatus? status;
@@ -88,10 +89,10 @@ class _InvoicesPageState extends State<InvoicesPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: context.responsivePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -111,7 +112,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: _getStatusColor(invoice.status).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.radiusLG,
                     border: Border.all(color: _getStatusColor(invoice.status)),
                   ),
                   child: Text(
@@ -125,7 +126,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
               invoice.clientName,
               style: const TextStyle(
@@ -133,7 +134,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 4),
+            AppSpacing.spaceXS,
             Text(
               'Due: ${_formatDate(invoice.dueDate)}',
               style: const TextStyle(
@@ -141,7 +142,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                 color: Colors.grey,
               ),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -162,7 +163,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
                           // TODO: Implement send invoice
                         },
                       ),
-                      const SizedBox(width: 8),
+                      AppSpacing.spaceSM,
                     ],
                     TextAppButton(
                       text: 'View',
@@ -247,18 +248,18 @@ class _InvoicesPageState extends State<InvoicesPage> {
                         size: 48,
                         color: Colors.grey,
                       ),
-                      const SizedBox(height: 16),
+                      AppSpacing.spaceLG,
                       Text(
                         'Error loading invoices',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      const SizedBox(height: 8),
+                      AppSpacing.spaceSM,
                       Text(
                         state.message,
                         style: Theme.of(context).textTheme.bodyMedium,
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
+                      AppSpacing.spaceLG,
                       PrimaryButton(
                         text: 'Retry',
                         onPressed: () {
@@ -286,18 +287,18 @@ class _InvoicesPageState extends State<InvoicesPage> {
                           size: 64,
                           color: Colors.grey,
                         ),
-                        const SizedBox(height: 16),
+                        AppSpacing.spaceLG,
                         Text(
                           'No invoices yet',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Text(
                           'Create your first invoice to get started',
                           style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
+                        AppSpacing.spaceLG,
                         PrimaryButton(
                           text: 'Create Invoice',
                           onPressed: () {
@@ -311,7 +312,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
               }
 
               return ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: AppSpacing.verticalSM,
                 itemCount: invoices.length,
                 itemBuilder: (context, index) {
                   return _buildInvoiceCard(invoices[index], context);

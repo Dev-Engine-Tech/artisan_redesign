@@ -61,9 +61,9 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<BankAccount> addBankAccount({
     required String bankName,
-    String? bankCode,
     required String accountName,
     required String accountNumber,
+    String? bankCode,
   }) =>
       remote.addBankAccount(
         bankName: bankName,

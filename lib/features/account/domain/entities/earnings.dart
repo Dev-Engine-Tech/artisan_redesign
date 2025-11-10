@@ -26,9 +26,9 @@ class TransactionItem extends Equatable {
   const TransactionItem({
     required this.id,
     required this.amount,
-    this.currency = 'NGN',
     required this.status,
     required this.date,
+    this.currency = 'NGN',
     this.description,
   });
 

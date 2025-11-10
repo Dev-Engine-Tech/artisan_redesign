@@ -182,23 +182,23 @@ class OptimizedHttpService implements HttpService {
   Exception _mapDioException(DioException e) {
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
-        return HttpException(
+        return const HttpException(
             'Connection timeout. Please check your internet connection.');
       case DioExceptionType.sendTimeout:
-        return HttpException('Send timeout. Please try again.');
+        return const HttpException('Send timeout. Please try again.');
       case DioExceptionType.receiveTimeout:
-        return HttpException('Receive timeout. Please try again.');
+        return const HttpException('Receive timeout. Please try again.');
       case DioExceptionType.badResponse:
         return HttpException('Server error: ${e.response?.statusCode}');
       case DioExceptionType.cancel:
-        return HttpException('Request was cancelled.');
+        return const HttpException('Request was cancelled.');
       case DioExceptionType.connectionError:
-        return HttpException(
+        return const HttpException(
             'Connection error. Please check your internet connection.');
       case DioExceptionType.unknown:
         return HttpException('Unknown error occurred: ${e.message}');
       case DioExceptionType.badCertificate:
-        return HttpException('SSL certificate error.');
+        return const HttpException('SSL certificate error.');
     }
   }
 

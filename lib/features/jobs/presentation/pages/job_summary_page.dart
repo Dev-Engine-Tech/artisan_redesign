@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import '../../../../core/utils/responsive.dart';
 
 class JobSummaryPage extends StatelessWidget {
   final Job job;
 
-  const JobSummaryPage({super.key, required this.job});
+  const JobSummaryPage({required this.job, super.key});
 
   Color _statusColor(String status) {
     switch (status) {
@@ -49,152 +50,158 @@ class JobSummaryPage extends StatelessWidget {
             style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            // Header card
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.softBorder),
-              ),
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+            child: ListView(
+              padding: context.responsivePadding,
+              children: [
+                // Header card
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: AppRadius.radiusLG,
+                    border: Border.all(color: AppColors.softBorder),
+                  ),
+                  padding: context.responsivePadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(job.title,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(fontWeight: FontWeight.w700)),
-                            const SizedBox(height: 6),
-                            Text(job.category,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(color: Colors.black45)),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(job.title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.w700)),
+                                const SizedBox(height: 6),
+                                Text(job.category,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.black45)),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: statusColor.withValues(alpha: 0.1),
+                              borderRadius: AppRadius.radiusLG,
+                              border: Border.all(
+                                  color: statusColor.withValues(alpha: 0.4)),
+                            ),
+                            child: Text(statusText,
+                                style: TextStyle(
+                                    color: statusColor,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                        ],
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: statusColor.withValues(alpha: 0.4)),
-                        ),
-                        child: Text(statusText,
-                            style: TextStyle(
-                                color: statusColor,
-                                fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Budget: ₦${job.minBudget} - ₦${job.maxBudget}',
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          Text('Duration: ${job.duration}',
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Budget: ₦${job.minBudget} - ₦${job.maxBudget}',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text('Duration: ${job.duration}',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                ),
+
+                AppSpacing.spaceLG,
+
+                // Materials
+                if (job.materials.isNotEmpty) ...[
+                  Text('Materials',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  AppSpacing.spaceSM,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: AppRadius.radiusLG,
+                      border: Border.all(color: AppColors.subtleBorder),
+                    ),
+                    child: Column(
+                      children: job.materials.map((m) {
+                        return ListTile(
+                          title: Text(m.description),
+                          subtitle: Text('Qty: ${m.quantity ?? 1}'),
+                          trailing: Text('₦${m.price ?? 0}'),
+                        );
+                      }).toList(),
+                    ),
                   ),
+                  AppSpacing.spaceLG,
                 ],
-              ),
+
+                // Agreement block
+                if (job.agreement != null) ...[
+                  Text('Agreement',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  AppSpacing.spaceSM,
+                  Container(
+                    padding: context.responsivePadding,
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: AppRadius.radiusLG,
+                      border: Border.all(color: AppColors.subtleBorder),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Status: ${job.agreement!.status}',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        const SizedBox(height: 6),
+                        Text(
+                            'Agreed Payment: ₦${job.agreement!.agreedPayment.toStringAsFixed(0)}'),
+                        if (job.agreement!.comment.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Text('Comment: ${job.agreement!.comment}'),
+                        ]
+                      ],
+                    ),
+                  ),
+                  AppSpacing.spaceLG,
+                ],
+
+                // Client review (if available)
+                if ((job.clientReview ?? '').isNotEmpty) ...[
+                  Text('Client Review',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  AppSpacing.spaceSM,
+                  Container(
+                    padding: context.responsivePadding,
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: AppRadius.radiusLG,
+                      border: Border.all(color: AppColors.subtleBorder),
+                    ),
+                    child: Text(job.clientReview!),
+                  ),
+                  AppSpacing.spaceLG,
+                ],
+              ],
             ),
-
-            const SizedBox(height: 16),
-
-            // Materials
-            if (job.materials.isNotEmpty) ...[
-              Text('Materials',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.subtleBorder),
-                ),
-                child: Column(
-                  children: job.materials.map((m) {
-                    return ListTile(
-                      title: Text(m.description),
-                      subtitle: Text('Qty: ${m.quantity ?? 1}'),
-                      trailing: Text('₦${m.price ?? 0}'),
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Agreement block
-            if (job.agreement != null) ...[
-              Text('Agreement',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.subtleBorder),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Status: ${job.agreement!.status}',
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 6),
-                    Text(
-                        'Agreed Payment: ₦${job.agreement!.agreedPayment.toStringAsFixed(0)}'),
-                    if (job.agreement!.comment.isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      Text('Comment: ${job.agreement!.comment}'),
-                    ]
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Client review (if available)
-            if ((job.clientReview ?? '').isNotEmpty) ...[
-              Text('Client Review',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.subtleBorder),
-                ),
-                child: Text(job.clientReview!),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ],
+          ),
         ),
       ),
     );

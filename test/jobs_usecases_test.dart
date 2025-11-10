@@ -25,7 +25,7 @@ void main() {
     ));
   });
 
-  final sampleJob = Job(
+  final sampleJob = const Job(
     id: '1',
     title: 'Test Job',
     category: 'Carpentry',
@@ -38,7 +38,7 @@ void main() {
     thumbnailUrl: '',
   );
 
-  final sampleApplication = JobApplication(
+  final sampleApplication = const JobApplication(
     job: 1,
     duration: '1 week',
     proposal: 'I can complete this job excellently',

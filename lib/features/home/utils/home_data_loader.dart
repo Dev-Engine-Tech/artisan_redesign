@@ -67,7 +67,7 @@ class HomeDataLoader {
       await _requestManager.execute(
         requestId: 'account_transactions',
         request: () async {
-          accountBloc.add(AccountLoadTransactions(page: 1, limit: 10));
+          accountBloc.add(const AccountLoadTransactions(page: 1, limit: 10));
           await Future.delayed(const Duration(milliseconds: 100));
         },
       );

@@ -30,7 +30,7 @@ void main() {
         'renders title, category, address and Apply button enabled/disabled',
         (tester) async {
       // create a Job entity (applied = false)
-      final job = Job(
+      final job = const Job(
         id: 'job_local_1',
         title: 'Electrical Home Wiring',
         category: 'Electrical Engineering',

@@ -25,10 +25,10 @@ class NotificationModel extends Notification {
   const NotificationModel({
     required super.id,
     required super.createdAt,
-    super.data,
     required super.read,
     required super.title,
     required super.type,
+    super.data,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {

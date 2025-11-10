@@ -6,6 +6,8 @@ import '../../domain/entities/user_profile.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
+import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class WorkExperiencePage extends StatelessWidget {
   final List<WorkExperience> items;
@@ -29,11 +31,18 @@ class WorkExperiencePage extends StatelessWidget {
           final list = (state is AccountProfileLoaded)
               ? state.profile.workExperience
               : items;
-          if (list.isEmpty)
+          if (list.isEmpty) {
             return const Center(child: Text('No work experience yet'));
-          return ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (_, i) => _WorkTile(exp: list[i]),
+          }
+          return Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+              child: ListView.builder(
+                padding: context.responsivePadding,
+                itemCount: list.length,
+                itemBuilder: (_, i) => _WorkTile(exp: list[i]),
+              ),
+            ),
           );
         },
       ),
@@ -114,8 +123,9 @@ class _WorkFormState extends State<_WorkForm> {
         initialDate: initial,
         firstDate: DateTime(1980),
         lastDate: DateTime(now.year + 5));
-    if (picked != null)
+    if (picked != null) {
       setState(() => isStart ? startDate = picked : endDate = picked);
+    }
   }
 
   @override
@@ -123,103 +133,109 @@ class _WorkFormState extends State<_WorkForm> {
     return Scaffold(
       appBar: AppBar(
           title: Text(widget.existing == null ? 'Add Work' : 'Edit Work')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          CustomTextField(
-            controller: title,
-            label: 'Job Title',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          CustomTextField(
-            controller: company,
-            label: 'Company',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          CustomTextField(
-            controller: location,
-            label: 'Location',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          CustomTextField(
-            controller: description,
-            maxLines: 3,
-            label: 'Description',
-            showLabel: true,
-          ),
-          const SizedBox(height: 12),
-          Row(
+      body: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+          child: ListView(
+            padding: context.responsivePadding,
             children: [
-              Expanded(
-                child: OutlinedAppButton(
-                  text: startDate == null
-                      ? 'Start Date'
-                      : startDate!.toLocal().toString().split(' ').first,
-                  onPressed: () => _pickDate(true),
-                ),
+              CustomTextField(
+                controller: title,
+                label: 'Job Title',
+                showLabel: true,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedAppButton(
-                  text: endDate == null
-                      ? 'End Date'
-                      : endDate!.toLocal().toString().split(' ').first,
-                  onPressed: () => _pickDate(false),
-                ),
+              AppSpacing.spaceMD,
+              CustomTextField(
+                controller: company,
+                label: 'Company',
+                showLabel: true,
+              ),
+              AppSpacing.spaceMD,
+              CustomTextField(
+                controller: location,
+                label: 'Location',
+                showLabel: true,
+              ),
+              AppSpacing.spaceMD,
+              CustomTextField(
+                controller: description,
+                maxLines: 3,
+                label: 'Description',
+                showLabel: true,
+              ),
+              AppSpacing.spaceMD,
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedAppButton(
+                      text: startDate == null
+                          ? 'Start Date'
+                          : startDate!.toLocal().toString().split(' ').first,
+                      onPressed: () => _pickDate(true),
+                    ),
+                  ),
+                  AppSpacing.spaceSM,
+                  Expanded(
+                    child: OutlinedAppButton(
+                      text: endDate == null
+                          ? 'End Date'
+                          : endDate!.toLocal().toString().split(' ').first,
+                      onPressed: () => _pickDate(false),
+                    ),
+                  ),
+                ],
+              ),
+              SwitchListTile(
+                value: isCurrent,
+                onChanged: (v) => setState(() => isCurrent = v),
+                title: const Text("I'm currently working here"),
+              ),
+              AppSpacing.spaceXXL,
+              PrimaryButton(
+                text: widget.existing == null ? 'Add' : 'Save',
+                onPressed: () {
+                  if (startDate == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Select start date')),
+                    );
+                    return;
+                  }
+                  if (endDate != null && endDate!.isBefore(startDate!)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text('End date cannot be before start date')),
+                    );
+                    return;
+                  }
+                  if (widget.existing == null) {
+                    context.read<AccountBloc>().add(AccountAddWorkExperience(
+                          jobTitle: title.text.trim(),
+                          companyName: company.text.trim(),
+                          location: location.text.trim(),
+                          description: description.text.trim(),
+                          startDate: startDate!,
+                          endDate: endDate,
+                          isCurrent: isCurrent,
+                        ));
+                  } else {
+                    context.read<AccountBloc>().add(AccountUpdateWorkExperience(
+                          id: widget.existing!.id,
+                          jobTitle: title.text.trim(),
+                          companyName: company.text.trim(),
+                          location: location.text.trim(),
+                          description: description.text.trim(),
+                          startDate: startDate ?? widget.existing!.startDate,
+                          endDate: endDate,
+                          isCurrent: isCurrent,
+                        ));
+                  }
+                  Navigator.pop(context);
+                },
               ),
             ],
           ),
-          SwitchListTile(
-            value: isCurrent,
-            onChanged: (v) => setState(() => isCurrent = v),
-            title: const Text("I'm currently working here"),
-          ),
-          const SizedBox(height: 24),
-          PrimaryButton(
-            text: widget.existing == null ? 'Add' : 'Save',
-            onPressed: () {
-              if (startDate == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Select start date')),
-                );
-                return;
-              }
-              if (endDate != null && endDate!.isBefore(startDate!)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('End date cannot be before start date')),
-                );
-                return;
-              }
-              if (widget.existing == null) {
-                context.read<AccountBloc>().add(AccountAddWorkExperience(
-                      jobTitle: title.text.trim(),
-                      companyName: company.text.trim(),
-                      location: location.text.trim(),
-                      description: description.text.trim(),
-                      startDate: startDate!,
-                      endDate: endDate,
-                      isCurrent: isCurrent,
-                    ));
-              } else {
-                context.read<AccountBloc>().add(AccountUpdateWorkExperience(
-                      id: widget.existing!.id,
-                      jobTitle: title.text.trim(),
-                      companyName: company.text.trim(),
-                      location: location.text.trim(),
-                      description: description.text.trim(),
-                      startDate: startDate ?? widget.existing!.startDate,
-                      endDate: endDate,
-                      isCurrent: isCurrent,
-                    ));
-              }
-              Navigator.pop(context);
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -99,7 +99,7 @@ class _SplashPageState extends State<SplashPage> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: Colors.black.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.radiusLG,
                           ),
                           child: const Icon(
                             Icons.arrow_back_ios,
@@ -117,10 +117,10 @@ class _SplashPageState extends State<SplashPage> {
                       opacity: _showGetStarted ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 500),
                       child: Container(
-                        padding: const EdgeInsets.all(32),
+                        padding: AppSpacing.paddingXXXL,
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.8),
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: AppRadius.radiusXXXL,
                           border: Border.all(
                             color: Colors.white.withValues(alpha: 0.1),
                             width: 1,
@@ -140,7 +140,7 @@ class _SplashPageState extends State<SplashPage> {
                               ),
                             ),
 
-                            const SizedBox(height: 16),
+                            AppSpacing.spaceLG,
 
                             // Subtitle
                             Text(
@@ -153,7 +153,7 @@ class _SplashPageState extends State<SplashPage> {
                               ),
                             ),
 
-                            const SizedBox(height: 32),
+                            AppSpacing.spaceXXXL,
 
                             // Get Started button
                             PrimaryButton(

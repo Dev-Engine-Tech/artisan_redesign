@@ -21,8 +21,8 @@ class PrimaryButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const PrimaryButton({
-    super.key,
     required this.text,
+    super.key,
     this.onPressed,
     this.isLoading = false,
     this.icon,
@@ -48,7 +48,7 @@ class PrimaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24),
+          padding: padding ?? AppSpacing.horizontalXXL,
         ),
         child: isLoading
             ? const SizedBox(
@@ -65,7 +65,7 @@ class PrimaryButton extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(icon, size: 20),
-                      const SizedBox(width: 8),
+                      AppSpacing.spaceSM,
                       Text(
                         text,
                         style: const TextStyle(
@@ -110,8 +110,8 @@ class SecondaryButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const SecondaryButton({
-    super.key,
     required this.text,
+    super.key,
     this.onPressed,
     this.backgroundColor = AppColors.darkBlue,
     this.foregroundColor = Colors.white,
@@ -139,7 +139,8 @@ class SecondaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: padding ??
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
         child: isLoading
             ? SizedBox(
@@ -156,7 +157,7 @@ class SecondaryButton extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(icon, size: 20),
-                      const SizedBox(width: 8),
+                      AppSpacing.spaceSM,
                       Text(
                         text,
                         style: const TextStyle(
@@ -201,8 +202,8 @@ class OutlinedAppButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const OutlinedAppButton({
-    super.key,
     required this.text,
+    super.key,
     this.onPressed,
     this.borderColor = AppColors.orange,
     this.foregroundColor = AppColors.orange,
@@ -228,7 +229,8 @@ class OutlinedAppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: padding ??
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
         child: isLoading
             ? SizedBox(
@@ -245,7 +247,7 @@ class OutlinedAppButton extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(icon, size: 20),
-                      const SizedBox(width: 8),
+                      AppSpacing.spaceSM,
                       Text(
                         text,
                         style: const TextStyle(
@@ -287,8 +289,8 @@ class TextAppButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const TextAppButton({
-    super.key,
     required this.text,
+    super.key,
     this.onPressed,
     this.foregroundColor = AppColors.orange,
     this.isLoading = false,
@@ -304,7 +306,8 @@ class TextAppButton extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: TextButton.styleFrom(
         foregroundColor: foregroundColor,
-        padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       child: isLoading
           ? SizedBox(
@@ -321,7 +324,7 @@ class TextAppButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(icon, size: 20),
-                    const SizedBox(width: 8),
+                    AppSpacing.spaceSM,
                     Text(
                       text,
                       style: const TextStyle(
@@ -372,8 +375,8 @@ class AppIconButton extends StatelessWidget {
   final String? tooltip;
 
   const AppIconButton({
-    super.key,
     required this.icon,
+    super.key,
     this.onPressed,
     this.color,
     this.backgroundColor,
@@ -398,7 +401,7 @@ class AppIconButton extends StatelessWidget {
           ? IconButton.styleFrom(
               backgroundColor: backgroundColor,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.radiusMD,
               ),
             )
           : null,

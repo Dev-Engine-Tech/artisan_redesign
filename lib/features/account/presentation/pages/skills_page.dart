@@ -5,6 +5,7 @@ import '../../../../core/components/components.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class SkillsPage extends StatefulWidget {
   final List<String> initial;
@@ -30,8 +31,9 @@ class _SkillsPageState extends State<SkillsPage> {
       appBar: AppBar(title: const Text('Skills')),
       body: BlocConsumer<AccountBloc, AccountState>(
         listener: (context, state) {
-          if (state is AccountProfileLoaded)
+          if (state is AccountProfileLoaded) {
             setState(() => skills = state.profile.skills);
+          }
         },
         builder: (context, state) {
           return Padding(
@@ -51,7 +53,7 @@ class _SkillsPageState extends State<SkillsPage> {
                           ))
                       .toList(),
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
                 Row(
                   children: [
                     Expanded(
@@ -60,7 +62,7 @@ class _SkillsPageState extends State<SkillsPage> {
                         hint: 'Add a skill',
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    AppSpacing.spaceSM,
                     PrimaryButton(
                       text: 'Add',
                       onPressed: () {

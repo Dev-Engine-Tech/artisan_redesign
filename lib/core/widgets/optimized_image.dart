@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../theme.dart';
 
 /// Performance-optimized image widget following SOLID principles
 /// Single Responsibility: Handles optimized image display with caching
@@ -7,8 +8,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 /// Interface Segregation: Provides focused interface for image display
 class OptimizedImage extends StatelessWidget {
   const OptimizedImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.width,
     this.height,
     this.fit = BoxFit.cover,
@@ -118,8 +119,8 @@ class OptimizedImage extends StatelessWidget {
 /// Follows Single Responsibility Principle
 class OptimizedAvatar extends StatelessWidget {
   const OptimizedAvatar({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.size = 40,
     this.initials,
     this.backgroundColor,
@@ -189,11 +190,11 @@ class OptimizedAvatar extends StatelessWidget {
 /// Optimized for performance in scrollable views
 class OptimizedThumbnail extends StatelessWidget {
   const OptimizedThumbnail({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.width = 80,
     this.height = 80,
-    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(AppRadius.md)),
     this.heroTag,
   });
 
@@ -242,8 +243,8 @@ class OptimizedThumbnail extends StatelessWidget {
 /// Follows Single Responsibility Principle
 class OptimizedImageViewer extends StatelessWidget {
   const OptimizedImageViewer({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.heroTag,
     this.backgroundColor = Colors.black,
   });

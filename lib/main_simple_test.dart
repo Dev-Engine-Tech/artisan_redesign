@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme.dart';
-import 'features/auth/presentation/pages/splash_page.dart';
 
 /// Simple test main to verify core app functionality without problematic dependencies
 Future<void> main() async {
@@ -46,7 +44,7 @@ class TestHomePage extends StatelessWidget {
               size: 100,
               color: Colors.green,
             ),
-            SizedBox(height: 20),
+            AppSpacing.spaceXL,
             Text(
               'Core App is Working!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),

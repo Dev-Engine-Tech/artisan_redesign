@@ -15,12 +15,12 @@ import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_reque
 /// Open/Closed: Extensible for new tab types without modification
 /// Dependency Inversion: Depends on abstractions (callbacks) not concrete implementations
 class HomeTabSection extends StatefulWidget {
-  HomeTabSection({
-    super.key,
+  const HomeTabSection({
     required this.onJobTap,
     required this.onRequestTap,
     required this.applications,
     required this.onApplicationUpdate,
+    super.key,
   });
 
   final Function(Job) onJobTap;
@@ -99,7 +99,7 @@ class _HomeTabSectionState extends State<HomeTabSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTabBar(),
-        const SizedBox(height: 16),
+        AppSpacing.spaceLG,
         _buildTabContent(),
       ],
     );
@@ -110,14 +110,14 @@ class _HomeTabSectionState extends State<HomeTabSection>
     return Container(
       decoration: BoxDecoration(
         color: AppColors.softPeach,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       padding: const EdgeInsets.all(6),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.radiusMD,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -180,8 +180,8 @@ class _HomeTabSectionState extends State<HomeTabSection>
 /// Separate widget for Jobs tab following Single Responsibility Principle
 class JobsTabContent extends StatelessWidget {
   const JobsTabContent({
-    super.key,
     required this.onJobTap,
+    super.key,
   });
 
   final Function(Job) onJobTap;
@@ -201,7 +201,7 @@ class JobsTabContent extends StatelessWidget {
               children: [
                 const Icon(Icons.error_outline,
                     size: 48, color: AppColors.danger),
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
                 Text(
                   'Failed to load jobs',
                   style: TextStyle(
@@ -209,7 +209,7 @@ class JobsTabContent extends StatelessWidget {
                     fontSize: 16,
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 PrimaryButton(
                   text: 'Retry',
                   onPressed: () {
@@ -236,7 +236,7 @@ class JobsTabContent extends StatelessWidget {
           // Performance: Use ListView.builder for lazy loading
           return ListView.builder(
             itemCount: jobs.length,
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: AppSpacing.verticalSM,
             itemBuilder: (context, index) {
               final job = jobs[index];
               return Padding(
@@ -259,10 +259,10 @@ class JobsTabContent extends StatelessWidget {
 /// Separate widget for Applications tab
 class ApplicationsTabContent extends StatefulWidget {
   const ApplicationsTabContent({
-    super.key,
     required this.applications,
     required this.onJobTap,
     required this.onApplicationUpdate,
+    super.key,
   });
 
   final List<JobModel> applications;
@@ -379,8 +379,8 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
 /// Separate widget for Job Invite tab
 class JobInviteTabContent extends StatelessWidget {
   const JobInviteTabContent({
-    super.key,
     required this.onJobTap,
+    super.key,
   });
 
   final Function(Job) onJobTap;
@@ -418,7 +418,7 @@ class JobInviteTabContent extends StatelessWidget {
     // Performance: Use ListView.builder for large lists
     return ListView.builder(
       itemCount: invites.length,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: AppSpacing.verticalSM,
       itemBuilder: (context, index) {
         final job = invites[index];
         return Padding(
@@ -436,8 +436,8 @@ class JobInviteTabContent extends StatelessWidget {
 /// Separate widget for Orders tab
 class OrdersTabContent extends StatefulWidget {
   const OrdersTabContent({
-    super.key,
     required this.onRequestTap,
+    super.key,
   });
 
   final Function(CatalogRequest) onRequestTap;
@@ -491,12 +491,12 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
                 children: [
                   const Icon(Icons.error_outline,
                       size: 48, color: AppColors.danger),
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
                   Text(state.message,
                       style: TextStyle(
                           color: AppColors.darkBlue.withValues(alpha: 0.7),
                           fontSize: 16)),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   PrimaryButton(
                     text: 'Retry',
                     onPressed: () => context
@@ -518,7 +518,7 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
             }
             return ListView.builder(
               itemCount: orders.length,
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: AppSpacing.verticalSM,
               itemBuilder: (context, index) {
                 final request = orders[index];
                 final jobFromRequest = Job(
@@ -590,10 +590,10 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
 /// Reusable empty state widget following DRY principle
 class EmptyStateWidget extends StatelessWidget {
   const EmptyStateWidget({
-    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
+    super.key,
   });
 
   final IconData icon;
@@ -611,7 +611,7 @@ class EmptyStateWidget extends StatelessWidget {
             size: 64,
             color: AppColors.darkBlue.withValues(alpha: 0.3),
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Text(
             title,
             style: const TextStyle(
@@ -620,7 +620,7 @@ class EmptyStateWidget extends StatelessWidget {
               color: AppColors.darkBlue,
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             subtitle,
             style: TextStyle(

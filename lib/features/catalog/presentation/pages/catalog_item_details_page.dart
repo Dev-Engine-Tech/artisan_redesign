@@ -6,10 +6,11 @@ import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/usecases/delete_catalog.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/upload_catalogue_page.dart';
 import '../../domain/entities/catalog_item.dart';
+import '../../../../core/utils/responsive.dart';
 
 class CatalogItemDetailsPage extends StatelessWidget {
   final CatalogItem item;
-  const CatalogItemDetailsPage({super.key, required this.item});
+  const CatalogItemDetailsPage({required this.item, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,99 +34,106 @@ class CatalogItemDetailsPage extends StatelessWidget {
         title: const Text('Catalogue', style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                  ? Image.network(sanitizeImageUrl(item.imageUrl!),
-                      width: double.infinity,
-                      height: 180,
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, e, s) => Container(
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+            child: ListView(
+              padding: context.responsivePadding,
+              children: [
+                ClipRRect(
+                  borderRadius: AppRadius.radiusLG,
+                  child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                      ? Image.network(sanitizeImageUrl(item.imageUrl!),
+                          width: double.infinity,
+                          height: 180,
+                          fit: BoxFit.cover,
+                          errorBuilder: (c, e, s) => Container(
+                              height: 180,
+                              color: AppColors.softPink,
+                              child: const Center(child: Icon(Icons.image))))
+                      : Container(
                           height: 180,
                           color: AppColors.softPink,
-                          child: const Center(child: Icon(Icons.image))))
-                  : Container(
-                      height: 180,
-                      color: AppColors.softPink,
-                      child: const Center(
-                          child: Icon(Icons.image_outlined,
-                              size: 56, color: AppColors.orange))),
+                          child: const Center(
+                              child: Icon(Icons.image_outlined,
+                                  size: 56, color: AppColors.orange))),
+                ),
+                AppSpacing.spaceMD,
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                      color: AppColors.cardBackground,
+                      borderRadius: AppRadius.radiusLG,
+                      border: Border.all(color: AppColors.softBorder)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 6),
+                        if (item.ownerName != null &&
+                            item.ownerName!.isNotEmpty)
+                          Text(item.ownerName!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: Colors.black45)),
+                        AppSpacing.spaceMD,
+                        Text(item.description,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.black54)),
+                        AppSpacing.spaceMD,
+                        Wrap(spacing: 8, children: [
+                          if (item.priceMin != null)
+                            _Badge(
+                                label:
+                                    '₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
+                          if (item.projectTimeline != null)
+                            _Badge(label: item.projectTimeline!),
+                        ]),
+                      ]),
+                ),
+                const SizedBox(height: 18),
+                PrimaryButton(
+                  text: 'Edit',
+                  onPressed: () async {
+                    // Open edit flow
+                    final changed = await Navigator.of(context).push<bool>(
+                      MaterialPageRoute(
+                          builder: (_) => const UploadCataloguePage()),
+                    );
+                    if (changed == true && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Catalogue updated')));
+                    }
+                  },
+                ),
+                AppSpacing.spaceMD,
+                SecondaryButton(
+                  text: 'Delete Catalogue',
+                  onPressed: () async {
+                    final ok = await getIt<DeleteCatalog>().call(item.id);
+                    if (context.mounted) {
+                      if (ok) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Catalogue deleted')));
+                        Navigator.of(context).pop(true);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Failed to delete catalogue')));
+                      }
+                    }
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.softBorder)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    if (item.ownerName != null && item.ownerName!.isNotEmpty)
-                      Text(item.ownerName!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.black45)),
-                    const SizedBox(height: 12),
-                    Text(item.description,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.black54)),
-                    const SizedBox(height: 12),
-                    Wrap(spacing: 8, children: [
-                      if (item.priceMin != null)
-                        _Badge(
-                            label:
-                                '₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
-                      if (item.projectTimeline != null)
-                        _Badge(label: item.projectTimeline!),
-                    ]),
-                  ]),
-            ),
-            const SizedBox(height: 18),
-            PrimaryButton(
-              text: 'Edit',
-              onPressed: () async {
-                // Open edit flow
-                final changed = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(
-                      builder: (_) => const UploadCataloguePage()),
-                );
-                if (changed == true && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Catalogue updated')));
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-            SecondaryButton(
-              text: 'Delete Catalogue',
-              onPressed: () async {
-                final ok = await getIt<DeleteCatalog>().call(item.id);
-                if (context.mounted) {
-                  if (ok) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Catalogue deleted')));
-                    Navigator.of(context).pop(true);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Failed to delete catalogue')));
-                  }
-                }
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -140,7 +148,7 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-          color: AppColors.softPeach, borderRadius: BorderRadius.circular(8)),
+          color: AppColors.softPeach, borderRadius: AppRadius.radiusMD),
       child: Text(label,
           style: Theme.of(context)
               .textTheme

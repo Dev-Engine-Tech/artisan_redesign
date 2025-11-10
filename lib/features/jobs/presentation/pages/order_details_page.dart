@@ -3,11 +3,12 @@ import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/utils/responsive.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final Job job;
 
-  const OrderDetailsPage({super.key, required this.job});
+  const OrderDetailsPage({required this.job, super.key});
 
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
@@ -29,7 +30,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       margin: const EdgeInsets.only(right: 8, bottom: 6),
       decoration: BoxDecoration(
         color: AppColors.softPeach,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       child: Text(text,
           style: Theme.of(context)
@@ -49,11 +50,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     const amountYouGet = 'NGN 2,000.00';
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 12),
-      padding: const EdgeInsets.all(16),
+      margin: AppSpacing.verticalMD,
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: AppColors.subtleBorder),
       ),
       child: Column(
@@ -64,23 +65,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   .textTheme
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _agreementRow('Agreed Payment:', agreedPayment),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _agreementRow('Delivery Fee:', deliveryFee),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _agreementRow('Service Charge:', serviceCharge),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _agreementRow('WHT (2%):', wht),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           _agreementRow('Amount you will get:', amountYouGet),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(12),
+            padding: AppSpacing.paddingMD,
             decoration: BoxDecoration(
               color: AppColors.softPeach,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.radiusMD,
             ),
             child: const Text(
               'Note:\nWhatever the amount you have here needs to be agreed by the client before payments can be made.',
@@ -131,248 +132,255 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            // Buyer info header (rounded card with avatar + view profile)
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.softBorder),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Row(
-                children: [
-                  const SizedBox(width: 4),
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.grey.shade200,
-                    child:
-                        const Icon(Icons.person, color: AppColors.brownHeader),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text('Uwak Daniel',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 16)),
-                        SizedBox(height: 4),
-                        Text('@danuwk',
-                            style: TextStyle(color: Colors.black45)),
-                      ],
-                    ),
-                  ),
-                  PrimaryButton(
-                    text: 'View Profile',
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 14),
-
-            // Large image banner
-            ClipRRect(
-              borderRadius: BorderRadius.circular(18),
-              child: job.thumbnailUrl.isNotEmpty
-                  ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
-                      width: double.infinity,
-                      height: 200,
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, e, s) => Container(
-                          height: 200,
-                          color: Colors.black12,
-                          child: const Icon(Icons.image_not_supported)))
-                  : Container(
-                      width: double.infinity,
-                      height: 200,
-                      color: AppColors.softPink,
-                      child: const Center(
-                          child: Icon(Icons.home_repair_service_outlined,
-                              size: 56, color: AppColors.orange)),
-                    ),
-            ),
-
-            const SizedBox(height: 14),
-
-            // Title row + price badge
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+            child: ListView(
+              padding: context.responsivePadding,
               children: [
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(job.title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 6),
-                        Text('Abbys Furniture',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.black45)),
-                      ]),
-                ),
-                const SizedBox(width: 8),
+                // Buyer info header (rounded card with avatar + view profile)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
-                      color: AppColors.softPeach,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    color: AppColors.cardBackground,
+                    borderRadius: AppRadius.radiusLG,
+                    border: Border.all(color: AppColors.softBorder),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Row(
                     children: [
-                      Text('Price Range',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.black45)),
-                      const SizedBox(height: 6),
-                      Text('₦${job.minBudget}k - ₦${job.maxBudget}k',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.black87)),
+                      AppSpacing.spaceXS,
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.grey.shade200,
+                        child: const Icon(Icons.person,
+                            color: AppColors.brownHeader),
+                      ),
+                      AppSpacing.spaceMD,
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Uwak Daniel',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700, fontSize: 16)),
+                            AppSpacing.spaceXS,
+                            Text('@danuwk',
+                                style: TextStyle(color: Colors.black45)),
+                          ],
+                        ),
+                      ),
+                      PrimaryButton(
+                        text: 'View Profile',
+                        onPressed: () {},
+                      ),
                     ],
                   ),
-                )
-              ],
-            ),
+                ),
 
-            const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
-            // Delivery Option (address pill)
-            Text('Delivery Option',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.softPeach,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                  '15a, oladipo diya street, Lekki phase 1 Ido LGA, Lagos state.'),
-            ),
+                // Large image banner
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: job.thumbnailUrl.isNotEmpty
+                      ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                          errorBuilder: (c, e, s) => Container(
+                              height: 200,
+                              color: Colors.black12,
+                              child: const Icon(Icons.image_not_supported)))
+                      : Container(
+                          width: double.infinity,
+                          height: 200,
+                          color: AppColors.softPink,
+                          child: const Center(
+                              child: Icon(Icons.home_repair_service_outlined,
+                                  size: 56, color: AppColors.orange)),
+                        ),
+                ),
 
-            const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.softBorder),
-              ),
-              child: Text('Duration: ${job.duration}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: AppColors.brownHeader)),
-            ),
-
-            const SizedBox(height: 18),
-
-            // Description card
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.softBorder),
-              ),
-              padding: const EdgeInsets.all(16),
-              child: Column(
+                // Title row + price badge
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Description',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 10),
-                    Text(
-                      job.description,
+                    Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(job.title,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(fontWeight: FontWeight.w700)),
+                            const SizedBox(height: 6),
+                            Text('Abbys Furniture',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.black45)),
+                          ]),
+                    ),
+                    AppSpacing.spaceSM,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                          color: AppColors.softPeach,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text('Price Range',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.black45)),
+                          const SizedBox(height: 6),
+                          Text('₦${job.minBudget}k - ₦${job.maxBudget}k',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.black87)),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                AppSpacing.spaceMD,
+
+                // Delivery Option (address pill)
+                Text('Delivery Option',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                AppSpacing.spaceSM,
+                Container(
+                  width: double.infinity,
+                  padding: AppSpacing.paddingMD,
+                  decoration: BoxDecoration(
+                    color: AppColors.softPeach,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                      '15a, oladipo diya street, Lekki phase 1 Ido LGA, Lagos state.'),
+                ),
+
+                AppSpacing.spaceMD,
+
+                Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColors.softBorder),
+                  ),
+                  child: Text('Duration: ${job.duration}',
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          ?.copyWith(color: Colors.black54),
-                    ),
-                  ]),
-            ),
+                          ?.copyWith(color: AppColors.brownHeader)),
+                ),
 
-            const SizedBox(height: 18),
+                const SizedBox(height: 18),
 
-            // Add delivery charge input
-            Text('Add delivery charge',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _deliveryChargeController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Amount',
-                filled: true,
-                fillColor: AppColors.cardBackground,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            _agreementsCard(),
-
-            const SizedBox(height: 8),
-
-            // Accept / Reject
-            PrimaryButton(
-              text: 'Accept Request',
-              onPressed: () {
-                final amount = _deliveryChargeController.text.trim();
-                // For now just navigate to a summary screen with the values;
-                // in a real app this would call a service or show a confirmation.
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => OrderSummaryPage(
-                    job: job,
-                    deliveryFee: amount.isEmpty ? null : amount,
+                // Description card
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: AppRadius.radiusLG,
+                    border: Border.all(color: AppColors.softBorder),
                   ),
-                ));
-              },
+                  padding: AppSpacing.paddingLG,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Description',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 10),
+                        Text(
+                          job.description,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.black54),
+                        ),
+                      ]),
+                ),
+
+                const SizedBox(height: 18),
+
+                // Add delivery charge input
+                Text('Add delivery charge',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                AppSpacing.spaceSM,
+                TextField(
+                  controller: _deliveryChargeController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: 'Amount',
+                    filled: true,
+                    fillColor: AppColors.cardBackground,
+                    border: OutlineInputBorder(
+                        borderRadius: AppRadius.radiusLG,
+                        borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 16),
+                  ),
+                ),
+
+                AppSpacing.spaceMD,
+
+                _agreementsCard(),
+
+                AppSpacing.spaceSM,
+
+                // Accept / Reject
+                PrimaryButton(
+                  text: 'Accept Request',
+                  onPressed: () {
+                    final amount = _deliveryChargeController.text.trim();
+                    // For now just navigate to a summary screen with the values;
+                    // in a real app this would call a service or show a confirmation.
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => OrderSummaryPage(
+                        job: job,
+                        deliveryFee: amount.isEmpty ? null : amount,
+                      ),
+                    ));
+                  },
+                ),
+
+                AppSpacing.spaceMD,
+
+                OutlinedAppButton(
+                  text: 'Reject Request',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Request rejected')));
+                  },
+                ),
+
+                const SizedBox(height: 40),
+              ],
             ),
-
-            const SizedBox(height: 12),
-
-            OutlinedAppButton(
-              text: 'Reject Request',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Request rejected')));
-              },
-            ),
-
-            const SizedBox(height: 40),
-          ],
+          ),
         ),
       ),
     );
@@ -383,7 +391,7 @@ class OrderSummaryPage extends StatelessWidget {
   final Job job;
   final String? deliveryFee;
 
-  const OrderSummaryPage({super.key, required this.job, this.deliveryFee});
+  const OrderSummaryPage({required this.job, super.key, this.deliveryFee});
 
   @override
   Widget build(BuildContext context) {
@@ -417,82 +425,87 @@ class OrderSummaryPage extends StatelessWidget {
             style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            // brief summary
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.softBorder),
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(job.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 6),
-                    Text(job.category,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.black45)),
-                    const SizedBox(height: 8),
-                    Text(job.description,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                  ]),
-            ),
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+            child: ListView(
+              padding: context.responsivePadding,
+              children: [
+                // brief summary
+                Container(
+                  padding: AppSpacing.paddingMD,
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: AppRadius.radiusLG,
+                    border: Border.all(color: AppColors.softBorder),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(job.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 6),
+                        Text(job.category,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.black45)),
+                        AppSpacing.spaceSM,
+                        Text(job.description,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ]),
+                ),
 
-            const SizedBox(height: 12),
-            // Agreements block
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.subtleBorder),
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Agreements',
-                        style: TextStyle(fontWeight: FontWeight.w700)),
-                    const SizedBox(height: 8),
-                    _summaryRow(context, 'Agreed Payment',
-                        'NGN ${agreedPayment.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    _summaryRow(context, 'Delivery Fee',
-                        'NGN ${delivery.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    _summaryRow(context, 'Service Charge',
-                        'NGN ${serviceCharge.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    _summaryRow(
-                        context, 'WHT (2%)', 'NGN ${wht.toStringAsFixed(2)}'),
-                    const SizedBox(height: 12),
-                    _summaryRow(context, 'Amount you will get',
-                        'NGN ${amountYouGet.toStringAsFixed(2)}'),
-                  ]),
-            ),
+                AppSpacing.spaceMD,
+                // Agreements block
+                Container(
+                  padding: AppSpacing.paddingMD,
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
+                    borderRadius: AppRadius.radiusLG,
+                    border: Border.all(color: AppColors.subtleBorder),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Agreements',
+                            style: TextStyle(fontWeight: FontWeight.w700)),
+                        AppSpacing.spaceSM,
+                        _summaryRow(context, 'Agreed Payment',
+                            'NGN ${agreedPayment.toStringAsFixed(2)}'),
+                        const SizedBox(height: 6),
+                        _summaryRow(context, 'Delivery Fee',
+                            'NGN ${delivery.toStringAsFixed(2)}'),
+                        const SizedBox(height: 6),
+                        _summaryRow(context, 'Service Charge',
+                            'NGN ${serviceCharge.toStringAsFixed(2)}'),
+                        const SizedBox(height: 6),
+                        _summaryRow(context, 'WHT (2%)',
+                            'NGN ${wht.toStringAsFixed(2)}'),
+                        AppSpacing.spaceMD,
+                        _summaryRow(context, 'Amount you will get',
+                            'NGN ${amountYouGet.toStringAsFixed(2)}'),
+                      ]),
+                ),
 
-            const SizedBox(height: 18),
-            PrimaryButton(
-              text: 'Submit',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Order confirmed')));
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
+                const SizedBox(height: 18),
+                PrimaryButton(
+                  text: 'Submit',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Order confirmed')));
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                ),
+                AppSpacing.spaceMD,
+              ],
             ),
-            const SizedBox(height: 12),
-          ],
+          ),
         ),
       ),
     );

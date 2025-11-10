@@ -14,7 +14,7 @@ class MaterialsTab extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<InvoiceFormCubit>();
         final children = <Widget>[
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
@@ -60,7 +60,7 @@ class MaterialsTab extends StatelessWidget {
           ));
         }
 
-        if (!readOnly)
+        if (!readOnly) {
           children.add(
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -75,15 +75,16 @@ class MaterialsTab extends StatelessWidget {
               ),
             ),
           );
+        }
         // Summary for materials total
         children.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: AppSpacing.paddingMD,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.radiusMD,
                 color: Colors.white,
               ),
               child: Row(
@@ -146,12 +147,15 @@ class _MaterialRowState extends State<_MaterialRow> {
   @override
   void didUpdateWidget(covariant _MaterialRow oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.description != widget.description)
+    if (oldWidget.description != widget.description) {
       _desc.text = widget.description;
-    if (oldWidget.quantity != widget.quantity)
+    }
+    if (oldWidget.quantity != widget.quantity) {
       _qty.text = widget.quantity.toString();
-    if (oldWidget.unitPrice != widget.unitPrice)
+    }
+    if (oldWidget.unitPrice != widget.unitPrice) {
       _price.text = widget.unitPrice.toString();
+    }
   }
 
   @override
@@ -185,7 +189,7 @@ class _MaterialRowState extends State<_MaterialRow> {
               onChanged: widget.onDescChanged,
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 1,
             child: TextField(
@@ -196,7 +200,7 @@ class _MaterialRowState extends State<_MaterialRow> {
               onChanged: (v) => widget.onQtyChanged(double.tryParse(v) ?? 0),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 2,
             child: TextField(
@@ -207,7 +211,7 @@ class _MaterialRowState extends State<_MaterialRow> {
               onChanged: (v) => widget.onPriceChanged(double.tryParse(v) ?? 0),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             flex: 2,
             child: Text(

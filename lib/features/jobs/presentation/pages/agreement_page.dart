@@ -5,6 +5,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
+import '../../../../core/utils/responsive.dart';
 
 /// Adaptive Agreement UI
 /// - Call `showAgreementAdaptive(context, job)` to present the agreement.
@@ -43,7 +44,7 @@ Future<T?> showAgreementAdaptive<T>(BuildContext context, Job job) {
 class AgreementPage extends StatelessWidget {
   final Job job;
 
-  const AgreementPage({super.key, required this.job});
+  const AgreementPage({required this.job, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class AgreementPage extends StatelessWidget {
     // key labels like 'Project Agreement' and 'Agreed Payment' without scrolling.
     final paymentSummary = Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: context.responsivePadding,
       color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +100,7 @@ class AgreementPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.all(16),
+        minimum: AppSpacing.paddingLG,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -113,7 +114,7 @@ class AgreementPage extends StatelessWidget {
                     .add(AcceptAgreementEvent(jobId: job.id));
               },
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             OutlinedAppButton(
               text: 'Request Changes',
               onPressed: () => Navigator.of(context).pop('request_changes'),
@@ -135,8 +136,8 @@ class AgreementContent extends StatelessWidget {
   final ScrollController? scrollController;
 
   const AgreementContent({
-    super.key,
     required this.job,
+    super.key,
     this.showActionsInline = false,
     this.scrollController,
   });
@@ -149,19 +150,19 @@ class AgreementContent extends StatelessWidget {
 
     // Content card + agreement card
     final content = <Widget>[
-      const SizedBox(height: 12),
+      AppSpacing.spaceMD,
       // content card
       Container(
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.radiusMD,
           border: Border.all(color: AppColors.softBorder),
         ),
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Job Details',
               style: TextStyle(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(job.title,
               style: Theme.of(context)
                   .textTheme
@@ -173,17 +174,17 @@ class AgreementContent extends StatelessWidget {
                   .textTheme
                   .bodySmall
                   ?.copyWith(color: Colors.black45)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
         ]),
       ),
-      const SizedBox(height: 16),
+      AppSpacing.spaceLG,
 
       // Application Details (distinct from Job Details)
       Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.radiusMD,
           border: Border.all(color: AppColors.subtleBorder),
         ),
         padding: const EdgeInsets.all(14),
@@ -196,26 +197,26 @@ class AgreementContent extends StatelessWidget {
                           .textTheme
                           .titleMedium
                           ?.copyWith(fontWeight: FontWeight.w700))),
-              Icon(Icons.expand_more, color: AppColors.brownHeader),
+              const Icon(Icons.expand_more, color: AppColors.brownHeader),
             ],
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Text('Project proposal',
               style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 6),
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 12),
-          Text('How long will this project take you?',
+          AppSpacing.spaceMD,
+          const Text('How long will this project take you?',
               style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           Text(job.duration, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 12),
-          Text('How do you want to be paid?',
+          AppSpacing.spaceMD,
+          const Text('How do you want to be paid?',
               style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           Text('By Project', style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 12),
-          Text('Desired pay (optional)',
+          AppSpacing.spaceMD,
+          const Text('Desired pay (optional)',
               style: TextStyle(color: Colors.black54)),
           const SizedBox(height: 6),
           Text('NGN ${job.minBudget}',
@@ -223,7 +224,7 @@ class AgreementContent extends StatelessWidget {
                   .textTheme
                   .bodyMedium
                   ?.copyWith(color: AppColors.brownHeader)),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
 
           // Material list
           Text('Material List',
@@ -231,7 +232,7 @@ class AgreementContent extends StatelessWidget {
                   .textTheme
                   .titleSmall
                   ?.copyWith(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Container(
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
@@ -278,27 +279,25 @@ class AgreementContent extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 // row 1
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 10),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
-                      const Expanded(flex: 5, child: Text('1 by 12 wood')),
-                      const Expanded(flex: 2, child: Text('100')),
-                      const Expanded(flex: 3, child: Text('NGN 14,000')),
+                      Expanded(flex: 5, child: Text('1 by 12 wood')),
+                      Expanded(flex: 2, child: Text('100')),
+                      Expanded(flex: 3, child: Text('NGN 14,000')),
                     ],
                   ),
                 ),
                 const Divider(height: 1),
                 // row 2
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 10),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
-                      const Expanded(flex: 5, child: Text('Zinc Nail')),
-                      const Expanded(flex: 2, child: Text('2 bags')),
-                      const Expanded(flex: 3, child: Text('NGN 80,000')),
+                      Expanded(flex: 5, child: Text('Zinc Nail')),
+                      Expanded(flex: 2, child: Text('2 bags')),
+                      Expanded(flex: 3, child: Text('NGN 80,000')),
                     ],
                   ),
                 ),
@@ -328,13 +327,13 @@ class AgreementContent extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Text('Attached Files', style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Container(
             decoration: BoxDecoration(
               color: const Color(0xFF9C27B0).withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.radiusMD,
               border: Border.all(
                   color: const Color(0xFF9C27B0).withValues(alpha: 0.15)),
             ),
@@ -346,10 +345,10 @@ class AgreementContent extends StatelessWidget {
                     height: 40,
                     decoration: BoxDecoration(
                         color: AppColors.orange,
-                        borderRadius: BorderRadius.circular(8)),
+                        borderRadius: AppRadius.radiusMD),
                     child:
                         const Icon(Icons.picture_as_pdf, color: Colors.white)),
-                const SizedBox(width: 12),
+                AppSpacing.spaceMD,
                 Expanded(
                     child: Text(
                         'Sample project\n867 Kb · 14 Feb 2022 at 11:30 am',
@@ -364,7 +363,7 @@ class AgreementContent extends StatelessWidget {
       Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.radiusMD,
           border: Border.all(color: AppColors.subtleBorder),
         ),
         padding: const EdgeInsets.all(14),
@@ -383,7 +382,7 @@ class AgreementContent extends StatelessWidget {
                   Expanded(
                       child: Text(label,
                           style: const TextStyle(color: Colors.black54))),
-                  const SizedBox(width: 8),
+                  AppSpacing.spaceSM,
                   Text(value,
                       style:
                           valueStyle ?? Theme.of(context).textTheme.bodyMedium),
@@ -402,7 +401,7 @@ class AgreementContent extends StatelessWidget {
                             .textTheme
                             .titleMedium
                             ?.copyWith(fontWeight: FontWeight.w700)),
-                    const SizedBox(width: 8),
+                    AppSpacing.spaceSM,
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
@@ -417,14 +416,14 @@ class AgreementContent extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
                 // Breakdown box (matches design blue-framed area)
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: AppColors.softBorder),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  padding: const EdgeInsets.all(12),
+                  padding: AppSpacing.paddingMD,
                   child: Column(
                     children: [
                       row('Agreed Payment:', 'NGN ${agreed.toString()}',
@@ -453,28 +452,28 @@ class AgreementContent extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
                 const Text('Agreed Delivery Date',
                     style: TextStyle(color: Colors.black54)),
                 const SizedBox(height: 6),
                 const Text(agreedDate, style: TextStyle(color: Colors.black87)),
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
                 const Text('Comment', style: TextStyle(color: Colors.black54)),
                 const SizedBox(height: 6),
                 Text(comment, style: Theme.of(context).textTheme.bodyMedium),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
               ]);
         }),
       ),
-      const SizedBox(height: 16),
+      AppSpacing.spaceLG,
     ];
 
     if (showActionsInline) {
       // Buttons included inside scrollable content (for sheets)
       content.addAll([
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: AppSpacing.horizontalLG,
           child: Column(
             children: [
               PrimaryButton(
@@ -486,12 +485,12 @@ class AgreementContent extends StatelessWidget {
                       .add(AcceptAgreementEvent(jobId: job.id));
                 },
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               OutlinedAppButton(
                 text: 'Request Changes',
                 onPressed: () => Navigator.of(context).pop('request_changes'),
               ),
-              const SizedBox(height: 24),
+              AppSpacing.spaceXXL,
             ],
           ),
         ),
@@ -518,7 +517,7 @@ class AgreementContent extends StatelessWidget {
       child: SafeArea(
         child: ListView(
           controller: scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: AppSpacing.horizontalLG,
           children: content,
         ),
       ),

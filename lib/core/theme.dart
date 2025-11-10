@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'theme/theme_extensions.dart';
+
+export 'theme/theme_extensions.dart';
 
 class AppColors {
   // refined palette to better match the design screenshots
@@ -33,16 +36,16 @@ class AppThemes {
         secondary: AppColors.darkBlue,
         surface: AppColors.cardBackground,
       ),
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.brownHeader,
         foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
       ),
       cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.radiusLG,
         ),
         elevation: 0,
       ),
@@ -51,7 +54,7 @@ class AppThemes {
           backgroundColor: AppColors.orange,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.radiusMD,
           ),
         ),
       ),
@@ -60,7 +63,7 @@ class AppThemes {
           foregroundColor: AppColors.orange,
           side: const BorderSide(color: AppColors.subtleBorder),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.radiusMD,
           ),
         ),
       ),
@@ -84,7 +87,7 @@ class AppThemes {
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         border: OutlineInputBorder(
           borderSide: const BorderSide(color: AppColors.subtleBorder),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.radiusMD,
         ),
       ),
     );
@@ -101,16 +104,16 @@ class AppThemes {
         secondary: AppColors.darkBlue,
         surface: const Color(0xFF2A2623),
       ),
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.brownHeader,
         foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
       ),
       cardTheme: CardThemeData(
         color: const Color(0xFF2A2623),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.radiusLG,
         ),
         elevation: 0,
       ),
@@ -119,7 +122,7 @@ class AppThemes {
           backgroundColor: AppColors.orange,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: AppRadius.radiusMD,
           ),
         ),
       ),
@@ -136,7 +139,7 @@ class AppThemes {
             const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         border: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.transparent),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.radiusMD,
         ),
       ),
     );

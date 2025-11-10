@@ -261,9 +261,9 @@ mixin PerformanceTrackingMixin<T extends StatefulWidget> on State<T> {
 /// Performance wrapper widget for tracking custom widgets
 class PerformanceTracker extends StatefulWidget {
   const PerformanceTracker({
-    super.key,
     required this.name,
     required this.child,
+    super.key,
   });
 
   final String name;

@@ -153,7 +153,7 @@ class _FakeCatalogRepository implements CatalogRepository {
   @override
   Future<List<CatalogItem>> getMyCatalogItems({int page = 1}) async {
     return [
-      CatalogItem(
+      const CatalogItem(
         id: 'cat1',
         title: 'Catalog Max Only',
         description: 'desc',
@@ -165,7 +165,7 @@ class _FakeCatalogRepository implements CatalogRepository {
         status: null,
         projectStatus: null,
       ),
-      CatalogItem(
+      const CatalogItem(
         id: 'cat2',
         title: 'Catalog Min Only',
         description: 'desc',

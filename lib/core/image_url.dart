@@ -4,10 +4,10 @@ String sanitizeImageUrl(String? url) {
   if (s.isEmpty) return s;
   // Fix common bad paths coming from backend
   if (s.startsWith('/media/https:/')) {
-    return 'https://' + s.replaceFirst('/media/https:/', '');
+    return 'https://${s.replaceFirst('/media/https:/', '')}';
   }
   if (s.startsWith('/media/http:/')) {
-    return 'http://' + s.replaceFirst('/media/http:/', '');
+    return 'http://${s.replaceFirst('/media/http:/', '')}';
   }
   // Fix missing slash in protocol (https:/ -> https://)
   if (s.startsWith('https:/') && !s.startsWith('https://')) {

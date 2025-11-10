@@ -20,8 +20,8 @@ class DiscoverJobCard extends StatelessWidget {
   final VoidCallback? onSave;
 
   const DiscoverJobCard({
-    super.key,
     required this.job,
+    super.key,
     this.onTap,
     this.showShareButton = true,
     this.onShare,
@@ -47,12 +47,12 @@ class DiscoverJobCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppRadius.radiusXL,
               border: Border.all(color: AppColors.subtleBorder),
             ),
             child: Column(
@@ -63,8 +63,8 @@ class DiscoverJobCard extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
+                        topLeft: Radius.circular(AppRadius.xl),
+                        topRight: Radius.circular(AppRadius.xl),
                       ),
                       child: job.thumbnailUrl.isNotEmpty
                           ? OptimizedImage(
@@ -95,7 +95,7 @@ class DiscoverJobCard extends StatelessWidget {
                                 }
                               },
                             ),
-                            const SizedBox(width: 8),
+                            AppSpacing.spaceSM,
                           ],
                           if (showSaveButton)
                             _buildActionButton(
@@ -115,7 +115,7 @@ class DiscoverJobCard extends StatelessWidget {
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.black.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: AppRadius.radiusLG,
                         ),
                         child: Text(
                           _getTimeAgo(),
@@ -142,7 +142,7 @@ class DiscoverJobCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child: Text(job.title, style: titleStyle)),
-                          const SizedBox(width: 8),
+                          AppSpacing.spaceSM,
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 6),

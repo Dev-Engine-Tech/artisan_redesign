@@ -7,6 +7,7 @@ import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/progress_submission_modal.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_timeline_widget.dart';
+import '../../../../core/utils/responsive.dart';
 
 class OngoingJobsPage extends StatefulWidget {
   const OngoingJobsPage({super.key});
@@ -107,14 +108,14 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
 
   Widget _buildFiltersAndSearch() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       color: Colors.white,
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusLG,
               border: Border.all(color: AppColors.softBorder),
             ),
             child: TextField(
@@ -144,20 +145,20 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           SizedBox(
             height: 36,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
                 _buildFilterChip('All', 'all'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Started', 'inProgress'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Awaiting Client', 'pending_approval'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Paused', 'paused'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Near Deadline', 'urgent'),
               ],
             ),
@@ -267,12 +268,12 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.work_outline,
             size: 64,
             color: Colors.black26,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Text(
             _searchQuery.isNotEmpty
                 ? 'No projects match your search'
@@ -282,7 +283,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             _searchQuery.isNotEmpty
                 ? 'Try adjusting your search filters'
@@ -307,7 +308,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
             size: 64,
             color: Colors.red.shade300,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Text(
             'Error loading projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -315,7 +316,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -323,7 +324,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                 ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           PrimaryButton(
             text: 'Retry',
             onPressed: () {
@@ -342,9 +343,9 @@ class OngoingJobCard extends StatelessWidget {
   final VoidCallback onStatusUpdate;
 
   const OngoingJobCard({
-    super.key,
     required this.job,
     required this.onStatusUpdate,
+    super.key,
   });
 
   @override
@@ -353,7 +354,7 @@ class OngoingJobCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -375,11 +376,11 @@ class OngoingJobCard extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      padding: context.responsivePadding,
+      decoration: const BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(12),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadius.lg),
         ),
       ),
       child: Row(
@@ -397,7 +398,7 @@ class OngoingJobCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.spaceXS,
                 Text(
                   job.category,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -407,7 +408,7 @@ class OngoingJobCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           _buildStatusBadge(),
         ],
       ),
@@ -444,13 +445,13 @@ class OngoingJobCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: textColor),
-          const SizedBox(width: 4),
+          AppSpacing.spaceXS,
           Text(
             statusText,
             style: TextStyle(
@@ -466,7 +467,7 @@ class OngoingJobCard extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -476,9 +477,9 @@ class OngoingJobCard extends StatelessWidget {
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _buildProgressIndicator(),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _buildProjectDetails(context),
         ],
       ),
@@ -495,7 +496,7 @@ class OngoingJobCard extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Progress',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -505,7 +506,7 @@ class OngoingJobCard extends StatelessWidget {
             ),
             Text(
               '$progressPercent%',
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.brownHeader,
                 fontSize: 14,
@@ -513,9 +514,9 @@ class OngoingJobCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: AppRadius.radiusSM,
           child: LinearProgressIndicator(
             value: progress,
             backgroundColor: AppColors.cardBackground,
@@ -563,7 +564,7 @@ class OngoingJobCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 14, color: Colors.black54),
-        const SizedBox(width: 4),
+        AppSpacing.spaceXS,
         Expanded(
           child: Text(
             text,
@@ -601,13 +602,13 @@ class OngoingJobCard extends StatelessWidget {
 
   Widget _buildFooter(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       decoration: const BoxDecoration(
         border: Border(
           top: BorderSide(color: AppColors.softBorder),
         ),
         borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(12),
+          bottom: Radius.circular(AppRadius.lg),
         ),
       ),
       child: Row(
@@ -618,7 +619,7 @@ class OngoingJobCard extends StatelessWidget {
               onPressed: () => _showProgressSubmission(context),
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             child: PrimaryButton(
               text: 'View Details',
@@ -659,7 +660,7 @@ class OngoingJobCard extends StatelessWidget {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
+              top: Radius.circular(AppRadius.xxl),
             ),
           ),
           child: JobTimelineWidget(

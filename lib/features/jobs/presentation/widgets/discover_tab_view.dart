@@ -10,10 +10,10 @@ class DiscoverTabView extends StatefulWidget {
   final double height;
 
   const DiscoverTabView({
-    super.key,
     required this.tabs,
     required this.contentBuilder,
     required this.onTabChanged,
+    super.key,
     this.initialIndex = 0,
     this.height = 46,
   });
@@ -68,7 +68,7 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
             controller: _tabController,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+            labelPadding: AppSpacing.horizontalSM,
             indicator: const BoxDecoration(),
             dividerColor: Colors.transparent,
             tabs: widget.tabs.asMap().entries.map((entry) {
@@ -98,10 +98,10 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
   Widget _buildTabChip(DiscoverTab tab, bool isSelected) {
     return Container(
       height: widget.height,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: AppSpacing.horizontalLG,
       decoration: BoxDecoration(
         color: isSelected ? AppColors.softPink : AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppRadius.radiusXXXL,
         border: Border.all(
           color: isSelected ? AppColors.softPink : AppColors.subtleBorder,
         ),
@@ -118,12 +118,12 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
             ),
           ),
           if (tab.count != null) ...[
-            const SizedBox(width: 8),
+            AppSpacing.spaceSM,
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: AppRadius.radiusLG,
               ),
               child: Text(
                 tab.count!.toString(),
@@ -172,8 +172,8 @@ class DiscoverTabContent extends StatelessWidget {
   final Widget? emptyState;
 
   const DiscoverTabContent({
-    super.key,
     required this.child,
+    super.key,
     this.isLoading = false,
     this.error,
     this.onRetry,
@@ -193,7 +193,7 @@ class DiscoverTabContent extends StatelessWidget {
     if (error != null) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLG,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -202,14 +202,14 @@ class DiscoverTabContent extends StatelessWidget {
                 size: 48,
                 color: Colors.red.withValues(alpha: 0.7),
               ),
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
               Text(
                 'Oops! Something went wrong',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Text(
                 error!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -218,7 +218,7 @@ class DiscoverTabContent extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               if (onRetry != null) ...[
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
                 PrimaryButton(
                   text: 'Try Again',
                   onPressed: onRetry,
@@ -258,7 +258,7 @@ class DiscoverTabsShimmer extends StatelessWidget {
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(
               color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: AppRadius.radiusXXXL,
             ),
           );
         }),

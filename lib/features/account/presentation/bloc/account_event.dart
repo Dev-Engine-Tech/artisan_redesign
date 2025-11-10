@@ -49,9 +49,9 @@ class AccountAddBankAccount extends AccountEvent {
   final String accountNumber;
   const AccountAddBankAccount({
     required this.bankName,
-    this.bankCode,
     required this.accountName,
     required this.accountNumber,
+    this.bankCode,
   });
 }
 
@@ -118,9 +118,9 @@ class AccountAddWorkExperience extends AccountEvent {
   const AccountAddWorkExperience({
     required this.jobTitle,
     required this.companyName,
+    required this.startDate,
     this.location,
     this.description,
-    required this.startDate,
     this.endDate,
     this.isCurrent = false,
   });
@@ -139,9 +139,9 @@ class AccountUpdateWorkExperience extends AccountEvent {
     required this.id,
     required this.jobTitle,
     required this.companyName,
+    required this.startDate,
     this.location,
     this.description,
-    required this.startDate,
     this.endDate,
     this.isCurrent = false,
   });
@@ -162,8 +162,8 @@ class AccountAddEducation extends AccountEvent {
   const AccountAddEducation({
     required this.schoolName,
     required this.fieldOfStudy,
-    this.degree,
     required this.startDate,
+    this.degree,
     this.endDate,
     this.description,
   });
@@ -181,8 +181,8 @@ class AccountUpdateEducation extends AccountEvent {
     required this.id,
     required this.schoolName,
     required this.fieldOfStudy,
-    this.degree,
     required this.startDate,
+    this.degree,
     this.endDate,
     this.description,
   });

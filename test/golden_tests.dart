@@ -24,9 +24,9 @@ void main() {
   // images which you can commit and use to ensure pixel-perfect regressions.
 
   testWidgets('DiscoverPage golden', (WidgetTester tester) async {
-    final widget = MediaQuery(
-      data: const MediaQueryData(size: Size(390, 844)),
-      child: const MaterialApp(home: DiscoverPage(showHeader: true)),
+    final widget = const MediaQuery(
+      data: MediaQueryData(size: Size(390, 844)),
+      child: MaterialApp(home: DiscoverPage(showHeader: true)),
     );
 
     await tester.pumpWidget(widget);
@@ -41,7 +41,7 @@ void main() {
 
   testWidgets('JobDetailsPage golden', (WidgetTester tester) async {
     // Create a sample job model (matches fake datasource shape)
-    final job = JobModel(
+    final job = const JobModel(
       id: 'golden_job',
       title: 'Cushion Chair',
       category: 'Furniture',

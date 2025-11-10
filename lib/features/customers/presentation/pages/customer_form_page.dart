@@ -80,10 +80,10 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      padding: const EdgeInsets.all(24),
+      padding: AppSpacing.paddingXXL,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppRadius.radiusXXL,
         boxShadow: [
           BoxShadow(
             color: AppColors.subtleBorder.withValues(alpha: 0.3),
@@ -105,7 +105,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
+            AppSpacing.spaceXS,
             Text(
               subtitle,
               style: TextStyle(
@@ -115,13 +115,12 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
               ),
             ),
           ],
-          const SizedBox(height: 20),
+          AppSpacing.spaceXL,
           ...children,
         ],
       ),
     );
   }
-
 
   String? _validateEmail(String? value) {
     if (value?.isEmpty ?? true) {
@@ -266,7 +265,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  const SizedBox(height: 16),
+                  AppSpacing.spaceLG,
 
                   // Basic Information Section
                   _buildSection(
@@ -332,7 +331,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                               style: CustomTextFieldStyle.outlined,
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          AppSpacing.spaceLG,
                           Expanded(
                             child: CustomTextFormField(
                               controller: _stateController,
@@ -355,7 +354,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                               style: CustomTextFieldStyle.outlined,
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          AppSpacing.spaceLG,
                           Expanded(
                             child: CustomTextFormField(
                               controller: _postalCodeController,
@@ -386,11 +385,11 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                     ],
                   ),
 
-                  const SizedBox(height: 32),
+                  AppSpacing.spaceXXXL,
 
                   // Save Button
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: AppSpacing.horizontalXXL,
                     child: PrimaryButton(
                       text: _isEditing ? 'Update Customer' : 'Create Customer',
                       onPressed: _saveCustomer,

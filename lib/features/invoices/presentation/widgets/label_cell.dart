@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
-import '../../domain/entities/invoice.dart'
-    show InvoiceItem; // not used, placeholder
+// not used, placeholder
 import '../cubit/invoice_form_cubit.dart';
 
 class LabelCell extends StatelessWidget {
   const LabelCell({
-    super.key,
     required this.labelController,
     required this.unitPriceController,
+    super.key,
     this.readOnly = false,
     this.catalogId,
     this.onCatalogChanged,
@@ -66,7 +65,7 @@ class LabelCell extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (ctx) {
         final searchController = TextEditingController();
@@ -92,7 +91,7 @@ class LabelCell extends StatelessWidget {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Container(
                           height: 4,
                           width: 36,
@@ -101,11 +100,11 @@ class LabelCell extends StatelessWidget {
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
                         const Text('Select from Catalog',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 12),
+                        AppSpacing.spaceMD,
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: TextField(
@@ -119,7 +118,7 @@ class LabelCell extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         if (state.loadingCatalogs)
                           const Padding(
                             padding: EdgeInsets.all(16.0),
@@ -171,7 +170,7 @@ class LabelCell extends StatelessWidget {
                               },
                             ),
                           ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                       ],
                     );
                   }),

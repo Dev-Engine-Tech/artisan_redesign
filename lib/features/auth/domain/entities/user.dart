@@ -37,13 +37,13 @@ class User {
   final int? ongoingJobs;
 
   User({
-    this.id,
     required this.phone,
     required this.firstName,
     required this.lastName,
+    required this.isArtisan,
+    this.id,
     this.email,
     this.referralCode,
-    required this.isArtisan,
     this.profilePictureUrl,
     this.bio,
     this.skills,

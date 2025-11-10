@@ -10,9 +10,9 @@ class ProgressSubmissionModal extends StatefulWidget {
   final VoidCallback onSubmitted;
 
   const ProgressSubmissionModal({
-    super.key,
     required this.job,
     required this.onSubmitted,
+    super.key,
   });
 
   @override
@@ -112,7 +112,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(20),
+                top: Radius.circular(AppRadius.xxl),
               ),
             ),
             child: Column(
@@ -127,7 +127,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: AppSpacing.paddingXL,
                   child: Row(
                     children: [
                       Expanded(
@@ -144,7 +144,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                     color: AppColors.brownHeader,
                                   ),
                             ),
-                            const SizedBox(height: 4),
+                            AppSpacing.spaceXS,
                             Text(
                               'Update your client on project progress',
                               style: Theme.of(context)
@@ -163,7 +163,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                         style: IconButton.styleFrom(
                           backgroundColor: AppColors.cardBackground,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                           ),
                         ),
                       ),
@@ -175,13 +175,13 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                     key: _formKey,
                     child: ListView(
                       controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: AppSpacing.horizontalXL,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(16),
+                          padding: AppSpacing.paddingLG,
                           decoration: BoxDecoration(
                             color: AppColors.cardBackground,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: AppRadius.radiusLG,
                             border: Border.all(color: AppColors.softBorder),
                           ),
                           child: Column(
@@ -197,7 +197,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                       color: AppColors.brownHeader,
                                     ),
                               ),
-                              const SizedBox(height: 4),
+                              AppSpacing.spaceXS,
                               Text(
                                 widget.job.category,
                                 style: Theme.of(context)
@@ -210,7 +210,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        AppSpacing.spaceXL,
                         Text(
                           'Progress Percentage',
                           style:
@@ -219,11 +219,11 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                     color: AppColors.brownHeader,
                                   ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: AppColors.softBorder),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                           ),
                           child: TextFormField(
                             controller: _progressController,
@@ -232,7 +232,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                               hintText: 'Enter progress percentage (0-100)',
                               suffixText: '%',
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16),
+                              contentPadding: AppSpacing.paddingLG,
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -248,7 +248,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        AppSpacing.spaceXL,
                         Text(
                           'Progress Description',
                           style:
@@ -257,11 +257,11 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                     color: AppColors.brownHeader,
                                   ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: AppColors.softBorder),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                           ),
                           child: TextFormField(
                             controller: _descriptionController,
@@ -270,7 +270,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                               hintText:
                                   'Describe what you have completed and what\'s next...',
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16),
+                              contentPadding: AppSpacing.paddingLG,
                             ),
                             validator: (value) {
                               if (value == null || value.trim().length < 20) {
@@ -280,7 +280,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        AppSpacing.spaceXL,
                         Text(
                           'Progress Photos',
                           style:
@@ -289,7 +289,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                     color: AppColors.brownHeader,
                                   ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         if (_imageUrls.isNotEmpty) ...[
                           SizedBox(
                             height: 120,
@@ -301,14 +301,14 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                   width: 120,
                                   margin: const EdgeInsets.only(right: 8),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: AppRadius.radiusMD,
                                     border:
                                         Border.all(color: AppColors.softBorder),
                                   ),
                                   child: Stack(
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: AppRadius.radiusMD,
                                         child: Image.network(
                                           _imageUrls[index],
                                           width: 120,
@@ -326,7 +326,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                             });
                                           },
                                           child: Container(
-                                            padding: const EdgeInsets.all(4),
+                                            padding: AppSpacing.paddingXS,
                                             decoration: const BoxDecoration(
                                               color: Colors.red,
                                               shape: BoxShape.circle,
@@ -345,7 +345,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          AppSpacing.spaceMD,
                         ],
                         OutlinedAppButton(
                           text: _imageUrls.isEmpty
@@ -359,7 +359,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: AppSpacing.paddingXL,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -390,7 +390,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -408,7 +408,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                 color: Colors.green.shade600,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               'Progress Submitted!',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -416,7 +416,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                     color: AppColors.brownHeader,
                   ),
             ),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             Text(
               'Your progress update has been sent to the client successfully.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -424,7 +424,7 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
             PrimaryButton(
               text: 'Continue',
               onPressed: () {

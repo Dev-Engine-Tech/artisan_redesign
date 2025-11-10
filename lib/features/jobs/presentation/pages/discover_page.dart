@@ -6,8 +6,7 @@ import 'package:artisans_circle/features/jobs/presentation/pages/job_details_pag
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/filter_page.dart';
 import 'package:artisans_circle/core/di.dart';
-import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart';
-import 'package:artisans_circle/features/home/presentation/widgets/enhanced_banner_carousel.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/unified_banner_carousel.dart';
 import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_search_bar.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_tab_view.dart';
@@ -17,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
 import 'package:get_it/get_it.dart';
+import 'package:artisans_circle/core/utils/responsive.dart';
 
 class DiscoverPage extends StatefulWidget {
   final bool showHeader;
@@ -225,7 +225,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 elevation: 0,
                 backgroundColor: Colors.transparent,
                 leading: Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
+                  padding: EdgeInsets.only(left: context.responsiveSpacing(12)),
                   child: Container(
                     decoration: BoxDecoration(
                         color: AppColors.softPink,
@@ -239,36 +239,43 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     ),
                   ),
                 ),
-                title: const Text('Discover',
+                title: Text('Discover',
                     style: TextStyle(
                         color: Colors.black87,
-                        fontSize: 20,
+                        fontSize: context.responsiveFontSize(20),
                         fontWeight: FontWeight.w600)),
                 centerTitle: false,
                 actions: const [],
               )
             : null,
         body: SafeArea(
-          child: Column(
-            children: [
-              // Header widgets
-              if (widget.showHeader) ..._buildHeader(),
-
-              // Tab navigation and content
-              Expanded(
-                child: DiscoverTabView(
-                  tabs: _tabs,
-                  initialIndex: _currentTabIndex,
-                  onTabChanged: (index) {
-                    setState(() {
-                      _currentTabIndex = index;
-                    });
-                    _loadTabContent(index);
-                  },
-                  contentBuilder: (index) => _buildTabContent(index),
-                ),
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: context.maxContentWidth,
               ),
-            ],
+              child: Column(
+                children: [
+                  // Header widgets
+                  if (widget.showHeader) ..._buildHeader(),
+
+                  // Tab navigation and content
+                  Expanded(
+                    child: DiscoverTabView(
+                      tabs: _tabs,
+                      initialIndex: _currentTabIndex,
+                      onTabChanged: (index) {
+                        setState(() {
+                          _currentTabIndex = index;
+                        });
+                        _loadTabContent(index);
+                      },
+                      contentBuilder: (index) => _buildTabContent(index),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -277,16 +284,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   List<Widget> _buildHeader() {
     return [
-      const SizedBox(height: 8),
+      AppSpacing.spaceSM,
 
       // Banner carousel
-      EnhancedBannerCarousel(
+      UnifiedBannerCarousel.api(
         category: api.BannerCategory.job,
         height: 110,
         autoPlay: true,
       ),
 
-      const SizedBox(height: 16),
+      AppSpacing.spaceLG,
 
       // Search bar with filter
       DiscoverSearchBar(
@@ -302,7 +309,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       // Active filters chips row
       _buildActiveFiltersChips(),
 
-      const SizedBox(height: 8),
+      AppSpacing.spaceSM,
     ];
   }
 
@@ -349,7 +356,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.radiusXL,
             border: Border.all(color: AppColors.subtleBorder),
           ),
           child: const Text(
@@ -362,7 +369,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: AppSpacing.horizontalLG,
       child: Wrap(
         spacing: 6,
         runSpacing: 6,
@@ -380,8 +387,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
         onDeleted: onDelete,
         backgroundColor: AppColors.cardBackground,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.subtleBorder),
+          borderRadius: AppRadius.radiusXL,
+          side: const BorderSide(color: AppColors.subtleBorder),
         ),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
@@ -647,7 +654,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: AppSpacing.paddingXXXL,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -656,7 +663,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               size: 64,
               color: Colors.grey[400],
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -664,7 +671,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     color: Colors.grey[600],
                   ),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
               subtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -733,7 +740,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
         builder: (_, controller) => Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
           ),
           child: const FilterPage(),
         ),
@@ -836,11 +844,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
           // Count active filters like in the upstream app
           int count = 0;
           if (_categoryFilter != null && _categoryFilter!.isNotEmpty) count++;
-          if (_postedDateFilter != null && _postedDateFilter!.isNotEmpty)
+          if (_postedDateFilter != null && _postedDateFilter!.isNotEmpty) {
             count++;
+          }
           if (_workModeFilter != null && _workModeFilter!.isNotEmpty) count++;
-          if (_budgetTypeFilter != null && _budgetTypeFilter!.isNotEmpty)
+          if (_budgetTypeFilter != null && _budgetTypeFilter!.isNotEmpty) {
             count++;
+          }
           if (_durationFilter != null && _durationFilter!.isNotEmpty) count++;
           if (_stateFilter != null && _stateFilter!.isNotEmpty) count++;
           if (_lgasCsv != null && _lgasCsv!.isNotEmpty) count++;

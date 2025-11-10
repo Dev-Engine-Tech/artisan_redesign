@@ -34,7 +34,8 @@ class PushRegistrationService {
     var id = prefs.getString(_deviceIdKey);
     if (id != null && id.isNotEmpty) return id;
     final rand = Random();
-    id = 'dev-${DateTime.now().millisecondsSinceEpoch}-${rand.nextInt(1 << 32)}';
+    id =
+        'dev-${DateTime.now().millisecondsSinceEpoch}-${rand.nextInt(1 << 32)}';
     await prefs.setString(_deviceIdKey, id);
     return id;
   }
@@ -49,7 +50,8 @@ class PushRegistrationService {
           sound: true,
         );
         debugPrint('FCM permission status: ${settings.authorizationStatus}');
-        await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+        await FirebaseMessaging.instance
+            .setForegroundNotificationPresentationOptions(
           alert: true,
           badge: true,
           sound: true,
@@ -70,7 +72,8 @@ class PushRegistrationService {
       debugPrint('Registering device token with backend…');
       debugPrint(' • deviceType=$deviceType');
       debugPrint(' • deviceId=$deviceId');
-      debugPrint(' • fcmToken=${token.substring(0, token.length > 12 ? 12 : token.length)}…');
+      debugPrint(
+          ' • fcmToken=${token.substring(0, token.length > 12 ? 12 : token.length)}…');
 
       await remote.registerDeviceToken(
         token: token,

@@ -29,9 +29,8 @@ void main() {
     }
   });
 
-  Future<void> _setSize(WidgetTester tester, Size size) async {
-    final binding = TestWidgetsFlutterBinding.ensureInitialized()
-        as TestWidgetsFlutterBinding;
+  Future<void> setSize(WidgetTester tester, Size size) async {
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.window.physicalSizeTestValue = size * 3; // assume DPR ~3
     binding.window.devicePixelRatioTestValue = 3.0;
     addTearDown(() {
@@ -42,7 +41,7 @@ void main() {
 
   testWidgets('no overflow on common iPhone logical size 390x844',
       (tester) async {
-    await _setSize(tester, const Size(390, 844));
+    await setSize(tester, const Size(390, 844));
     await tester.pumpWidget(const MaterialApp(home: CreateInvoicePage()));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
@@ -50,9 +49,8 @@ void main() {
 
   testWidgets('no overflow on smaller size 360x740 with keyboard-like inset',
       (tester) async {
-    await _setSize(tester, const Size(360, 740));
-    final binding = TestWidgetsFlutterBinding.ensureInitialized()
-        as TestWidgetsFlutterBinding;
+    await setSize(tester, const Size(360, 740));
+    final binding = TestWidgetsFlutterBinding.ensureInitialized();
     binding.window.viewInsetsTestValue =
         const EdgeInsets.only(bottom: 300); // simulate keyboard
     await tester.pumpWidget(const MaterialApp(home: CreateInvoicePage()));

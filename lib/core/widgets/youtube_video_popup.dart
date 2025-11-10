@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class YouTubeVideoPopup extends StatefulWidget {
   final String videoUrl;
@@ -7,8 +8,8 @@ class YouTubeVideoPopup extends StatefulWidget {
   final VoidCallback? onClose;
 
   const YouTubeVideoPopup({
-    super.key,
     required this.videoUrl,
+    super.key,
     this.title,
     this.onClose,
   });
@@ -105,7 +106,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(16),
+      insetPadding: AppSpacing.paddingLG,
       child: Container(
         constraints: const BoxConstraints(
           maxWidth: 400,
@@ -113,7 +114,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
         ),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.3),
@@ -127,11 +128,11 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
           children: [
             // Header with close button
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLG,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(AppRadius.xl),
+                  topRight: Radius.circular(AppRadius.xl),
                 ),
               ),
               child: Row(
@@ -158,14 +159,14 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
             // Video content
             Flexible(
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: AppSpacing.horizontalLG,
                 child: _hasError ? _buildErrorWidget() : _buildVideoPlayer(),
               ),
             ),
 
             // Bottom padding and optional message
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLG,
               child: Column(
                 children: [
                   const Text(
@@ -176,7 +177,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  AppSpacing.spaceMD,
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -184,9 +185,9 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF654321),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: AppSpacing.verticalMD,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.radiusMD,
                         ),
                       ),
                       child: const Text('Continue to App'),
@@ -203,7 +204,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
 
   Widget _buildVideoPlayer() {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppRadius.radiusMD,
       child: AspectRatio(
         aspectRatio: 16 / 9, // Standard video aspect ratio
         child: Stack(
@@ -226,7 +227,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
 
   Widget _buildErrorWidget() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: AppSpacing.paddingXL,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -235,7 +236,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
             size: 64,
             color: Colors.grey[400],
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           const Text(
             'Unable to load video',
             style: TextStyle(
@@ -244,7 +245,7 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
               color: Colors.grey,
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           const Text(
             'Please check your internet connection and try again.',
             textAlign: TextAlign.center,

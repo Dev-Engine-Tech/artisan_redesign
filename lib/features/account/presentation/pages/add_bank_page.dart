@@ -9,6 +9,7 @@ import '../../domain/entities/bank_account.dart';
 import '../bloc/account_bloc.dart';
 import '../bloc/account_event.dart';
 import '../bloc/account_state.dart';
+import 'package:artisans_circle/core/theme.dart';
 
 class AddBankPage extends StatefulWidget {
   const AddBankPage({super.key});
@@ -48,7 +49,7 @@ class _AddBankPageState extends State<AddBankPage> {
       if (mounted) {
         Future.delayed(const Duration(milliseconds: 250), () {
           if (mounted) {
-            _bloc.add(AccountLoadBankList());
+            _bloc.add(const AccountLoadBankList());
           }
         });
       }
@@ -200,7 +201,7 @@ class _AddBankPageState extends State<AddBankPage> {
     bool verifying = false;
 
     // Refresh bank list when opening
-    _bloc.add(AccountLoadBankList());
+    _bloc.add(const AccountLoadBankList());
     _banksLoading = true;
     await showDialog(
       context: context,
@@ -292,7 +293,7 @@ class _AddBankPageState extends State<AddBankPage> {
                             text: 'Retry',
                             onPressed: () {
                               banksError = false;
-                              _bloc.add(AccountLoadBankList());
+                              _bloc.add(const AccountLoadBankList());
                               _banksLoading = true;
                               setStateDialog(() {});
                             },
@@ -322,10 +323,10 @@ class _AddBankPageState extends State<AddBankPage> {
                         ),
                       ),
                     if (showChangeHint)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6.0),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 6.0),
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(Icons.info_outline,
                                 size: 14, color: Colors.orange),
                             SizedBox(width: 6),
@@ -338,7 +339,7 @@ class _AddBankPageState extends State<AddBankPage> {
                           ],
                         ),
                       ),
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     TextField(
                       decoration: InputDecoration(
                         labelText: 'Account Number (10 digits)',
@@ -383,23 +384,23 @@ class _AddBankPageState extends State<AddBankPage> {
                         }
                       },
                     ),
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     TextField(
                       decoration: const InputDecoration(
                           labelText: 'Account Name (auto)'),
                       controller: nameCtr,
                       readOnly: true,
                     ),
-                    const SizedBox(height: 8),
+                    AppSpacing.spaceSM,
                     if (verifying)
-                      Row(
-                        children: const [
+                      const Row(
+                        children: [
                           SizedBox(
                             width: 14,
                             height: 14,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                          SizedBox(width: 8),
+                          AppSpacing.spaceSM,
                           Text('Verifying...'),
                         ],
                       ),
@@ -485,14 +486,14 @@ class _EmptyState extends StatelessWidget {
           children: [
             const Icon(Icons.account_balance_outlined,
                 size: 64, color: Colors.grey),
-            const SizedBox(height: 12),
+            AppSpacing.spaceMD,
             Text(
               verified
                   ? 'No bank accounts yet'
                   : 'Verify your identity to add bank accounts',
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            AppSpacing.spaceXXL,
             PrimaryButton(
               text: verified ? 'Add bank account' : 'Verify identity',
               onPressed: onAdd,

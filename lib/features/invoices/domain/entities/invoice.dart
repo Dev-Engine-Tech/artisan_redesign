@@ -34,11 +34,11 @@ class Invoice extends Equatable {
     required this.taxAmount,
     required this.total,
     required this.status,
+    required this.createdAt,
+    required this.updatedAt,
     this.notes,
     this.jobId,
     this.paidDate,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
   Invoice copyWith({

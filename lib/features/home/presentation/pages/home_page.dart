@@ -5,21 +5,15 @@ import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
-import 'package:artisans_circle/features/account/presentation/bloc/account_event.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_state.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
-import 'package:artisans_circle/features/jobs/presentation/widgets/job_card.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_details_page.dart';
-import 'package:artisans_circle/features/jobs/presentation/pages/job_invite_details_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/order_details_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/agreement_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/change_request_page.dart';
-import 'package:artisans_circle/features/messages/domain/entities/conversation.dart'
-    as domain;
-import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/features/wallet/presentation/withdraw_flow.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
@@ -30,11 +24,11 @@ import 'package:artisans_circle/features/home/utils/profile_utils.dart';
 import 'package:artisans_circle/features/notifications/presentation/widgets/notification_icon.dart';
 import 'package:artisans_circle/features/messages/presentation/widgets/message_icon.dart';
 import 'package:artisans_circle/features/home/presentation/widgets/home_tab_section.dart';
-import 'package:artisans_circle/features/home/presentation/widgets/banner_carousel.dart';
-import 'package:artisans_circle/features/home/presentation/widgets/enhanced_banner_carousel.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/unified_banner_carousel.dart';
 import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
 import 'package:artisans_circle/features/home/utils/home_data_loader.dart';
+import 'package:artisans_circle/core/utils/responsive.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -424,7 +418,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
               decoration: BoxDecoration(
                   color: AppColors.orange,
                   borderRadius: BorderRadius.circular(14)),
-              padding: const EdgeInsets.all(16),
+              padding: AppSpacing.paddingLG,
               child: Row(
                 children: [
                   // Left text (no per-tab button — banner stands alone)
@@ -445,7 +439,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Flexible(
                           child: Text(
                             data['subtitle']!,
@@ -465,7 +459,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                       height: 72,
                       decoration: const BoxDecoration(
                           color: Colors.white24,
-                          borderRadius: BorderRadius.all(Radius.circular(12)))),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(AppRadius.lg)))),
                 ],
               ),
             ),
@@ -487,10 +482,10 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           children: [
             Container(
               height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: AppSpacing.horizontalSM,
               decoration: BoxDecoration(
                 color: selected ? AppColors.softPink : AppColors.cardBackground,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: AppRadius.radiusXXXL,
               ),
               child: Row(
                 children: [
@@ -500,14 +495,13 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                           fontWeight:
                               selected ? FontWeight.w700 : FontWeight.w500,
                           fontSize: selected ? 13 : 12)),
-                  const SizedBox(width: 4),
+                  AppSpacing.spaceXS,
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Text('56',
+                        color: Colors.white, borderRadius: AppRadius.radiusLG),
+                    child: const Text('56',
                         style: TextStyle(
                             fontSize: 10, color: AppColors.brownHeader)),
                   ),
@@ -566,32 +560,43 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
 
   Widget _buildOptimizedHomePage(BuildContext context) {
     // debug: applications length
+    final double carouselHeight = context.isTablet ? 180 : 140;
+
     return Scaffold(
       backgroundColor: AppColors.lightPeach,
       body: SafeArea(
-        child: ListView(
-          controller: _scrollController,
-          padding: EdgeInsets.zero,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 18),
-            _buildProfileActions(context),
-            EnhancedBannerCarousel(
-              category: api.BannerCategory.homepage,
-              height: 140,
-              padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: context.maxContentWidth,
             ),
-            const SizedBox(height: 8),
-            () {
-              return HomeTabSection(
-                onJobTap: _handleJobTap,
-                onRequestTap: _handleOrderTap,
-                applications: _applications,
-                onApplicationUpdate: _updateApplications,
-              );
-            }(),
-            const SizedBox(height: 120),
-          ],
+            child: ListView(
+              controller: _scrollController,
+              padding: EdgeInsets.zero,
+              children: [
+                _buildHeader(context),
+                SizedBox(height: context.responsiveSpacing(18)),
+                _buildProfileActions(context),
+                UnifiedBannerCarousel.api(
+                  category: api.BannerCategory.homepage,
+                  height: carouselHeight,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.responsiveSpacing(8),
+                  ),
+                ),
+                AppSpacing.spaceSM,
+                () {
+                  return HomeTabSection(
+                    onJobTap: _handleJobTap,
+                    onRequestTap: _handleOrderTap,
+                    applications: _applications,
+                    onApplicationUpdate: _updateApplications,
+                  );
+                }(),
+                const SizedBox(height: 120),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -627,7 +632,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                           backgroundColor: Colors.transparent,
                           child: Icon(Icons.person, color: Colors.white)),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -651,7 +656,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                 const Row(
                   children: [
                     MessageIcon(),
-                    SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     NotificationIcon(unreadCount: 2),
                   ],
                 ),
@@ -661,12 +666,11 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(16)),
+                  color: Colors.white24, borderRadius: AppRadius.radiusXL),
               child: Text('Available Balance',
                   style: textTheme.bodySmall?.copyWith(color: Colors.white70)),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             BlocBuilder<AccountBloc, AccountState>(
               builder: (context, accountState) {
                 String balanceText = '0';
@@ -690,7 +694,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                     Text('NGN',
                         style: textTheme.titleLarge
                             ?.copyWith(color: Colors.white70, fontSize: 20)),
-                    const SizedBox(width: 8),
+                    AppSpacing.spaceSM,
                     Flexible(
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
@@ -702,11 +706,11 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                 fontWeight: FontWeight.w800)),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.white24,
-                          borderRadius: BorderRadius.circular(8)),
+                          borderRadius: AppRadius.radiusMD),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 6),
                       child: const Icon(Icons.visibility,
@@ -735,7 +739,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                     },
                   ),
                 ),
-                const SizedBox(width: 12),
+                AppSpacing.spaceMD,
                 Expanded(
                   child: OutlinedAppButton(
                     text: 'History',

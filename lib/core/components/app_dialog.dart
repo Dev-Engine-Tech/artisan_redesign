@@ -32,7 +32,7 @@ class AppDialog {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
         title: Text(
           title,
@@ -73,7 +73,8 @@ class AppDialog {
               onConfirm?.call();
             },
             style: TextButton.styleFrom(
-              foregroundColor: isDestructive ? AppColors.danger : AppColors.orange,
+              foregroundColor:
+                  isDestructive ? AppColors.danger : AppColors.orange,
             ),
             child: Text(
               confirmText,
@@ -103,7 +104,7 @@ class AppDialog {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
         title: Text(
           title,
@@ -153,7 +154,7 @@ class AppDialog {
         child: AlertDialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppRadius.radiusXL,
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -161,7 +162,7 @@ class AppDialog {
               const CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.orange),
               ),
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
               Text(
                 message,
                 style: TextStyle(
@@ -189,7 +190,7 @@ class AppDialog {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -207,7 +208,7 @@ class AppDialog {
                 size: 40,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               title,
               textAlign: TextAlign.center,
@@ -218,7 +219,7 @@ class AppDialog {
               ),
             ),
             if (message != null) ...[
-              const SizedBox(height: 8),
+              AppSpacing.spaceSM,
               Text(
                 message,
                 textAlign: TextAlign.center,
@@ -253,8 +254,8 @@ class AppDialog {
   /// Shows an error dialog with an error icon
   static Future<void> showError({
     required BuildContext context,
-    String title = 'Error',
     required String message,
+    String title = 'Error',
     String buttonText = 'OK',
     VoidCallback? onDismiss,
   }) {
@@ -263,7 +264,7 @@ class AppDialog {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -281,7 +282,7 @@ class AppDialog {
                 size: 40,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             Text(
               title,
               textAlign: TextAlign.center,
@@ -291,7 +292,7 @@ class AppDialog {
                 color: AppColors.brownHeader,
               ),
             ),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
               message,
               textAlign: TextAlign.center,
@@ -336,9 +337,9 @@ class AppDialog {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppRadius.radiusXL,
         ),
-        contentPadding: contentPadding ?? const EdgeInsets.all(24),
+        contentPadding: contentPadding ?? AppSpacing.paddingXXL,
         content: content,
         actions: actions,
       ),

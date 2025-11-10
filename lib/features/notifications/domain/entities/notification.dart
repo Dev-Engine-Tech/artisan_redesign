@@ -73,10 +73,10 @@ class Notification {
   const Notification({
     required this.id,
     required this.createdAt,
-    this.data,
     required this.read,
     required this.title,
     required this.type,
+    this.data,
   });
 
   Notification copyWith({

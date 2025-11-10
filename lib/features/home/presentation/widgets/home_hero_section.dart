@@ -101,8 +101,8 @@ class HeroItem {
 /// Follows Single Responsibility: Only handles single hero card display
 class HeroCard extends StatelessWidget {
   const HeroCard({
-    super.key,
     required this.item,
+    super.key,
   });
 
   final HeroItem item;
@@ -110,11 +110,11 @@ class HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.all(20),
+      margin: AppSpacing.horizontalXS,
+      padding: AppSpacing.paddingXL,
       decoration: BoxDecoration(
         color: item.color,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
       ),
       child: Row(
         children: [
@@ -131,7 +131,7 @@ class HeroCard extends StatelessWidget {
                     color: AppColors.darkBlue,
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 Text(
                   item.subtitle,
                   style: TextStyle(
@@ -142,13 +142,13 @@ class HeroCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          AppSpacing.spaceLG,
           Container(
             width: 60,
             height: 60,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusLG,
             ),
             child: Icon(
               item.icon,

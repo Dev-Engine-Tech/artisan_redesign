@@ -70,9 +70,9 @@ class SecureStorageFake extends SecureStorage {
   @override
   Future<void> storeAuthData({
     required String accessToken,
+    required String userId,
     String? refreshToken,
     String? firebaseToken,
-    required String userId,
   }) async {
     _store['access_token'] = accessToken;
     if (refreshToken != null) _store['refresh_token'] = refreshToken;

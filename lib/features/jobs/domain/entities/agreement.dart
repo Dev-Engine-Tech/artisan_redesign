@@ -14,11 +14,11 @@ class Agreement extends Equatable {
 
   const Agreement({
     required this.id,
-    this.startDate,
     required this.deliveryDate,
     required this.agreedPayment,
     required this.comment,
     required this.status,
+    this.startDate,
     this.amount,
     this.description,
     this.deadline,

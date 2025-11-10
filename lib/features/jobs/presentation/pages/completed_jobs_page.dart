@@ -8,6 +8,7 @@ import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/payment_summary_widget.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/project_review_modal.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_completion_certificate.dart';
+import '../../../../core/utils/responsive.dart';
 
 class CompletedJobsPage extends StatefulWidget {
   const CompletedJobsPage({super.key});
@@ -114,15 +115,15 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
 
   Widget _buildEarningsSummary() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: AppSpacing.paddingLG,
+      padding: context.responsivePadding,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [AppColors.orange, AppColors.orange.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppRadius.radiusXL,
         boxShadow: [
           BoxShadow(
             color: AppColors.orange.withValues(alpha: 0.3),
@@ -135,12 +136,12 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.account_balance_wallet,
                 color: Colors.white,
                 size: 24,
               ),
-              const SizedBox(width: 8),
+              AppSpacing.spaceSM,
               Text(
                 'Total Earnings',
                 style: TextStyle(
@@ -159,14 +160,14 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'NGN 2,850,000',
                     style: TextStyle(
                       color: Colors.white,
@@ -188,9 +189,9 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusLG,
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
@@ -198,7 +199,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                       color: Colors.white,
                       size: 16,
                     ),
-                    const SizedBox(width: 4),
+                    AppSpacing.spaceXS,
                     Text(
                       '+23%',
                       style: TextStyle(
@@ -219,14 +220,14 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
 
   Widget _buildFiltersAndSearch() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       color: Colors.white,
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusLG,
               border: Border.all(color: AppColors.softBorder),
             ),
             child: TextField(
@@ -256,20 +257,20 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           SizedBox(
             height: 36,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
                 _buildFilterChip('All', 'all'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Paid', 'paid'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Pending Payment', 'pending_payment'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('Reviewed', 'reviewed'),
-                const SizedBox(width: 8),
+                AppSpacing.spaceSM,
                 _buildFilterChip('High Rating', 'high_rating'),
               ],
             ),
@@ -395,12 +396,12 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.check_circle_outline,
             size: 64,
             color: Colors.black26,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Text(
             _searchQuery.isNotEmpty
                 ? 'No projects match your search'
@@ -410,7 +411,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             _searchQuery.isNotEmpty
                 ? 'Try adjusting your search filters'
@@ -435,7 +436,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
             size: 64,
             color: Colors.red.shade300,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           Text(
             'Error loading completed projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -443,7 +444,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                   fontWeight: FontWeight.w600,
                 ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -451,7 +452,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                 ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          AppSpacing.spaceLG,
           PrimaryButton(
             text: 'Retry',
             onPressed: () {
@@ -468,10 +469,10 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
+        padding: context.responsivePadding,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -482,7 +483,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                     color: AppColors.brownHeader,
                   ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.spaceLG,
             ...[
               {'label': 'Date (Newest First)', 'value': 'date_desc'},
               {'label': 'Date (Oldest First)', 'value': 'date_asc'},
@@ -550,11 +551,11 @@ class CompletedJobCard extends StatelessWidget {
   final VoidCallback onLeaveReview;
 
   const CompletedJobCard({
-    super.key,
     required this.job,
     required this.onViewDetails,
     required this.onViewCertificate,
     required this.onLeaveReview,
+    super.key,
   });
 
   @override
@@ -563,7 +564,7 @@ class CompletedJobCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -585,20 +586,20 @@ class CompletedJobCard extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       decoration: BoxDecoration(
         color: Colors.green.withValues(alpha: 0.05),
         borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(12),
+          top: Radius.circular(AppRadius.lg),
         ),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: AppSpacing.paddingSM,
             decoration: BoxDecoration(
               color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.radiusMD,
             ),
             child: Icon(
               Icons.check_circle,
@@ -606,7 +607,7 @@ class CompletedJobCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -620,7 +621,7 @@ class CompletedJobCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.spaceXS,
                 Row(
                   children: [
                     Text(
@@ -631,7 +632,7 @@ class CompletedJobCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    AppSpacing.spaceSM,
                     Text(
                       _formatCompletionDate(job.completedDate),
                       style: const TextStyle(
@@ -658,7 +659,7 @@ class CompletedJobCard extends StatelessWidget {
         color: isPaid
             ? Colors.green.withValues(alpha: 0.1)
             : Colors.orange.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -668,7 +669,7 @@ class CompletedJobCard extends StatelessWidget {
             size: 12,
             color: isPaid ? Colors.green.shade700 : Colors.orange.shade700,
           ),
-          const SizedBox(width: 4),
+          AppSpacing.spaceXS,
           Text(
             isPaid ? 'Paid' : 'Pending',
             style: TextStyle(
@@ -684,7 +685,7 @@ class CompletedJobCard extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -694,9 +695,9 @@ class CompletedJobCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _buildRatingSection(),
-          const SizedBox(height: 12),
+          AppSpacing.spaceMD,
           _buildProjectMetrics(context),
         ],
       ),
@@ -708,10 +709,10 @@ class CompletedJobCard extends StatelessWidget {
     final hasReview = job.clientReview != null;
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.radiusMD,
         border: Border.all(color: AppColors.softBorder),
       ),
       child: Column(
@@ -719,7 +720,7 @@ class CompletedJobCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
+              const Text(
                 'Client Rating',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -736,17 +737,17 @@ class CompletedJobCard extends StatelessWidget {
                     size: 16,
                   );
                 }),
-                const SizedBox(width: 4),
+                AppSpacing.spaceXS,
                 Text(
                   rating.toStringAsFixed(1),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     color: AppColors.brownHeader,
                     fontSize: 12,
                   ),
                 ),
               ] else ...[
-                Text(
+                const Text(
                   'Not rated yet',
                   style: TextStyle(
                     color: Colors.black54,
@@ -757,7 +758,7 @@ class CompletedJobCard extends StatelessWidget {
             ],
           ),
           if (hasReview) ...[
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
               job.clientReview!,
               style: const TextStyle(
@@ -812,7 +813,7 @@ class CompletedJobCard extends StatelessWidget {
         Row(
           children: [
             Icon(icon, size: 14, color: Colors.black54),
-            const SizedBox(width: 4),
+            AppSpacing.spaceXS,
             Text(
               label,
               style: const TextStyle(
@@ -822,10 +823,10 @@ class CompletedJobCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        AppSpacing.spaceXS,
         Text(
           value,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 12,
             color: AppColors.brownHeader,
@@ -839,13 +840,13 @@ class CompletedJobCard extends StatelessWidget {
 
   Widget _buildFooter(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       decoration: const BoxDecoration(
         border: Border(
           top: BorderSide(color: AppColors.softBorder),
         ),
         borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(12),
+          bottom: Radius.circular(AppRadius.lg),
         ),
       ),
       child: Row(
@@ -856,7 +857,7 @@ class CompletedJobCard extends StatelessWidget {
               onPressed: onViewDetails,
             ),
           ),
-          const SizedBox(width: 8),
+          AppSpacing.spaceSM,
           Expanded(
             child: PrimaryButton(
               text: 'Certificate',

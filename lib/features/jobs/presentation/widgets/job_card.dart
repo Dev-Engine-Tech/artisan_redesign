@@ -25,8 +25,8 @@ class JobCard extends StatelessWidget {
   final VoidCallback? secondaryAction;
 
   const JobCard({
-    super.key,
     required this.job,
+    super.key,
     this.onTap,
     this.primaryLabel,
     this.primaryAction,
@@ -87,7 +87,7 @@ class JobCard extends StatelessWidget {
                                   color: AppColors.orange, size: 28))
                           : null,
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     // Title + category + address + status
                     Expanded(
                       child: Column(
@@ -100,19 +100,19 @@ class JobCard extends StatelessWidget {
                               if (job.applied) _buildStatusIndicator(),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          AppSpacing.spaceXS,
                           Text(job.category, style: subtitleStyle),
                           if (job.applied) ...[
-                            const SizedBox(height: 4),
+                            AppSpacing.spaceXS,
                             _buildApplicationStatus(),
                           ],
-                          const SizedBox(height: 8),
+                          AppSpacing.spaceSM,
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 6),
                             decoration: BoxDecoration(
                               color: AppColors.softPink,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: AppRadius.radiusMD,
                             ),
                             child: Text(
                               job.address,
@@ -127,7 +127,7 @@ class JobCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    AppSpacing.spaceSM,
                     // share and menu icons
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -148,7 +148,7 @@ class JobCard extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
 
                 // budget & duration
                 Row(
@@ -164,7 +164,7 @@ class JobCard extends StatelessWidget {
                           horizontal: 8, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppColors.cardBackground,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: AppRadius.radiusMD,
                         border: Border.all(color: AppColors.subtleBorder),
                       ),
                       child: Text(job.duration,
@@ -173,7 +173,7 @@ class JobCard extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
 
                 // description snippet
                 Text(
@@ -195,12 +195,13 @@ class JobCard extends StatelessWidget {
                         onPressed: primaryAction ?? _getPrimaryAction(context),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     Expanded(
                       flex: 1,
                       child: OutlinedAppButton(
                         text: secondaryLabel ?? _getSecondaryLabel(),
-                        onPressed: secondaryAction ?? _getSecondaryAction(context),
+                        onPressed:
+                            secondaryAction ?? _getSecondaryAction(context),
                       ),
                     ),
                   ],
@@ -267,7 +268,7 @@ class JobCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: statusColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: AppRadius.radiusSM,
         border:
             Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
       ),

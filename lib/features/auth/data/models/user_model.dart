@@ -90,13 +90,13 @@ class UserModel extends User {
   final int? modelOngoingJobs;
 
   UserModel({
-    this.modelId,
     required this.modelPhone,
     required this.modelFirstName,
     required this.modelLastName,
+    required this.modelIsArtisan,
+    this.modelId,
     this.modelEmail,
     this.modelReferralCode,
-    required this.modelIsArtisan,
     this.modelProfilePictureUrl,
     this.modelBio,
     this.modelSkills,

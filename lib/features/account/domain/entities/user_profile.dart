@@ -68,9 +68,9 @@ class WorkExperience extends Equatable {
     required this.id,
     required this.jobTitle,
     required this.companyName,
+    required this.startDate,
     this.location,
     this.description,
-    required this.startDate,
     this.endDate,
     this.isCurrent = false,
   });
@@ -101,8 +101,8 @@ class Education extends Equatable {
     required this.id,
     required this.schoolName,
     required this.fieldOfStudy,
-    this.degree,
     required this.startDate,
+    this.degree,
     this.endDate,
     this.description,
   });

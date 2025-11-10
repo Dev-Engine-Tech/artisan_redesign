@@ -14,11 +14,11 @@ class InvoiceModel extends Invoice {
     required super.taxAmount,
     required super.total,
     required super.status,
+    required super.createdAt,
+    required super.updatedAt,
     super.notes,
     super.jobId,
     super.paidDate,
-    required super.createdAt,
-    required super.updatedAt,
   });
 
   factory InvoiceModel.fromJson(Map<String, dynamic> json) {

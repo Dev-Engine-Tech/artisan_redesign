@@ -5,8 +5,6 @@ import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart'
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
-import 'package:artisans_circle/features/jobs/domain/entities/job.dart'
-    show Job;
 import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart'
     show JobModel;
@@ -79,7 +77,7 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
             .toList(),
         toJson: (jobs) => jobs
             .map((job) => {
-                  'id': (job as Job).id,
+                  'id': (job).id,
                   'title': job.title,
                   'category': job.category,
                   'description': job.description,

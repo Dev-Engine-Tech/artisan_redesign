@@ -20,7 +20,7 @@ void main() {
 
   group('Unit — Job entity', () {
     test('copyWith should replace supplied fields and preserve others', () {
-      final job = Job(
+      final job = const Job(
         id: 'job_1',
         title: 'Original Title',
         category: 'Carpentry',
@@ -46,8 +46,8 @@ void main() {
     testWidgets(
         'MessagesListPage displays conversations and opens ChatPage on tap',
         (WidgetTester tester) async {
-      final widget = MediaQuery(
-        data: const MediaQueryData(size: Size(390, 844)),
+      final widget = const MediaQuery(
+        data: MediaQueryData(size: Size(390, 844)),
         child: MaterialApp(home: MessagesListPage()),
       );
 
@@ -75,7 +75,7 @@ void main() {
 
     testWidgets('ChatPage shows message bubbles and optional job summary',
         (WidgetTester tester) async {
-      final conv = Conversation(
+      final conv = const Conversation(
         id: 'conv_test',
         name: 'Client Test',
         jobTitle: 'Test Project',
@@ -85,7 +85,7 @@ void main() {
         online: true,
       );
 
-      final job = Job(
+      final job = const Job(
         id: 'j1',
         title: 'Test Project',
         category: 'Test Cat',
@@ -121,9 +121,9 @@ void main() {
   group('Widget — Home and navigation', () {
     testWidgets('HomePage shows tabs including Orders and the hero PageView',
         (WidgetTester tester) async {
-      final widget = MediaQuery(
-        data: const MediaQueryData(size: Size(390, 844)),
-        child: const MaterialApp(home: HomePage()),
+      final widget = const MediaQuery(
+        data: MediaQueryData(size: Size(390, 844)),
+        child: MaterialApp(home: HomePage()),
       );
 
       await tester.pumpWidget(widget);
@@ -140,7 +140,7 @@ void main() {
     testWidgets(
         'Job Invite "Message" button opens direct ChatPage with job context',
         (WidgetTester tester) async {
-      final job = Job(
+      final job = const Job(
         id: 'invite_1',
         title: 'Invite Test Job',
         category: 'Test Cat',

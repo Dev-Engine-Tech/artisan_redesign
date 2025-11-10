@@ -11,8 +11,8 @@ class CatalogRequestCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const CatalogRequestCard({
-    super.key,
     required this.request,
+    super.key,
     this.onTap,
   });
 
@@ -39,7 +39,7 @@ class CatalogRequestCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: AppColors.subtleBorder),
             ),
-            padding: const EdgeInsets.all(16),
+            padding: AppSpacing.paddingLG,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -57,28 +57,28 @@ class CatalogRequestCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     _buildStatusBadge(),
                   ],
                 ),
 
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
 
                 // Client information
                 if (request.client != null) ...[
                   _buildClientInfo(),
-                  const SizedBox(height: 12),
+                  AppSpacing.spaceMD,
                 ],
 
                 // Request details
                 _buildRequestDetails(),
 
-                const SizedBox(height: 12),
+                AppSpacing.spaceMD,
 
                 // Approval status
                 _buildApprovalStatus(),
 
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
 
                 // Action buttons
                 _buildActionButtons(context),
@@ -97,7 +97,7 @@ class CatalogRequestCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: statusInfo.color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.radiusLG,
         border: Border.all(color: statusInfo.color.withValues(alpha: 0.3)),
       ),
       child: Text(
@@ -115,10 +115,10 @@ class CatalogRequestCard extends StatelessWidget {
   Widget _buildClientInfo() {
     final client = request.client!;
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
         color: AppColors.softPink,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.radiusMD,
       ),
       child: Row(
         children: [
@@ -131,7 +131,7 @@ class CatalogRequestCard extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,15 +177,15 @@ class CatalogRequestCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (request.description.isNotEmpty) ...[
-          Text(
+          const Text(
             'Description:',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 12,
               color: AppColors.brownHeader,
             ),
           ),
-          const SizedBox(height: 4),
+          AppSpacing.spaceXS,
           Text(
             request.description,
             style: TextStyle(
@@ -195,7 +195,7 @@ class CatalogRequestCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
         ],
         Row(
           children: [
@@ -205,7 +205,7 @@ class CatalogRequestCard extends StatelessWidget {
                 size: 16,
                 color: Colors.grey.shade600,
               ),
-              const SizedBox(width: 4),
+              AppSpacing.spaceXS,
               Text(
                 'Delivery: ${_formatDate(request.deliveryDateTime!)}',
                 style: TextStyle(
@@ -223,16 +223,16 @@ class CatalogRequestCard extends StatelessWidget {
   /// Builds approval status section
   Widget _buildApprovalStatus() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: AppRadius.radiusMD,
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
         children: [
           _buildApprovalIndicator('Artisan', request.isArtisanApproved),
-          const SizedBox(width: 16),
+          AppSpacing.spaceLG,
           _buildApprovalIndicator('Client', request.isClientApproved),
           const Spacer(),
           Text(
@@ -312,7 +312,7 @@ class CatalogRequestCard extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.spaceMD,
           Expanded(
             child: OutlinedAppButton(
               text: 'Decline',

@@ -90,8 +90,10 @@ class ApiEndpoints {
   static const String markNotificationAsRead = '/notifications/mark-as-read/';
   static const String markAllNotificationsAsRead =
       '/notifications/mark-all-as-read/';
-  static const String deviceTokensRegister = '/user/api/device-tokens/register/';
-  static const String testPushNotification = '/user/api/test-push-notification/';
+  static const String deviceTokensRegister =
+      '/user/api/device-tokens/register/';
+  static const String testPushNotification =
+      '/user/api/test-push-notification/';
 
   // File Upload endpoints
   static const String uploadImage = '/upload/image/';

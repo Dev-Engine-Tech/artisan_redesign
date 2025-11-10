@@ -95,7 +95,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: BackButton(color: Colors.black87),
+        leading: const BackButton(color: Colors.black87),
         title: const Text('Take a selfie',
             style: TextStyle(color: Colors.black87)),
       ),
@@ -103,7 +103,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
         child: _initializing
             ? const Center(child: CircularProgressIndicator())
             : Padding(
-                padding: const EdgeInsets.all(20),
+                padding: AppSpacing.paddingXL,
                 child: Column(
                   children: [
                     Expanded(
@@ -112,7 +112,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                 _controller != null &&
                                 _controller!.value.isInitialized
                             ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: AppRadius.radiusLG,
                                 child: AspectRatio(
                                   aspectRatio: _controller!.value.aspectRatio,
                                   child: CameraPreview(_controller!),
@@ -131,7 +131,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                     child: const Icon(Icons.person,
                                         size: 64, color: Colors.brown),
                                   ),
-                                  const SizedBox(height: 16),
+                                  AppSpacing.spaceLG,
                                   const Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 24.0),
@@ -142,7 +142,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                     ),
                                   ),
                                   if (_error != null) ...[
-                                    const SizedBox(height: 8),
+                                    AppSpacing.spaceSM,
                                     Text(_error!,
                                         style: const TextStyle(
                                             color: Colors.red, fontSize: 12)),
@@ -156,7 +156,7 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                       text: 'Capture',
                       onPressed: _capture,
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     OutlinedAppButton(
                       text: 'Cancel',
                       onPressed: () => Navigator.of(context).pop(),

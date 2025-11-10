@@ -521,10 +521,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   );
 
   // Push registration service (FCM token → backend)
-  getIt.registerLazySingleton<PushRegistrationService>(() => PushRegistrationService(
-        remote: getIt<NotificationRemoteDataSource>(),
-        secureStorage: getIt<SecureStorage>(),
-      ));
+  getIt.registerLazySingleton<PushRegistrationService>(
+      () => PushRegistrationService(
+            remote: getIt<NotificationRemoteDataSource>(),
+            secureStorage: getIt<SecureStorage>(),
+          ));
 
   // Invoice feature
   getIt.registerLazySingleton<InvoiceRepository>(

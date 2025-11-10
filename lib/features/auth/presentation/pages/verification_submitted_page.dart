@@ -19,9 +19,9 @@ class VerificationSubmittedPage extends StatelessWidget {
               Container(
                 width: 140,
                 height: 140,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: [Color(0xFF6B4CD6), Color(0xFF8D5DEB)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight),
@@ -33,7 +33,7 @@ class VerificationSubmittedPage extends StatelessWidget {
               const SizedBox(height: 28),
               const Text('Congratulations!',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 12),
+              AppSpacing.spaceMD,
               const Text(
                 'Your documents are under review. You will be notified about the status within the next 24 hours.',
                 textAlign: TextAlign.center,

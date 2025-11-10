@@ -4,6 +4,7 @@ import 'invoices_page.dart';
 import '../../domain/entities/invoice.dart';
 import '../../../customers/presentation/pages/customers_page.dart';
 import 'create_invoice_page.dart';
+import '../../../../core/utils/responsive.dart';
 
 class InvoiceMenuPage extends StatelessWidget {
   const InvoiceMenuPage({super.key});
@@ -54,14 +55,14 @@ class InvoiceMenuPage extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.search,
                               color: Colors.grey, size: 20),
-                          padding: const EdgeInsets.all(8),
+                          padding: AppSpacing.paddingSM,
                           constraints: const BoxConstraints(),
                         ),
                         IconButton(
                           onPressed: () {},
                           icon: const Icon(Icons.notifications_outlined,
                               color: Colors.grey, size: 20),
-                          padding: const EdgeInsets.all(8),
+                          padding: AppSpacing.paddingSM,
                           constraints: const BoxConstraints(),
                         ),
                       ],
@@ -70,7 +71,7 @@ class InvoiceMenuPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               // Top Icon Grid (4 icons)
               Row(
@@ -113,12 +114,12 @@ class InvoiceMenuPage extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               // Earnings Balance Card - Reduced size
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: context.responsivePadding,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -128,7 +129,7 @@ class InvoiceMenuPage extends StatelessWidget {
                       AppColors.orange.withOpacity(0.8)
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppRadius.radiusLG,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +142,7 @@ class InvoiceMenuPage extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    AppSpacing.spaceXS,
                     const Text(
                       'NGN 6,326',
                       style: TextStyle(
@@ -150,7 +151,7 @@ class InvoiceMenuPage extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    AppSpacing.spaceMD,
                     // Simple chart representation
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -178,7 +179,7 @@ class InvoiceMenuPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               // Stats Row
               Row(
@@ -195,7 +196,7 @@ class InvoiceMenuPage extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         const Text(
                           'NGN 2,326',
                           style: TextStyle(
@@ -204,7 +205,7 @@ class InvoiceMenuPage extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           '1 Waiting invoice',
                           style: TextStyle(
@@ -227,7 +228,7 @@ class InvoiceMenuPage extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         const Text(
                           'NGN 4,326',
                           style: TextStyle(
@@ -236,7 +237,7 @@ class InvoiceMenuPage extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        AppSpacing.spaceXS,
                         Text(
                           '5 Paid invoice',
                           style: TextStyle(
@@ -250,14 +251,14 @@ class InvoiceMenuPage extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
 
               // Watch tutorial section
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: AppSpacing.paddingXL,
                 decoration: BoxDecoration(
                   color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusXL,
                 ),
                 child: Row(
                   children: [
@@ -273,7 +274,7 @@ class InvoiceMenuPage extends StatelessWidget {
                               color: AppColors.brownHeader,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          AppSpacing.spaceXS,
                           Text(
                             'How to send on invoice in 1 minute',
                             style: TextStyle(
@@ -289,7 +290,7 @@ class InvoiceMenuPage extends StatelessWidget {
                       height: 48,
                       decoration: BoxDecoration(
                         color: AppColors.lightPeach,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.radiusLG,
                       ),
                       child: const Icon(
                         Icons.play_circle_outline,
@@ -301,13 +302,13 @@ class InvoiceMenuPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               // Frequently client section
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Frequently client',
                     style: TextStyle(
                       fontSize: 18,
@@ -326,7 +327,7 @@ class InvoiceMenuPage extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               SizedBox(
                 height: 100,
@@ -347,13 +348,13 @@ class InvoiceMenuPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               // Recent invoice section
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Recent invoice',
                     style: TextStyle(
                       fontSize: 18,
@@ -372,13 +373,13 @@ class InvoiceMenuPage extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.spaceLG,
 
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: context.responsivePadding,
                 decoration: BoxDecoration(
                   color: AppColors.cardBackground,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: AppRadius.radiusXL,
                 ),
                 child: Row(
                   children: [
@@ -386,7 +387,7 @@ class InvoiceMenuPage extends StatelessWidget {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: AppRadius.radiusLG,
                         image: const DecorationImage(
                           image: NetworkImage(
                               'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
@@ -394,7 +395,7 @@ class InvoiceMenuPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    AppSpacing.spaceMD,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -407,7 +408,7 @@ class InvoiceMenuPage extends StatelessWidget {
                               color: AppColors.brownHeader,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          AppSpacing.spaceXS,
                           Row(
                             children: [
                               Container(
@@ -418,7 +419,7 @@ class InvoiceMenuPage extends StatelessWidget {
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              AppSpacing.spaceSM,
                               const Text(
                                 'Acme Corporation',
                                 style: TextStyle(
@@ -428,7 +429,7 @@ class InvoiceMenuPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          AppSpacing.spaceSM,
                           const Text(
                             'NGN 250',
                             style: TextStyle(
@@ -448,7 +449,7 @@ class InvoiceMenuPage extends StatelessWidget {
                               horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.green.shade100,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: AppRadius.radiusMD,
                           ),
                           child: Text(
                             'Paid',
@@ -459,7 +460,7 @@ class InvoiceMenuPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.spaceSM,
                         Text(
                           '10/06/2020',
                           style: TextStyle(
@@ -473,7 +474,7 @@ class InvoiceMenuPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              AppSpacing.spaceXL,
             ],
           ),
         ),
@@ -491,11 +492,11 @@ class InvoiceMenuPage extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
+        margin: AppSpacing.horizontalXS,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.radiusLG,
           border: Border.all(
             color: AppColors.subtleBorder,
             width: 1,
@@ -508,7 +509,7 @@ class InvoiceMenuPage extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.radiusMD,
               ),
               child: Icon(
                 icon,
@@ -552,14 +553,14 @@ class InvoiceMenuPage extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusLG,
               image: DecorationImage(
                 image: NetworkImage(imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Text(
             name,
             style: const TextStyle(

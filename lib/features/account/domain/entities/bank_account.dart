@@ -10,9 +10,9 @@ class BankAccount extends Equatable {
   const BankAccount({
     required this.id,
     required this.bankName,
-    this.bankCode,
     required this.accountName,
     required this.accountNumber,
+    this.bankCode,
   });
 
   @override

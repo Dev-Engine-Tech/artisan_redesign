@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
+import '../../../../core/utils/responsive.dart';
 
 class FilterPage extends StatefulWidget {
   const FilterPage({super.key});
@@ -271,7 +272,8 @@ class _FilterPageState extends State<FilterPage> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
       builder: (c) {
         String query = '';
         return StatefulBuilder(builder: (context, setModalState) {
@@ -306,13 +308,13 @@ class _FilterPageState extends State<FilterPage> {
                       filled: true,
                       fillColor: AppColors.cardBackground,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.radiusMD,
                           borderSide: BorderSide.none),
                     ),
                     onChanged: (v) => setModalState(() => query = v),
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 Flexible(
                     child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 360),
@@ -367,7 +369,7 @@ class _FilterPageState extends State<FilterPage> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       builder: (c) {
         String query = '';
@@ -407,14 +409,14 @@ class _FilterPageState extends State<FilterPage> {
                         filled: true,
                         fillColor: AppColors.cardBackground,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: AppRadius.radiusMD,
                           borderSide: BorderSide.none,
                         ),
                       ),
                       onChanged: (v) => setModalState(() => query = v),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   Flexible(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxHeight: 420),
@@ -499,203 +501,213 @@ class _FilterPageState extends State<FilterPage> {
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            _buildSectionTitle('Categories'),
-            if (_loadingCategories)
-              InputDecorator(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.cardBackground,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                ),
-                child: const Text('Loading categories...'),
-              )
-            else
-              GestureDetector(
-                onTap: _openCategorySelector,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.subtleBorder),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _selectedCategoryIds.isEmpty
-                            ? const Text('Select Categories')
-                            : Wrap(
-                                spacing: 6,
-                                runSpacing: 6,
-                                children: _selectedCategoryIds.map((id) {
-                                  final item = _subcategories.firstWhere(
-                                    (e) => e.id == id,
-                                    orElse: () => CategoryItem(id, id),
-                                  );
-                                  return Chip(
-                                    label: Text(item.name),
-                                    backgroundColor: AppColors.cardBackground,
-                                  );
-                                }).toList(),
-                              ),
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: context.maxContentWidth),
+            child: ListView(
+              padding: context.responsivePadding,
+              children: [
+                _buildSectionTitle('Categories'),
+                if (_loadingCategories)
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.cardBackground,
+                      border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMD,
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                    ),
+                    child: const Text('Loading categories...'),
+                  )
+                else
+                  GestureDetector(
+                    onTap: _openCategorySelector,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardBackground,
+                        borderRadius: AppRadius.radiusMD,
+                        border: Border.all(color: AppColors.subtleBorder),
                       ),
-                      const Icon(Icons.keyboard_arrow_down),
-                    ],
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _selectedCategoryIds.isEmpty
+                                ? const Text('Select Categories')
+                                : Wrap(
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    children: _selectedCategoryIds.map((id) {
+                                      final item = _subcategories.firstWhere(
+                                        (e) => e.id == id,
+                                        orElse: () => CategoryItem(id, id),
+                                      );
+                                      return Chip(
+                                        label: Text(item.name),
+                                        backgroundColor:
+                                            AppColors.cardBackground,
+                                      );
+                                    }).toList(),
+                                  ),
+                          ),
+                          const Icon(Icons.keyboard_arrow_down),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            const SizedBox(height: 14),
-            _buildSectionTitle('Posted Date'),
-            ..._postedDate.keys.map((k) => CheckboxListTile(
-                  value: _postedDate[k],
-                  onChanged: (v) => setState(() => _postedDate[k] = v ?? false),
-                  title: Text(k),
-                  controlAffinity: ListTileControlAffinity.leading,
-                )),
-            const SizedBox(height: 6),
-            _buildSectionTitle('Type of workspace'),
-            ..._workspace.keys.map((k) => CheckboxListTile(
-                  value: _workspace[k],
-                  onChanged: (v) => setState(() => _workspace[k] = v ?? false),
-                  title: Text(k),
-                  controlAffinity: ListTileControlAffinity.leading,
-                )),
-            const SizedBox(height: 6),
-            _buildSectionTitle('Project Location'),
-            const SizedBox(height: 6),
-            const Text('State', style: TextStyle(color: Colors.black54)),
-            const SizedBox(height: 6),
-            if (_loadingStates)
-              InputDecorator(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.cardBackground,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                ),
-                child: const Text('Loading states...'),
-              )
-            else if (_states.isEmpty)
-              GestureDetector(
-                onTap: _loadStates,
-                child: InputDecorator(
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.cardBackground,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none),
-                    contentPadding: const EdgeInsets.symmetric(
+                const SizedBox(height: 14),
+                _buildSectionTitle('Posted Date'),
+                ..._postedDate.keys.map((k) => CheckboxListTile(
+                      value: _postedDate[k],
+                      onChanged: (v) =>
+                          setState(() => _postedDate[k] = v ?? false),
+                      title: Text(k),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    )),
+                const SizedBox(height: 6),
+                _buildSectionTitle('Type of workspace'),
+                ..._workspace.keys.map((k) => CheckboxListTile(
+                      value: _workspace[k],
+                      onChanged: (v) =>
+                          setState(() => _workspace[k] = v ?? false),
+                      title: Text(k),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    )),
+                const SizedBox(height: 6),
+                _buildSectionTitle('Project Location'),
+                const SizedBox(height: 6),
+                const Text('State', style: TextStyle(color: Colors.black54)),
+                const SizedBox(height: 6),
+                if (_loadingStates)
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.cardBackground,
+                      border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMD,
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                    ),
+                    child: const Text('Loading states...'),
+                  )
+                else if (_states.isEmpty)
+                  GestureDetector(
+                    onTap: _loadStates,
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppColors.cardBackground,
+                        border: OutlineInputBorder(
+                            borderRadius: AppRadius.radiusMD,
+                            borderSide: BorderSide.none),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 14),
+                      ),
+                      child: const Text('No states available. Tap to retry'),
+                    ),
+                  )
+                else
+                  DropdownButtonFormField<int>(
+                    initialValue: _selectedStateId,
+                    items: _states
+                        .map((s) => DropdownMenuItem<int>(
+                            value: s.id, child: Text(s.name)))
+                        .toList(),
+                    onChanged: (v) async {
+                      setState(() {
+                        _selectedStateId = v;
+                        _selectedLgaNames.clear();
+                        _selectedStateName = _states
+                            .firstWhere((e) => e.id == v,
+                                orElse: () =>
+                                    const LocationState(id: 0, name: ''))
+                            .name;
+                      });
+                      if (v != null) await _loadLgas(v);
+                    },
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.cardBackground,
+                      border: OutlineInputBorder(
+                          borderRadius: AppRadius.radiusMD,
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 14),
+                    ),
+                  ),
+                AppSpacing.spaceMD,
+                const Text('Local Government',
+                    style: TextStyle(color: Colors.black54)),
+                const SizedBox(height: 6),
+                GestureDetector(
+                  onTap: _openLgaSelector,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 14),
+                    decoration: BoxDecoration(
+                        color: AppColors.cardBackground,
+                        borderRadius: AppRadius.radiusMD,
+                        border: Border.all(color: AppColors.subtleBorder)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: _selectedLgaNames.isEmpty
+                                ? const Text('Select Location')
+                                : Wrap(children: selectedLgasChips)),
+                        const Icon(Icons.keyboard_arrow_down)
+                      ],
+                    ),
                   ),
-                  child: const Text('No states available. Tap to retry'),
                 ),
-              )
-            else
-              DropdownButtonFormField<int>(
-                value: _selectedStateId,
-                items: _states
-                    .map((s) =>
-                        DropdownMenuItem<int>(value: s.id, child: Text(s.name)))
-                    .toList(),
-                onChanged: (v) async {
-                  setState(() {
-                    _selectedStateId = v;
-                    _selectedLgaNames.clear();
-                    _selectedStateName = _states
-                        .firstWhere((e) => e.id == v,
-                            orElse: () => const LocationState(id: 0, name: ''))
-                        .name;
-                  });
-                  if (v != null) await _loadLgas(v);
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.cardBackground,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                AppSpacing.spaceMD,
+                _buildSectionTitle('Budget Type'),
+                ..._budgetType.keys.map((k) => CheckboxListTile(
+                      value: _budgetType[k],
+                      onChanged: (v) =>
+                          setState(() => _budgetType[k] = v ?? false),
+                      title: Text(k),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    )),
+                const SizedBox(height: 6),
+                _buildSectionTitle('Project Duration'),
+                ..._projectDuration.keys.map((k) => CheckboxListTile(
+                      value: _projectDuration[k],
+                      onChanged: (v) =>
+                          setState(() => _projectDuration[k] = v ?? false),
+                      title: Text(k),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    )),
+                AppSpacing.spaceXL,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: PrimaryButton(
+                    text: 'Apply Filter',
+                    onPressed: () {
+                      // Collect filter in a simple map and return to caller
+                      final filters = {
+                        // Send selected category IDs (list of strings) to caller; empty means not set
+                        'categories': _selectedCategoryIds.toList(),
+                        'postedDate': _postedDate,
+                        'workspace': _workspace,
+                        'state': _selectedStateName,
+                        'stateId': _selectedStateId,
+                        'lgas': _selectedLgaNames.toList(),
+                        'lgaIds': _selectedLgaIds.toList(),
+                        'budget': _budgetType,
+                        'duration': _projectDuration,
+                      };
+                      Navigator.of(context).pop(filters);
+                    },
+                  ),
                 ),
-              ),
-            const SizedBox(height: 12),
-            const Text('Local Government',
-                style: TextStyle(color: Colors.black54)),
-            const SizedBox(height: 6),
-            GestureDetector(
-              onTap: _openLgaSelector,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.subtleBorder)),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: _selectedLgaNames.isEmpty
-                            ? const Text('Select Location')
-                            : Wrap(children: selectedLgasChips)),
-                    const Icon(Icons.keyboard_arrow_down)
-                  ],
-                ),
-              ),
+                AppSpacing.spaceXXL,
+              ],
             ),
-            const SizedBox(height: 12),
-            _buildSectionTitle('Budget Type'),
-            ..._budgetType.keys.map((k) => CheckboxListTile(
-                  value: _budgetType[k],
-                  onChanged: (v) => setState(() => _budgetType[k] = v ?? false),
-                  title: Text(k),
-                  controlAffinity: ListTileControlAffinity.leading,
-                )),
-            const SizedBox(height: 6),
-            _buildSectionTitle('Project Duration'),
-            ..._projectDuration.keys.map((k) => CheckboxListTile(
-                  value: _projectDuration[k],
-                  onChanged: (v) =>
-                      setState(() => _projectDuration[k] = v ?? false),
-                  title: Text(k),
-                  controlAffinity: ListTileControlAffinity.leading,
-                )),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: PrimaryButton(
-                text: 'Apply Filter',
-                onPressed: () {
-                  // Collect filter in a simple map and return to caller
-                  final filters = {
-                    // Send selected category IDs (list of strings) to caller; empty means not set
-                    'categories': _selectedCategoryIds.toList(),
-                    'postedDate': _postedDate,
-                    'workspace': _workspace,
-                    'state': _selectedStateName,
-                    'stateId': _selectedStateId,
-                    'lgas': _selectedLgaNames.toList(),
-                    'lgaIds': _selectedLgaIds.toList(),
-                    'budget': _budgetType,
-                    'duration': _projectDuration,
-                  };
-                  Navigator.of(context).pop(filters);
-                },
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
+          ),
         ),
       ),
     );

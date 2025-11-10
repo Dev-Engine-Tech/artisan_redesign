@@ -6,6 +6,7 @@ import 'package:artisans_circle/features/catalog/domain/usecases/create_catalog.
 import 'package:artisans_circle/features/catalog/domain/usecases/update_catalog.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
+import '../../../../core/utils/responsive.dart';
 // import 'package:image_picker/image_picker.dart';
 
 /// Multi-step upload flow for creating a catalogue entry.
@@ -101,10 +102,12 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     if (it != null) {
       _titleController.text = it.title;
       _descriptionController.text = it.description;
-      if (it.priceMin != null)
+      if (it.priceMin != null) {
         _minPriceController.text = it.priceMin.toString();
-      if (it.priceMax != null)
+      }
+      if (it.priceMax != null) {
         _maxPriceController.text = it.priceMax.toString();
+      }
 
       // Initialize existing images
       if (it.imageUrl != null && it.imageUrl!.isNotEmpty) {
@@ -290,10 +293,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         const Text('Project Title',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         TextField(
           controller: _titleController,
           decoration: InputDecoration(
@@ -307,9 +310,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           ),
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: AppColors.softBorder),
@@ -321,7 +324,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Select project category',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         DropdownButtonFormField<String>(
           initialValue: _category,
           items: _categories
@@ -339,10 +342,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           ),
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         const Text('Sub-category',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         GestureDetector(
           onTap: _pickSubcategory,
           child: Container(
@@ -366,7 +369,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Project Description',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         TextField(
           controller: _descriptionController,
           minLines: 4,
@@ -382,9 +385,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           ),
         ),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
@@ -397,7 +400,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Attached File (Optional)',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         GestureDetector(
           onTap: () async {
             // final files = await _picker.pickMultiImage(); // Temporarily disabled
@@ -408,7 +411,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           child: Container(
             height: 160,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: AppRadius.radiusLG,
               border: Border.all(
                   color: AppColors.softBorder,
                   style: BorderStyle.solid,
@@ -421,10 +424,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 children: [
                   const Icon(Icons.perm_media_outlined,
                       color: AppColors.orange, size: 36),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   const Text(
                       'Copy and paste images, videos or any file from your device.'),
-                  const SizedBox(height: 8),
+                  AppSpacing.spaceSM,
                   OutlinedAppButton(
                     text: 'Upload Media',
                     onPressed: () async {
@@ -453,7 +456,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               }).toList(),
             ),
           ),
-        const SizedBox(height: 20),
+        AppSpacing.spaceXL,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: PrimaryButton(
@@ -461,7 +464,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             onPressed: _next,
           ),
         ),
-        const SizedBox(height: 20),
+        AppSpacing.spaceXL,
       ],
     );
   }
@@ -470,10 +473,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         const Text('Price Range',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         Row(
           children: [
             Expanded(
@@ -493,7 +496,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            AppSpacing.spaceMD,
             Expanded(
               child: TextField(
                 controller: _maxPriceController,
@@ -516,7 +519,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Product Timeline',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         DropdownButtonFormField<String>(
           initialValue: _timeline,
           items: _timelines
@@ -537,9 +540,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Select preferred skill',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(10)),
@@ -569,9 +572,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Materials Preference',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(10)),
@@ -604,9 +607,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 18),
         const Text('Instant Selling',
             style: TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(10)),
@@ -620,7 +623,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         if (_instantSelling) ...[
           const SizedBox(height: 18),
           const Text('Brand', style: TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           TextField(
             controller: _brandController,
             decoration: InputDecoration(
@@ -637,9 +640,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           const SizedBox(height: 18),
           const Text('Condition',
               style: TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           DropdownButtonFormField<String>(
-            value: _condition,
+            initialValue: _condition,
             items: _conditions
                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                 .toList(),
@@ -658,7 +661,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           const SizedBox(height: 18),
           const Text('Sales Category',
               style: TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           TextField(
             controller: _salesCategoryController,
             decoration: InputDecoration(
@@ -675,9 +678,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           const SizedBox(height: 18),
           const Text('Additional Options',
               style: TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: AppSpacing.paddingMD,
             decoration: BoxDecoration(
                 color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(10)),
@@ -699,7 +702,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             ),
           ),
         ],
-        const SizedBox(height: 16),
+        AppSpacing.spaceLG,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: PrimaryButton(
@@ -707,7 +710,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             onPressed: _next,
           ),
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
       ],
     );
   }
@@ -723,14 +726,14 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         builder: (c) {
           return Container(
             height: MediaQuery.of(c).size.height * 0.8,
-            padding: const EdgeInsets.all(12),
+            padding: AppSpacing.paddingMD,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Select Sub-category',
                     style:
                         TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-                const SizedBox(height: 8),
+                AppSpacing.spaceSM,
                 Expanded(
                   child: ListView.builder(
                     itemCount: groups.length,
@@ -772,7 +775,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         ClipRRect(
           borderRadius: BorderRadius.circular(18),
           child: Container(
@@ -790,7 +793,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         Text(
             _titleController.text.isEmpty
                 ? 'Untitled project'
@@ -799,7 +802,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         const SizedBox(height: 6),
         Text(_category ?? 'Uncategorized',
             style: const TextStyle(color: Colors.black54)),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -818,15 +821,15 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         Container(
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.radiusLG,
             border: Border.all(color: AppColors.softBorder),
           ),
-          padding: const EdgeInsets.all(16),
+          padding: context.responsivePadding,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text('Description',
                 style: TextStyle(fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
+            AppSpacing.spaceSM,
             Text(
                 _descriptionController.text.isEmpty
                     ? 'No description provided.'
@@ -836,7 +839,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         ),
         const SizedBox(height: 14),
         const Text('Skills', style: TextStyle(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -854,7 +857,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             _pageController.jumpToPage(0);
           },
         ),
-        const SizedBox(height: 12),
+        AppSpacing.spaceMD,
         PrimaryButton(
           text: 'Submit',
           onPressed: _submit,

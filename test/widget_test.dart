@@ -16,9 +16,9 @@ void main() {
 
   testWidgets('App builds and shows DiscoverPage', (WidgetTester tester) async {
     // Provide a realistic device size via MediaQuery to avoid layout overflow in tests
-    final mq = MediaQuery(
-      data: const MediaQueryData(size: Size(390, 844)),
-      child: const MaterialApp(home: DiscoverPage()),
+    final mq = const MediaQuery(
+      data: MediaQueryData(size: Size(390, 844)),
+      child: MaterialApp(home: DiscoverPage()),
     );
 
     await tester.pumpWidget(mq);

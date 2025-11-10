@@ -39,10 +39,10 @@ class Message extends Equatable {
     required this.senderId,
     required this.receiverId,
     required this.type,
-    this.text,
-    this.mediaUrl,
     required this.timestamp,
     required this.isSeen,
+    this.text,
+    this.mediaUrl,
     this.replied,
   });
 

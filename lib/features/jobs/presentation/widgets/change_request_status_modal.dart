@@ -11,9 +11,9 @@ class ChangeRequestStatusModal extends StatelessWidget {
   final ChangeRequest changeRequest;
 
   const ChangeRequestStatusModal({
-    super.key,
     required this.job,
     required this.changeRequest,
+    super.key,
   });
 
   @override
@@ -21,7 +21,8 @@ class ChangeRequestStatusModal extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -30,7 +31,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
           Container(
             width: 40,
             height: 4,
-            margin: const EdgeInsets.symmetric(vertical: 12),
+            margin: AppSpacing.verticalMD,
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
               borderRadius: BorderRadius.circular(2),
@@ -39,7 +40,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
 
           // Header
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: AppSpacing.horizontalXL,
             child: Row(
               children: [
                 Expanded(
@@ -62,16 +63,16 @@ class ChangeRequestStatusModal extends StatelessWidget {
 
           // Content
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: AppSpacing.paddingXL,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Status indicator
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppSpacing.paddingLG,
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: AppRadius.radiusLG,
                     border: Border.all(color: Colors.blue.shade200),
                   ),
                   child: Row(
@@ -79,7 +80,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                       Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.blue,
                           shape: BoxShape.circle,
                         ),
@@ -89,7 +90,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                           size: 20,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      AppSpacing.spaceMD,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +121,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                AppSpacing.spaceXL,
 
                 // Job info
                 Text(
@@ -130,7 +131,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                         color: Colors.grey.shade600,
                       ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.spaceXS,
                 Text(
                   job.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -138,7 +139,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                       ),
                 ),
 
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
 
                 // Change request details
                 Text(
@@ -148,13 +149,13 @@ class ChangeRequestStatusModal extends StatelessWidget {
                         color: Colors.grey.shade600,
                       ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.spaceXS,
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(12),
+                  padding: AppSpacing.paddingMD,
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                     border: Border.all(color: AppColors.subtleBorder),
                   ),
                   child: Text(
@@ -163,7 +164,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                AppSpacing.spaceLG,
 
                 // Reason
                 Text(
@@ -173,13 +174,13 @@ class ChangeRequestStatusModal extends StatelessWidget {
                         color: Colors.grey.shade600,
                       ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.spaceXS,
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(12),
+                  padding: AppSpacing.paddingMD,
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                     border: Border.all(color: AppColors.subtleBorder),
                   ),
                   child: Text(
@@ -188,21 +189,21 @@ class ChangeRequestStatusModal extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                AppSpacing.spaceXL,
 
                 // Info section
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: AppSpacing.paddingMD,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.radiusMD,
                     border: Border.all(color: Colors.grey.shade200),
                   ),
                   child: Row(
                     children: [
                       Icon(Icons.info_outline,
                           color: Colors.grey.shade600, size: 20),
-                      const SizedBox(width: 8),
+                      AppSpacing.spaceSM,
                       Expanded(
                         child: Text(
                           'The client will review your request and provide feedback. You will be notified once they respond.',
@@ -216,7 +217,7 @@ class ChangeRequestStatusModal extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                AppSpacing.spaceXXL,
 
                 // Close button
                 PrimaryButton(

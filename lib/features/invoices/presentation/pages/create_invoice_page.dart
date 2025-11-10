@@ -3,17 +3,15 @@ import 'package:get_it/get_it.dart';
 import '../../../../core/theme.dart';
 import '../../../../core/components/components.dart';
 import '../../domain/entities/invoice.dart';
-import '../../../catalog/domain/entities/catalog_item.dart';
 import '../../../catalog/domain/usecases/get_my_catalog_items.dart';
-import '../../../customers/domain/entities/customer.dart';
 import '../../../customers/domain/usecases/get_customers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/invoice_form_cubit.dart';
 import '../widgets/customer_field.dart';
-import '../widgets/label_cell.dart';
 import '../widgets/lines_tab.dart';
 import '../widgets/materials_tab.dart';
 import '../widgets/measurement_tab.dart';
+import '../../../../core/utils/responsive.dart';
 
 enum InvoiceMode { create, edit, view }
 
@@ -22,10 +20,10 @@ class CreateInvoicePage extends StatefulWidget {
   final InvoiceMode mode;
 
   const CreateInvoicePage({
-    Key? key,
+    super.key,
     this.invoice,
     this.mode = InvoiceMode.create,
-  }) : super(key: key);
+  });
 
   @override
   State<CreateInvoicePage> createState() => _CreateInvoicePageState();
@@ -174,7 +172,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          AppSpacing.spaceSM,
                           const Text(
                             'Draft',
                             style: TextStyle(
@@ -183,7 +181,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          AppSpacing.spaceXXL,
 
                           // Form Fields Row
                           Row(
@@ -200,7 +198,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                           _deliveryAddressController,
                                       readOnly: _isReadOnly,
                                     ),
-                                    const SizedBox(height: 16),
+                                    AppSpacing.spaceLG,
                                     _buildFormField(
                                       'Delivery Address',
                                       '',
@@ -209,7 +207,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 24),
+                              AppSpacing.spaceXXL,
 
                               // Right Column
                               Expanded(
@@ -218,10 +216,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                   children: [
                                     _buildSelectableDateField('Invoice Date',
                                         _formatDate(_invoiceDate)),
-                                    const SizedBox(height: 16),
+                                    AppSpacing.spaceLG,
                                     _buildSelectableDateField(
                                         'Due Date', _formatDate(_dueDate)),
-                                    const SizedBox(height: 16),
+                                    AppSpacing.spaceLG,
                                     Row(
                                       children: [
                                         const Text(
@@ -232,19 +230,18 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        const SizedBox(width: 16),
+                                        AppSpacing.spaceLG,
                                         const Text('in',
                                             style:
                                                 TextStyle(color: Colors.grey)),
-                                        const SizedBox(width: 16),
+                                        AppSpacing.spaceLG,
                                         Container(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 8),
                                           decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: Colors.grey.shade300),
-                                            borderRadius:
-                                                BorderRadius.circular(4),
+                                            borderRadius: AppRadius.radiusSM,
                                           ),
                                           child: const Text('NGN'),
                                         ),
@@ -256,7 +253,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                             ],
                           ),
 
-                          const SizedBox(height: 32),
+                          AppSpacing.spaceXXXL,
 
                           // Tab Bar
                           TabBar(
@@ -279,7 +276,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                               height: tabHeight,
                               child: TabBarView(
                                 controller: _tabController,
-                                children: [
+                                children: const [
                                   LinesTab(),
                                   MaterialsTab(),
                                   MeasurementTab(),
@@ -288,7 +285,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                             );
                           }),
 
-                          const SizedBox(height: 24),
+                          AppSpacing.spaceXXL,
 
                           // Totals Section (computed by InvoiceFormCubit)
                           BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
@@ -296,11 +293,11 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                               final cubit = context.read<InvoiceFormCubit>();
                               return Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(16),
+                                padding: context.responsivePadding,
                                 decoration: BoxDecoration(
                                   border:
                                       Border.all(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: AppRadius.radiusMD,
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -319,7 +316,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                             },
                           ),
 
-                          const SizedBox(height: 24),
+                          AppSpacing.spaceXXL,
 
                           // Terms & Conditions Section
                           Column(
@@ -333,13 +330,13 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              AppSpacing.spaceSM,
                               Container(
                                 height: 80,
                                 decoration: BoxDecoration(
                                   border:
                                       Border.all(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: AppRadius.radiusSM,
                                 ),
                                 child: TextFormField(
                                   controller: _termsController,
@@ -350,7 +347,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                   decoration: const InputDecoration(
                                     hintText: 'Enter terms and conditions...',
                                     border: InputBorder.none,
-                                    contentPadding: EdgeInsets.all(12),
+                                    contentPadding: AppSpacing.paddingMD,
                                   ),
                                 ),
                               ),
@@ -383,7 +380,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
       ),
     );
 
-    buttons.add(const SizedBox(width: 8));
+    buttons.add(AppSpacing.spaceSM);
 
     // Show Create Job button for draft and validated invoices
     if (widget.mode != InvoiceMode.view ||
@@ -398,7 +395,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         ),
       );
 
-      buttons.add(const SizedBox(width: 8));
+      buttons.add(AppSpacing.spaceSM);
     }
 
     // Add main action button (Confirm/Pay) - but not for paid invoices
@@ -435,7 +432,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: context.responsivePadding,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -496,11 +493,11 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(width: 4),
+              AppSpacing.spaceXS,
               const Icon(Icons.help_outline, size: 16, color: Colors.grey),
             ],
           ),
-          const SizedBox(height: 8),
+          AppSpacing.spaceSM,
         ],
         TextFormField(
           controller: controller,
@@ -509,16 +506,16 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
             hintText: hint,
             hintStyle: const TextStyle(color: Colors.grey),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.radiusSM,
               borderSide: BorderSide(color: Colors.grey.shade300),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.radiusSM,
               borderSide: BorderSide(color: Colors.grey.shade300),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(4),
-              borderSide: BorderSide(color: AppColors.orange),
+              borderRadius: AppRadius.radiusSM,
+              borderSide: const BorderSide(color: AppColors.orange),
             ),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -542,17 +539,17 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(width: 4),
+            AppSpacing.spaceXS,
             const Icon(Icons.help_outline, size: 16, color: Colors.grey),
           ],
         ),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: AppRadius.radiusSM,
           ),
           child: Text(
             value,
@@ -601,11 +598,11 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(width: 4),
+            AppSpacing.spaceXS,
             const Icon(Icons.help_outline, size: 16, color: Colors.grey),
           ],
         ),
-        const SizedBox(height: 8),
+        AppSpacing.spaceSM,
         GestureDetector(
           onTap: _isReadOnly ? null : () => _selectDate(context, label),
           child: Container(
@@ -613,7 +610,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: AppRadius.radiusSM,
             ),
             child: Row(
               children: [
@@ -636,8 +633,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return const SizedBox.shrink();
   }
 
-  Widget _buildInvoiceLineRow([dynamic a, dynamic b]) =>
-      const SizedBox.shrink();
+  Widget _buildInvoiceLineRow() => const SizedBox.shrink();
 
   void _editSection(int index) {
     // No-op placeholder — handled in LinesTab via cubit
@@ -656,27 +652,25 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     );
   }
 
-  Widget _buildSectionCard([int sectionIndex = 0]) => const SizedBox.shrink();
+  Widget _buildSectionCard() => const SizedBox.shrink();
 
-  Widget _buildInvoiceLineCard([int a = 0, int b = 0]) =>
-      const SizedBox.shrink();
+  Widget _buildInvoiceLineCard() => const SizedBox.shrink();
 
   double _calculateInvoiceLinesTotal() => 0.0;
 
   Widget _buildMaterialsTab() => const SizedBox.shrink();
 
-  Widget _buildMaterialRow([dynamic a, dynamic onDelete]) =>
-      const SizedBox.shrink();
+  Widget _buildMaterialRow() => const SizedBox.shrink();
 
-  Widget _buildMaterialCard([int index = 0]) => const SizedBox.shrink();
+  Widget _buildMaterialCard() => const SizedBox.shrink();
 
   double _calculateMaterialsTotal() => 0.0;
 
   Widget _buildMeasurementTab() {
     final children = <Widget>[
-      const SizedBox(height: 16),
+      AppSpacing.spaceLG,
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: context.responsivePadding,
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
           border: Border.all(color: Colors.grey.shade200),
@@ -701,15 +695,14 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
       ),
     ];
     // migrated to MeasurementTab widget
-    children.add(const SizedBox(height: 16));
+    children.add(AppSpacing.spaceLG);
     // migrated to MeasurementTab widget
     return ListView(padding: EdgeInsets.zero, children: children);
   }
 
-  Widget _buildMeasurementRow([dynamic a, dynamic b]) =>
-      const SizedBox.shrink();
+  Widget _buildMeasurementRow() => const SizedBox.shrink();
 
-  Widget _buildMeasurementCard([int index = 0]) => const SizedBox.shrink();
+  Widget _buildMeasurementCard() => const SizedBox.shrink();
 
   // Totals are computed by InvoiceFormCubit
 

@@ -111,9 +111,9 @@ class SecureStorage {
   /// Store authentication data
   Future<void> storeAuthData({
     required String accessToken,
+    required String userId,
     String? refreshToken,
     String? firebaseToken,
-    required String userId,
   }) async {
     await _secureStorage.write(key: _accessTokenKey, value: accessToken);
     if (refreshToken != null) {

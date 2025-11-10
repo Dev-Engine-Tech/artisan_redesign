@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/identity_verification_page.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/verification_cubit.dart';
@@ -11,9 +10,9 @@ class ProfileActionButtons extends StatelessWidget {
   final bool isVerified;
 
   const ProfileActionButtons({
-    super.key,
     required this.profileProgress,
     required this.isVerified,
+    super.key,
   });
 
   @override
