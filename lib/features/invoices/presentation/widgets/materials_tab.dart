@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:artisans_circle/core/utils/input_utils.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
@@ -68,8 +70,8 @@ class MaterialsTab extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: OutlinedAppButton(
                   text: 'Add Material',
-                  height: 40,
-                  width: 160,
+                  height: 44,
+                  width: 220,
                   onPressed: cubit.addMaterial,
                 ),
               ),
@@ -135,13 +137,17 @@ class _MaterialRowState extends State<_MaterialRow> {
   late final TextEditingController _desc;
   late final TextEditingController _qty;
   late final TextEditingController _price;
+  final _qtyFocus = FocusNode();
+  final _priceFocus = FocusNode();
+  final _qtyFormatter = InputUtils.digitsOnly;
+  final _priceFormatter = InputUtils.digitsOnly;
 
   @override
   void initState() {
     super.initState();
     _desc = TextEditingController(text: widget.description);
-    _qty = TextEditingController(text: widget.quantity.toString());
-    _price = TextEditingController(text: widget.unitPrice.toString());
+    _qty = TextEditingController(text: widget.quantity.toStringAsFixed(0));
+    _price = TextEditingController(text: widget.unitPrice.toStringAsFixed(0));
   }
 
   @override
@@ -150,11 +156,11 @@ class _MaterialRowState extends State<_MaterialRow> {
     if (oldWidget.description != widget.description) {
       _desc.text = widget.description;
     }
-    if (oldWidget.quantity != widget.quantity) {
-      _qty.text = widget.quantity.toString();
+    if (oldWidget.quantity != widget.quantity && !_qtyFocus.hasFocus) {
+      _qty.text = widget.quantity.toStringAsFixed(0);
     }
-    if (oldWidget.unitPrice != widget.unitPrice) {
-      _price.text = widget.unitPrice.toString();
+    if (oldWidget.unitPrice != widget.unitPrice && !_priceFocus.hasFocus) {
+      _price.text = widget.unitPrice.toStringAsFixed(0);
     }
   }
 
@@ -163,6 +169,8 @@ class _MaterialRowState extends State<_MaterialRow> {
     _desc.dispose();
     _qty.dispose();
     _price.dispose();
+    _qtyFocus.dispose();
+    _priceFocus.dispose();
     super.dispose();
   }
 
@@ -195,9 +203,12 @@ class _MaterialRowState extends State<_MaterialRow> {
             child: TextField(
               controller: _qty,
               readOnly: widget.readOnly,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                  decimal: false, signed: false),
+              inputFormatters: [_qtyFormatter],
+              focusNode: _qtyFocus,
               decoration: const InputDecoration.collapsed(hintText: '1'),
-              onChanged: (v) => widget.onQtyChanged(double.tryParse(v) ?? 0),
+              onChanged: (v) => widget.onQtyChanged(InputUtils.parseDouble(v)),
             ),
           ),
           AppSpacing.spaceSM,
@@ -206,9 +217,13 @@ class _MaterialRowState extends State<_MaterialRow> {
             child: TextField(
               controller: _price,
               readOnly: widget.readOnly,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                  decimal: false, signed: false),
+              inputFormatters: [_priceFormatter],
+              focusNode: _priceFocus,
               decoration: const InputDecoration.collapsed(hintText: 'NGN 0.00'),
-              onChanged: (v) => widget.onPriceChanged(double.tryParse(v) ?? 0),
+              onChanged: (v) =>
+                  widget.onPriceChanged(InputUtils.parseDouble(v)),
             ),
           ),
           AppSpacing.spaceSM,

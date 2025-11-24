@@ -413,6 +413,20 @@ class _CatalogPageState extends State<CatalogPage>
 
                     AppSpacing.spaceMD,
 
+                    // Description excerpt
+                    if (item.description.isNotEmpty) ...[
+                      Text(
+                        item.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 13,
+                        ),
+                      ),
+                      AppSpacing.spaceMD,
+                    ],
+
                     // Price and timeline row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

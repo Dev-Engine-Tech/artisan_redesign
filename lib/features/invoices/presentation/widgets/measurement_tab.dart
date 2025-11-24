@@ -63,8 +63,8 @@ class MeasurementTab extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: OutlinedAppButton(
                   text: 'Add Measurement',
-                  height: 40,
-                  width: 180,
+                  height: 44,
+                  width: 240,
                   onPressed: cubit.addMeasurement,
                 ),
               ),

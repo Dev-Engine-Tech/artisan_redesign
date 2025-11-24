@@ -35,7 +35,6 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
       width: width ?? double.infinity,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
@@ -44,6 +43,7 @@ class PrimaryButton extends StatelessWidget {
           foregroundColor: Colors.white,
           disabledBackgroundColor: AppColors.disabledOrange,
           disabledForegroundColor: Colors.white70,
+          minimumSize: Size(width ?? 0, height),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -126,7 +126,6 @@ class SecondaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
       width: width ?? double.infinity,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
@@ -135,12 +134,15 @@ class SecondaryButton extends StatelessWidget {
           foregroundColor: foregroundColor,
           disabledBackgroundColor: backgroundColor.withValues(alpha: 0.5),
           disabledForegroundColor: foregroundColor.withValues(alpha: 0.7),
+          minimumSize: Size(width ?? 0, height),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
+          // Use smaller vertical padding so short buttons (e.g., height 40)
+          // render text without clipping.
           padding: padding ??
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         ),
         child: isLoading
             ? SizedBox(
@@ -219,7 +221,6 @@ class OutlinedAppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
       width: width ?? double.infinity,
       child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
@@ -229,8 +230,9 @@ class OutlinedAppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
+          minimumSize: Size(width ?? 0, height),
           padding: padding ??
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         child: isLoading
             ? SizedBox(

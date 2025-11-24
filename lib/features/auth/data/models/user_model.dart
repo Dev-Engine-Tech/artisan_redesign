@@ -215,6 +215,39 @@ class LoginResponse {
       _$LoginResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
+
+  // Accepts multiple backend variants and nested envelopes.
+  factory LoginResponse.adapt(Map<String, dynamic> json) {
+    Map<String, dynamic> core = json;
+    final data = json['data'];
+    if (data is Map) {
+      core = Map<String, dynamic>.from(data);
+    }
+    String? access =
+        (core['access'] ?? core['access_token'] ?? core['token'])?.toString();
+    String? expiry =
+        (core['expiry'] ?? core['expires'] ?? core['expires_in'])?.toString();
+    String? firebase = (core['firebase_access_token'] ??
+            core['firebase_token'] ??
+            core['firebaseAccessToken'] ??
+            core['firebaseToken'])
+        ?.toString();
+    String? phone =
+        (core['phone'] ?? (core['user'] is Map ? core['user']['phone'] : null))
+            ?.toString();
+
+    if (access == null || access.isEmpty) {
+      // Fall back to original mapping to surface structured errors if any
+      return _$LoginResponseFromJson(json);
+    }
+
+    return LoginResponse(
+      accessToken: access,
+      expiry: expiry,
+      firebaseAccessToken: firebase,
+      phone: phone,
+    );
+  }
 }
 
 @JsonSerializable()

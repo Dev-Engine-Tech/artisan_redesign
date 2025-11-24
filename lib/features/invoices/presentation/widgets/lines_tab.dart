@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:artisans_circle/core/utils/input_utils.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
@@ -125,8 +127,8 @@ class LinesTab extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: OutlinedAppButton(
                     text: 'Add Line',
-                    height: 36,
-                    width: 130,
+                    height: 44,
+                    width: 160,
                     onPressed: () async {
                       final created = await showLineItemModal(context);
                       if (created != null) {
@@ -180,23 +182,25 @@ class LinesTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  PrimaryButton(
-                    text: 'Add Line',
-                    height: 40,
-                    width: 140,
-                    onPressed: () async {
-                      final created = await showLineItemModal(context);
-                      if (created != null) {
-                        cubit.addIndependentLineData(created);
-                      }
-                    },
+                  Expanded(
+                    child: PrimaryButton(
+                      text: 'Add Line',
+                      height: 44,
+                      onPressed: () async {
+                        final created = await showLineItemModal(context);
+                        if (created != null) {
+                          cubit.addIndependentLineData(created);
+                        }
+                      },
+                    ),
                   ),
                   AppSpacing.spaceSM,
-                  OutlinedAppButton(
-                    text: 'Add Section',
-                    height: 40,
-                    width: 140,
-                    onPressed: cubit.addSection,
+                  Expanded(
+                    child: OutlinedAppButton(
+                      text: 'Add Section',
+                      height: 44,
+                      onPressed: cubit.addSection,
+                    ),
                   ),
                 ],
               ),
@@ -301,24 +305,31 @@ class _LineRowState extends State<_LineRow> {
   late final TextEditingController _label;
   late final TextEditingController _qty;
   late final TextEditingController _price;
+  final _labelFocus = FocusNode();
+  final _qtyFocus = FocusNode();
+  final _priceFocus = FocusNode();
+  final _qtyFormatter = InputUtils.digitsOnly;
+  final _priceFormatter = InputUtils.digitsOnly;
 
   @override
   void initState() {
     super.initState();
     _label = TextEditingController(text: widget.label);
-    _qty = TextEditingController(text: widget.quantity.toString());
-    _price = TextEditingController(text: widget.unitPrice.toString());
+    _qty = TextEditingController(text: widget.quantity.toStringAsFixed(0));
+    _price = TextEditingController(text: widget.unitPrice.toStringAsFixed(0));
   }
 
   @override
   void didUpdateWidget(covariant _LineRow oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.label != widget.label) _label.text = widget.label;
-    if (oldWidget.quantity != widget.quantity) {
-      _qty.text = widget.quantity.toString();
+    if (oldWidget.label != widget.label && !_labelFocus.hasFocus) {
+      _label.text = widget.label;
     }
-    if (oldWidget.unitPrice != widget.unitPrice) {
-      _price.text = widget.unitPrice.toString();
+    if (oldWidget.quantity != widget.quantity && !_qtyFocus.hasFocus) {
+      _qty.text = widget.quantity.toStringAsFixed(0);
+    }
+    if (oldWidget.unitPrice != widget.unitPrice && !_priceFocus.hasFocus) {
+      _price.text = widget.unitPrice.toStringAsFixed(0);
     }
   }
 
@@ -327,6 +338,9 @@ class _LineRowState extends State<_LineRow> {
     _label.dispose();
     _qty.dispose();
     _price.dispose();
+    _labelFocus.dispose();
+    _qtyFocus.dispose();
+    _priceFocus.dispose();
     super.dispose();
   }
 
@@ -349,6 +363,7 @@ class _LineRowState extends State<_LineRow> {
               readOnly: widget.readOnly,
               labelController: _label,
               unitPriceController: _price,
+              labelFocusNode: _labelFocus,
               catalogId: widget.catalogId,
               onCatalogChanged: widget.onCatalogChanged,
             ),
@@ -359,7 +374,10 @@ class _LineRowState extends State<_LineRow> {
             child: TextField(
               controller: _qty,
               readOnly: widget.readOnly,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                  decimal: false, signed: false),
+              inputFormatters: [_qtyFormatter],
+              focusNode: _qtyFocus,
               decoration: const InputDecoration(
                 isDense: true,
                 contentPadding:
@@ -367,7 +385,7 @@ class _LineRowState extends State<_LineRow> {
                 border: OutlineInputBorder(),
                 hintText: '1',
               ),
-              onChanged: (v) => widget.onQtyChanged(double.tryParse(v) ?? 0),
+              onChanged: (v) => widget.onQtyChanged(InputUtils.parseDouble(v)),
             ),
           ),
           AppSpacing.spaceSM,
@@ -376,7 +394,10 @@ class _LineRowState extends State<_LineRow> {
             child: TextField(
               controller: _price,
               readOnly: widget.readOnly,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                  decimal: false, signed: false),
+              inputFormatters: [_priceFormatter],
+              focusNode: _priceFocus,
               decoration: const InputDecoration(
                 isDense: true,
                 contentPadding:
@@ -384,7 +405,8 @@ class _LineRowState extends State<_LineRow> {
                 border: OutlineInputBorder(),
                 hintText: 'NGN 0.00',
               ),
-              onChanged: (v) => widget.onPriceChanged(double.tryParse(v) ?? 0),
+              onChanged: (v) =>
+                  widget.onPriceChanged(InputUtils.parseDouble(v)),
             ),
           ),
           AppSpacing.spaceSM,

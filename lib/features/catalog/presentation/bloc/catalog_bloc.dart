@@ -3,6 +3,7 @@ import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import '../../domain/entities/catalog_item.dart';
 import '../../domain/usecases/get_my_catalog_items.dart';
 import '../../domain/usecases/get_catalog_by_user.dart';
+import '../../domain/usecases/get_catalog_details.dart';
 
 abstract class CatalogEvent {}
 
@@ -18,6 +19,11 @@ class LoadUserCatalog extends CatalogEvent {
 }
 
 class RefreshMyCatalog extends CatalogEvent {}
+
+class LoadCatalogDetails extends CatalogEvent {
+  final String id;
+  LoadCatalogDetails(this.id);
+}
 
 abstract class CatalogState {
   const CatalogState();
@@ -36,6 +42,11 @@ class CatalogLoaded extends CatalogState {
   const CatalogLoaded(this.items);
 }
 
+class CatalogDetailsLoaded extends CatalogState {
+  final CatalogItem item;
+  const CatalogDetailsLoaded(this.item);
+}
+
 class CatalogError extends CatalogState {
   final String message;
   const CatalogError(this.message);
@@ -46,8 +57,12 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState>
     with CachedBlocMixin {
   final GetMyCatalogItems getMyCatalogItems;
   final GetCatalogByUser getCatalogByUser;
-  CatalogBloc({required this.getMyCatalogItems, required this.getCatalogByUser})
-      : super(const CatalogInitial()) {
+  final GetCatalogDetails getCatalogDetails;
+  CatalogBloc({
+    required this.getMyCatalogItems,
+    required this.getCatalogByUser,
+    required this.getCatalogDetails,
+  }) : super(const CatalogInitial()) {
     on<LoadMyCatalog>((event, emit) async {
       emit(const CatalogLoading());
       try {
@@ -70,6 +85,16 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState>
       try {
         final items = await getMyCatalogItems(page: 1);
         emit(CatalogLoaded(items));
+      } catch (e) {
+        emit(CatalogError(e.toString()));
+      }
+    });
+
+    on<LoadCatalogDetails>((event, emit) async {
+      emit(const CatalogLoading());
+      try {
+        final item = await getCatalogDetails(event.id);
+        emit(CatalogDetailsLoaded(item));
       } catch (e) {
         emit(CatalogError(e.toString()));
       }

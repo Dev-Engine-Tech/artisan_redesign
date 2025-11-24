@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
+import 'package:artisans_circle/core/di.dart';
 import '../../domain/entities/customer.dart';
-import '../../data/repositories/customer_repository_fake.dart';
+import '../../domain/repositories/customer_repository.dart';
 
 class CustomerFormPage extends StatefulWidget {
   final Customer? customer;
@@ -18,7 +19,7 @@ class CustomerFormPage extends StatefulWidget {
 
 class _CustomerFormPageState extends State<CustomerFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final _customerRepository = CustomerRepositoryFake();
+  late final CustomerRepository _customerRepository;
 
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -37,6 +38,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
   @override
   void initState() {
     super.initState();
+    _customerRepository = getIt<CustomerRepository>();
     _initializeControllers();
   }
 
@@ -69,7 +71,6 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
     _countryController.dispose();
     _postalCodeController.dispose();
     _notesController.dispose();
-    _customerRepository.dispose();
     super.dispose();
   }
 

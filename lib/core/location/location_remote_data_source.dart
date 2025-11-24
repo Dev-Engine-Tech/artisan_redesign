@@ -28,7 +28,8 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   Future<List<LocationState>> getStates() async {
     // Try both endpoint constant sets for compatibility
     final candidates = <String>[
-      endpoints_v1.ApiEndpoints.states,
+      endpoints_v1.ApiEndpoints.states, // '/locations/states/'
+      '/locations/states/',
       '/location/states/',
     ];
     for (final path in candidates) {
@@ -63,7 +64,9 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   Future<List<LocationLga>> getLgasByState(int stateId) async {
     final candidates = <(String, Map<String, dynamic>?)>[
       (endpoints_v1.ApiEndpoints.lgasByState(stateId), null),
-      (endpoints_v1.ApiEndpoints.lgas, {'state': stateId}),
+      (endpoints_v1.ApiEndpoints.lgas, {'state': stateId}), // '/locations/lga/'
+      ('/locations/lga/$stateId/', null),
+      ('/locations/lga/', {'state': stateId}),
       ('/location/lgas/$stateId/', null),
       ('/location/lgas/', {'state': stateId}),
     ];

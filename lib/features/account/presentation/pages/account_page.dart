@@ -15,6 +15,7 @@ import 'my_earnings_page.dart';
 import 'add_bank_page.dart';
 import 'subscription_page.dart';
 import 'contact_us_page.dart';
+import 'business_settings_page.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:image_cropper/image_cropper.dart';
@@ -144,6 +145,16 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                       icon: Icons.update_rounded,
                       title: 'Check For Updates',
                       onTap: () => _checkForUpdates(context),
+                    ),
+                    AppSpacing.spaceMD,
+                    const _SectionTitle('Business Settings'),
+                    _MenuTile(
+                      icon: Icons.business_center_outlined,
+                      title: 'Business Settings',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => const BusinessSettingsPage()),
+                      ),
                     ),
                     AppSpacing.spaceMD,
                     const _SectionTitle('Security'),

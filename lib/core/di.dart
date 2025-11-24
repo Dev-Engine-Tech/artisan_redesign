@@ -40,6 +40,7 @@ import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/core/services/push_registration_service.dart';
+import 'package:artisans_circle/core/services/subscription_service.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
@@ -47,6 +48,7 @@ import 'package:artisans_circle/features/catalog/data/repositories/catalog_repos
 import 'package:artisans_circle/features/catalog/domain/repositories/catalog_repository.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/get_my_catalog_items.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/get_catalog_by_user.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/get_catalog_details.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/create_catalog.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/update_catalog.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/delete_catalog.dart';
@@ -63,8 +65,11 @@ import 'package:artisans_circle/features/catalog/data/datasources/catalog_catego
 // Avoid importing Flutter widget types in core DI; pages import DI instead when needed.
 // Account feature
 import 'package:artisans_circle/features/account/data/datasources/account_remote_data_source.dart';
+import 'package:artisans_circle/features/account/data/datasources/business_settings_remote_data_source.dart';
 import 'package:artisans_circle/features/account/data/repositories/account_repository_impl.dart';
+import 'package:artisans_circle/features/account/data/repositories/business_settings_repository_impl.dart';
 import 'package:artisans_circle/features/account/domain/repositories/account_repository.dart';
+import 'package:artisans_circle/features/account/domain/repositories/business_settings_repository.dart';
 import 'package:artisans_circle/features/account/domain/usecases/get_user_profile.dart';
 import 'package:artisans_circle/features/account/domain/usecases/update_user_profile.dart';
 import 'package:artisans_circle/features/account/domain/usecases/get_earnings.dart';
@@ -111,7 +116,8 @@ import 'package:artisans_circle/features/notifications/data/datasources/notifica
 import 'package:artisans_circle/features/notifications/data/repositories/notification_repository_impl.dart';
 import 'package:artisans_circle/features/notifications/domain/repositories/notification_repository.dart';
 // Invoice feature
-import 'package:artisans_circle/features/invoices/data/repositories/invoice_repository_fake.dart';
+import 'package:artisans_circle/features/invoices/data/datasources/invoice_remote_data_source.dart';
+import 'package:artisans_circle/features/invoices/data/repositories/invoice_repository_impl.dart';
 import 'package:artisans_circle/features/invoices/domain/repositories/invoice_repository.dart';
 import 'package:artisans_circle/features/invoices/domain/usecases/get_invoices.dart'
     as invoice_usecases;
@@ -124,7 +130,8 @@ import 'package:artisans_circle/core/network/http_service.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 // import 'package:artisans_circle/core/performance/performance_monitor.dart';
 // Customers
-import 'package:artisans_circle/features/customers/data/repositories/customer_repository_fake.dart';
+import 'package:artisans_circle/features/customers/data/datasources/customer_remote_data_source.dart';
+import 'package:artisans_circle/features/customers/data/repositories/customer_repository_impl.dart';
 import 'package:artisans_circle/features/customers/domain/repositories/customer_repository.dart';
 import 'package:artisans_circle/features/customers/domain/usecases/get_customers.dart';
 
@@ -213,6 +220,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   // Register Banner Service
   getIt.registerLazySingleton<BannerService>(
     () => BannerService(),
+  );
+
+  // Subscription service
+  getIt.registerLazySingleton<SubscriptionService>(
+    () => SubscriptionService(getIt<Dio>()),
   );
 
   // Register Login State Service for tracking fresh logins
@@ -353,6 +365,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       () => GetMyCatalogItems(getIt<CatalogRepository>()));
   getIt.registerLazySingleton<GetCatalogByUser>(
       () => GetCatalogByUser(getIt<CatalogRepository>()));
+  getIt.registerLazySingleton<GetCatalogDetails>(
+      () => GetCatalogDetails(getIt<CatalogRepository>()));
   getIt.registerLazySingleton<CreateCatalog>(
       () => CreateCatalog(getIt<CatalogRepository>()));
   getIt.registerLazySingleton<UpdateCatalog>(
@@ -360,8 +374,10 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   getIt.registerLazySingleton<DeleteCatalog>(
       () => DeleteCatalog(getIt<CatalogRepository>()));
   getIt.registerFactory<CatalogBloc>(() => CatalogBloc(
-      getMyCatalogItems: getIt<GetMyCatalogItems>(),
-      getCatalogByUser: getIt<GetCatalogByUser>()));
+        getMyCatalogItems: getIt<GetMyCatalogItems>(),
+        getCatalogByUser: getIt<GetCatalogByUser>(),
+        getCatalogDetails: getIt<GetCatalogDetails>(),
+      ));
   getIt.registerLazySingleton<CatalogCategoriesRemoteDataSource>(
       () => CatalogCategoriesRemoteDataSourceImpl(getIt<Dio>()));
 
@@ -464,6 +480,13 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
         uploadProfileImage: getIt<UploadProfileImage>(),
       ));
 
+  // Business Settings feature
+  getIt.registerLazySingleton<BusinessSettingsRemoteDataSource>(
+      () => BusinessSettingsRemoteDataSourceImpl(getIt<Dio>()));
+  getIt.registerLazySingleton<BusinessSettingsRepository>(() =>
+      BusinessSettingsRepositoryImpl(
+          getIt<BusinessSettingsRemoteDataSource>()));
+
   // Messages feature: prefer Firebase if available and permitted
   final bool hasFirebase = fb.Firebase.apps.isNotEmpty;
   final bool hasFirebaseAuthUser =
@@ -527,9 +550,12 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
             secureStorage: getIt<SecureStorage>(),
           ));
 
-  // Invoice feature
+  // Invoice feature - Real API implementation
+  getIt.registerLazySingleton<InvoiceRemoteDataSource>(
+    () => InvoiceRemoteDataSourceImpl(getIt<Dio>()),
+  );
   getIt.registerLazySingleton<InvoiceRepository>(
-    () => InvoiceRepositoryFake(),
+    () => InvoiceRepositoryImpl(getIt<InvoiceRemoteDataSource>()),
   );
   getIt.registerLazySingleton<invoice_usecases.GetInvoices>(
     () => invoice_usecases.GetInvoices(getIt<InvoiceRepository>()),
@@ -549,9 +575,12 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     ),
   );
 
-  // Customers feature (sample data via fake repository)
+  // Customers feature - Real API implementation
+  getIt.registerLazySingleton<CustomerRemoteDataSource>(
+    () => CustomerRemoteDataSourceImpl(getIt<Dio>()),
+  );
   getIt.registerLazySingleton<CustomerRepository>(
-    () => CustomerRepositoryFake(),
+    () => CustomerRepositoryImpl(getIt<CustomerRemoteDataSource>()),
   );
   getIt.registerLazySingleton<GetCustomers>(
     () => GetCustomers(getIt<CustomerRepository>()),

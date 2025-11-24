@@ -20,6 +20,12 @@ class CatalogRepositoryImpl implements CatalogRepository {
   }
 
   @override
+  Future<CatalogItem> getCatalogDetails(String id) async {
+    final model = await (remote as dynamic).getCatalogDetails(id) as dynamic;
+    return (model as dynamic).toEntity() as CatalogItem;
+  }
+
+  @override
   Future<CatalogItem> createCatalog({
     required String title,
     required String subCategoryId,

@@ -33,7 +33,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
     // ✅ PERFORMANCE FIX: Check state before loading
     final currentState = _bloc.state;
     if (currentState is! InvoicesLoaded) {
-      _bloc.add(const LoadInvoices());
+      _bloc.add(LoadInvoices(status: widget.status));
     }
   }
 
@@ -263,7 +263,9 @@ class _InvoicesPageState extends State<InvoicesPage> {
                       PrimaryButton(
                         text: 'Retry',
                         onPressed: () {
-                          context.read<InvoiceBloc>().add(const LoadInvoices());
+                          context
+                              .read<InvoiceBloc>()
+                              .add(LoadInvoices(status: widget.status));
                         },
                       ),
                     ],
@@ -273,7 +275,13 @@ class _InvoicesPageState extends State<InvoicesPage> {
             }
 
             if (state is InvoicesLoaded) {
-              final invoices = state.invoices;
+              var invoices = state.invoices;
+              // Client-side filter fallback to ensure correct bucket display
+              if (widget.status != null) {
+                invoices = invoices
+                    .where((inv) => inv.status == widget.status)
+                    .toList();
+              }
 
               if (invoices.isEmpty) {
                 return Center(
@@ -334,7 +342,8 @@ class _InvoicesPageState extends State<InvoicesPage> {
     );
   }
 
-  void _navigateToInvoiceDetail(BuildContext context, Invoice invoice) {
+  Future<void> _navigateToInvoiceDetail(
+      BuildContext context, Invoice invoice) async {
     InvoiceMode mode;
     if (invoice.status == InvoiceStatus.draft) {
       mode = InvoiceMode.edit;
@@ -342,7 +351,7 @@ class _InvoicesPageState extends State<InvoicesPage> {
       mode = InvoiceMode.view;
     }
 
-    Navigator.of(context).push(
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => CreateInvoicePage(
           invoice: invoice,
@@ -350,15 +359,19 @@ class _InvoicesPageState extends State<InvoicesPage> {
         ),
       ),
     );
+    if (!mounted) return;
+    _bloc.add(LoadInvoices(status: widget.status));
   }
 
-  void _navigateToCreateInvoice(BuildContext context) {
-    Navigator.of(context).push(
+  Future<void> _navigateToCreateInvoice(BuildContext context) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => const CreateInvoicePage(
           mode: InvoiceMode.create,
         ),
       ),
     );
+    if (!mounted) return;
+    _bloc.add(LoadInvoices(status: widget.status));
   }
 }

@@ -185,11 +185,12 @@ abstract class BaseRemoteDataSource {
       final data = _normalizeData(response.data);
       return fromJson(data);
     }
+    final message = _extractErrorMessage(response);
     throw DioException(
       requestOptions: response.requestOptions,
       response: response,
       type: DioExceptionType.badResponse,
-      message: 'Request failed with status: ${response.statusCode}',
+      message: message,
     );
   }
 
@@ -205,11 +206,12 @@ abstract class BaseRemoteDataSource {
           .map((e) => fromJson(Map<String, dynamic>.from(e)))
           .toList();
     }
+    final message = _extractErrorMessage(response);
     throw DioException(
       requestOptions: response.requestOptions,
       response: response,
       type: DioExceptionType.badResponse,
-      message: 'Request failed with status: ${response.statusCode}',
+      message: message,
     );
   }
 
@@ -249,20 +251,62 @@ abstract class BaseRemoteDataSource {
 
   /// Normalizes response data to `Map<String, dynamic>`
   Map<String, dynamic> _normalizeData(dynamic data) {
-    if (data is Map<String, dynamic>) return data;
-    if (data is Map) return Map<String, dynamic>.from(data);
-
-    // If data is not a map, check if it's wrapped in common keys
-    if (data is! Map) {
-      return <String, dynamic>{'data': data};
+    // Already a strongly typed map
+    if (data is Map<String, dynamic>) {
+      // Unwrap common envelope keys if present
+      for (final key in const ['data', 'result', 'record']) {
+        final value = data[key];
+        if (value is Map) return Map<String, dynamic>.from(value);
+      }
+      return data;
     }
 
-    return <String, dynamic>{};
+    // Loosely typed map
+    if (data is Map) {
+      final map = Map<String, dynamic>.from(data);
+      for (final key in const ['data', 'result', 'record']) {
+        final value = map[key];
+        if (value is Map) return Map<String, dynamic>.from(value);
+      }
+      return map;
+    }
+
+    // If data is not a map, wrap it so downstream can access under 'data'
+    return <String, dynamic>{'data': data};
   }
 
   /// Checks if response status code indicates success
   bool _isSuccessResponse(Response response) {
     final statusCode = response.statusCode;
     return statusCode != null && statusCode >= 200 && statusCode < 300;
+  }
+
+  /// Extract a helpful error message from the server response.
+  String _extractErrorMessage(Response response) {
+    final code = response.statusCode;
+    final data = response.data;
+    String? detail;
+    if (data is Map) {
+      final map = Map<String, dynamic>.from(data);
+      if (map['detail'] != null) detail = map['detail'].toString();
+      if (detail == null && map['message'] != null)
+        detail = map['message'].toString();
+      if (detail == null && map['error'] != null)
+        detail = map['error'].toString();
+      if (detail == null && map['errors'] != null) {
+        // Flatten common error object structures
+        final errs = map['errors'];
+        if (errs is Map) {
+          detail = errs.entries.map((e) => '${e.key}: ${e.value}').join('; ');
+        } else if (errs is List) {
+          detail = errs.join('; ');
+        }
+      }
+    } else if (data is String && data.isNotEmpty) {
+      detail = data;
+    }
+    return detail != null
+        ? 'Request failed (${code}): $detail'
+        : 'Request failed with status: $code';
   }
 }

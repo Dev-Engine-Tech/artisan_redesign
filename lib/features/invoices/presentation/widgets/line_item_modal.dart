@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:artisans_circle/core/utils/input_utils.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
 import 'label_cell.dart';
@@ -41,15 +43,17 @@ class _LineItemFormState extends State<_LineItemForm> {
   late final TextEditingController _discount;
   late final TextEditingController _taxRatePct;
   String? _catalogId;
+  final _qtyFormatter = InputUtils.digitsOnly;
+  final _priceFormatter = InputUtils.digitsOnly;
 
   @override
   void initState() {
     super.initState();
     _label = TextEditingController(text: widget.initial?.label ?? '');
-    _qty =
-        TextEditingController(text: (widget.initial?.quantity ?? 1).toString());
+    _qty = TextEditingController(
+        text: (widget.initial?.quantity ?? 1).toStringAsFixed(0));
     _price = TextEditingController(
-        text: (widget.initial?.unitPrice ?? 0).toString());
+        text: (widget.initial?.unitPrice ?? 0).toStringAsFixed(0));
     _discount =
         TextEditingController(text: (widget.initial?.discount ?? 0).toString());
     _taxRatePct = TextEditingController(
@@ -125,6 +129,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                           child: TextField(
                             controller: _qty,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [_qtyFormatter],
                             decoration: const InputDecoration(
                               labelText: 'Quantity',
                               isDense: true,
@@ -138,6 +143,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                           child: TextField(
                             controller: _price,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [_priceFormatter],
                             decoration: const InputDecoration(
                               labelText: 'Unit Price (NGN)',
                               isDense: true,
@@ -202,8 +208,11 @@ class _LineItemFormState extends State<_LineItemForm> {
                             onPressed: () {
                               final item = InvoiceLineData(
                                 label: _label.text.trim(),
-                                quantity: _qtyValue,
-                                unitPrice: _priceValue,
+                                // Keep integers in UI, but store as double (decimal) in state
+                                quantity:
+                                    InputUtils.parseDouble(_qty.text.trim()),
+                                unitPrice:
+                                    InputUtils.parseDouble(_price.text.trim()),
                                 discount: _discountValue,
                                 taxRate: _taxRateValue,
                                 catalogId: _catalogId,

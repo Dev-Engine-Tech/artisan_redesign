@@ -3,6 +3,7 @@ import '../entities/catalog_item.dart';
 abstract class CatalogRepository {
   Future<List<CatalogItem>> getMyCatalogItems({int page});
   Future<List<CatalogItem>> getCatalogByUser(String userId, {int page});
+  Future<CatalogItem> getCatalogDetails(String id);
 
   Future<CatalogItem> createCatalog({
     required String title,

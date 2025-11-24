@@ -158,7 +158,8 @@ class UIHelpers {
   /// Show error dialog with consistent error messaging
   static Future<void> showErrorDialog(
     BuildContext context, {
-    required String message, String title = 'Error',
+    required String message,
+    String title = 'Error',
   }) async {
     await showAlertDialog(
       context,

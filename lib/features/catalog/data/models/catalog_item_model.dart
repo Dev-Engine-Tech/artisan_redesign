@@ -28,7 +28,8 @@ class CatalogItemModel extends CatalogItem {
     // Extract pictures from catalog
     final pictures = catalog?['pictures'] as List? ??
         json['pictures'] as List? ??
-        json['images'] as List?;
+        json['images'] as List? ??
+        json['gallery'] as List?;
     String? imageUrl;
     if (pictures != null && pictures.isNotEmpty) {
       final first = pictures.first;
@@ -40,6 +41,9 @@ class CatalogItemModel extends CatalogItem {
         imageUrl = first['url'] as String;
       }
     }
+    imageUrl ??= json['image']?.toString() ??
+        json['cover']?.toString() ??
+        json['thumbnail']?.toString();
 
     // Extract owner name from client
     String? ownerName;
@@ -50,7 +54,9 @@ class CatalogItemModel extends CatalogItem {
           .join(' ')
           .trim();
     }
-    final owner = json['user'] as Map?;
+    final owner = json['user'] as Map? ??
+        json['artisan'] as Map? ??
+        json['owner'] as Map?;
     if (ownerName == null && owner != null) {
       ownerName = [owner['first_name'], owner['last_name']]
           .whereType<String>()
@@ -63,8 +69,29 @@ class CatalogItemModel extends CatalogItem {
     int? toInt(dynamic v) {
       if (v == null) return null;
       if (v is int) return v;
-      if (v is String && v.contains('.')) return double.tryParse(v)?.toInt();
+      if (v is num) return v.toInt();
+      if (v is String) {
+        final cleaned = v.replaceAll(RegExp(r'[^0-9\.-]'), '');
+        if (cleaned.isEmpty) return null;
+        final d = double.tryParse(cleaned);
+        if (d != null) return d.toInt();
+        return int.tryParse(cleaned);
+      }
       return int.tryParse(v.toString());
+    }
+
+    // Extract min/max from a range-like string e.g. "1000 - 2000" or "₦100,000–200,000"
+    (int?, int?) _rangeToInts(dynamic range) {
+      if (range == null) return (null, null);
+      final s = range.toString();
+      final matches = RegExp(r'(\d[\d,]*(?:\.\d+)?)')
+          .allMatches(s)
+          .map((m) => m.group(1)!)
+          .toList();
+      if (matches.isEmpty) return (null, null);
+      final min = toInt(matches[0]);
+      final max = matches.length > 1 ? toInt(matches[1]) : null;
+      return (min, max);
     }
 
     // Handle both direct catalog items and catalog request items
@@ -78,21 +105,38 @@ class CatalogItemModel extends CatalogItem {
       return false;
     }
 
+    final (rMin, rMax) = _rangeToInts(
+      catalogData['price_range'] ?? json['price_range'] ?? json['range'],
+    );
+
     return CatalogItemModel(
       id: (catalogData['id'] ?? json['id'] ?? '').toString(),
-      title: (catalogData['title'] ?? json['title'] ?? json['name'] ?? '')
+      title: (catalogData['title'] ??
+              json['title'] ??
+              json['name'] ??
+              json['product_name'] ??
+              '')
           .toString(),
       description: (catalogData['description'] ??
               json['description'] ??
               json['desc'] ??
+              json['details'] ??
               '')
           .toString(),
       priceMin: toInt(catalogData['price_min'] ??
+          catalogData['price'] ??
           json['price_min'] ??
           json['min_price'] ??
-          json['payment_budget']),
-      priceMax: toInt(
-          catalogData['price_max'] ?? json['price_max'] ?? json['max_price']),
+          json['min_amount'] ??
+          json['budget_min'] ??
+          json['price'] ??
+          (rMin ?? json['payment_budget'])),
+      priceMax: toInt(catalogData['price_max'] ??
+          json['price_max'] ??
+          json['max_price'] ??
+          json['max_amount'] ??
+          json['ceiling_price'] ??
+          (rMax ?? null)),
       projectTimeline: (catalogData['project_timeline'] ??
               json['project_timeline'] ??
               json['duration'])

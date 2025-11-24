@@ -12,6 +12,7 @@ class LabelCell extends StatelessWidget {
     this.readOnly = false,
     this.catalogId,
     this.onCatalogChanged,
+    this.labelFocusNode,
   });
 
   final TextEditingController labelController;
@@ -19,6 +20,7 @@ class LabelCell extends StatelessWidget {
   final bool readOnly;
   final String? catalogId;
   final ValueChanged<String?>? onCatalogChanged;
+  final FocusNode? labelFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class LabelCell extends StatelessWidget {
         return TextField(
           controller: labelController,
           readOnly: readOnly,
+          focusNode: labelFocusNode,
           decoration: InputDecoration(
             labelText: 'Label',
             hintText: 'Enter description or pick from catalog',

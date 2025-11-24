@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart' as picker;
+import 'package:image_cropper/image_cropper.dart';
+export 'package:image_picker/image_picker.dart' show ImageSource, XFile;
 
 /// Shared service for image picking functionality
 ///
@@ -21,24 +24,19 @@ class ImagePickerService {
   ///
   /// Returns the file path of the selected image, or null if cancelled
   ///
-  /// NOTE: ImagePicker is currently disabled in the project.
-  /// This service provides a centralized place to re-enable it later.
+  /// NOTE: Uses `image_picker` under the hood.
   Future<String?> pickImage({
-    required ImageSource source,
+    required picker.ImageSource source,
     int? maxWidth,
     int? imageQuality,
   }) async {
-    // TODO: Re-enable when ImagePicker is added back to the project
-    // final picker = ImagePicker();
-    // final XFile? file = await picker.pickImage(
-    //   source: source,
-    //   maxWidth: maxWidth ?? 2048,
-    //   imageQuality: imageQuality ?? 92,
-    // );
-    // return file?.path;
-
-    debugPrint('ImagePicker is currently disabled');
-    return null;
+    final _picker = picker.ImagePicker();
+    final picker.XFile? file = await _picker.pickImage(
+      source: source,
+      maxWidth: (maxWidth ?? 2048).toDouble(),
+      imageQuality: imageQuality ?? 92,
+    );
+    return file?.path;
   }
 
   /// Pick an image from gallery
@@ -47,7 +45,7 @@ class ImagePickerService {
     int? imageQuality,
   }) async {
     return pickImage(
-      source: ImageSource.gallery,
+      source: picker.ImageSource.gallery,
       maxWidth: maxWidth,
       imageQuality: imageQuality,
     );
@@ -59,7 +57,7 @@ class ImagePickerService {
     int? imageQuality,
   }) async {
     return pickImage(
-      source: ImageSource.camera,
+      source: picker.ImageSource.camera,
       maxWidth: maxWidth,
       imageQuality: imageQuality,
     );
@@ -71,46 +69,53 @@ class ImagePickerService {
   Future<List<String>> pickMultipleImages({
     int? imageQuality,
   }) async {
-    // TODO: Re-enable when ImagePicker is added back
-    // final picker = ImagePicker();
-    // final List<XFile> files = await picker.pickMultiImage(
-    //   imageQuality: imageQuality ?? 92,
-    // );
-    // return files.map((f) => f.path).toList();
-
-    debugPrint('ImagePicker is currently disabled');
-    return [];
+    final _picker = picker.ImagePicker();
+    final List<picker.XFile> files = await _picker.pickMultiImage(
+      imageQuality: imageQuality ?? 92,
+    );
+    return files.map((f) => f.path).toList();
   }
 
   /// Crop an image at the given path
   ///
   /// Returns the path to the cropped image, or null if cancelled
   ///
-  /// NOTE: ImageCropper is currently disabled in the project.
+  /// NOTE: Image cropping is not enabled by default; integrate image_cropper
+  /// if/when needed.
   Future<String?> cropImage({
     required String sourcePath,
     int? maxWidth,
     int? maxHeight,
   }) async {
-    // TODO: Re-enable when ImageCropper is added back
-    // final cropped = await ImageCropper().cropImage(
-    //   sourcePath: sourcePath,
-    //   maxWidth: maxWidth,
-    //   maxHeight: maxHeight,
-    //   compressFormat: ImageCompressFormat.jpg,
-    //   compressQuality: 90,
-    // );
-    // return cropped?.path;
-
-    debugPrint('ImageCropper is currently disabled');
-    return null;
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: sourcePath,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 90,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: const Color(0xFFE65300),
+          toolbarWidgetColor: const Color(0xFFFFFFFF),
+          hideBottomControls: false,
+          lockAspectRatio: false,
+          initAspectRatio: CropAspectRatioPreset.original,
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: false,
+        ),
+      ],
+    );
+    return cropped?.path;
   }
 
   /// Pick and crop an image in one operation
   ///
   /// Convenience method that combines picking and cropping
   Future<String?> pickAndCropImage({
-    required ImageSource source,
+    required picker.ImageSource source,
     int? maxWidth,
     int? maxHeight,
     int? imageQuality,
@@ -128,11 +133,4 @@ class ImagePickerService {
       maxHeight: maxHeight,
     );
   }
-}
-
-/// Image source enum placeholder
-/// Replace with actual ImagePicker enum when re-enabled
-enum ImageSource {
-  gallery,
-  camera,
 }

@@ -114,11 +114,25 @@ class InvoiceFormCubit extends Cubit<InvoiceFormState> {
               unitPrice: it.unitPrice,
             ))
         .toList();
+    final mats = (invoice.materials ?? const [])
+        .map((m) => InvoiceMaterialData(
+              description: m.name,
+              quantity: m.quantity,
+              unitPrice: m.unitCost,
+            ))
+        .toList();
+    final meas = (invoice.measurements ?? const [])
+        .map((m) => InvoiceMeasurementData(
+              item: m.label,
+              quantity: m.value,
+              uom: m.unit,
+            ))
+        .toList();
     emit(state.copyWith(
       sections: const [],
       independentLines: lines,
-      materials: const [],
-      measurements: const [],
+      materials: mats,
+      measurements: meas,
       taxRate: invoice.taxRate,
       // discount left as-is (0 by default)
     ));

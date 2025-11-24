@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/di.dart';
 import '../../domain/entities/customer.dart';
-import '../../data/repositories/customer_repository_fake.dart';
+import '../../domain/repositories/customer_repository.dart';
 import 'customer_form_page.dart';
 
 class CustomersPage extends StatefulWidget {
@@ -12,7 +13,7 @@ class CustomersPage extends StatefulWidget {
 }
 
 class _CustomersPageState extends State<CustomersPage> {
-  final CustomerRepositoryFake _customerRepository = CustomerRepositoryFake();
+  late final CustomerRepository _customerRepository;
   final TextEditingController _searchController = TextEditingController();
   List<Customer> _customers = [];
   List<Customer> _filteredCustomers = [];
@@ -22,6 +23,7 @@ class _CustomersPageState extends State<CustomersPage> {
   @override
   void initState() {
     super.initState();
+    _customerRepository = getIt<CustomerRepository>();
     _loadCustomers();
     _searchController.addListener(_onSearchChanged);
   }
@@ -29,7 +31,6 @@ class _CustomersPageState extends State<CustomersPage> {
   @override
   void dispose() {
     _searchController.dispose();
-    _customerRepository.dispose();
     super.dispose();
   }
 

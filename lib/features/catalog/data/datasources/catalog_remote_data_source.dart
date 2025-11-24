@@ -7,6 +7,7 @@ abstract class CatalogRemoteDataSource {
   Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1});
   Future<List<CatalogItemModel>> getCatalogByUser(String userId,
       {int page = 1});
+  Future<CatalogItemModel> getCatalogDetails(String id);
 
   Future<CatalogItemModel> createCatalog({
     required String title,
@@ -49,11 +50,46 @@ class CatalogRemoteDataSourceImpl extends BaseRemoteDataSource
   CatalogRemoteDataSourceImpl(super.dio);
 
   @override
-  Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1}) => getList(
-        ApiEndpoints.myCatalogItems,
-        fromJson: CatalogItemModel.fromJson,
-        queryParams: {'page': page},
-      );
+  Future<List<CatalogItemModel>> getMyCatalogItems({int page = 1}) async {
+    // Prefer new endpoint where GET /catalog/api/catalog/products/ returns own catalogs
+    final candidates = <String>[
+      ApiEndpoints.catalogProducts,
+      ApiEndpoints.myCatalogItems,
+    ];
+    DioException? last;
+    for (final path in candidates) {
+      try {
+        return await getList(
+          path,
+          fromJson: CatalogItemModel.fromJson,
+          queryParams: {'page': page},
+        );
+      } catch (e) {
+        last = e is DioException
+            ? e
+            : DioException(
+                requestOptions: RequestOptions(path: path), error: e);
+        // try next
+      }
+    }
+    throw last ??
+        DioException(
+          requestOptions: RequestOptions(path: candidates.first),
+          error: 'Failed to load my catalogs',
+        );
+  }
+
+  @override
+  Future<CatalogItemModel> getCatalogDetails(String id) async {
+    final intId = int.tryParse(id);
+    final path = intId != null
+        ? ApiEndpoints.catalogProductDetails(intId)
+        : '/catalog/api/catalog/product/details/$id/';
+    return get(
+      path,
+      fromJson: CatalogItemModel.fromJson,
+    );
+  }
 
   @override
   Future<List<CatalogItemModel>> getCatalogByUser(String userId,

@@ -93,12 +93,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       },
       options: Options(headers: _jsonHeaders, validateStatus: (_) => true),
     );
-
-    if (kDebugMode) {}
+    if (kDebugMode) {
+      debugPrint('POST ${ApiEndpoints.login} → ${response.statusCode}');
+      debugPrint('Response body: ${response.data}');
+    }
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = response.data as Map<String, dynamic>;
-      final loginResponse = LoginResponse.fromJson(data);
+      final data = response.data is Map
+          ? Map<String, dynamic>.from(response.data as Map)
+          : <String, dynamic>{'data': response.data};
+      final loginResponse = LoginResponse.adapt(data);
 
       if (kDebugMode) {}
 
@@ -119,10 +123,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
     final data = response.data;
     if (data is Map && data['detail'] != null) {
-      if (kDebugMode) {}
+      if (kDebugMode) {
+        debugPrint('Login error detail: ${data['detail']}');
+      }
       throw Exception(data['detail'].toString());
     }
-    if (kDebugMode) {}
+    if (kDebugMode) {
+      debugPrint(
+          'Login failed: status ${response.statusCode}, body: ${response.data}');
+    }
     throw Exception('Login failed with status ${response.statusCode}');
   }
 

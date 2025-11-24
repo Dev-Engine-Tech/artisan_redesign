@@ -54,7 +54,9 @@ class EmptyStateWidget extends StatelessWidget {
   final Widget? action;
 
   const EmptyStateWidget({
-    required this.icon, required this.title, super.key,
+    required this.icon,
+    required this.title,
+    super.key,
     this.message,
     this.action,
   });
@@ -212,7 +214,9 @@ class ShimmerLoadingWidget extends StatefulWidget {
   final BorderRadius? borderRadius;
 
   const ShimmerLoadingWidget({
-    required this.width, required this.height, super.key,
+    required this.width,
+    required this.height,
+    super.key,
     this.borderRadius,
   });
 

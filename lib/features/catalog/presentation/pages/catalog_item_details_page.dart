@@ -88,13 +88,31 @@ class CatalogItemDetailsPage extends StatelessWidget {
                                 .bodyMedium
                                 ?.copyWith(color: Colors.black54)),
                         AppSpacing.spaceMD,
-                        Wrap(spacing: 8, children: [
+                        Wrap(spacing: 8, runSpacing: 8, children: [
                           if (item.priceMin != null)
                             _Badge(
                                 label:
-                                    '₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
-                          if (item.projectTimeline != null)
-                            _Badge(label: item.projectTimeline!),
+                                    'Price: ₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
+                          if (item.projectTimeline != null &&
+                              item.projectTimeline!.isNotEmpty)
+                            _Badge(label: 'Timeline: ${item.projectTimeline!}'),
+                          if (item.brand != null && item.brand!.isNotEmpty)
+                            _Badge(label: 'Brand: ${item.brand!}'),
+                          if (item.condition != null &&
+                              item.condition!.isNotEmpty)
+                            _Badge(label: 'Condition: ${item.condition!}'),
+                          if (item.salesCategory != null &&
+                              item.salesCategory!.isNotEmpty)
+                            _Badge(label: 'Category: ${item.salesCategory!}'),
+                          if (item.instantSelling)
+                            _Badge(label: 'Instant selling'),
+                          if (item.warranty) _Badge(label: 'Warranty'),
+                          if (item.delivery) _Badge(label: 'Delivery'),
+                          if (item.status != null && item.status!.isNotEmpty)
+                            _Badge(label: 'Status: ${item.status!}'),
+                          if (item.projectStatus != null &&
+                              item.projectStatus!.isNotEmpty)
+                            _Badge(label: 'Project: ${item.projectStatus!}'),
                         ]),
                       ]),
                 ),
