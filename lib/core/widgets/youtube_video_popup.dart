@@ -39,13 +39,15 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
         return;
       }
 
-      // Create YouTube embed URL
+      // Create YouTube embed URL with autoplay enabled
+      // Note: User can unmute using video controls
       final embedUrl =
-          'https://www.youtube.com/embed/$videoId?autoplay=0&rel=0&showinfo=0&controls=1';
+          'https://www.youtube.com/embed/$videoId?autoplay=1&mute=1&rel=0&showinfo=0&controls=1&modestbranding=1&playsinline=1&enablejsapi=1';
 
       _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(Colors.black)
+        ..enableZoom(false)
         ..setNavigationDelegate(
           NavigationDelegate(
             onPageStarted: (String url) {
@@ -55,14 +57,18 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
               setState(() => _isLoading = false);
             },
             onWebResourceError: (WebResourceError error) {
+              debugPrint('❗ WebView error: ${error.description}');
               setState(() {
                 _hasError = true;
                 _isLoading = false;
               });
             },
           ),
-        )
-        ..loadRequest(Uri.parse(embedUrl));
+        );
+
+      // Load the embed URL
+      debugPrint('🎬 Loading YouTube embed: $embedUrl');
+      _controller.loadRequest(Uri.parse(embedUrl));
     } catch (e) {
       setState(() => _hasError = true);
     }

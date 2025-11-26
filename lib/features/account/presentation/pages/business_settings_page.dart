@@ -4,6 +4,7 @@ import '../../../../core/components/components.dart';
 import '../../../../core/di.dart';
 import '../../../../core/services/image_picker_service.dart';
 import '../../../../core/services/subscription_service.dart';
+import '../../../../core/utils/subscription_guard.dart';
 import '../../domain/entities/business_settings.dart';
 import '../../domain/repositories/business_settings_repository.dart';
 import '../widgets/business_settings_widgets.dart';
@@ -288,7 +289,20 @@ class _BusinessSettingsPageState extends State<BusinessSettingsPage> {
                   return InvoiceStyleCard(
                     style: style,
                     isSelected: _selectedInvoiceStyle == style,
-                    onTap: () {
+                    onTap: () async {
+                      // Check subscription access before allowing style selection
+                      final subscriptionGuard = getIt<SubscriptionGuard>();
+                      final canAccess =
+                          await subscriptionGuard.checkInvoiceStyleAccess(
+                        context,
+                        requestedStyle: style.toString().split('.').last,
+                      );
+
+                      if (!canAccess) {
+                        return; // User was shown upgrade modal
+                      }
+
+                      if (!mounted) return;
                       setState(() => _selectedInvoiceStyle = style);
                       Navigator.of(context).pop();
                     },

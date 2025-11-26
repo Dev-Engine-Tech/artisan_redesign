@@ -8,6 +8,7 @@ import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
 import 'package:artisans_circle/core/di.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../core/utils/subscription_guard.dart';
 
 enum PaymentMethod { byProject, byMilestone }
 
@@ -117,7 +118,7 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
     return '<month';
   }
 
-  void _submitApplication() {
+  Future<void> _submitApplication() async {
     // Validation remains local
     if (_proposalController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -128,6 +129,14 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please add at least one milestone')));
       return;
+    }
+
+    // Check job application limit before submitting
+    final subscriptionGuard = getIt<SubscriptionGuard>();
+    final canApply = await subscriptionGuard.checkJobApplicationLimit(context);
+
+    if (!canApply) {
+      return; // User was shown upgrade modal
     }
 
     // Build application payload mirroring the working GetX app

@@ -48,8 +48,15 @@ class InvoiceModel extends Invoice {
         pick<String>(['clientName', 'client_name', 'customer_name']) ?? '';
     String _pickClientEmail() =>
         pick<String>(['clientEmail', 'client_email', 'customer_email']) ?? '';
-    String? _pickCustomerId() =>
-        pick<String>(['customer', 'customer_id', 'customer_uuid']);
+    String? _pickCustomerId() {
+      final c = json['customer'];
+      if (c is String) return c;
+      if (c is Map) {
+        final id = c['id'];
+        if (id != null) return id.toString();
+      }
+      return pick<String>(['customer_id', 'customer_uuid']);
+    }
 
     DateTime _parseDate(List<String> keys) {
       final v = pick<dynamic>(keys);

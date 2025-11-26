@@ -4,9 +4,11 @@ import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/create_catalog.dart';
 import 'package:artisans_circle/features/catalog/domain/usecases/update_catalog.dart';
+import 'package:artisans_circle/features/catalog/domain/usecases/get_my_catalog_items.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../core/utils/subscription_guard.dart';
 // import 'package:image_picker/image_picker.dart';
 
 /// Multi-step upload flow for creating a catalogue entry.
@@ -191,6 +193,24 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
 
     try {
       if (widget.item == null) {
+        // Check subscription limits before creating new catalog item
+        final subscriptionGuard = getIt<SubscriptionGuard>();
+        final getMyCatalogItems = getIt<GetMyCatalogItems>();
+
+        // Get current catalog count
+        final catalogItems = await getMyCatalogItems(page: 1);
+        final currentCount = catalogItems.length;
+
+        // Check if user can create more catalog items
+        final canCreate = await subscriptionGuard.checkCatalogLimit(
+          context,
+          currentCount: currentCount,
+        );
+
+        if (!canCreate) {
+          return; // User was shown upgrade modal, exit early
+        }
+
         final create = getIt<CreateCatalog>();
         await create(
           title: title,

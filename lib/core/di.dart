@@ -41,6 +41,7 @@ import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/core/services/push_registration_service.dart';
 import 'package:artisans_circle/core/services/subscription_service.dart';
+import 'package:artisans_circle/core/utils/subscription_guard.dart';
 // Catalog feature
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_remote_data_source_fake.dart';
@@ -225,6 +226,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   // Subscription service
   getIt.registerLazySingleton<SubscriptionService>(
     () => SubscriptionService(getIt<Dio>()),
+  );
+
+  // Subscription guard for enforcing plan limits
+  getIt.registerLazySingleton<SubscriptionGuard>(
+    () => SubscriptionGuard(getIt<SubscriptionService>(), getIt<Dio>()),
   );
 
   // Register Login State Service for tracking fresh logins

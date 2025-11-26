@@ -29,6 +29,7 @@ import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
 import 'package:artisans_circle/features/home/utils/home_data_loader.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
+import 'package:artisans_circle/core/services/subscription_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -48,6 +49,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   bool _loadingMoreOrders = false;
   // Backing list for the Applications tab so we can update agreement state at runtime
   List<JobModel> _applications = [];
+  SubscriptionPlan _currentPlan = SubscriptionPlan.unknown;
 
   // Performance optimization: centralized data loader
   final HomeDataLoader _dataLoader = HomeDataLoader();
@@ -87,8 +89,53 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _dataLoader.loadAllData(context);
+        _loadSubscriptionPlan();
       }
     });
+  }
+
+  Future<void> _loadSubscriptionPlan() async {
+    try {
+      final subscriptionService = getIt<SubscriptionService>();
+      final plan = await subscriptionService.getCurrentPlan();
+      if (mounted) {
+        setState(() {
+          _currentPlan = plan;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading subscription plan: $e');
+    }
+  }
+
+  String _getPlanDisplayName(SubscriptionPlan plan) {
+    switch (plan) {
+      case SubscriptionPlan.free:
+        return 'Free';
+      case SubscriptionPlan.bronze:
+        return 'Bronze';
+      case SubscriptionPlan.silver:
+        return 'Silver';
+      case SubscriptionPlan.gold:
+        return 'Gold';
+      case SubscriptionPlan.unknown:
+        return '';
+    }
+  }
+
+  Color _getPlanColor(SubscriptionPlan plan) {
+    switch (plan) {
+      case SubscriptionPlan.free:
+        return Colors.grey;
+      case SubscriptionPlan.bronze:
+        return const Color(0xFFCD7F32); // Bronze color
+      case SubscriptionPlan.silver:
+        return const Color(0xFFC0C0C0); // Silver color
+      case SubscriptionPlan.gold:
+        return const Color(0xFFFFD700); // Gold color
+      case SubscriptionPlan.unknown:
+        return Colors.grey;
+    }
   }
 
   @override
@@ -614,53 +661,122 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, authState) {
+                String userName = 'User';
+                if (authState is AuthAuthenticated) {
+                  userName = authState.user.firstName;
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white24),
-                        color: Colors.white24,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                width: 46,
+                                height: 46,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white24),
+                                  color: Colors.white24,
+                                ),
+                                child: const CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(Icons.person, color: Colors.white)),
+                              ),
+                              // Subscription badge
+                              if (_currentPlan != SubscriptionPlan.unknown &&
+                                  _getPlanDisplayName(_currentPlan).isNotEmpty)
+                                Positioned(
+                                  right: -4,
+                                  bottom: -2,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: _getPlanColor(_currentPlan),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      _getPlanDisplayName(_currentPlan)[0],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          AppSpacing.spaceMD,
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Hey, $userName',
+                                    style: textTheme.titleLarge?.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis),
+                                Row(
+                                  children: [
+                                    Text('Welcome back!',
+                                        style: textTheme.bodyMedium?.copyWith(
+                                            color: Colors.white70, fontSize: 12),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis),
+                                    if (_currentPlan != SubscriptionPlan.unknown &&
+                                        _getPlanDisplayName(_currentPlan).isNotEmpty) ...[
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: _getPlanColor(_currentPlan),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          _getPlanDisplayName(_currentPlan),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      child: const CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.transparent,
-                          child: Icon(Icons.person, color: Colors.white)),
                     ),
-                    AppSpacing.spaceMD,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                    const Row(
                       children: [
-                        Text('Hey, Uwak Daniel',
-                            style: textTheme.titleLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 18),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                        Text('Welcome back!',
-                            style: textTheme.bodyMedium
-                                ?.copyWith(color: Colors.white70, fontSize: 12),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
+                        MessageIcon(),
+                        AppSpacing.spaceMD,
+                        NotificationIcon(unreadCount: 2),
                       ],
                     ),
                   ],
-                ),
-                const Row(
-                  children: [
-                    MessageIcon(),
-                    AppSpacing.spaceMD,
-                    NotificationIcon(unreadCount: 2),
-                  ],
-                ),
-              ],
+                );
+              },
             ),
             const SizedBox(height: 14),
             Container(

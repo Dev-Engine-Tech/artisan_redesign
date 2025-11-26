@@ -9,6 +9,7 @@ import '../../../../core/theme.dart';
 import '../../../../core/components/components.dart';
 import '../../domain/entities/invoice.dart';
 import '../../domain/repositories/invoice_repository.dart';
+import '../../data/models/invoice_model.dart';
 import '../../../catalog/domain/usecases/get_my_catalog_items.dart';
 import '../../../customers/domain/usecases/get_customers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,8 @@ import '../widgets/lines_tab.dart';
 import '../widgets/materials_tab.dart';
 import '../widgets/measurement_tab.dart';
 import '../../../../core/utils/responsive.dart';
+// import '../../../../core/utils/subscription_guard.dart';
+// import '../../../account/presentation/pages/subscription_page.dart';
 
 enum InvoiceMode { create, edit, view }
 
@@ -55,6 +58,15 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   StreamSubscription? _formSub;
   bool _hasUnsavedChanges = false;
   List<Map<String, dynamic>>? _savedItemsSnapshot;
+  List<Map<String, dynamic>>? _savedMaterialsSnapshot;
+  List<Map<String, dynamic>>? _savedMeasurementsSnapshot;
+  double? _savedTaxRate;
+  double? _savedDiscount;
+  Timer? _autoSaveTimer;
+  bool _autoSavingDraft = false;
+  bool _autoSavePending = false;
+  bool _showSavedIndicator = false;
+  Timer? _savedIndicatorTimer;
 
   // Overflow menu actions: handled via _MenuAction enum
 
@@ -111,6 +123,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         if (changed != _hasUnsavedChanges) {
           setState(() => _hasUnsavedChanges = changed);
         }
+      } else if (_invoice != null && _invoice!.status == InvoiceStatus.draft) {
+        _scheduleAutoSaveDraft();
       } else {
         if (_hasUnsavedChanges) setState(() => _hasUnsavedChanges = false);
       }
@@ -162,6 +176,205 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     }
   }
 
+  void _scheduleAutoSaveDraft() {
+    // Debounce autosave to avoid excessive network calls while typing
+    _autoSaveTimer?.cancel();
+    _autoSaveTimer = Timer(const Duration(milliseconds: 900), () {
+      _autoSaveDraft();
+    });
+  }
+
+  Future<void> _autoSaveDraft() async {
+    if (!mounted) return;
+    if (_invoice == null || _invoice!.id.isEmpty) return;
+    if (_invoice!.status != InvoiceStatus.draft) return;
+
+    // If a save is in progress, queue another run after it finishes.
+    if (_autoSavingDraft) {
+      _autoSavePending = true;
+      return;
+    }
+
+    _autoSavingDraft = true;
+    try {
+      final s = _formCubit.state;
+
+      // Build items from form
+      final allLines = <InvoiceLineData>[
+        ...s.independentLines,
+        ...s.sections.expand((sec) => sec.items),
+      ];
+      // (building domain items not required for autosave payload)
+
+      // Materials from form
+      final mats = s.materials
+          .where((m) => m.description.trim().isNotEmpty)
+          .map((m) => InvoiceMaterial(
+                name: m.description.trim(),
+                description: null,
+                quantity: m.quantity,
+                unit: 'pcs',
+                unitCost: m.unitPrice,
+              ))
+          .toList();
+
+      // Measurements (optional; keep existing if not edited here)
+      final meas = s.measurements
+          .where((m) => m.item.trim().isNotEmpty)
+          .map((m) => InvoiceMeasurement(
+                label: m.item.trim(),
+                value: m.quantity,
+                unit: (m.uom.isNotEmpty ? m.uom : 'unit'),
+                notes: null,
+              ))
+          .toList();
+
+      // Totals for draft include materials
+      final itemsBase =
+          allLines.fold<double>(0, (p, e) => p + (e.quantity * e.unitPrice));
+      final materialsBase =
+          s.materials.fold<double>(0, (p, m) => p + (m.quantity * m.unitPrice));
+      final subtotal = itemsBase + materialsBase;
+      final taxAmount =
+          (subtotal - s.discount).clamp(0, double.infinity) * s.taxRate;
+      final total =
+          (subtotal - s.discount).clamp(0, double.infinity) + taxAmount;
+
+      // Only save if something changed since last save
+      final linesNow = _flattenFormItems(s);
+      final matsNow = _flattenFormMaterials(s);
+      final measNow = _flattenFormMeasurements(s);
+      final linesChanged = _savedItemsSnapshot == null ||
+          !_sameItems(_savedItemsSnapshot!, linesNow);
+      final matsChanged = _savedMaterialsSnapshot == null ||
+          !_sameItems(_savedMaterialsSnapshot!, matsNow);
+      final measChanged = _savedMeasurementsSnapshot == null ||
+          !_sameMeasurements(_savedMeasurementsSnapshot!, measNow);
+      final taxChanged =
+          _savedTaxRate == null || (_savedTaxRate! - s.taxRate).abs() > 0.0001;
+      final discountChanged = _savedDiscount == null ||
+          (_savedDiscount! - s.discount).abs() > 0.0001;
+      if (!(linesChanged ||
+          matsChanged ||
+          measChanged ||
+          taxChanged ||
+          discountChanged)) {
+        return;
+      }
+
+      // Build PUT payload including per-line discount and tax_rate
+      final payload = <String, dynamic>{
+        if (_invoice?.clientName.isNotEmpty == true)
+          'client_name': _invoice!.clientName,
+        if (_invoice?.clientEmail.isNotEmpty == true)
+          'client_email': _invoice!.clientEmail,
+        if (_invoice?.customerId != null) 'customer': _invoice!.customerId,
+        // Backend requires issue_date and due_date even on update (PUT)
+        'issue_date': _invoiceDate.toIso8601String().substring(0, 10),
+        'due_date': _dueDate.toIso8601String().substring(0, 10),
+        'delivery_address': _deliveryAddressController.text.trim().isEmpty
+            ? _invoice?.deliveryAddress
+            : _deliveryAddressController.text.trim(),
+        'currency': _selectedCurrency,
+        'items': allLines.where((it) => it.label.trim().isNotEmpty).map((it) {
+          final base = it.quantity * it.unitPrice;
+          final pct =
+              base > 0 ? ((it.discount / base) * 100.0).clamp(0.0, 100.0) : 0.0;
+          final item = <String, dynamic>{
+            'description': it.label.trim(),
+            'quantity': it.quantity.round().clamp(1, 1000000),
+            'unit_price': it.unitPrice,
+          };
+          if (pct > 0) item['discount'] = pct;
+          if (it.taxRate > 0) item['tax_rate'] = it.taxRate;
+          return item;
+        }).toList(),
+        'materials': mats
+            .map((m) => {
+                  if (m.id != null) 'id': m.id,
+                  'name': m.name,
+                  'description': m.description,
+                  'quantity': m.quantity,
+                  'unit': m.unit,
+                  'unit_cost': m.unitCost,
+                })
+            .toList(),
+        'measurements': meas
+            .map((m) => {
+                  if (m.id != null) 'id': m.id,
+                  'label': m.label,
+                  'value': m.value,
+                  'unit': m.unit,
+                  'notes': m.notes,
+                })
+            .toList(),
+        'notes': _termsController.text.trim().isEmpty
+            ? _invoice?.notes
+            : _termsController.text.trim(),
+        // invoice-level tax_rate only
+        'tax_rate': s.taxRate,
+      };
+      payload['line_items'] = payload['items'];
+      payload['invoice_items'] = payload['items'];
+
+      // Debug logging
+      debugPrint('🔍 Autosave Payload:');
+      debugPrint('📋 Invoice ID: ${_invoice!.id}');
+      debugPrint('📦 Items count: ${(payload['items'] as List).length}');
+      debugPrint('📝 Full payload: ${payload.toString()}');
+      for (var i = 0; i < (payload['items'] as List).length; i++) {
+        final item = (payload['items'] as List)[i];
+        debugPrint('   Item $i: ${item.toString()}');
+      }
+
+      final dio = GetIt.I<Dio>();
+      final resp = await dio.put(
+        ApiEndpoints.invoice(_invoice!.id),
+        data: payload,
+      );
+      final updatedModel = InvoiceModel.fromJson(
+          resp.data is Map<String, dynamic>
+              ? resp.data
+              : Map<String, dynamic>.from(resp.data as Map));
+      final updated = updatedModel.toEntity();
+      if (!mounted) return;
+      setState(() {
+        _invoice = updated;
+        _savedItemsSnapshot = linesNow;
+        _savedMaterialsSnapshot = matsNow;
+        _savedMeasurementsSnapshot = measNow;
+        _savedTaxRate = s.taxRate;
+        _savedDiscount = s.discount;
+        _showSavedIndicator = true;
+        _savedIndicatorTimer?.cancel();
+        _savedIndicatorTimer = Timer(const Duration(seconds: 2), () {
+          if (!mounted) return;
+          setState(() {
+            _showSavedIndicator = false;
+          });
+        });
+      });
+    } catch (e) {
+      debugPrint('❌ Autosave Error: $e');
+      if (e is DioException) {
+        debugPrint('❌ Response status: ${e.response?.statusCode}');
+        debugPrint('❌ Response data: ${e.response?.data}');
+        debugPrint('❌ Request data: ${e.requestOptions.data}');
+      }
+      if (!mounted) return;
+      // Soft-notify autosave issue once; avoid spamming
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Autosave failed: $e')),
+      );
+    } finally {
+      _autoSavingDraft = false;
+      if (_autoSavePending) {
+        _autoSavePending = false;
+        _scheduleAutoSaveDraft();
+      }
+    }
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -171,6 +384,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     _termsController.dispose();
     _formCubit.close();
     _formSub?.cancel();
+    _autoSaveTimer?.cancel();
+    _savedIndicatorTimer?.cancel();
 
     super.dispose();
   }
@@ -282,13 +497,50 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                   break;
                               }
                             }
-                            return Text(
-                              statusText,
-                              style: const TextStyle(
-                                fontSize: 32,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  statusText,
+                                  style: const TextStyle(
+                                    fontSize: 32,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (_invoice?.status == InvoiceStatus.draft &&
+                                    (_autoSavingDraft || _showSavedIndicator))
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          _autoSavingDraft
+                                              ? Icons.autorenew
+                                              : Icons.check_circle,
+                                          size: 14,
+                                          color: _autoSavingDraft
+                                              ? Colors.orange
+                                              : Colors.green,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          _autoSavingDraft
+                                              ? 'Saving…'
+                                              : 'Saved',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: _autoSavingDraft
+                                                ? Colors.orange
+                                                : Colors.green,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
                             );
                           }),
                           if (_invoice != null &&
@@ -1023,6 +1275,49 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         .toList();
   }
 
+  List<Map<String, dynamic>> _flattenFormMaterials(InvoiceFormState s) {
+    return s.materials
+        .where((m) => m.description.trim().isNotEmpty)
+        .map((m) => {
+              'description': m.description.trim(),
+              'quantity': m.quantity,
+              'unitPrice': m.unitPrice,
+            })
+        .toList();
+  }
+
+  List<Map<String, dynamic>> _flattenFormMeasurements(InvoiceFormState s) {
+    return s.measurements
+        .where((m) => m.item.trim().isNotEmpty)
+        .map((m) => {
+              'item': m.item.trim(),
+              'quantity': m.quantity,
+              'uom': m.uom,
+            })
+        .toList();
+  }
+
+  bool _sameMeasurements(
+      List<Map<String, dynamic>> a, List<Map<String, dynamic>> b) {
+    if (a.length != b.length) return false;
+    bool sameDouble(double x, double y) => (x - y).abs() < 0.0001;
+    for (var i = 0; i < a.length; i++) {
+      final ai = a[i];
+      final bi = b[i];
+      if (ai['item'] != bi['item']) {
+        return false;
+      }
+      if (!sameDouble((ai['quantity'] as num).toDouble(),
+          (bi['quantity'] as num).toDouble())) {
+        return false;
+      }
+      if (ai['uom'] != bi['uom']) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   bool _sameItems(List<Map<String, dynamic>> a, List<Map<String, dynamic>> b) {
     if (a.length != b.length) return false;
     bool sameDouble(double x, double y) => (x - y).abs() < 0.0001;
@@ -1062,98 +1357,98 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
         ...s.sections.expand((sec) => sec.items),
       ];
 
-      // Build domain invoice items
-      final items = allLines
-          .where((it) => it.label.trim().isNotEmpty)
-          .map((it) => InvoiceItem(
-                id: '',
-                description: it.label.trim(),
-                quantity: it.quantity.round().clamp(1, 1000000),
-                unitPrice: it.unitPrice,
-                amount: it.subtotal,
-              ))
-          .toList();
-
-      // Compute totals (include materials in subtotal for draft)
-      final itemsBase =
-          allLines.fold<double>(0, (p, e) => p + (e.quantity * e.unitPrice));
-      final materialsBase =
-          s.materials.fold<double>(0, (p, m) => p + (m.quantity * m.unitPrice));
-      final base = itemsBase + materialsBase;
-      final subtotal = base;
-      final taxAmount =
-          (subtotal - s.discount).clamp(0, double.infinity) * s.taxRate;
-      final total =
-          (subtotal - s.discount).clamp(0, double.infinity) + taxAmount;
-
-      // Build materials from form state (map to backend schema)
-      final mats = s.materials
-          .where((m) => m.description.trim().isNotEmpty)
-          .map((m) => InvoiceMaterial(
-                name: m.description.trim(),
-                description: null,
-                quantity: m.quantity,
-                unit: 'pcs',
-                unitCost: m.unitPrice,
-              ))
-          .toList();
-
-      // Measurements (optional)
-      final meas = s.measurements
-          .where((m) => m.item.trim().isNotEmpty)
-          .map((m) => InvoiceMeasurement(
-                label: m.item.trim(),
-                value: m.quantity,
-                unit: (m.uom.isNotEmpty ? m.uom : 'unit'),
-                notes: null,
-              ))
-          .toList();
-
-      final inv = Invoice(
-        id: '',
-        invoiceNumber: 'DRAFT-${DateTime.now().millisecondsSinceEpoch}',
-        clientName: s.selectedCustomer!.name,
-        clientEmail: s.selectedCustomer!.email,
-        customerId: s.selectedCustomer!.id,
-        deliveryAddress: _deliveryAddressController.text.trim().isEmpty
+      // Build backend payload (percent discount, fraction tax_rate)
+      String _asDate(DateTime d) => d.toIso8601String().substring(0, 10);
+      final payload = <String, dynamic>{
+        'customer': s.selectedCustomer!.id,
+        'issue_date': _asDate(_invoiceDate),
+        'due_date': _asDate(_dueDate),
+        'delivery_address': _deliveryAddressController.text.trim().isEmpty
             ? null
             : _deliveryAddressController.text.trim(),
-        currency: _selectedCurrency,
-        issueDate: _invoiceDate,
-        dueDate: _dueDate,
-        items: items,
-        materials: mats,
-        measurements: meas,
-        subtotal: subtotal,
-        taxRate: s.taxRate,
-        taxAmount: taxAmount,
-        total: total,
-        status: InvoiceStatus.draft,
-        notes: _termsController.text.trim().isEmpty
+        'currency': _selectedCurrency,
+        'tax_rate': s.taxRate,
+        'notes': _termsController.text.trim().isEmpty
             ? null
             : _termsController.text.trim(),
-        jobId: null,
-        paidDate: null,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+        'items': allLines.where((it) => it.label.trim().isNotEmpty).map((it) {
+          final base = it.quantity * it.unitPrice;
+          final pct =
+              base > 0 ? ((it.discount / base) * 100.0).clamp(0.0, 100.0) : 0.0;
+          final item = <String, dynamic>{
+            'description': it.label.trim(),
+            'quantity': it.quantity.round().clamp(1, 1000000),
+            'unit_price': it.unitPrice,
+          };
+          if (pct > 0) item['discount'] = pct;
+          if (it.taxRate > 0) item['tax_rate'] = it.taxRate;
+          return item;
+        }).toList(),
+        'materials': s.materials
+            .where((m) => m.description.trim().isNotEmpty)
+            .map((m) => {
+                  'name': m.description.trim(),
+                  'description': null,
+                  'quantity': m.quantity,
+                  'unit': 'pcs',
+                  'unit_cost': m.unitPrice,
+                })
+            .toList(),
+        'measurements': s.measurements
+            .where((m) => m.item.trim().isNotEmpty)
+            .map((m) => {
+                  'label': m.item.trim(),
+                  'value': m.quantity,
+                  'unit': (m.uom.isNotEmpty ? m.uom : 'unit'),
+                  'notes': null,
+                })
+            .toList(),
+      };
 
-      final saved = await repo.createInvoice(inv);
+      // Debug logging
+      debugPrint('🔍 Save Draft Payload:');
+      debugPrint('📦 Items count: ${(payload['items'] as List).length}');
+      debugPrint('📝 Full payload: ${payload.toString()}');
+      for (var i = 0; i < (payload['items'] as List).length; i++) {
+        final item = (payload['items'] as List)[i];
+        debugPrint('   Item $i: ${item.toString()}');
+      }
+
+      final dio = GetIt.I<Dio>();
+      final resp = await dio.post(ApiEndpoints.invoices, data: payload);
+      final savedModel = InvoiceModel.fromJson(resp.data is Map<String, dynamic>
+          ? resp.data
+          : Map<String, dynamic>.from(resp.data as Map));
+      final saved = savedModel.toEntity();
       if (!mounted) return;
       setState(() {
         _invoice = saved;
         _mode = InvoiceMode.edit; // Draft state, keep editing allowed
+        // Initialize autosave snapshots for draft
+        _savedItemsSnapshot = _flattenFormItems(s);
+        _savedMaterialsSnapshot = _flattenFormMaterials(s);
+        _savedMeasurementsSnapshot = _flattenFormMeasurements(s);
+        _savedTaxRate = s.taxRate;
+        _savedDiscount = s.discount;
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invoice saved as draft')),
       );
     } catch (e) {
+      debugPrint('❌ Save Draft Error: $e');
+      if (e is DioException) {
+        debugPrint('❌ Response status: ${e.response?.statusCode}');
+        debugPrint('❌ Response data: ${e.response?.data}');
+        debugPrint('❌ Request data: ${e.requestOptions.data}');
+      }
       if (!mounted) return;
       if (e is DioException && e.response?.statusCode == 403) {
         final detail = e.response?.data is Map
             ? ((e.response?.data)['detail']?.toString() ??
                 'Invoice limit reached. Upgrade your plan to create more invoices.')
             : 'Invoice limit reached. Upgrade your plan to create more invoices.';
+
+        // Show upgrade modal
         showDialog(
           context: context,
           builder: (_) => AlertDialog(

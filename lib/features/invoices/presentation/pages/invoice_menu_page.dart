@@ -1,13 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:get_it/get_it.dart';
 import 'invoices_page.dart';
 import '../../domain/entities/invoice.dart';
+import '../../data/datasources/invoice_remote_data_source.dart';
+import '../../data/models/invoice_dashboard_model.dart';
 import '../../../customers/presentation/pages/customers_page.dart';
 import 'create_invoice_page.dart';
 import '../../../../core/utils/responsive.dart';
 
-class InvoiceMenuPage extends StatelessWidget {
+class InvoiceMenuPage extends StatefulWidget {
   const InvoiceMenuPage({super.key});
+
+  @override
+  State<InvoiceMenuPage> createState() => _InvoiceMenuPageState();
+}
+
+class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
+  InvoiceDashboardModel? _dashboard;
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDashboard();
+  }
+
+  Future<void> _loadDashboard() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      final dataSource = GetIt.I<InvoiceRemoteDataSource>();
+      final dashboard = await dataSource.getDashboard();
+      if (!mounted) return;
+      setState(() {
+        _dashboard = dashboard;
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,9 +184,11 @@ class InvoiceMenuPage extends StatelessWidget {
                       ),
                     ),
                     AppSpacing.spaceXS,
-                    const Text(
-                      'NGN 6,326',
-                      style: TextStyle(
+                    Text(
+                      _loading
+                          ? 'Loading...'
+                          : 'NGN ${(_dashboard?.earningsBalance ?? 0).toStringAsFixed(0)}',
+                      style: const TextStyle(
                         fontSize: 24,
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -197,9 +240,11 @@ class InvoiceMenuPage extends StatelessWidget {
                           ),
                         ),
                         AppSpacing.spaceSM,
-                        const Text(
-                          'NGN 2,326',
-                          style: TextStyle(
+                        Text(
+                          _loading
+                              ? 'Loading...'
+                              : 'NGN ${(_dashboard?.totalOutstanding ?? 0).toStringAsFixed(0)}',
+                          style: const TextStyle(
                             fontSize: 24,
                             color: AppColors.brownHeader,
                             fontWeight: FontWeight.w700,
@@ -207,7 +252,9 @@ class InvoiceMenuPage extends StatelessWidget {
                         ),
                         AppSpacing.spaceXS,
                         Text(
-                          '1 Waiting invoice',
+                          _loading
+                              ? 'Loading...'
+                              : '${_dashboard?.validatedCount ?? 0} Waiting invoice${(_dashboard?.validatedCount ?? 0) == 1 ? '' : 's'}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,
@@ -229,9 +276,11 @@ class InvoiceMenuPage extends StatelessWidget {
                           ),
                         ),
                         AppSpacing.spaceSM,
-                        const Text(
-                          'NGN 4,326',
-                          style: TextStyle(
+                        Text(
+                          _loading
+                              ? 'Loading...'
+                              : 'NGN ${(_dashboard?.paidThisMonth ?? 0).toStringAsFixed(0)}',
+                          style: const TextStyle(
                             fontSize: 24,
                             color: AppColors.brownHeader,
                             fontWeight: FontWeight.w700,
@@ -239,7 +288,9 @@ class InvoiceMenuPage extends StatelessWidget {
                         ),
                         AppSpacing.spaceXS,
                         Text(
-                          '5 Paid invoice',
+                          _loading
+                              ? 'Loading...'
+                              : '${_dashboard?.paidCount ?? 0} Paid invoice${(_dashboard?.paidCount ?? 0) == 1 ? '' : 's'}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,
@@ -331,21 +382,30 @@ class InvoiceMenuPage extends StatelessWidget {
 
               SizedBox(
                 height: 100,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildClientAvatar('Cooper',
-                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
-                    _buildClientAvatar('Wilson',
-                        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'),
-                    _buildClientAvatar('Jacob',
-                        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'),
-                    _buildClientAvatar('Albert',
-                        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150'),
-                    _buildClientAvatar('Robert',
-                        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150'),
-                  ],
-                ),
+                child: _loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : (_dashboard?.frequentCustomers.isEmpty ?? true)
+                        ? Center(
+                            child: Text(
+                              'No frequent customers yet',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _dashboard!.frequentCustomers.length,
+                            itemBuilder: (context, index) {
+                              final customer =
+                                  _dashboard!.frequentCustomers[index];
+                              return _buildClientAvatar(
+                                customer.customerName,
+                                null, // No avatar URL from API
+                              );
+                            },
+                          ),
               ),
 
               AppSpacing.spaceLG,
@@ -375,104 +435,121 @@ class InvoiceMenuPage extends StatelessWidget {
 
               AppSpacing.spaceLG,
 
-              Container(
-                padding: context.responsivePadding,
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
-                  borderRadius: AppRadius.radiusXL,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: AppRadius.radiusLG,
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    AppSpacing.spaceMD,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Jane Cooper',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.brownHeader,
-                            ),
-                          ),
-                          AppSpacing.spaceXS,
-                          Row(
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.orange,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              AppSpacing.spaceSM,
-                              const Text(
-                                'Acme Corporation',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                          AppSpacing.spaceSM,
-                          const Text(
-                            'NGN 250',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.brownHeader,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 4),
+              _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : (_dashboard?.recentInvoices.isEmpty ?? true)
+                      ? Container(
+                          padding: context.responsivePadding,
                           decoration: BoxDecoration(
-                            color: Colors.green.shade100,
-                            borderRadius: AppRadius.radiusMD,
+                            color: AppColors.cardBackground,
+                            borderRadius: AppRadius.radiusXL,
                           ),
-                          child: Text(
-                            'Paid',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.green.shade700,
+                          child: Center(
+                            child: Text(
+                              'No recent invoices',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
                             ),
                           ),
+                        )
+                      : ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _dashboard!.recentInvoices.length.clamp(0, 3),
+                          separatorBuilder: (context, index) => AppSpacing.spaceSM,
+                          itemBuilder: (context, index) {
+                            final invoice = _dashboard!.recentInvoices[index];
+                            final entity = invoice.toEntity();
+                            return Container(
+                              padding: context.responsivePadding,
+                              decoration: BoxDecoration(
+                                color: AppColors.cardBackground,
+                                borderRadius: AppRadius.radiusXL,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: AppRadius.radiusLG,
+                                      color: AppColors.orange.withOpacity(0.2),
+                                    ),
+                                    child: const Icon(
+                                      Icons.receipt,
+                                      color: AppColors.orange,
+                                    ),
+                                  ),
+                                  AppSpacing.spaceMD,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          entity.clientName,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.brownHeader,
+                                          ),
+                                        ),
+                                        AppSpacing.spaceXS,
+                                        Text(
+                                          'Invoice #${entity.invoiceNumber}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        AppSpacing.spaceSM,
+                                        Text(
+                                          'NGN ${entity.total.toStringAsFixed(0)}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.brownHeader,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: _getStatusColor(entity.status)
+                                              .withOpacity(0.2),
+                                          borderRadius: AppRadius.radiusMD,
+                                        ),
+                                        child: Text(
+                                          _getStatusText(entity.status),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: _getStatusColor(entity.status),
+                                          ),
+                                        ),
+                                      ),
+                                      AppSpacing.spaceSM,
+                                      Text(
+                                        _formatDate(entity.issueDate),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                        AppSpacing.spaceSM,
-                        Text(
-                          '10/06/2020',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
 
               AppSpacing.spaceXL,
             ],
@@ -544,7 +621,7 @@ class InvoiceMenuPage extends StatelessWidget {
     );
   }
 
-  Widget _buildClientAvatar(String name, String imageUrl) {
+  Widget _buildClientAvatar(String name, String? imageUrl) {
     return Container(
       margin: const EdgeInsets.only(right: 16),
       child: Column(
@@ -554,11 +631,28 @@ class InvoiceMenuPage extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               borderRadius: AppRadius.radiusLG,
-              image: DecorationImage(
-                image: NetworkImage(imageUrl),
-                fit: BoxFit.cover,
-              ),
+              color: imageUrl == null
+                  ? AppColors.orange.withOpacity(0.2)
+                  : null,
+              image: imageUrl != null
+                  ? DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
+            child: imageUrl == null
+                ? Center(
+                    child: Text(
+                      name.isNotEmpty ? name[0].toUpperCase() : '?',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.orange,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           AppSpacing.spaceSM,
           Text(
@@ -572,6 +666,44 @@ class InvoiceMenuPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _getStatusColor(InvoiceStatus status) {
+    switch (status) {
+      case InvoiceStatus.draft:
+        return Colors.grey;
+      case InvoiceStatus.validated:
+        return Colors.orange;
+      case InvoiceStatus.paid:
+        return Colors.green;
+      case InvoiceStatus.pending:
+        return Colors.blue;
+      case InvoiceStatus.overdue:
+        return Colors.red;
+      case InvoiceStatus.cancelled:
+        return Colors.red;
+    }
+  }
+
+  String _getStatusText(InvoiceStatus status) {
+    switch (status) {
+      case InvoiceStatus.draft:
+        return 'Draft';
+      case InvoiceStatus.validated:
+        return 'Validated';
+      case InvoiceStatus.paid:
+        return 'Paid';
+      case InvoiceStatus.pending:
+        return 'Pending';
+      case InvoiceStatus.overdue:
+        return 'Overdue';
+      case InvoiceStatus.cancelled:
+        return 'Cancelled';
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
   }
 
   void _navigateToInvoiceList(

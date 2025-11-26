@@ -58,6 +58,9 @@ class InvoiceRemoteDataSourceImpl extends BaseRemoteDataSource
       payload['delivery_address'] = src['delivery_address'];
     payload['currency'] = (src['currency'] ?? 'NGN').toString();
 
+    // Invoice-level tax_rate allowed
+    if (src['tax_rate'] != null) payload['tax_rate'] = src['tax_rate'];
+
     final rawItems = (src['items'] is List
             ? src['items']
             : (src['line_items'] is List ? src['line_items'] : null)) ??
@@ -75,30 +78,34 @@ class InvoiceRemoteDataSourceImpl extends BaseRemoteDataSource
         final unit = uraw is num
             ? uraw.toDouble()
             : double.tryParse(uraw.toString()) ?? 0.0;
-        final lineAmount = (unit * qty).toDouble();
-        final dAbsRaw = m['discount'];
-        double? discountPct;
-        if (dAbsRaw != null) {
-          final dAbs = dAbsRaw is num
-              ? dAbsRaw.toDouble()
-              : double.tryParse(dAbsRaw.toString());
-          if (dAbs != null && lineAmount > 0) {
-            discountPct = ((dAbs / lineAmount) * 100.0).clamp(0.0, 100.0);
-          }
-        }
+        final discountRaw = m['discount'];
         final itemTaxRaw = (m['tax_rate'] ?? m['taxRate']);
         final itemTax = itemTaxRaw is num
             ? itemTaxRaw.toDouble()
             : double.tryParse(itemTaxRaw?.toString() ?? '');
-        items.add({
+        final out = <String, dynamic>{
           'description': desc,
           'quantity': qty,
           'unit_price': unit,
           'price': unit,
-          'amount': lineAmount,
-          if (discountPct != null) 'discount': discountPct,
           if (itemTax != null) 'tax_rate': itemTax,
-        });
+        };
+        if (discountRaw != null) {
+          final dval = discountRaw is num
+              ? discountRaw.toDouble()
+              : double.tryParse(discountRaw.toString());
+          if (dval != null) {
+            double percent;
+            if (dval <= 100.0 && dval >= 0.0) {
+              percent = dval;
+            } else {
+              final base = (unit * qty);
+              percent = base > 0 ? ((dval / base) * 100.0) : 0.0;
+            }
+            out['discount'] = percent.clamp(0.0, 100.0);
+          }
+        }
+        items.add(out);
       }
     }
     if (items.isNotEmpty) payload['items'] = items;

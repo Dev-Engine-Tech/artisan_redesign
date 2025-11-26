@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:artisans_circle/core/utils/input_utils.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../cubit/invoice_form_cubit.dart';
@@ -40,7 +40,7 @@ class _LineItemFormState extends State<_LineItemForm> {
   late final TextEditingController _label;
   late final TextEditingController _qty;
   late final TextEditingController _price;
-  late final TextEditingController _discount;
+  late final TextEditingController _discountPct;
   late final TextEditingController _taxRatePct;
   String? _catalogId;
   final _qtyFormatter = InputUtils.digitsOnly;
@@ -54,8 +54,11 @@ class _LineItemFormState extends State<_LineItemForm> {
         text: (widget.initial?.quantity ?? 1).toStringAsFixed(0));
     _price = TextEditingController(
         text: (widget.initial?.unitPrice ?? 0).toStringAsFixed(0));
-    _discount =
-        TextEditingController(text: (widget.initial?.discount ?? 0).toString());
+    final base =
+        (widget.initial?.quantity ?? 0) * (widget.initial?.unitPrice ?? 0);
+    final pct =
+        base > 0 ? ((widget.initial?.discount ?? 0) / base) * 100.0 : 0.0;
+    _discountPct = TextEditingController(text: pct.toString());
     _taxRatePct = TextEditingController(
         text: ((widget.initial?.taxRate ?? 0) * 100).toString());
     _catalogId = widget.initial?.catalogId;
@@ -66,20 +69,22 @@ class _LineItemFormState extends State<_LineItemForm> {
     _label.dispose();
     _qty.dispose();
     _price.dispose();
-    _discount.dispose();
+    _discountPct.dispose();
     _taxRatePct.dispose();
     super.dispose();
   }
 
   double get _qtyValue => double.tryParse(_qty.text.trim()) ?? 0;
   double get _priceValue => double.tryParse(_price.text.trim()) ?? 0;
-  double get _discountValue => double.tryParse(_discount.text.trim()) ?? 0;
+  double get _discountPctValue =>
+      (double.tryParse(_discountPct.text.trim()) ?? 0) / 100.0;
   double get _taxRateValue =>
       (double.tryParse(_taxRatePct.text.trim()) ?? 0) / 100.0;
 
   double get _previewSubtotal {
     final base = (_qtyValue * _priceValue);
-    final afterDiscount = (base - _discountValue).clamp(0, double.infinity);
+    final afterDiscount =
+        (base - (base * _discountPctValue)).clamp(0, double.infinity);
     final tax = afterDiscount * _taxRateValue;
     return afterDiscount + tax;
   }
@@ -159,10 +164,10 @@ class _LineItemFormState extends State<_LineItemForm> {
                       children: [
                         Expanded(
                           child: TextField(
-                            controller: _discount,
+                            controller: _discountPct,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                              labelText: 'Discount (NGN)',
+                              labelText: 'Discount (%)',
                               isDense: true,
                               border: OutlineInputBorder(),
                             ),
@@ -206,14 +211,18 @@ class _LineItemFormState extends State<_LineItemForm> {
                           child: PrimaryButton(
                             text: 'Save',
                             onPressed: () {
+                              final qty =
+                                  InputUtils.parseDouble(_qty.text.trim());
+                              final price =
+                                  InputUtils.parseDouble(_price.text.trim());
+                              final base = (qty * price);
+                              final discountAbs =
+                                  (base * _discountPctValue).clamp(0, base);
                               final item = InvoiceLineData(
                                 label: _label.text.trim(),
-                                // Keep integers in UI, but store as double (decimal) in state
-                                quantity:
-                                    InputUtils.parseDouble(_qty.text.trim()),
-                                unitPrice:
-                                    InputUtils.parseDouble(_price.text.trim()),
-                                discount: _discountValue,
+                                quantity: qty,
+                                unitPrice: price,
+                                discount: discountAbs.toDouble(),
                                 taxRate: _taxRateValue,
                                 catalogId: _catalogId,
                               );

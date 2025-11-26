@@ -19,6 +19,7 @@ import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:artisans_circle/core/services/push_registration_service.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
+import 'package:artisans_circle/features/account/presentation/pages/subscription_page.dart';
 // import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 
 class AppShell extends StatefulWidget {
@@ -135,6 +136,11 @@ class _AppShellState extends State<AppShell> {
               debugPrint('✅ AppShell: User closed video, marking as seen');
               // Mark that user has seen the video
               await loginStateService.markInstructionalVideoSeen();
+
+              // After video closes, show subscription modal
+              if (context.mounted) {
+                _showSubscriptionModalAfterVideo(context);
+              }
             },
             barrierDismissible: true,
           );
@@ -142,10 +148,36 @@ class _AppShellState extends State<AppShell> {
       } else {
         debugPrint(
             '❌ AppShell: Not showing video - shouldShow: $shouldShow, mounted: ${context.mounted}');
+        // If not showing video on fresh login, still show subscription modal
+        if (context.mounted) {
+          final loginStateService = getIt<LoginStateService>();
+          final lastLoginMethod = await loginStateService.getLastLoginMethod();
+          // Show subscription modal for fresh logins (not automatic)
+          if (lastLoginMethod != null &&
+              lastLoginMethod != LoginStateService.loginMethodAutomatic) {
+            _showSubscriptionModalAfterVideo(context);
+          }
+        }
       }
     } catch (e) {
       // Silently handle errors - video popup is optional
       debugPrint('❗ Error showing instructional video: $e');
+    }
+  }
+
+  /// Show subscription modal after video (or directly on fresh login)
+  Future<void> _showSubscriptionModalAfterVideo(BuildContext context) async {
+    try {
+      debugPrint('💳 AppShell: Preparing to show subscription modal...');
+      // Small delay to ensure previous modal is fully closed
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      if (context.mounted) {
+        debugPrint('💳 AppShell: Showing subscription modal now!');
+        SubscriptionModal.show(context);
+      }
+    } catch (e) {
+      debugPrint('❗ Error showing subscription modal: $e');
     }
   }
 
