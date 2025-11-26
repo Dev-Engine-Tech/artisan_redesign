@@ -135,6 +135,15 @@ import 'package:artisans_circle/features/customers/data/datasources/customer_rem
 import 'package:artisans_circle/features/customers/data/repositories/customer_repository_impl.dart';
 import 'package:artisans_circle/features/customers/domain/repositories/customer_repository.dart';
 import 'package:artisans_circle/features/customers/domain/usecases/get_customers.dart';
+// Collaboration feature
+import 'package:artisans_circle/features/collaboration/data/datasources/collaboration_remote_data_source.dart';
+import 'package:artisans_circle/features/collaboration/data/repositories/collaboration_repository_impl.dart';
+import 'package:artisans_circle/features/collaboration/domain/repositories/collaboration_repository.dart';
+import 'package:artisans_circle/features/collaboration/domain/usecases/invite_collaborator.dart';
+import 'package:artisans_circle/features/collaboration/domain/usecases/get_my_collaborations.dart';
+import 'package:artisans_circle/features/collaboration/domain/usecases/respond_to_collaboration.dart';
+import 'package:artisans_circle/features/collaboration/domain/usecases/get_job_collaborators.dart';
+import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -590,5 +599,35 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   );
   getIt.registerLazySingleton<GetCustomers>(
     () => GetCustomers(getIt<CustomerRepository>()),
+  );
+
+  // Collaboration feature - Real API implementation
+  getIt.registerLazySingleton<CollaborationRemoteDataSource>(
+    () => CollaborationRemoteDataSourceImpl(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<CollaborationRepository>(
+    () => CollaborationRepositoryImpl(
+      remoteDataSource: getIt<CollaborationRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton<InviteCollaborator>(
+    () => InviteCollaborator(getIt<CollaborationRepository>()),
+  );
+  getIt.registerLazySingleton<GetMyCollaborations>(
+    () => GetMyCollaborations(getIt<CollaborationRepository>()),
+  );
+  getIt.registerLazySingleton<RespondToCollaboration>(
+    () => RespondToCollaboration(getIt<CollaborationRepository>()),
+  );
+  getIt.registerLazySingleton<GetJobCollaborators>(
+    () => GetJobCollaborators(getIt<CollaborationRepository>()),
+  );
+  getIt.registerFactory<CollaborationBloc>(
+    () => CollaborationBloc(
+      getMyCollaborations: getIt<GetMyCollaborations>(),
+      inviteCollaborator: getIt<InviteCollaborator>(),
+      respondToCollaboration: getIt<RespondToCollaboration>(),
+      getJobCollaborators: getIt<GetJobCollaborators>(),
+    ),
   );
 }

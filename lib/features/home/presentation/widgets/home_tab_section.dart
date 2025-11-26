@@ -9,6 +9,13 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/applications_
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_request.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
+import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
+import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_event.dart';
+import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_state.dart';
+import 'package:artisans_circle/features/collaboration/presentation/widgets/collaboration_card.dart';
+import 'package:artisans_circle/features/collaboration/domain/entities/collaboration.dart';
+import 'package:artisans_circle/features/collaboration/presentation/pages/collaboration_details_page.dart';
+import 'package:artisans_circle/features/collaboration/domain/repositories/collaboration_repository.dart';
 
 /// Performance-optimized tab section following SOLID principles
 /// Single Responsibility: Manages tab display and content
@@ -84,6 +91,25 @@ class _HomeTabSectionState extends State<HomeTabSection>
           }
         } catch (e) {
           // JobBloc not available, ignore
+        }
+      }
+
+      // Load Collaboration Invites when user switches to Job Invite tab (index 2)
+      if (_selectedIndex == 2) {
+        try {
+          final state = context.read<CollaborationBloc>().state;
+          if (state is! CollaborationsLoaded) {
+            context.read<CollaborationBloc>().add(
+                  LoadCollaborationsEvent(
+                    status: CollaborationStatus.pending,
+                    role: CollaborationRole.collaborator,
+                    page: 1,
+                    pageSize: 10,
+                  ),
+                );
+          }
+        } catch (e) {
+          // CollaborationBloc not available, ignore
         }
       }
     }
@@ -376,8 +402,8 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
   }
 }
 
-/// Separate widget for Job Invite tab
-class JobInviteTabContent extends StatelessWidget {
+/// Separate widget for Job Invite tab - displays collaboration invites
+class JobInviteTabContent extends StatefulWidget {
   const JobInviteTabContent({
     required this.onJobTap,
     super.key,
@@ -385,50 +411,211 @@ class JobInviteTabContent extends StatelessWidget {
 
   final Function(Job) onJobTap;
 
-  List<Job> _getSampleInvites() {
-    return List.generate(
-      3,
-      (i) => Job(
-        id: 'invite_$i',
-        title: 'Job Invite: Electrical Home Wiring',
-        category: 'Electrical Engineering',
-        description:
-            'You have been invited to quote for this job. Client is looking for professional electrical work.',
-        address: 'Client location - Lagos',
-        minBudget: 200000,
-        maxBudget: 300000,
-        duration: 'Less than a month',
-        applied: false,
+  @override
+  State<JobInviteTabContent> createState() => _JobInviteTabContentState();
+}
+
+class _JobInviteTabContentState extends State<JobInviteTabContent> {
+  @override
+  void initState() {
+    super.initState();
+    // Load pending collaboration invites when widget initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      try {
+        final state = context.read<CollaborationBloc>().state;
+        if (state is! CollaborationsLoaded) {
+          context.read<CollaborationBloc>().add(
+                LoadCollaborationsEvent(
+                  status: CollaborationStatus.pending,
+                  role: CollaborationRole.collaborator,
+                  page: 1,
+                  pageSize: 10,
+                ),
+              );
+        }
+      } catch (_) {
+        // CollaborationBloc not available, ignore
+      }
+    });
+  }
+
+  void _handleAccept(Collaboration collaboration) {
+    context.read<CollaborationBloc>().add(
+          RespondToCollaborationEvent(
+            collaborationId: collaboration.id,
+            action: CollaborationAction.accept,
+          ),
+        );
+  }
+
+  void _handleReject(Collaboration collaboration) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Decline Collaboration'),
+        content: const Text(
+          'Are you sure you want to decline this collaboration invite?',
+        ),
+        actions: [
+          TextAppButton(
+            text: 'Cancel',
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          TextAppButton(
+            text: 'Decline',
+            onPressed: () {
+              Navigator.pop(ctx);
+              context.read<CollaborationBloc>().add(
+                    RespondToCollaborationEvent(
+                      collaborationId: collaboration.id,
+                      action: CollaborationAction.reject,
+                    ),
+                  );
+            },
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final invites = _getSampleInvites();
-
-    if (invites.isEmpty) {
-      return const EmptyStateWidget(
-        icon: Icons.mail_outline,
-        title: 'No Job Invites',
-        subtitle: 'Job invitations from clients will appear here',
-      );
-    }
-
-    // Performance: Use ListView.builder for large lists
-    return ListView.builder(
-      itemCount: invites.length,
-      padding: AppSpacing.verticalSM,
-      itemBuilder: (context, index) {
-        final job = invites[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: JobCard(
-            job: job,
-            onTap: () => onJobTap(job),
-          ),
-        );
+    return BlocListener<CollaborationBloc, CollaborationState>(
+      listener: (context, state) {
+        if (state is CollaborationResponseSuccess) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                state.action == CollaborationAction.accept
+                    ? 'Collaboration accepted successfully!'
+                    : 'Collaboration declined',
+              ),
+            ),
+          );
+          // Refresh the list
+          context.read<CollaborationBloc>().add(
+                RefreshCollaborationsEvent(
+                  status: CollaborationStatus.pending,
+                  role: CollaborationRole.collaborator,
+                ),
+              );
+        } else if (state is CollaborationError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.danger,
+            ),
+          );
+        }
       },
+      child: BlocBuilder<CollaborationBloc, CollaborationState>(
+        builder: (context, state) {
+          if (state is CollaborationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is CollaborationError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: AppColors.danger,
+                  ),
+                  AppSpacing.spaceLG,
+                  Text(
+                    'Failed to load collaboration invites',
+                    style: TextStyle(
+                      color: AppColors.darkBlue.withValues(alpha: 0.7),
+                      fontSize: 16,
+                    ),
+                  ),
+                  AppSpacing.spaceSM,
+                  PrimaryButton(
+                    text: 'Retry',
+                    onPressed: () {
+                      context.read<CollaborationBloc>().add(
+                            LoadCollaborationsEvent(
+                              status: CollaborationStatus.pending,
+                              role: CollaborationRole.collaborator,
+                              page: 1,
+                              pageSize: 10,
+                            ),
+                          );
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (state is CollaborationsLoaded) {
+            final invites = state.collaborations;
+
+            if (invites.isEmpty) {
+              return const EmptyStateWidget(
+                icon: Icons.mail_outline,
+                title: 'No Collaboration Invites',
+                subtitle:
+                    'Collaboration invitations from other artisans will appear here',
+              );
+            }
+
+            // Performance: Use ListView.builder for lazy loading
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<CollaborationBloc>().add(
+                      RefreshCollaborationsEvent(
+                        status: CollaborationStatus.pending,
+                        role: CollaborationRole.collaborator,
+                      ),
+                    );
+              },
+              child: ListView.builder(
+                itemCount: invites.length,
+                padding: AppSpacing.verticalSM,
+                itemBuilder: (context, index) {
+                  final collaboration = invites[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: CollaborationCard(
+                      collaboration: collaboration,
+                      onAccept: () => _handleAccept(collaboration),
+                      onReject: () => _handleReject(collaboration),
+                      onTap: () async {
+                        // Navigate to collaboration details page
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CollaborationDetailsPage(
+                              collaboration: collaboration,
+                            ),
+                          ),
+                        );
+                        // Refresh list if collaboration was accepted/rejected
+                        if (result == true && context.mounted) {
+                          context.read<CollaborationBloc>().add(
+                                RefreshCollaborationsEvent(
+                                  status: CollaborationStatus.pending,
+                                  role: CollaborationRole.collaborator,
+                                ),
+                              );
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

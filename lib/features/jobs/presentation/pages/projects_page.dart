@@ -169,18 +169,7 @@ class _CatalogPageState extends State<CatalogPage>
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          leading: Padding(
-            padding: EdgeInsets.only(left: context.responsiveSpacing(12)),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.softPink,
-                  borderRadius: BorderRadius.circular(10)),
-              child: IconButton(
-                icon: const Icon(Icons.chevron_left, color: Colors.black54),
-                onPressed: () {},
-              ),
-            ),
-          ),
+          automaticallyImplyLeading: false,
           title: Text('Projects',
               style: TextStyle(
                   color: Colors.black87,
@@ -427,7 +416,7 @@ class _CatalogPageState extends State<CatalogPage>
                       Text(
                         item.ownerName!,
                         style: const TextStyle(
-                          color: Colors.black54,
+                          color: Colors.black87,
                           fontSize: 14,
                         ),
                       ),
@@ -442,7 +431,7 @@ class _CatalogPageState extends State<CatalogPage>
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Colors.black54,
+                          color: Colors.black87,
                           fontSize: 13,
                         ),
                       ),
@@ -494,9 +483,9 @@ class _CatalogPageState extends State<CatalogPage>
                                   ? '₦${_formatPrice(item.priceMin!)} - ₦${_formatPrice(item.priceMax!)}'
                                   : '₦${_formatPrice(item.priceMin ?? item.priceMax ?? 0)}',
                               style: const TextStyle(
-                                color: AppColors.brownHeader,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13,
                               ),
                             ),
                           ),
@@ -511,13 +500,14 @@ class _CatalogPageState extends State<CatalogPage>
                       Row(
                         children: [
                           const Icon(Icons.schedule,
-                              size: 16, color: Colors.black54),
+                              size: 16, color: Colors.black87),
                           AppSpacing.spaceXS,
                           Text(
                             'Duration: ${item.projectTimeline}',
                             style: const TextStyle(
-                              color: Colors.black54,
+                              color: Colors.black87,
                               fontSize: 12,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],

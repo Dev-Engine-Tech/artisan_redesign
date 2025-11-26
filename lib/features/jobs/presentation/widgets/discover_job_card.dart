@@ -34,13 +34,13 @@ class DiscoverJobCard extends StatelessWidget {
     final titleStyle = Theme.of(context)
         .textTheme
         .titleLarge
-        ?.copyWith(fontWeight: FontWeight.w700, fontSize: 20);
+        ?.copyWith(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black87);
     final subtitleStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black45);
+        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87);
     final priceStyle = Theme.of(context)
         .textTheme
         .bodyLarge
-        ?.copyWith(fontWeight: FontWeight.w700, color: AppColors.brownHeader);
+        ?.copyWith(fontWeight: FontWeight.w700, color: Colors.black87);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -177,7 +177,7 @@ class DiscoverJobCard extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: AppColors.brownHeader)),
+                                ?.copyWith(color: Colors.black87, fontWeight: FontWeight.w600)),
                       ),
                     ],
                   ),

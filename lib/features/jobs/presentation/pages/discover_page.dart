@@ -17,6 +17,7 @@ import 'dart:convert';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
 import 'package:get_it/get_it.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
+import 'package:artisans_circle/features/collaboration/presentation/widgets/collaboration_tab_content.dart';
 
 class DiscoverPage extends StatefulWidget {
   final bool showHeader;
@@ -52,6 +53,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   final List<DiscoverTab> _tabs = [
     const DiscoverTab(label: 'Best Matches', key: 'matches'),
     const DiscoverTab(label: 'Saved Jobs', key: 'saved'),
+    const DiscoverTab(label: 'Collaborations', key: 'collaborations', icon: Icons.people_outline),
   ];
 
   @override
@@ -224,21 +226,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ? AppBar(
                 elevation: 0,
                 backgroundColor: Colors.transparent,
-                leading: Padding(
-                  padding: EdgeInsets.only(left: context.responsiveSpacing(12)),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: AppColors.softPink,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: IconButton(
-                      icon:
-                          const Icon(Icons.chevron_left, color: Colors.black54),
-                      onPressed: () {
-                        // In shell the back may not pop; keep as placeholder
-                      },
-                    ),
-                  ),
-                ),
+                automaticallyImplyLeading: false,
                 title: Text('Discover',
                     style: TextStyle(
                         color: Colors.black87,
@@ -543,6 +531,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 
   Widget _buildTabContent(int index) {
+    // Handle collaborations tab separately
+    if (index == 2) {
+      return const CollaborationTabContent();
+    }
+
     return BlocBuilder<JobBloc, JobState>(
       bloc: bloc,
       builder: (context, state) {

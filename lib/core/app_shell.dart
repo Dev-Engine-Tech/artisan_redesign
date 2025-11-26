@@ -12,6 +12,7 @@ import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
 import 'package:artisans_circle/features/account/presentation/bloc/account_bloc.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
+import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
 import 'package:artisans_circle/core/performance/performance_monitor.dart';
 import 'package:artisans_circle/core/services/login_state_service.dart';
 import 'package:artisans_circle/core/widgets/youtube_video_popup.dart';
@@ -34,6 +35,7 @@ class _AppShellState extends State<AppShell> {
   late final JobBloc _jobBloc;
   late final AccountBloc _accountBloc;
   late final CatalogRequestsBloc _catalogRequestsBloc;
+  late final CollaborationBloc _collaborationBloc;
   bool _videoCheckScheduled = false;
 
   // Pages will be created dynamically to provide proper context
@@ -65,6 +67,7 @@ class _AppShellState extends State<AppShell> {
     _jobBloc = getIt<JobBloc>();
     _accountBloc = getIt<AccountBloc>();
     _catalogRequestsBloc = getIt<CatalogRequestsBloc>();
+    _collaborationBloc = getIt<CollaborationBloc>();
 
     // Attempt push registration early; safe to call multiple times
     try {
@@ -96,6 +99,7 @@ class _AppShellState extends State<AppShell> {
     _jobBloc.close();
     _accountBloc.close();
     _catalogRequestsBloc.close();
+    _collaborationBloc.close();
     super.dispose();
   }
 
@@ -192,13 +196,14 @@ class _AppShellState extends State<AppShell> {
     Performance.trackRebuild('AppShell');
 
     return Scaffold(
-      // Provide AuthBloc, JobBloc, and AccountBloc to descendant pages.
+      // Provide AuthBloc, JobBloc, AccountBloc, and CollaborationBloc to descendant pages.
       body: MultiBlocProvider(
         providers: [
           // AuthBloc is already provided at the app root. Reuse that instance.
           BlocProvider<JobBloc>.value(value: _jobBloc),
           BlocProvider<AccountBloc>.value(value: _accountBloc),
           BlocProvider<CatalogRequestsBloc>.value(value: _catalogRequestsBloc),
+          BlocProvider<CollaborationBloc>.value(value: _collaborationBloc),
         ],
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
