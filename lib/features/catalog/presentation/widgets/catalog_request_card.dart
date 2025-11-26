@@ -48,7 +48,9 @@ class CatalogRequestCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        request.title,
+                        request.catalogTitle?.isNotEmpty == true
+                            ? request.catalogTitle!
+                            : request.title,
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
@@ -61,6 +63,11 @@ class CatalogRequestCard extends StatelessWidget {
                     _buildStatusBadge(),
                   ],
                 ),
+
+                AppSpacing.spaceMD,
+
+                // Price display
+                _buildPriceInfo(),
 
                 AppSpacing.spaceMD,
 
@@ -86,6 +93,84 @@ class CatalogRequestCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Builds price information display
+  Widget _buildPriceInfo() {
+    // Priority: paymentBudget > priceMin/Max > calculate from materials
+    String? priceDisplay;
+
+    if (request.paymentBudget != null && request.paymentBudget!.isNotEmpty) {
+      final budget = double.tryParse(request.paymentBudget!);
+      if (budget != null) {
+        priceDisplay = '₦${budget.toStringAsFixed(0).replaceAllMapped(
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )}';
+      }
+    } else if (request.priceMin != null || request.priceMax != null) {
+      final minPrice = double.tryParse(request.priceMin ?? '0') ?? 0;
+      final maxPrice = double.tryParse(request.priceMax ?? request.priceMin ?? '0') ?? 0;
+
+      if (minPrice == maxPrice && minPrice > 0) {
+        priceDisplay = '₦${minPrice.toStringAsFixed(0).replaceAllMapped(
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )}';
+      } else if (minPrice > 0 && maxPrice > 0) {
+        priceDisplay = '₦${minPrice.toStringAsFixed(0).replaceAllMapped(
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )} - ₦${maxPrice.toStringAsFixed(0).replaceAllMapped(
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )}';
+      }
+    } else if (request.materials.isNotEmpty) {
+      // Calculate total from materials
+      final total = request.materials.fold<int>(
+        0,
+        (sum, material) => sum + ((material.price ?? 0) * (material.quantity ?? 1)),
+      );
+      if (total > 0) {
+        priceDisplay = '₦${total.toString().replaceAllMapped(
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        )}';
+      }
+    }
+
+    if (priceDisplay == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.orange.withValues(alpha: 0.1),
+        borderRadius: AppRadius.radiusMD,
+        border: Border.all(color: AppColors.orange.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.attach_money,
+            size: 18,
+            color: AppColors.orange,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            priceDisplay,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: AppColors.orange,
+            ),
+          ),
+        ],
       ),
     );
   }

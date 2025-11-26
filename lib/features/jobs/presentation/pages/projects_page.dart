@@ -400,6 +400,28 @@ class _CatalogPageState extends State<CatalogPage>
                         color: Colors.black87,
                       ),
                     ),
+
+                    // Sub-category badge
+                    if (item.subCategoryName != null && item.subCategoryName!.isNotEmpty) ...[
+                      AppSpacing.spaceXS,
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.orange.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: AppColors.orange.withValues(alpha: 0.3)),
+                        ),
+                        child: Text(
+                          item.subCategoryName!,
+                          style: const TextStyle(
+                            color: AppColors.orange,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+
                     if (item.ownerName != null) ...[
                       AppSpacing.spaceXS,
                       Text(
@@ -427,6 +449,33 @@ class _CatalogPageState extends State<CatalogPage>
                       AppSpacing.spaceMD,
                     ],
 
+                    // Feature badges (hot sale, condition, warranty, delivery)
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        if (item.hotSale == true)
+                          _buildFeatureBadge('🔥 Hot Sale', Colors.red),
+                        if (item.condition != null && item.condition!.isNotEmpty)
+                          _buildFeatureBadge(
+                            item.condition!.toUpperCase(),
+                            item.condition?.toLowerCase() == 'new' ? Colors.green : Colors.orange,
+                          ),
+                        if (item.warranty == true)
+                          _buildFeatureBadge('✓ Warranty', Colors.blue),
+                        if (item.delivery == true)
+                          _buildFeatureBadge('🚚 Delivery', Colors.teal),
+                        if (item.discountPercent != null && item.discountPercent! > 0)
+                          _buildFeatureBadge('${item.discountPercent}% OFF', Colors.red),
+                      ],
+                    ),
+                    if ((item.hotSale == true) ||
+                        (item.condition != null && item.condition!.isNotEmpty) ||
+                        (item.warranty == true) ||
+                        (item.delivery == true) ||
+                        (item.discountPercent != null && item.discountPercent! > 0))
+                      AppSpacing.spaceMD,
+
                     // Price and timeline row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -442,8 +491,8 @@ class _CatalogPageState extends State<CatalogPage>
                             ),
                             child: Text(
                               item.priceMin != null && item.priceMax != null
-                                  ? '₦${item.priceMin} - ₦${item.priceMax}'
-                                  : '₦${item.priceMin ?? item.priceMax}',
+                                  ? '₦${_formatPrice(item.priceMin!)} - ₦${_formatPrice(item.priceMax!)}'
+                                  : '₦${_formatPrice(item.priceMin ?? item.priceMax ?? 0)}',
                               style: const TextStyle(
                                 color: AppColors.brownHeader,
                                 fontWeight: FontWeight.w600,
@@ -535,6 +584,34 @@ class _CatalogPageState extends State<CatalogPage>
           fontSize: 12,
         ),
       ),
+    );
+  }
+
+  /// Helper method to build feature badges (hot sale, warranty, delivery, etc.)
+  Widget _buildFeatureBadge(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  /// Formats price with thousand separators (e.g., 700000 -> 700,000)
+  String _formatPrice(int price) {
+    return price.toString().replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+      (match) => '${match[1]},',
     );
   }
 }

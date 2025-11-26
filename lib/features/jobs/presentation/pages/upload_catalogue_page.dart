@@ -31,7 +31,6 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
 
   // Step 1 controllers
   final TextEditingController _titleController = TextEditingController();
-  String? _category;
   final TextEditingController _subCategoryIdController =
       TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -59,14 +58,6 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
   // Selected image file paths (for upload)
   final List<String> _media = [];
   // final ImagePicker _picker = ImagePicker(); // Temporarily disabled
-
-  final List<String> _categories = [
-    'Electrical and Electronics',
-    'Fashion and Textiles',
-    'Event Planning',
-    'Construction and Masonry',
-    'Tech and Communications'
-  ];
 
   final List<String> _timelines = [
     'Less than a week',
@@ -342,27 +333,6 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               'Title Samples\n• Modern 4-seater dinning table.\n• Eternal elegance wedding gown.\n• Metal staircases handrails.'),
         ),
         const SizedBox(height: 18),
-        const Text('Select project category',
-            style: TextStyle(fontWeight: FontWeight.w600)),
-        AppSpacing.spaceSM,
-        DropdownButtonFormField<String>(
-          initialValue: _category,
-          items: _categories
-              .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-              .toList(),
-          onChanged: (v) => setState(() => _category = v),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: AppColors.cardBackground,
-            hintText: 'Select project category',
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          ),
-        ),
-        AppSpacing.spaceMD,
         const Text('Sub-category',
             style: TextStyle(fontWeight: FontWeight.w600)),
         AppSpacing.spaceSM,
@@ -819,9 +789,6 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 ? 'Untitled project'
                 : _titleController.text,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-        const SizedBox(height: 6),
-        Text(_category ?? 'Uncategorized',
-            style: const TextStyle(color: Colors.black54)),
         AppSpacing.spaceMD,
         Container(
           width: double.infinity,

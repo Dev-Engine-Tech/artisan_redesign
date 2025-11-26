@@ -12,17 +12,24 @@ class CatalogItemModel extends CatalogItem {
     super.ownerName,
     super.status,
     super.projectStatus,
+    super.subCategoryName,
     super.instantSelling,
     super.brand,
     super.condition,
     super.salesCategory,
     super.warranty,
     super.delivery,
+    super.hotSale,
+    super.discountPercent,
   });
 
   factory CatalogItemModel.fromJson(Map<String, dynamic> json) {
-    // Handle the actual API response structure from /catalog/api/artisan/catalog/lists/
-    final catalog = json['catalog'] as Map<String, dynamic>?;
+    // Handle different API response structures:
+    // 1. Direct catalog object (from /catalog/api/catalog/products/)
+    // 2. Nested in 'catalog' field (from catalog requests)
+    // 3. Nested in 'catalog_product' field (from some endpoints)
+    final catalog = json['catalog'] as Map<String, dynamic>? ??
+        json['catalog_product'] as Map<String, dynamic>?;
     final client = json['client'] as Map<String, dynamic>?;
 
     // Extract pictures from catalog
@@ -112,6 +119,7 @@ class CatalogItemModel extends CatalogItem {
     return CatalogItemModel(
       id: (catalogData['id'] ?? json['id'] ?? '').toString(),
       title: (catalogData['title'] ??
+              catalogData['name'] ??
               json['title'] ??
               json['name'] ??
               json['product_name'] ??
@@ -145,14 +153,32 @@ class CatalogItemModel extends CatalogItem {
       ownerName: ownerName,
       status: json['status']?.toString(),
       projectStatus: json['project_status']?.toString(),
+      subCategoryName: (catalogData['sub_category_name'] ??
+              json['sub_category_name'] ??
+              catalogData['subcategory_name'] ??
+              json['subcategory_name'] ??
+              catalogData['category'] ??
+              json['category'])
+          ?.toString(),
       instantSelling:
           toBool(catalogData['instant_selling'] ?? json['instant_selling']),
       brand: (catalogData['brand'] ?? json['brand'])?.toString(),
       condition: (catalogData['condition'] ?? json['condition'])?.toString(),
       salesCategory:
           (catalogData['sales_category'] ?? json['sales_category'])?.toString(),
-      warranty: toBool(catalogData['warranty'] ?? json['warranty']),
-      delivery: toBool(catalogData['delivery'] ?? json['delivery']),
+      warranty: toBool(catalogData['warranty'] ??
+          json['warranty'] ??
+          catalogData['has_warranty'] ??
+          json['has_warranty']),
+      delivery: toBool(catalogData['delivery'] ??
+          json['delivery'] ??
+          catalogData['delivery_available'] ??
+          json['delivery_available']),
+      hotSale: toBool(catalogData['hot_sale'] ?? json['hot_sale']),
+      discountPercent: toInt(catalogData['discount_percent'] ??
+          json['discount_percent'] ??
+          catalogData['discount'] ??
+          json['discount']),
     );
   }
 
@@ -167,11 +193,14 @@ class CatalogItemModel extends CatalogItem {
         ownerName: ownerName,
         status: status,
         projectStatus: projectStatus,
+        subCategoryName: subCategoryName,
         instantSelling: instantSelling,
         brand: brand,
         condition: condition,
         salesCategory: salesCategory,
         warranty: warranty,
         delivery: delivery,
+        hotSale: hotSale,
+        discountPercent: discountPercent,
       );
 }
