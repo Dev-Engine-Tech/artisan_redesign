@@ -665,7 +665,16 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
               builder: (context, authState) {
                 String userName = 'User';
                 if (authState is AuthAuthenticated) {
-                  userName = authState.user.firstName;
+                  final user = authState.user;
+                  // Use firstName if available, otherwise use phone or fallback to "User"
+                  if (user.firstName.isNotEmpty) {
+                    userName = user.firstName;
+                  } else if (user.phone.isNotEmpty) {
+                    userName = user.phone;
+                  }
+                  debugPrint('🔐 Auth state: Authenticated, firstName: ${user.firstName}, lastName: ${user.lastName}, phone: ${user.phone}');
+                } else {
+                  debugPrint('🔐 Auth state: ${authState.runtimeType}');
                 }
 
                 return Row(
