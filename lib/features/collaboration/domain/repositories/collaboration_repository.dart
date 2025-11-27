@@ -1,7 +1,13 @@
 import '../entities/collaboration.dart';
+import '../entities/artisan_search_result.dart';
 
 /// Repository interface for collaboration operations
 abstract class CollaborationRepository {
+  /// Search for artisans to invite as collaborators
+  ///
+  /// [query] - Search query (name or phone number)
+  Future<List<ArtisanSearchResult>> searchArtisans(String query);
+
   /// Invite another artisan to collaborate on a job
   ///
   /// Requires active paid subscription (Bronze/Silver/Gold)

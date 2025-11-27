@@ -143,6 +143,7 @@ import 'package:artisans_circle/features/collaboration/domain/usecases/invite_co
 import 'package:artisans_circle/features/collaboration/domain/usecases/get_my_collaborations.dart';
 import 'package:artisans_circle/features/collaboration/domain/usecases/respond_to_collaboration.dart';
 import 'package:artisans_circle/features/collaboration/domain/usecases/get_job_collaborators.dart';
+import 'package:artisans_circle/features/collaboration/domain/usecases/search_artisans.dart';
 import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -621,6 +622,9 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   );
   getIt.registerLazySingleton<GetJobCollaborators>(
     () => GetJobCollaborators(getIt<CollaborationRepository>()),
+  );
+  getIt.registerLazySingleton<SearchArtisans>(
+    () => SearchArtisans(getIt<CollaborationRepository>()),
   );
   getIt.registerFactory<CollaborationBloc>(
     () => CollaborationBloc(

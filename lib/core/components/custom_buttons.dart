@@ -34,16 +34,14 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width ?? double.infinity,
-      child: ElevatedButton(
+    return LayoutBuilder(builder: (context, constraints) {
+      final button = ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.orange,
           foregroundColor: Colors.white,
           disabledBackgroundColor: AppColors.disabledOrange,
           disabledForegroundColor: Colors.white70,
-          minimumSize: Size(width ?? 0, height),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -82,8 +80,19 @@ class PrimaryButton extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-      ),
-    );
+      );
+      if (width != null) {
+        return SizedBox(height: height, width: width, child: button);
+      }
+      // Avoid forcing infinite width in unbounded contexts (e.g., inside Row)
+      if (constraints.hasBoundedWidth) {
+        return SizedBox(height: height, width: double.infinity, child: button);
+      }
+      return ConstrainedBox(
+        constraints: BoxConstraints(minHeight: height),
+        child: button,
+      );
+    });
   }
 }
 
@@ -125,24 +134,20 @@ class SecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width ?? double.infinity,
-      child: ElevatedButton(
+    return LayoutBuilder(builder: (context, constraints) {
+      final button = ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
           disabledBackgroundColor: backgroundColor.withValues(alpha: 0.5),
           disabledForegroundColor: foregroundColor.withValues(alpha: 0.7),
-          minimumSize: Size(width ?? 0, height),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
           elevation: 0,
-          // Use smaller vertical padding so short buttons (e.g., height 40)
-          // render text without clipping.
           padding: padding ??
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
         child: isLoading
             ? SizedBox(
@@ -176,8 +181,18 @@ class SecondaryButton extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-      ),
-    );
+      );
+      if (width != null) {
+        return SizedBox(height: height, width: width, child: button);
+      }
+      if (constraints.hasBoundedWidth) {
+        return SizedBox(height: height, width: double.infinity, child: button);
+      }
+      return ConstrainedBox(
+        constraints: BoxConstraints(minHeight: height),
+        child: button,
+      );
+    });
   }
 }
 
@@ -220,9 +235,8 @@ class OutlinedAppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width ?? double.infinity,
-      child: OutlinedButton(
+    return LayoutBuilder(builder: (context, constraints) {
+      final button = OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
           foregroundColor: foregroundColor,
@@ -230,9 +244,8 @@ class OutlinedAppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
-          minimumSize: Size(width ?? 0, height),
           padding: padding ??
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
         child: isLoading
             ? SizedBox(
@@ -266,8 +279,18 @@ class OutlinedAppButton extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-      ),
-    );
+      );
+      if (width != null) {
+        return SizedBox(height: height, width: width, child: button);
+      }
+      if (constraints.hasBoundedWidth) {
+        return SizedBox(height: height, width: double.infinity, child: button);
+      }
+      return ConstrainedBox(
+        constraints: BoxConstraints(minHeight: height),
+        child: button,
+      );
+    });
   }
 }
 

@@ -306,7 +306,7 @@ class ApiEndpoints {
   static const String catalogRequests =
       '/catalog/api/artisan/catalog/request/lists/';
   static const String catalogRequestDetails =
-      '/catalog/api/catalog-request-details/';
+      '/catalog/api/artisan/catalog/request/';
   static const String respondToCatalogRequest =
       '/catalog/api/respond-to-catalog-request/';
   static const String myCatalogItems = '/catalog/api/artisan/catalog/lists/';

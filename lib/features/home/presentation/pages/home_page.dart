@@ -11,7 +11,7 @@ import 'package:artisans_circle/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/auth_state.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_details_page.dart';
-import 'package:artisans_circle/features/jobs/presentation/pages/order_details_page.dart';
+import 'package:artisans_circle/features/catalog/presentation/pages/catalog_request_view_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/agreement_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/change_request_page.dart';
 import 'package:artisans_circle/features/wallet/presentation/withdraw_flow.dart';
@@ -923,10 +923,12 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   }
 
   void _handleOrderTap(CatalogRequest request) {
-    final job = _catalogRequestToJob(request).toEntity();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => OrderDetailsPage(job: job),
-    ));
+    // Project Request details (Catalog Request) should use the dedicated page
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => CatalogRequestViewPage(requestId: request.id),
+      ),
+    );
   }
 
   void _updateApplications(List<JobModel> applications) {

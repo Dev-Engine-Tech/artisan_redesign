@@ -68,7 +68,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       debugPrint('💳 Current plan: $plan, Initial page: $initialPage');
 
       // Update page controller to show correct plan
-      if (mounted && _pageController.hasClients && initialPage != _currentPage) {
+      if (mounted &&
+          _pageController.hasClients &&
+          initialPage != _currentPage) {
         _pageController.jumpToPage(initialPage);
       }
 
@@ -97,7 +99,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
       final dio = getIt<Dio>();
       debugPrint('💳 Calling API: ${ApiEndpoints.subscriptionPurchase}');
-      debugPrint('💳 Data: plan=$planName, billing_cycle=${_isYearly ? 'yearly' : 'monthly'}');
+      debugPrint(
+          '💳 Data: plan=$planName, billing_cycle=${_isYearly ? 'yearly' : 'monthly'}');
 
       // Attempt 1: Try wallet-first payment (no payment_provider specified)
       final response = await dio.post(
@@ -141,7 +144,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Payment completed. Please check your subscription status.'),
+            content: Text(
+                'Payment completed. Please check your subscription status.'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 3),
           ),
@@ -171,7 +175,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
       // Check for 402 Payment Required (insufficient wallet balance)
       if (e.response?.statusCode == 402) {
-        debugPrint('💳 Insufficient wallet balance - showing provider selection');
+        debugPrint(
+            '💳 Insufficient wallet balance - showing provider selection');
 
         final responseData = e.response?.data;
         double? shortfall;
@@ -184,11 +189,15 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
           shortfall = shortfallValue is num
               ? shortfallValue.toDouble()
-              : (shortfallValue is String ? double.tryParse(shortfallValue) : null);
+              : (shortfallValue is String
+                  ? double.tryParse(shortfallValue)
+                  : null);
 
           requiredAmount = requiredValue is num
               ? requiredValue.toDouble()
-              : (requiredValue is String ? double.tryParse(requiredValue) : null);
+              : (requiredValue is String
+                  ? double.tryParse(requiredValue)
+                  : null);
         }
 
         // Show payment provider selection dialog
@@ -199,7 +208,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
         if (selectedProvider != null) {
           // Retry with selected payment provider, passing the full response data
-          await _retryPaymentWithProvider(planName, selectedProvider, responseData);
+          await _retryPaymentWithProvider(
+              planName, selectedProvider, responseData);
         }
       } else {
         // Other errors (5xx/4xx): show detail + request id if present and allow retry
@@ -483,7 +493,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       if (provider == 'bank_transfer') {
         final bankTransferData = providerData as Map;
         final reference = bankTransferData['reference'] ?? paymentReference;
-        final uploadUrl = bankTransferData['upload_url']?.toString() ?? '/client/api/bank/transfer/';
+        final uploadUrl = bankTransferData['upload_url']?.toString() ??
+            '/client/api/bank/transfer/';
         final requiredAmount = paymentData?['required_amount'];
 
         double amount = 0;
@@ -535,7 +546,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Payment completed. Please check your subscription status.'),
+          content:
+              Text('Payment completed. Please check your subscription status.'),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 3),
         ),
@@ -557,268 +569,258 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      decoration: const BoxDecoration(
-        color: AppColors.lightPeach,
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
-      ),
-      child: Column(
-        children: [
-          // Handle bar
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        decoration: const BoxDecoration(
+          color: AppColors.lightPeach,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
+        ),
+        child: Column(
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
-          // Header
-          Padding(
-            padding: context.responsivePadding,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                const Expanded(
-                  child: Text(
-                    'Pricing Plans',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.brownHeader,
+            // Header
+            Padding(
+              padding: context.responsivePadding,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const Expanded(
+                    child: Text(
+                      'Pricing Plans',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.brownHeader,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 48), // Balance the close button
+                ],
+              ),
+            ),
+            // Page indicators
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                  3,
+                  (index) => Container(
+                        margin: AppSpacing.horizontalXS,
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: _currentPage == index
+                              ? AppColors.orange
+                              : Colors.grey[300],
+                          shape: BoxShape.circle,
+                        ),
+                      )),
+            ),
+            AppSpacing.spaceSM,
+            // Swipe indicator
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.arrow_back_ios,
+                  size: 16,
+                  color: _currentPage > 0 ? AppColors.orange : Colors.grey[400],
                 ),
-                const SizedBox(width: 48), // Balance the close button
+                const SizedBox(width: 8),
+                Text(
+                  'Swipe to explore plans',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.brownHeader.withValues(alpha: 0.7),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: _currentPage < 2 ? AppColors.orange : Colors.grey[400],
+                ),
               ],
             ),
-          ),
-          // Page indicators
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-                3,
-                (index) => Container(
-                      margin: AppSpacing.horizontalXS,
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _currentPage == index
-                            ? AppColors.orange
-                            : Colors.grey[300],
-                        shape: BoxShape.circle,
-                      ),
-                    )),
-          ),
-          AppSpacing.spaceSM,
-          // Swipe indicator
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.arrow_back_ios,
-                size: 16,
-                color: _currentPage > 0
-                    ? AppColors.orange
-                    : Colors.grey[400],
+            AppSpacing.spaceLG,
+            // Monthly/Yearly toggle
+            Container(
+              margin: AppSpacing.horizontalLG,
+              padding: AppSpacing.paddingXS,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: AppRadius.radiusMD,
               ),
-              const SizedBox(width: 8),
-              Text(
-                'Swipe to explore plans',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.brownHeader.withValues(alpha: 0.7),
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: _currentPage < 2
-                    ? AppColors.orange
-                    : Colors.grey[400],
-              ),
-            ],
-          ),
-          AppSpacing.spaceLG,
-          // Monthly/Yearly toggle
-          Container(
-            margin: AppSpacing.horizontalLG,
-            padding: AppSpacing.paddingXS,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: AppRadius.radiusMD,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _isYearly = false),
-                    child: Container(
-                      padding: AppSpacing.verticalSM,
-                      decoration: BoxDecoration(
-                        color: !_isYearly ? Colors.white : Colors.transparent,
-                        borderRadius: BorderRadius.circular(6),
-                        boxShadow: !_isYearly
-                            ? [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 2,
-                                )
-                              ]
-                            : null,
-                      ),
-                      child: Text(
-                        'Monthly',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: !_isYearly
-                              ? AppColors.brownHeader
-                              : Colors.grey[600],
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _isYearly = false),
+                      child: Container(
+                        padding: AppSpacing.verticalSM,
+                        decoration: BoxDecoration(
+                          color: !_isYearly ? Colors.white : Colors.transparent,
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: !_isYearly
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 2,
+                                  )
+                                ]
+                              : null,
+                        ),
+                        child: Text(
+                          'Monthly',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: !_isYearly
+                                ? AppColors.brownHeader
+                                : Colors.grey[600],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _isYearly = true),
-                    child: Container(
-                      padding: AppSpacing.verticalSM,
-                      decoration: BoxDecoration(
-                        color: _isYearly ? Colors.white : Colors.transparent,
-                        borderRadius: BorderRadius.circular(6),
-                        boxShadow: _isYearly
-                            ? [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 2,
-                                )
-                              ]
-                            : null,
-                      ),
-                      child: Text(
-                        'Yearly',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: _isYearly
-                              ? AppColors.brownHeader
-                              : Colors.grey[600],
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _isYearly = true),
+                      child: Container(
+                        padding: AppSpacing.verticalSM,
+                        decoration: BoxDecoration(
+                          color: _isYearly ? Colors.white : Colors.transparent,
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: _isYearly
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 2,
+                                  )
+                                ]
+                              : null,
+                        ),
+                        child: Text(
+                          'Yearly',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: _isYearly
+                                ? AppColors.brownHeader
+                                : Colors.grey[600],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          AppSpacing.spaceLG,
-          // Content
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (page) => setState(() => _currentPage = page),
-              children: [
-                _buildPricingCard(
-                  title: 'Bronze Plan',
-                  description:
-                      'Perfect for individuals starting their artisan journey',
-                  price: _isYearly ? '₦50,000' : '₦5,000',
-                  period: _isYearly ? '/ year' : '/ month',
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.orange.withValues(alpha: 0.8),
-                      AppColors.brownHeader.withValues(alpha: 0.9),
+            AppSpacing.spaceLG,
+            // Content
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (page) => setState(() => _currentPage = page),
+                children: [
+                  _buildPricingCard(
+                    title: 'Bronze Plan',
+                    description:
+                        'Perfect for individuals starting their artisan journey',
+                    price: _isYearly ? '₦50,000' : '₦5,000',
+                    period: _isYearly ? '/ year' : '/ month',
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.orange.withValues(alpha: 0.8),
+                        AppColors.brownHeader.withValues(alpha: 0.9),
+                      ],
+                    ),
+                    buttonText: 'Upgrade',
+                    planName: 'bronze',
+                    features: [
+                      'All Free features + Priority support, Profile badge, Extended profile visibility',
+                      'Smart limits: 10 applications/week; 20 invoices/month; 10 catalog products; up to 2 collaborators/job',
+                      'Visibility: Elevated vs Free',
+                      'Invoices: "Classic", "Modern", "Minimal" styles',
+                      'Best for: Getting noticed more and moving faster with priority support',
                     ],
                   ),
-                  buttonText: 'Upgrade',
-                  planName: 'bronze',
-                  features: [
-                    'Profile creation and management',
-                    'Basic job search and application',
-                    'Access to public job listings',
-                    'Standard customer support',
-                    'Basic messaging with clients',
-                    'Upload up to 10 catalogue items',
-                    '15% commission per completed job',
-                  ],
-                ),
-                _buildPricingCard(
-                  title: 'Silver Plan',
-                  description:
-                      'Best for established artisans looking to grow their business',
-                  price: _isYearly ? '₦100,000' : '₦10,000',
-                  period: _isYearly ? '/ year' : '/ month',
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.softPink,
-                      AppColors.orange.withValues(alpha: 0.7),
+                  _buildPricingCard(
+                    title: 'Silver Plan',
+                    description:
+                        'Best for established artisans looking to grow their business',
+                    price: _isYearly ? '₦100,000' : '₦10,000',
+                    period: _isYearly ? '/ year' : '/ month',
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.softPink,
+                        AppColors.orange.withValues(alpha: 0.7),
+                      ],
+                    ),
+                    buttonText: 'Upgrade',
+                    planName: 'silver',
+                    savePercent: _isYearly ? '17%' : null,
+                    isHierarchical: true,
+                    previousPlan: 'Bronze',
+                    features: [
+                      'All Bronze features + Job matching (smart recommendations to fit your skills), Advanced analytics, Featured profile listing, Priority job applications',
+                      'Smart limits: 20 applications/week; 50 invoices/month; 50 catalog products; up to 5 collaborators/job',
+                      'Visibility: Featured listing placement',
+                      'Invoices: All styles unlocked',
+                      'Best for: Consistent lead flow with smarter matches and stronger visibility',
                     ],
                   ),
-                  buttonText: 'Upgrade',
-                  planName: 'silver',
-                  savePercent: _isYearly ? '17%' : null,
-                  isHierarchical: true,
-                  previousPlan: 'Bronze',
-                  features: [
-                    'Priority job notifications',
-                    'Advanced search filters',
-                    'Portfolio showcase',
-                    'Professional badge',
-                    'Enhanced messaging features',
-                    'Basic analytics dashboard',
-                    'Upload up to 25 catalogue items',
-                    '10% commission per completed job',
-                  ],
-                ),
-                _buildPricingCard(
-                  title: 'Gold Plan',
-                  description:
-                      'Comprehensive solution for large artisan businesses',
-                  price: _isYearly ? '₦150,000' : '₦15,000',
-                  period: _isYearly ? '/ year' : '/ month',
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.darkBlue.withValues(alpha: 0.8),
-                      AppColors.brownHeader,
+                  _buildPricingCard(
+                    title: 'Gold Plan',
+                    description:
+                        'Comprehensive solution for large artisan businesses',
+                    price: _isYearly ? '₦150,000' : '₦15,000',
+                    period: _isYearly ? '/ year' : '/ month',
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.darkBlue.withValues(alpha: 0.8),
+                        AppColors.brownHeader,
+                      ],
+                    ),
+                    buttonText: 'Upgrade',
+                    planName: 'gold',
+                    savePercent: _isYearly ? '17%' : null,
+                    isHierarchical: true,
+                    previousPlan: 'Silver',
+                    features: [
+                      'All Silver features + AI-powered job recommendations, Personalized career insights, Unlimited job applications, Premium profile badge, Dedicated account manager',
+                      'Limits: Unlimited applications; Unlimited invoices; Unlimited catalog products; Unlimited collaborators/job',
+                      'Visibility: Top-tier presence and branding',
+                      'Invoices: All styles unlocked',
+                      'Best for: Serious growth—maximum visibility, no ceilings, and personal support',
                     ],
                   ),
-                  buttonText: 'Upgrade',
-                  planName: 'gold',
-                  savePercent: _isYearly ? '17%' : null,
-                  isHierarchical: true,
-                  previousPlan: 'Silver',
-                  features: [
-                    'Premium job visibility',
-                    'Advanced portfolio tools',
-                    'Verified professional status',
-                    'Priority customer support',
-                    'Marketing tools and promotion',
-                    'Custom branding options',
-                    'Upload up to 50 catalogue items',
-                    '5% commission per completed job',
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -920,16 +922,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 width: double.infinity,
                 height: 56,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.orange,
-                      AppColors.orange.withValues(alpha: 0.8),
-                    ],
-                  ),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.orange.withValues(alpha: 0.4),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -940,7 +937,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     _initiateUpgrade(planName);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.brownHeader,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -949,7 +947,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   child: Text(
                     buttonText,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.brownHeader,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,

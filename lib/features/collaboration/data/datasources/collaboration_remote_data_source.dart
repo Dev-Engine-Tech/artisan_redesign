@@ -1,10 +1,15 @@
 import '../../../../core/api/endpoints.dart';
 import '../../../../core/data/base_remote_data_source.dart';
 import '../../domain/entities/collaboration.dart';
+import '../../domain/entities/artisan_search_result.dart';
 import '../../domain/repositories/collaboration_repository.dart';
 import '../models/collaboration_model.dart';
+import '../models/artisan_search_result_model.dart';
 
 abstract class CollaborationRemoteDataSource {
+  /// Search for artisans
+  Future<List<ArtisanSearchResult>> searchArtisans(String query);
+
   Future<CollaborationModel> inviteCollaborator({
     required int jobApplicationId,
     required int collaboratorId,
@@ -34,6 +39,25 @@ abstract class CollaborationRemoteDataSource {
 class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
     implements CollaborationRemoteDataSource {
   CollaborationRemoteDataSourceImpl(super.dio);
+
+  @override
+  Future<List<ArtisanSearchResult>> searchArtisans(String query) async {
+    final response = await dio.get(
+      ApiEndpoints.searchArtisans,
+      queryParameters: {'q': query},
+    );
+
+    // Handle different response formats
+    final data = response.data;
+    if (data is Map && data['data'] is List) {
+      final results = data['data'] as List;
+      return results
+          .map((json) => ArtisanSearchResultModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    }
+
+    return [];
+  }
 
   @override
   Future<CollaborationModel> inviteCollaborator({

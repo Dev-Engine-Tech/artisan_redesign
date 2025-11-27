@@ -40,114 +40,108 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
         title: const Text('Catalogue', style: TextStyle(color: Colors.black87)),
       ),
       body: SafeArea(
-        child: Center(
-          child: Container(
-            constraints: BoxConstraints(maxWidth: context.maxContentWidth),
-            child: ListView(
-              padding: context.responsivePadding,
-              children: [
-                // Image/banner + title block (compact)
-                ClipRRect(
-                  borderRadius: AppRadius.radiusLG,
-                  child: job.thumbnailUrl.isNotEmpty
-                      ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
-                          width: double.infinity,
-                          height: 180,
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, e, s) => Container(
-                              height: 180,
-                              color: AppColors.softPink,
-                              child: const Center(child: Icon(Icons.image))))
-                      : Container(
+        child: ListView(
+          padding: context.responsivePadding,
+          children: [
+            // Image/banner + title block (compact)
+            ClipRRect(
+              borderRadius: AppRadius.radiusLG,
+              child: job.thumbnailUrl.isNotEmpty
+                  ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
+                      width: double.infinity,
+                      height: 180,
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, s) => Container(
                           height: 180,
                           color: AppColors.softPink,
-                          child: const Center(
-                              child: Icon(Icons.home_repair_service_outlined,
-                                  size: 56, color: AppColors.orange)),
-                        ),
-                ),
-                AppSpacing.spaceMD,
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.softBorder),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(job.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 6),
-                      Text(job.category,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.black45)),
-                      AppSpacing.spaceMD,
-                      Text(job.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.black54)),
-                      AppSpacing.spaceMD,
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _Badge(
-                              label: '₦${job.minBudget} - ₦${job.maxBudget}'),
-                          _Badge(label: job.duration),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 18),
-                PrimaryButton(
-                  text: 'Edit Catalogue',
-                  onPressed: () {
-                    // placeholder edit
-                  },
-                ),
-                AppSpacing.spaceMD,
-                SecondaryButton(
-                  text: 'Delete Catalogue',
-                  onPressed: () {
-                    // placeholder delete
-                  },
-                ),
-                const SizedBox(height: 18),
-                // Additional details preserved
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.softBorder),
-                  ),
-                  padding: AppSpacing.paddingMD,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Description',
-                          style: TextStyle(fontWeight: FontWeight.w700)),
-                      AppSpacing.spaceSM,
-                      Text(job.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.black54)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30),
-              ],
+                          child: const Center(child: Icon(Icons.image))))
+                  : Container(
+                      height: 180,
+                      color: AppColors.softPink,
+                      child: const Center(
+                          child: Icon(Icons.home_repair_service_outlined,
+                              size: 56, color: AppColors.orange)),
+                    ),
             ),
-          ),
+            AppSpacing.spaceMD,
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.cardBackground,
+                borderRadius: AppRadius.radiusLG,
+                border: Border.all(color: AppColors.softBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(job.title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 6),
+                  Text(job.category,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black45)),
+                  AppSpacing.spaceMD,
+                  Text(job.description,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black54)),
+                  AppSpacing.spaceMD,
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _Badge(label: '₦${job.minBudget} - ₦${job.maxBudget}'),
+                      _Badge(label: job.duration),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            PrimaryButton(
+              text: 'Edit Catalogue',
+              onPressed: () {
+                // placeholder edit
+              },
+            ),
+            AppSpacing.spaceMD,
+            SecondaryButton(
+              text: 'Delete Catalogue',
+              onPressed: () {
+                // placeholder delete
+              },
+            ),
+            const SizedBox(height: 18),
+            // Additional details preserved
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.cardBackground,
+                borderRadius: AppRadius.radiusLG,
+                border: Border.all(color: AppColors.softBorder),
+              ),
+              padding: AppSpacing.paddingMD,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Description',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
+                  AppSpacing.spaceSM,
+                  Text(job.description,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.black54)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+          ],
         ),
       ),
     );

@@ -7,6 +7,9 @@ import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/progress_submission_modal.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_timeline_widget.dart';
+import 'package:artisans_circle/features/collaboration/presentation/pages/invite_collaborator_page_refactored.dart';
+import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
+import 'package:artisans_circle/core/di.dart';
 import '../../../../core/utils/responsive.dart';
 
 class OngoingJobsPage extends StatefulWidget {
@@ -611,19 +614,32 @@ class OngoingJobCard extends StatelessWidget {
           bottom: Radius.circular(AppRadius.lg),
         ),
       ),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: OutlinedAppButton(
-              text: 'Submit Progress',
-              onPressed: () => _showProgressSubmission(context),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedAppButton(
+                  text: 'Submit Progress',
+                  onPressed: () => _showProgressSubmission(context),
+                ),
+              ),
+              AppSpacing.spaceSM,
+              Expanded(
+                child: PrimaryButton(
+                  text: 'View Details',
+                  onPressed: () => _showJobDetails(context),
+                ),
+              ),
+            ],
           ),
           AppSpacing.spaceSM,
-          Expanded(
-            child: PrimaryButton(
-              text: 'View Details',
-              onPressed: () => _showJobDetails(context),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedAppButton(
+              text: 'Invite Collaborator',
+              icon: Icons.person_add_outlined,
+              onPressed: () => _inviteCollaborator(context),
             ),
           ),
         ],
@@ -671,5 +687,21 @@ class OngoingJobCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _inviteCollaborator(BuildContext context) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<CollaborationBloc>(),
+          child: InviteCollaboratorPageRefactored(job: job),
+        ),
+      ),
+    );
+
+    // Refresh if invitation was sent
+    if (result == true) {
+      onStatusUpdate();
+    }
   }
 }

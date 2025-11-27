@@ -71,8 +71,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Artisans Circle',
       theme: AppThemes.lightTheme(),
-      darkTheme: AppThemes.darkTheme(),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light, // Always use light theme regardless of system settings
       navigatorObservers: [
         FirebaseAnalyticsRouteObserver(getIt<AnalyticsService>()),
       ],

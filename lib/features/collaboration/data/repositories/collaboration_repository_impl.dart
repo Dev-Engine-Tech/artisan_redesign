@@ -1,4 +1,5 @@
 import '../../domain/entities/collaboration.dart';
+import '../../domain/entities/artisan_search_result.dart';
 import '../../domain/repositories/collaboration_repository.dart';
 import '../datasources/collaboration_remote_data_source.dart';
 
@@ -6,6 +7,11 @@ class CollaborationRepositoryImpl implements CollaborationRepository {
   final CollaborationRemoteDataSource remoteDataSource;
 
   CollaborationRepositoryImpl({required this.remoteDataSource});
+
+  @override
+  Future<List<ArtisanSearchResult>> searchArtisans(String query) async {
+    return remoteDataSource.searchArtisans(query);
+  }
 
   @override
   Future<Collaboration> inviteCollaborator({
