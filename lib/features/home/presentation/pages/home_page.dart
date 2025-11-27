@@ -617,30 +617,55 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             constraints: BoxConstraints(
               maxWidth: context.maxContentWidth,
             ),
-            child: ListView(
+            child: CustomScrollView(
               controller: _scrollController,
-              padding: EdgeInsets.zero,
-              children: [
-                _buildHeader(context),
-                SizedBox(height: context.responsiveSpacing(18)),
-                _buildProfileActions(context),
-                UnifiedBannerCarousel.api(
-                  category: api.BannerCategory.homepage,
-                  height: carouselHeight,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.responsiveSpacing(8),
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
+              slivers: [
+                // Header as sliver with RepaintBoundary for performance
+                SliverToBoxAdapter(
+                  child: RepaintBoundary(
+                    child: _buildHeader(context),
                   ),
                 ),
-                AppSpacing.spaceSM,
-                () {
-                  return HomeTabSection(
+                SliverToBoxAdapter(
+                  child: SizedBox(height: context.responsiveSpacing(18)),
+                ),
+                // Profile actions with RepaintBoundary
+                SliverToBoxAdapter(
+                  child: RepaintBoundary(
+                    child: _buildProfileActions(context),
+                  ),
+                ),
+                // Banner carousel with RepaintBoundary
+                SliverToBoxAdapter(
+                  child: RepaintBoundary(
+                    child: UnifiedBannerCarousel.api(
+                      category: api.BannerCategory.homepage,
+                      height: carouselHeight,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.responsiveSpacing(8),
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: AppSpacing.spaceSM,
+                ),
+                // Tab section with proper scroll delegation
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: HomeTabSection(
                     onJobTap: _handleJobTap,
                     onRequestTap: _handleOrderTap,
                     applications: _applications,
                     onApplicationUpdate: _updateApplications,
-                  );
-                }(),
-                const SizedBox(height: 120),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: const SizedBox(height: 120),
+                ),
               ],
             ),
           ),

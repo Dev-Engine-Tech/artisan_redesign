@@ -95,12 +95,16 @@ class CollaborationBloc extends Bloc<CollaborationEvent, CollaborationState> {
     } catch (e) {
       // Check if it's a subscription error
       final errorMessage = e.toString();
-      final isSubscriptionError = errorMessage.contains('subscription') ||
+      final isSubscriptionError = errorMessage.contains('SUBSCRIPTION_ERROR') ||
+          errorMessage.contains('subscription') ||
           errorMessage.contains('upgrade') ||
-          errorMessage.contains('limit');
+          errorMessage.contains('limit') ||
+          errorMessage.contains('plan');
 
       emit(CollaborationError(
-        message: errorMessage,
+        message: isSubscriptionError
+            ? 'You need to upgrade your subscription plan to invite collaborators.'
+            : errorMessage,
         isSubscriptionError: isSubscriptionError,
       ));
     }

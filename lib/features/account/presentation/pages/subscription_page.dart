@@ -998,10 +998,12 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 20,
             height: 20,
+            margin: const EdgeInsets.only(top: 2),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
@@ -1020,6 +1022,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 color: Colors.white.withValues(alpha: 0.9),
                 fontSize: 14,
                 height: 1.4,
+                decoration: TextDecoration.none,
               ),
             ),
           ),

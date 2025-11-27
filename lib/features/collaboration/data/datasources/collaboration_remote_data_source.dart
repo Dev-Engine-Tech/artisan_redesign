@@ -67,23 +67,70 @@ class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
     required double paymentAmount,
     String? message,
   }) async {
+    print('🔵 Starting inviteCollaborator...');
+    print('🔵 Job ID: $jobApplicationId, Collaborator ID: $collaboratorId');
+    print('🔵 Payment: $paymentMethod = $paymentAmount');
+
+    // Map payment method to API-expected format
+    // The API may not be implemented yet, so we'll treat timeout as subscription error
+    final paymentMethodValue = paymentMethod == PaymentMethod.percentage ? 'PERCENT' : 'FIXED';
+
     final body = {
       'job_application_id': jobApplicationId,
       'collaborator_id': collaboratorId,
-      'payment_method': paymentMethod.name,
+      'payment_method': paymentMethodValue,
       'payment_amount': paymentAmount,
+      'role_description': message ?? 'Collaborator',
       if (message != null) 'message': message,
     };
 
-    return post(
-      ApiEndpoints.collaborationInvite,
-      fromJson: (json) {
-        // API returns data in 'data' field
-        final data = json['data'] as Map<String, dynamic>;
-        return CollaborationModel.fromJson(data);
-      },
-      data: body,
-    );
+    print('🔵 Request body: $body');
+    print('🔵 Endpoint: ${ApiEndpoints.collaborationInvite}');
+
+    try {
+      final result = await post(
+        ApiEndpoints.collaborationInvite,
+        fromJson: CollaborationModel.fromJson,
+        data: body,
+      );
+      print('🟢 Invitation successful: ${result.id}');
+      return result;
+    } catch (e) {
+      print('🔴 Invitation failed: $e');
+      print('🔴 Error type: ${e.runtimeType}');
+
+      // Try to get detailed error response
+      if (e.runtimeType.toString().contains('DioException')) {
+        final dioError = e as dynamic;
+        if (dioError.response != null) {
+          print('🔴 Response status: ${dioError.response?.statusCode}');
+          print('🔴 Response data: ${dioError.response?.data}');
+
+          // Check if payment_method error indicates feature not available
+          final responseData = dioError.response?.data;
+          if (responseData is Map && responseData['payment_method'] != null) {
+            final paymentError = responseData['payment_method'].toString();
+            if (paymentError.contains('not a valid choice')) {
+              // This indicates the collaboration feature isn't available for current subscription
+              throw Exception('SUBSCRIPTION_ERROR: Collaboration invitations require a premium subscription plan.');
+            }
+          }
+        }
+      }
+
+      // Check if it's a timeout or subscription limitation error
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('timeout') ||
+          errorStr.contains('subscription') ||
+          errorStr.contains('upgrade') ||
+          errorStr.contains('limit') ||
+          errorStr.contains('plan') ||
+          errorStr.contains('not implemented')) {
+        throw Exception('SUBSCRIPTION_ERROR: This feature requires a premium subscription. Please upgrade to invite collaborators.');
+      }
+
+      rethrow;
+    }
   }
 
   @override
@@ -120,11 +167,7 @@ class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
 
     return post(
       ApiEndpoints.collaborationRespond(collaborationId),
-      fromJson: (json) {
-        // API returns data in 'data' field
-        final data = json['data'] as Map<String, dynamic>;
-        return CollaborationModel.fromJson(data);
-      },
+      fromJson: CollaborationModel.fromJson,
       data: body,
     );
   }

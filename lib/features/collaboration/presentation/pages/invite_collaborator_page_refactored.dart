@@ -6,6 +6,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/account/presentation/pages/subscription_page.dart';
 import '../../domain/entities/collaboration.dart';
 import '../../domain/entities/artisan_search_result.dart';
 import '../../domain/repositories/collaboration_repository.dart';
@@ -38,6 +39,8 @@ class _InviteCollaboratorPageRefactoredState
   final _searchController = TextEditingController();
   final _amountController = TextEditingController();
   final _messageController = TextEditingController();
+  final _externalNameController = TextEditingController();
+  final _externalContactController = TextEditingController();
 
   // Use case injection (Dependency Inversion Principle)
   late final SearchArtisans _searchArtisans;
@@ -47,6 +50,7 @@ class _InviteCollaboratorPageRefactoredState
   List<ArtisanSearchResult> _searchResults = [];
   bool _isSearching = false;
   Timer? _debounceTimer;
+  bool _inviteExternal = false; // Toggle between existing and external artisan
 
   // Performance: Debounce delay (prevents excessive API calls)
   static const _debounceDuration = Duration(milliseconds: 500);
@@ -63,6 +67,8 @@ class _InviteCollaboratorPageRefactoredState
     _searchController.dispose();
     _amountController.dispose();
     _messageController.dispose();
+    _externalNameController.dispose();
+    _externalContactController.dispose();
     super.dispose();
   }
 
@@ -110,10 +116,6 @@ class _InviteCollaboratorPageRefactoredState
 
   void _inviteCollaborator() {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedArtisan == null) {
-      _showError('Please select an artisan to invite');
-      return;
-    }
 
     final amount = double.tryParse(_amountController.text) ?? 0;
 
@@ -125,6 +127,18 @@ class _InviteCollaboratorPageRefactoredState
 
     if (_paymentMethod == PaymentMethod.fixed && amount <= 0) {
       _showError('Amount must be greater than 0');
+      return;
+    }
+
+    if (_inviteExternal) {
+      // Handle external artisan invitation
+      _inviteExternalArtisan();
+      return;
+    }
+
+    // Handle existing artisan invitation
+    if (_selectedArtisan == null) {
+      _showError('Please select an artisan to invite');
       return;
     }
 
@@ -148,6 +162,27 @@ class _InviteCollaboratorPageRefactoredState
         );
   }
 
+  void _inviteExternalArtisan() {
+    // TODO: When backend API is ready, implement external invitation
+    // For now, show a message that this feature is coming soon
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Coming Soon'),
+        content: const Text(
+          'The ability to invite artisans who are not yet on the platform will be available soon. '
+          'They will receive an email/SMS invitation to join and collaborate on your job.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Security: Generic error messages
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -155,6 +190,43 @@ class _InviteCollaboratorPageRefactoredState
         content: Text(message),
         backgroundColor: Colors.red,
       ),
+    );
+  }
+
+  /// Show upgrade dialog for subscription limitations
+  void _showUpgradeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Upgrade Required'),
+          content: const Text(
+            'You need to upgrade your subscription plan to invite collaborators to your jobs.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Close invite page
+                // Navigate to subscription page
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SubscriptionPage(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.orange,
+              ),
+              child: const Text('Upgrade Now'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -171,10 +243,13 @@ class _InviteCollaboratorPageRefactoredState
           );
           Navigator.of(context).pop(true);
         } else if (state is CollaborationError) {
-          // Security: Don't expose internal error details
-          _showError(state.isSubscriptionError
-              ? 'Subscription required to invite collaborators'
-              : 'Unable to send invitation. Please try again.');
+          if (state.isSubscriptionError) {
+            // Show upgrade dialog for subscription errors
+            _showUpgradeDialog();
+          } else {
+            // Security: Don't expose internal error details
+            _showError('Unable to send invitation. Please try again.');
+          }
         }
       },
       child: Scaffold(
@@ -190,24 +265,34 @@ class _InviteCollaboratorPageRefactoredState
                 children: [
                   _JobInfoCard(job: widget.job), // Extracted widget (SRP)
                   const SizedBox(height: 24),
-                  _buildSearchSection(),
-                  if (_searchResults.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    _ArtisanSearchResults( // Extracted widget (SRP)
-                      results: _searchResults,
-                      selectedArtisan: _selectedArtisan,
-                      onSelect: (artisan) {
-                        setState(() {
-                          _selectedArtisan = artisan;
-                        });
-                      },
-                    ),
-                  ],
-                  if (_selectedArtisan != null) ...[
+                  _buildInviteTypeToggle(),
+                  const SizedBox(height: 24),
+                  if (_inviteExternal) ...[
+                    _buildExternalInviteForm(),
                     const SizedBox(height: 24),
                     _buildPaymentTermsSection(),
                     const SizedBox(height: 24),
                     _buildInviteButton(),
+                  ] else ...[
+                    _buildSearchSection(),
+                    if (_searchResults.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      _ArtisanSearchResults( // Extracted widget (SRP)
+                        results: _searchResults,
+                        selectedArtisan: _selectedArtisan,
+                        onSelect: (artisan) {
+                          setState(() {
+                            _selectedArtisan = artisan;
+                          });
+                        },
+                      ),
+                    ],
+                    if (_selectedArtisan != null) ...[
+                      const SizedBox(height: 24),
+                      _buildPaymentTermsSection(),
+                      const SizedBox(height: 24),
+                      _buildInviteButton(),
+                    ],
                   ],
                 ],
               ),
@@ -242,6 +327,163 @@ class _InviteCollaboratorPageRefactoredState
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
+      ),
+    );
+  }
+
+  Widget _buildInviteTypeToggle() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.softBorder),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _inviteExternal = false;
+                  _selectedArtisan = null;
+                  _searchResults = [];
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: !_inviteExternal ? AppColors.orange : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.search,
+                      color: !_inviteExternal ? Colors.white : AppColors.brownHeader,
+                      size: 24,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Existing Artisan',
+                      style: TextStyle(
+                        color: !_inviteExternal ? Colors.white : AppColors.brownHeader,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _inviteExternal = true;
+                  _selectedArtisan = null;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: _inviteExternal ? AppColors.orange : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.person_add,
+                      color: _inviteExternal ? Colors.white : AppColors.brownHeader,
+                      size: 24,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'New Artisan',
+                      style: TextStyle(
+                        color: _inviteExternal ? Colors.white : AppColors.brownHeader,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExternalInviteForm() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.softBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Invite New Artisan',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppColors.brownHeader,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'They will receive an invitation to join the platform',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _externalNameController,
+            decoration: InputDecoration(
+              labelText: 'Artisan Name',
+              hintText: 'Enter artisan\'s full name',
+              prefixIcon: const Icon(Icons.person_outline),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter artisan name';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: _externalContactController,
+            decoration: InputDecoration(
+              labelText: 'Email or Phone',
+              hintText: 'Enter email or phone number',
+              prefixIcon: const Icon(Icons.contact_mail_outlined),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter email or phone';
+              }
+              // Basic validation
+              if (!value.contains('@') && !RegExp(r'^\d{10,}$').hasMatch(value)) {
+                return 'Please enter a valid email or phone number';
+              }
+              return null;
+            },
+          ),
+        ],
       ),
     );
   }
