@@ -354,16 +354,19 @@ class _CatalogPageState extends State<CatalogPage>
                 child: Container(
                   height: context.isTablet ? 240 : 180,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    image: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                        ? DecorationImage(
-                            image:
-                                NetworkImage(sanitizeImageUrl(item.imageUrl!)),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
+                  decoration: (() {
+                    final imgUrl = sanitizeImageUrl(item.imageUrl ?? '');
+                    final valid = imgUrl.startsWith('http');
+                    return BoxDecoration(
+                      color: AppColors.cardBackground,
+                      image: valid
+                          ? DecorationImage(
+                              image: NetworkImage(imgUrl),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    );
+                  })(),
                   child: item.imageUrl == null || item.imageUrl!.isEmpty
                       ? Center(
                           child: Icon(Icons.image_outlined,

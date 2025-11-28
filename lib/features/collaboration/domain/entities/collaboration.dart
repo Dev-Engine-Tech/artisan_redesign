@@ -128,9 +128,7 @@ class Collaboration extends Equatable {
 
   /// Check if current user can respond to this collaboration
   bool get canRespond {
-    return isPending &&
-        !isExpired &&
-        myRole == CollaborationRole.collaborator;
+    return isPending && !isExpired && myRole == CollaborationRole.collaborator;
   }
 
   /// Format payment display string

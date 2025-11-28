@@ -21,8 +21,7 @@ class CollaborationDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isInvitedByMe =
-        collaboration.myRole == CollaborationRole.mainArtisan;
+    final isInvitedByMe = collaboration.myRole == CollaborationRole.mainArtisan;
     final otherArtisan =
         isInvitedByMe ? collaboration.collaborator : collaboration.mainArtisan;
     final canRespond = collaboration.canRespond;
@@ -309,10 +308,12 @@ class CollaborationDetailsPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 32,
-                backgroundImage: artisan.profilePic != null
-                    ? NetworkImage(artisan.profilePic!)
+                backgroundImage: (artisan.profilePic != null &&
+                        artisan.profilePic!.trim().startsWith('http'))
+                    ? NetworkImage(artisan.profilePic!.trim())
                     : null,
-                child: artisan.profilePic == null
+                child: (artisan.profilePic == null ||
+                        !artisan.profilePic!.trim().startsWith('http'))
                     ? Text(
                         artisan.name[0].toUpperCase(),
                         style: const TextStyle(
@@ -652,9 +653,7 @@ class CollaborationDetailsPage extends StatelessWidget {
   }
 
   String _formatPrice(double price) {
-    return price
-        .toStringAsFixed(0)
-        .replaceAllMapped(
+    return price.toStringAsFixed(0).replaceAllMapped(
           RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
           (match) => '${match[1]},',
         );

@@ -67,6 +67,35 @@ class InviteCollaboratorEvent extends CollaborationEvent {
       ];
 }
 
+/// Invite an external collaborator (not yet on platform) to a job
+class InviteExternalCollaboratorEvent extends CollaborationEvent {
+  final int jobApplicationId;
+  final String name;
+  final String contact;
+  final PaymentMethod paymentMethod;
+  final double paymentAmount;
+  final String? message;
+
+  const InviteExternalCollaboratorEvent({
+    required this.jobApplicationId,
+    required this.name,
+    required this.contact,
+    required this.paymentMethod,
+    required this.paymentAmount,
+    this.message,
+  });
+
+  @override
+  List<Object?> get props => [
+        jobApplicationId,
+        name,
+        contact,
+        paymentMethod,
+        paymentAmount,
+        message,
+      ];
+}
+
 /// Respond to a collaboration invitation
 class RespondToCollaborationEvent extends CollaborationEvent {
   final int collaborationId;

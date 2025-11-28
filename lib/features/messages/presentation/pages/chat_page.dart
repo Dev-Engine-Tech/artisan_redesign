@@ -127,11 +127,20 @@ class _ChatPageState extends State<ChatPage> {
               color: mine ? AppColors.orange : AppColors.cardBackground,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: SizedBox(
-              width: 180,
-              height: 180,
-              child: isRemote
-                  ? Image.network(m.mediaUrl!, fit: BoxFit.cover)
+              child: SizedBox(
+                width: 180,
+                height: 180,
+                child: isRemote
+                  ? ((m.mediaUrl ?? '').startsWith('http')
+                      ? Image.network(m.mediaUrl!, fit: BoxFit.cover)
+                      : Container(
+                          color: Colors.black12,
+                          child: Icon(
+                            Icons.image,
+                            color: mine ? Colors.white : AppColors.brownHeader,
+                            size: 48,
+                          ),
+                        ))
                   : Center(
                       child: Icon(
                         Icons.image,
@@ -139,7 +148,7 @@ class _ChatPageState extends State<ChatPage> {
                         size: 48,
                       ),
                     ),
-            ),
+              ),
           ),
           AppSpacing.spaceXS,
           Row(

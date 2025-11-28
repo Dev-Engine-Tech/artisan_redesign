@@ -36,6 +36,11 @@ class OptimizedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isValidHttpUrl(imageUrl)) {
+      // Invalid URL: show error widget or placeholder gracefully
+      return errorWidget ?? _buildPlaceholder(context);
+    }
+
     Widget imageWidget = CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
@@ -70,6 +75,18 @@ class OptimizedImage extends StatelessWidget {
     }
 
     return imageWidget;
+  }
+
+  bool _isValidHttpUrl(String? url) {
+    if (url == null) return false;
+    final s = url.trim();
+    if (!(s.startsWith('http://') || s.startsWith('https://'))) return false;
+    try {
+      final u = Uri.parse(s);
+      return u.hasScheme && (u.scheme == 'http' || u.scheme == 'https') && u.host.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
   }
 
   Widget _buildPlaceholder(BuildContext context) {

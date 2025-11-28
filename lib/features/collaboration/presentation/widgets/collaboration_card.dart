@@ -20,8 +20,7 @@ class CollaborationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isInvitedByMe =
-        collaboration.myRole == CollaborationRole.mainArtisan;
+    final isInvitedByMe = collaboration.myRole == CollaborationRole.mainArtisan;
     final otherArtisan =
         isInvitedByMe ? collaboration.collaborator : collaboration.mainArtisan;
 
@@ -88,10 +87,12 @@ class CollaborationCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: context.responsiveIconSize(20),
-                    backgroundImage: otherArtisan.profilePic != null
-                        ? NetworkImage(otherArtisan.profilePic!)
+                    backgroundImage: (otherArtisan.profilePic != null &&
+                            otherArtisan.profilePic!.trim().startsWith('http'))
+                        ? NetworkImage(otherArtisan.profilePic!.trim())
                         : null,
-                    child: otherArtisan.profilePic == null
+                    child: (otherArtisan.profilePic == null ||
+                            !otherArtisan.profilePic!.trim().startsWith('http'))
                         ? Text(
                             otherArtisan.name[0].toUpperCase(),
                             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -143,7 +144,8 @@ class CollaborationCard extends StatelessWidget {
 
               // Payment info
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppColors.softPeach,
                   borderRadius: BorderRadius.circular(8),

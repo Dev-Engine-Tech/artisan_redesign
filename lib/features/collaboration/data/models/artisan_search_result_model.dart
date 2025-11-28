@@ -19,9 +19,8 @@ class ArtisanSearchResultModel extends ArtisanSearchResult {
       name: _extractName(json),
       occupation: _extractOccupation(json),
       rating: _extractRating(json),
-      profilePicture: json['profile_pic'] ??
-                      json['profile_picture'] ??
-                      json['avatar'],
+      profilePicture:
+          json['profile_pic'] ?? json['profile_picture'] ?? json['avatar'],
       phone: json['phone'] ?? json['phone_number'],
     );
   }
@@ -45,9 +44,9 @@ class ArtisanSearchResultModel extends ArtisanSearchResult {
   /// Extract occupation with fallback options
   static String _extractOccupation(Map<String, dynamic> json) {
     return json['occupation'] ??
-           json['category'] ??
-           json['expertise'] ??
-           'Artisan';
+        json['category'] ??
+        json['expertise'] ??
+        'Artisan';
   }
 
   /// Extract rating safely

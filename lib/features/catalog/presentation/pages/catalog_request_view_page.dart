@@ -42,19 +42,21 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           title: const Text('Request Details'),
           elevation: 0,
           backgroundColor: Colors.transparent,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black54),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-          ),
+          leading: Navigator.canPop(context)
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.softPink,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                )
+              : null,
         ),
         body: BlocConsumer<CatalogRequestsBloc, CatalogRequestsState>(
           listener: (context, state) {

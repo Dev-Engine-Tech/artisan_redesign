@@ -18,6 +18,15 @@ abstract class CollaborationRemoteDataSource {
     String? message,
   });
 
+  Future<CollaborationModel> inviteExternalCollaborator({
+    required int jobApplicationId,
+    required String name,
+    required String contact,
+    required PaymentMethod paymentMethod,
+    required double paymentAmount,
+    String? message,
+  });
+
   Future<CollaborationListResultModel> getMyCollaborations({
     CollaborationStatus? status,
     CollaborationRole? role,
@@ -52,7 +61,8 @@ class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
     if (data is Map && data['data'] is List) {
       final results = data['data'] as List;
       return results
-          .map((json) => ArtisanSearchResultModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              ArtisanSearchResultModel.fromJson(json as Map<String, dynamic>))
           .toList();
     }
 
@@ -73,7 +83,8 @@ class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
 
     // Map payment method to API-expected format
     // The API may not be implemented yet, so we'll treat timeout as subscription error
-    final paymentMethodValue = paymentMethod == PaymentMethod.percentage ? 'PERCENT' : 'FIXED';
+    final paymentMethodValue =
+        paymentMethod == PaymentMethod.percentage ? 'PERCENT' : 'FIXED';
 
     final body = {
       'job_application_id': jobApplicationId,
@@ -112,7 +123,8 @@ class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
             final paymentError = responseData['payment_method'].toString();
             if (paymentError.contains('not a valid choice')) {
               // This indicates the collaboration feature isn't available for current subscription
-              throw Exception('SUBSCRIPTION_ERROR: Collaboration invitations require a premium subscription plan.');
+              throw Exception(
+                  'SUBSCRIPTION_ERROR: Collaboration invitations require a premium subscription plan.');
             }
           }
         }
@@ -126,7 +138,84 @@ class CollaborationRemoteDataSourceImpl extends BaseRemoteDataSource
           errorStr.contains('limit') ||
           errorStr.contains('plan') ||
           errorStr.contains('not implemented')) {
-        throw Exception('SUBSCRIPTION_ERROR: This feature requires a premium subscription. Please upgrade to invite collaborators.');
+        throw Exception(
+            'SUBSCRIPTION_ERROR: This feature requires a premium subscription. Please upgrade to invite collaborators.');
+      }
+
+      rethrow;
+    }
+  }
+
+  @override
+  Future<CollaborationModel> inviteExternalCollaborator({
+    required int jobApplicationId,
+    required String name,
+    required String contact,
+    required PaymentMethod paymentMethod,
+    required double paymentAmount,
+    String? message,
+  }) async {
+    print('🔵 Starting inviteExternalCollaborator...');
+    print('🔵 Job ID: $jobApplicationId');
+    print('🔵 Name: $name, Contact: $contact');
+    print('🔵 Payment: $paymentMethod = $paymentAmount');
+
+    final paymentMethodValue =
+        paymentMethod == PaymentMethod.percentage ? 'PERCENT' : 'FIXED';
+
+    final body = {
+      'job_application_id': jobApplicationId,
+      'name': name,
+      'contact': contact,
+      'payment_method': paymentMethodValue,
+      'payment_amount': paymentAmount,
+      'role_description': message ?? 'Collaborator',
+      if (message != null) 'message': message,
+    };
+
+    print('🔵 Request body: $body');
+    print('🔵 Endpoint: ${ApiEndpoints.collaborationInviteExternal}');
+
+    try {
+      final result = await post(
+        ApiEndpoints.collaborationInviteExternal,
+        fromJson: CollaborationModel.fromJson,
+        data: body,
+      );
+      print('🟢 External invitation successful: ${result.id}');
+      return result;
+    } catch (e) {
+      print('🔴 External invitation failed: $e');
+      print('🔴 Error type: ${e.runtimeType}');
+
+      // Check for subscription errors similar to regular invites
+      if (e.runtimeType.toString().contains('DioException')) {
+        final dioError = e as dynamic;
+        if (dioError.response != null) {
+          print('🔴 Response status: ${dioError.response?.statusCode}');
+          print('🔴 Response data: ${dioError.response?.data}');
+
+          final responseData = dioError.response?.data;
+          if (responseData is Map && responseData['payment_method'] != null) {
+            final paymentError = responseData['payment_method'].toString();
+            if (paymentError.contains('not a valid choice')) {
+              throw Exception(
+                  'SUBSCRIPTION_ERROR: Collaboration invitations require a premium subscription plan.');
+            }
+          }
+        }
+      }
+
+      // Check for subscription/feature limitations
+      final errorStr = e.toString().toLowerCase();
+      if (errorStr.contains('timeout') ||
+          errorStr.contains('subscription') ||
+          errorStr.contains('upgrade') ||
+          errorStr.contains('limit') ||
+          errorStr.contains('plan') ||
+          errorStr.contains('not implemented')) {
+        throw Exception(
+            'SUBSCRIPTION_ERROR: This feature requires a premium subscription. Please upgrade to invite collaborators.');
       }
 
       rethrow;

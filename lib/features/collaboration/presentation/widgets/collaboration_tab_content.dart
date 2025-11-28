@@ -245,9 +245,8 @@ class _CollaborationTabContentState extends State<CollaborationTabContent>
                     isSelected ? AppColors.softPink : AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
-                  color: isSelected
-                      ? AppColors.softPink
-                      : AppColors.subtleBorder,
+                  color:
+                      isSelected ? AppColors.softPink : AppColors.subtleBorder,
                 ),
               ),
               child: Row(

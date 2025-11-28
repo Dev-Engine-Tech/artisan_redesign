@@ -28,6 +28,8 @@ class JobModel extends Job {
     super.materials = const [],
     super.expertise,
     super.workMode,
+    super.clientName,
+    super.clientId,
   });
 
   factory JobModel.fromJson(Map<String, dynamic> json,
@@ -104,6 +106,87 @@ class JobModel extends Job {
         return [];
       }
 
+      String? extractIdFromMap(Map m) {
+        final candidates = [
+          m['id'],
+          m['uuid'],
+          m['user_id'],
+          (m['user'] is Map ? (m['user']['id'] ?? m['user']['uuid']) : null),
+          m['pk'],
+        ];
+        for (final c in candidates) {
+          if (c != null && c.toString().trim().isNotEmpty) return c.toString();
+        }
+        return null;
+      }
+
+      String? resolveClientId(Map<String, dynamic> m) {
+        // Prefer explicit client-like owners; avoid 'user' which can be current artisan
+        final keys = [
+          'client',
+          'buyer',
+          'owner',
+          'posted_by',
+          'poster',
+          'customer',
+          'client_info',
+          'job_owner',
+          'created_by',
+          'employer',
+        ];
+        for (final k in keys) {
+          final v = m[k];
+          if (v is Map) {
+            final id = extractIdFromMap(v);
+            if (id != null) return id;
+          }
+        }
+        final flatKeys = [
+          'client_id',
+          'customer_id',
+          'buyer_id',
+          'owner_id',
+          'poster_id',
+          'posted_by_id',
+          'created_by_id',
+        ];
+        for (final k in flatKeys) {
+          final v = m[k];
+          if (v != null && v.toString().trim().isNotEmpty) return v.toString();
+        }
+        return null;
+      }
+
+      String? resolveClientName(Map<String, dynamic> m) {
+        final keys = [
+          'client',
+          'buyer',
+          'owner',
+          'posted_by',
+          'poster',
+          'customer',
+          'client_info',
+          'job_owner',
+          'created_by',
+          'employer',
+        ];
+        for (final k in keys) {
+          final v = m[k];
+          if (v is Map) {
+            final nameCandidates = [
+              v['full_name'],
+              v['name'],
+              v['username'],
+              [v['first_name'], v['last_name']].where((e) => (e ?? '').toString().isNotEmpty).join(' ').trim(),
+            ];
+            for (final n in nameCandidates) {
+              if (n != null && n.toString().trim().isNotEmpty) return n.toString();
+            }
+          }
+        }
+        return m['client_name']?.toString();
+      }
+
       return JobModel(
         id: (json['id'] ?? json['job_id'] ?? '').toString(),
         title: (json['title'] ?? json['job_title'] ?? '').toString(),
@@ -135,6 +218,8 @@ class JobModel extends Job {
         materials: parseMaterials(json['materials']),
         expertise: json['expertise']?.toString(),
         workMode: json['work_mode']?.toString(),
+        clientName: resolveClientName(json),
+        clientId: resolveClientId(json),
       );
     } catch (e) {
       // Fallback to basic job model if parsing fails
@@ -205,6 +290,8 @@ class JobModel extends Job {
       materials: materials.map((m) => (m as MaterialModel).toEntity()).toList(),
       expertise: expertise,
       workMode: workMode,
+      clientName: clientName,
+      clientId: clientId,
     );
   }
 }

@@ -24,6 +24,24 @@ abstract class CollaborationRepository {
     String? message,
   });
 
+  /// Invite an external artisan (not yet on platform) to collaborate
+  ///
+  /// Requires active paid subscription (Bronze/Silver/Gold)
+  /// [jobApplicationId] - The job application to collaborate on
+  /// [name] - Full name of the artisan
+  /// [contact] - Email or phone number
+  /// [paymentMethod] - 'percentage' or 'fixed'
+  /// [paymentAmount] - Percentage (0-100) or fixed amount
+  /// [message] - Optional message to the collaborator
+  Future<Collaboration> inviteExternalCollaborator({
+    required int jobApplicationId,
+    required String name,
+    required String contact,
+    required PaymentMethod paymentMethod,
+    required double paymentAmount,
+    String? message,
+  });
+
   /// Get all collaborations (as main artisan or collaborator)
   ///
   /// [status] - Filter by status: pending, accepted, rejected, completed

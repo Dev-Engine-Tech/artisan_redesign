@@ -32,6 +32,26 @@ class CollaborationRepositoryImpl implements CollaborationRepository {
   }
 
   @override
+  Future<Collaboration> inviteExternalCollaborator({
+    required int jobApplicationId,
+    required String name,
+    required String contact,
+    required PaymentMethod paymentMethod,
+    required double paymentAmount,
+    String? message,
+  }) async {
+    final result = await remoteDataSource.inviteExternalCollaborator(
+      jobApplicationId: jobApplicationId,
+      name: name,
+      contact: contact,
+      paymentMethod: paymentMethod,
+      paymentAmount: paymentAmount,
+      message: message,
+    );
+    return result.toEntity();
+  }
+
+  @override
   Future<CollaborationListResult> getMyCollaborations({
     CollaborationStatus? status,
     CollaborationRole? role,

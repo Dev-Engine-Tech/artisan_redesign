@@ -120,7 +120,8 @@ class _InviteCollaboratorPageRefactoredState
     final amount = double.tryParse(_amountController.text) ?? 0;
 
     // Security: Validate amount based on payment method
-    if (_paymentMethod == PaymentMethod.percentage && (amount < 0 || amount > 100)) {
+    if (_paymentMethod == PaymentMethod.percentage &&
+        (amount < 0 || amount > 100)) {
       _showError('Percentage must be between 0 and 100');
       return;
     }
@@ -163,24 +164,51 @@ class _InviteCollaboratorPageRefactoredState
   }
 
   void _inviteExternalArtisan() {
-    // TODO: When backend API is ready, implement external invitation
-    // For now, show a message that this feature is coming soon
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Coming Soon'),
-        content: const Text(
-          'The ability to invite artisans who are not yet on the platform will be available soon. '
-          'They will receive an email/SMS invitation to join and collaborate on your job.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+    if (!_formKey.currentState!.validate()) return;
+
+    final amount = double.tryParse(_amountController.text) ?? 0;
+
+    // Validate amount
+    if (_paymentMethod == PaymentMethod.percentage &&
+        (amount < 0 || amount > 100)) {
+      _showError('Percentage must be between 0 and 100');
+      return;
+    }
+
+    if (_paymentMethod == PaymentMethod.fixed && amount <= 0) {
+      _showError('Amount must be greater than 0');
+      return;
+    }
+
+    // Parse job ID
+    final jobApplicationId = int.tryParse(widget.job.id);
+    if (jobApplicationId == null) {
+      _showError('Invalid job reference');
+      return;
+    }
+
+    // Get name and contact
+    final name = _externalNameController.text.trim();
+    final contact = _externalContactController.text.trim();
+
+    if (name.isEmpty || contact.isEmpty) {
+      _showError('Please fill in all required fields');
+      return;
+    }
+
+    // Dispatch event to BLoC
+    context.read<CollaborationBloc>().add(
+          InviteExternalCollaboratorEvent(
+            jobApplicationId: jobApplicationId,
+            name: name,
+            contact: contact,
+            paymentMethod: _paymentMethod,
+            paymentAmount: amount,
+            message: _messageController.text.trim().isEmpty
+                ? null
+                : _messageController.text.trim(),
           ),
-        ],
-      ),
-    );
+        );
   }
 
   /// Security: Generic error messages
@@ -277,7 +305,8 @@ class _InviteCollaboratorPageRefactoredState
                     _buildSearchSection(),
                     if (_searchResults.isNotEmpty) ...[
                       const SizedBox(height: 16),
-                      _ArtisanSearchResults( // Extracted widget (SRP)
+                      _ArtisanSearchResults(
+                        // Extracted widget (SRP)
                         results: _searchResults,
                         selectedArtisan: _selectedArtisan,
                         onSelect: (artisan) {
@@ -352,21 +381,26 @@ class _InviteCollaboratorPageRefactoredState
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: !_inviteExternal ? AppColors.orange : Colors.transparent,
+                  color:
+                      !_inviteExternal ? AppColors.orange : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     Icon(
                       Icons.search,
-                      color: !_inviteExternal ? Colors.white : AppColors.brownHeader,
+                      color: !_inviteExternal
+                          ? Colors.white
+                          : AppColors.brownHeader,
                       size: 24,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Existing Artisan',
                       style: TextStyle(
-                        color: !_inviteExternal ? Colors.white : AppColors.brownHeader,
+                        color: !_inviteExternal
+                            ? Colors.white
+                            : AppColors.brownHeader,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -387,21 +421,26 @@ class _InviteCollaboratorPageRefactoredState
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: _inviteExternal ? AppColors.orange : Colors.transparent,
+                  color:
+                      _inviteExternal ? AppColors.orange : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     Icon(
                       Icons.person_add,
-                      color: _inviteExternal ? Colors.white : AppColors.brownHeader,
+                      color: _inviteExternal
+                          ? Colors.white
+                          : AppColors.brownHeader,
                       size: 24,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'New Artisan',
                       style: TextStyle(
-                        color: _inviteExternal ? Colors.white : AppColors.brownHeader,
+                        color: _inviteExternal
+                            ? Colors.white
+                            : AppColors.brownHeader,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -477,7 +516,8 @@ class _InviteCollaboratorPageRefactoredState
                 return 'Please enter email or phone';
               }
               // Basic validation
-              if (!value.contains('@') && !RegExp(r'^\d{10,}$').hasMatch(value)) {
+              if (!value.contains('@') &&
+                  !RegExp(r'^\d{10,}$').hasMatch(value)) {
                 return 'Please enter a valid email or phone number';
               }
               return null;
@@ -550,7 +590,8 @@ class _InviteCollaboratorPageRefactoredState
           ),
         ),
         const SizedBox(height: 12),
-        _PaymentMethodSelector( // Extracted widget (SRP)
+        _PaymentMethodSelector(
+          // Extracted widget (SRP)
           selectedMethod: _paymentMethod,
           onMethodChanged: (method) {
             setState(() {
@@ -560,7 +601,8 @@ class _InviteCollaboratorPageRefactoredState
           },
         ),
         const SizedBox(height: 16),
-        _AmountField( // Extracted widget (SRP)
+        _AmountField(
+          // Extracted widget (SRP)
           controller: _amountController,
           paymentMethod: _paymentMethod,
         ),
@@ -692,7 +734,8 @@ class _ArtisanSearchResults extends StatelessWidget {
           final artisan = results[index];
           final isSelected = selectedArtisan?.id == artisan.id;
 
-          return _ArtisanListTile( // Further extracted
+          return _ArtisanListTile(
+            // Further extracted
             artisan: artisan,
             isSelected: isSelected,
             onTap: () => onSelect(artisan),
@@ -838,9 +881,12 @@ class _AmountField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        labelText:
-            paymentMethod == PaymentMethod.percentage ? 'Percentage (%)' : 'Amount (₦)',
-        hintText: paymentMethod == PaymentMethod.percentage ? 'e.g., 30' : 'e.g., 50000',
+        labelText: paymentMethod == PaymentMethod.percentage
+            ? 'Percentage (%)'
+            : 'Amount (₦)',
+        hintText: paymentMethod == PaymentMethod.percentage
+            ? 'e.g., 30'
+            : 'e.g., 50000',
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(

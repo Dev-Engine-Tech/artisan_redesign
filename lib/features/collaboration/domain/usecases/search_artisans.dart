@@ -24,7 +24,8 @@ class SearchArtisans {
   String _sanitizeQuery(String query) {
     return query
         .trim()
-        .replaceAll(RegExp(r'[<>{}]'), '') // Remove potentially dangerous characters
+        .replaceAll(
+            RegExp(r'[<>{}]'), '') // Remove potentially dangerous characters
         .substring(0, query.length > 50 ? 50 : query.length); // Limit length
   }
 }

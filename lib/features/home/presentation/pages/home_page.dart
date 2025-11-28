@@ -617,55 +617,37 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             constraints: BoxConstraints(
               maxWidth: context.maxContentWidth,
             ),
-            child: CustomScrollView(
+            child: ListView(
               controller: _scrollController,
+              padding: EdgeInsets.zero,
               physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics(),
               ),
-              slivers: [
-                // Header as sliver with RepaintBoundary for performance
-                SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: _buildHeader(context),
-                  ),
+              children: [
+                RepaintBoundary(
+                  child: _buildHeader(context),
                 ),
-                SliverToBoxAdapter(
-                  child: SizedBox(height: context.responsiveSpacing(18)),
+                SizedBox(height: context.responsiveSpacing(18)),
+                RepaintBoundary(
+                  child: _buildProfileActions(context),
                 ),
-                // Profile actions with RepaintBoundary
-                SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: _buildProfileActions(context),
-                  ),
-                ),
-                // Banner carousel with RepaintBoundary
-                SliverToBoxAdapter(
-                  child: RepaintBoundary(
-                    child: UnifiedBannerCarousel.api(
-                      category: api.BannerCategory.homepage,
-                      height: carouselHeight,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.responsiveSpacing(8),
-                      ),
+                RepaintBoundary(
+                  child: UnifiedBannerCarousel.api(
+                    category: api.BannerCategory.homepage,
+                    height: carouselHeight,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.responsiveSpacing(8),
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(
-                  child: AppSpacing.spaceSM,
+                AppSpacing.spaceSM,
+                HomeTabSection(
+                  onJobTap: _handleJobTap,
+                  onRequestTap: _handleOrderTap,
+                  applications: _applications,
+                  onApplicationUpdate: _updateApplications,
                 ),
-                // Tab section with proper scroll delegation
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: HomeTabSection(
-                    onJobTap: _handleJobTap,
-                    onRequestTap: _handleOrderTap,
-                    applications: _applications,
-                    onApplicationUpdate: _updateApplications,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: const SizedBox(height: 120),
-                ),
+                const SizedBox(height: 120),
               ],
             ),
           ),
@@ -686,20 +668,30 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, authState) {
-                String userName = 'User';
-                if (authState is AuthAuthenticated) {
-                  final user = authState.user;
-                  // Use firstName if available, otherwise use phone or fallback to "User"
-                  if (user.firstName.isNotEmpty) {
-                    userName = user.firstName;
-                  } else if (user.phone.isNotEmpty) {
-                    userName = user.phone;
-                  }
-                  debugPrint('🔐 Auth state: Authenticated, firstName: ${user.firstName}, lastName: ${user.lastName}, phone: ${user.phone}');
+            BlocBuilder<AccountBloc, AccountState>(
+              builder: (context, accountState) {
+                String userName = 'Artisan';
+                if (accountState is AccountProfileLoaded && accountState.profile.fullName.isNotEmpty) {
+                  userName = accountState.profile.fullName;
                 } else {
-                  debugPrint('🔐 Auth state: ${authState.runtimeType}');
+                  final authState = context.watch<AuthBloc>().state;
+                  if (authState is AuthAuthenticated) {
+                    final user = authState.user;
+                    final full = (user.firstName + ' ' + user.lastName).trim();
+                    if (full.isNotEmpty) {
+                      userName = full;
+                    } else if (user.firstName.isNotEmpty) {
+                      userName = user.firstName;
+                    } else if (user.lastName.isNotEmpty) {
+                      userName = user.lastName;
+                    } else if (user.phone.isNotEmpty) {
+                      userName = user.phone;
+                    }
+                    debugPrint(
+                        '🔐 Auth state: Authenticated, firstName: ${user.firstName}, lastName: ${user.lastName}, phone: ${user.phone}');
+                  } else {
+                    debugPrint('🔐 Auth state: ${authState.runtimeType}');
+                  }
                 }
 
                 return Row(
@@ -722,7 +714,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                 child: const CircleAvatar(
                                     radius: 20,
                                     backgroundColor: Colors.transparent,
-                                    child: Icon(Icons.person, color: Colors.white)),
+                                    child: Icon(Icons.person,
+                                        color: Colors.white)),
                               ),
                               // Subscription badge
                               if (_currentPlan != SubscriptionPlan.unknown &&
@@ -770,18 +763,22 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                   children: [
                                     Text('Welcome back!',
                                         style: textTheme.bodyMedium?.copyWith(
-                                            color: Colors.white70, fontSize: 12),
+                                            color: Colors.white70,
+                                            fontSize: 12),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis),
-                                    if (_currentPlan != SubscriptionPlan.unknown &&
-                                        _getPlanDisplayName(_currentPlan).isNotEmpty) ...[
+                                    if (_currentPlan !=
+                                            SubscriptionPlan.unknown &&
+                                        _getPlanDisplayName(_currentPlan)
+                                            .isNotEmpty) ...[
                                       const SizedBox(width: 6),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
                                           color: _getPlanColor(_currentPlan),
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
                                         child: Text(
                                           _getPlanDisplayName(_currentPlan),

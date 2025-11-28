@@ -62,6 +62,16 @@ class HomeDataLoader {
         },
       );
 
+      // Load profile for greeting/name usage
+      if (_isDisposed || !context.mounted) return;
+      await _requestManager.execute(
+        requestId: 'account_profile',
+        request: () async {
+          accountBloc.add(AccountLoadProfile());
+          await Future.delayed(const Duration(milliseconds: 100));
+        },
+      );
+
       // Load recent transactions - less critical
       if (_isDisposed || !context.mounted) return;
       await _requestManager.execute(

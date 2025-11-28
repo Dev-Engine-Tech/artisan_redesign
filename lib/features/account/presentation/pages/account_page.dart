@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/services/push_registration_service.dart';
 import '../../../../features/notifications/data/datasources/notification_remote_data_source.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../core/image_url.dart';
 
 class SupportAccountPage extends StatefulWidget {
   const SupportAccountPage({super.key});
@@ -453,7 +454,7 @@ class _HeaderCard extends StatelessWidget {
                             tag: 'support_profile',
                             child: ClipOval(
                               child: Image.network(
-                                profile!.profileImage!,
+                                sanitizeImageUrl(profile!.profileImage!),
                                 width: 56,
                                 height: 56,
                                 fit: BoxFit.cover,

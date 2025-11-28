@@ -5,6 +5,7 @@ import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/core/services/banner_service.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/api/endpoints.dart';
+import 'package:artisans_circle/core/image_url.dart';
 
 /// Model for banner UI data
 class BannerModel {
@@ -204,16 +205,11 @@ class _UnifiedBannerCarouselState extends State<UnifiedBannerCarousel> {
   BannerModel _convertApiBannerToUiBanner(api.ApiBannerItem apiBanner) {
     String normalizeUrl(String? url) {
       if (url == null || url.isEmpty) return '';
-      if (url.startsWith('/media/https:/')) {
-        return 'https://${url.replaceFirst('/media/https:/', '')}';
-      }
-      if (url.startsWith('/media/http:/')) {
-        return 'http://${url.replaceFirst('/media/http:/', '')}';
-      }
-      if (url.startsWith('http')) return url;
+      final fixed = sanitizeImageUrl(url);
+      if (fixed.startsWith('http')) return fixed;
       final base = ApiEndpoints.baseUrl;
-      final sep = url.startsWith('/') ? '' : '/';
-      return '$base$sep$url';
+      final sep = fixed.startsWith('/') ? '' : '/';
+      return '$base$sep$fixed';
     }
 
     return BannerModel(
@@ -402,16 +398,21 @@ class _BannerCard extends StatelessWidget {
       onTap: banner.onTap,
       child: Container(
         margin: AppSpacing.horizontalXS,
-        decoration: BoxDecoration(
-          color: banner.backgroundColor ?? AppColors.orange,
-          borderRadius: AppRadius.radiusLG,
-          image: banner.imageUrl != null
-              ? DecorationImage(
-                  image: NetworkImage(banner.imageUrl!),
-                  fit: BoxFit.cover,
-                )
-              : null,
-        ),
+        decoration: (() {
+          final hasImage = (banner.imageUrl != null &&
+              banner.imageUrl!.trim().isNotEmpty &&
+              banner.imageUrl!.startsWith('http'));
+          return BoxDecoration(
+            color: banner.backgroundColor ?? AppColors.orange,
+            borderRadius: AppRadius.radiusLG,
+            image: hasImage
+                ? DecorationImage(
+                    image: NetworkImage(banner.imageUrl!.trim()),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+          );
+        })(),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: AppRadius.radiusLG,

@@ -89,7 +89,8 @@ class JobsRemoteDataSourceImpl implements JobsRemoteDataSource {
       return applicationsJson.map((json) {
         // Applications might have job nested inside
         final jobData = json['job'] ?? json;
-        return JobModel.fromJson(jobData);
+        // Mark as coming from applications so parsing avoids current user fields
+        return JobModel.fromJson(jobData, isFromApplications: true);
       }).toList();
     } else {
       throw Exception('Failed to load applications: ${response.statusCode}');

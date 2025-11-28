@@ -19,5 +19,6 @@ class ArtisanSearchResult extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, occupation, rating, profilePicture, phone];
+  List<Object?> get props =>
+      [id, name, occupation, rating, profilePicture, phone];
 }

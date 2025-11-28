@@ -75,25 +75,29 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
       if (data is Map && data['data'] != null) {
         final results = data['data'];
         if (results is List) {
-          artisans = results.map((artisan) {
-            return {
-              'id': artisan['id'] ?? artisan['user_id'] ?? 0,
-              'name': artisan['name'] ??
-                     artisan['full_name'] ??
-                     '${artisan['first_name'] ?? ''} ${artisan['last_name'] ?? ''}'.trim(),
-              'occupation': artisan['occupation'] ??
-                           artisan['category'] ??
-                           artisan['expertise'] ??
-                           'Artisan',
-              'rating': artisan['rating'] is num
-                  ? (artisan['rating'] as num).toDouble()
-                  : 0.0,
-              'profile_pic': artisan['profile_pic'] ??
-                            artisan['profile_picture'] ??
-                            artisan['avatar'],
-              'phone': artisan['phone'] ?? artisan['phone_number'],
-            };
-          }).cast<Map<String, dynamic>>().toList();
+          artisans = results
+              .map((artisan) {
+                return {
+                  'id': artisan['id'] ?? artisan['user_id'] ?? 0,
+                  'name': artisan['name'] ??
+                      artisan['full_name'] ??
+                      '${artisan['first_name'] ?? ''} ${artisan['last_name'] ?? ''}'
+                          .trim(),
+                  'occupation': artisan['occupation'] ??
+                      artisan['category'] ??
+                      artisan['expertise'] ??
+                      'Artisan',
+                  'rating': artisan['rating'] is num
+                      ? (artisan['rating'] as num).toDouble()
+                      : 0.0,
+                  'profile_pic': artisan['profile_pic'] ??
+                      artisan['profile_picture'] ??
+                      artisan['avatar'],
+                  'phone': artisan['phone'] ?? artisan['phone_number'],
+                };
+              })
+              .cast<Map<String, dynamic>>()
+              .toList();
         }
       }
 
@@ -145,16 +149,16 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
     }
 
     context.read<CollaborationBloc>().add(
-      InviteCollaboratorEvent(
-        jobApplicationId: jobApplicationId,
-        collaboratorId: _selectedArtisanId!,
-        paymentMethod: _paymentMethod,
-        paymentAmount: amount,
-        message: _messageController.text.trim().isEmpty
-            ? null
-            : _messageController.text.trim(),
-      ),
-    );
+          InviteCollaboratorEvent(
+            jobApplicationId: jobApplicationId,
+            collaboratorId: _selectedArtisanId!,
+            paymentMethod: _paymentMethod,
+            paymentAmount: amount,
+            message: _messageController.text.trim().isEmpty
+                ? null
+                : _messageController.text.trim(),
+          ),
+        );
   }
 
   @override
@@ -277,7 +281,8 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                       decoration: InputDecoration(
                         hintText: 'Search by name or phone number...',
                         hintStyle: const TextStyle(color: Colors.black38),
-                        prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                        prefixIcon:
+                            const Icon(Icons.search, color: Colors.black54),
                         suffixIcon: _isSearching
                             ? const Padding(
                                 padding: EdgeInsets.all(12),
@@ -315,16 +320,19 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _searchResults.length,
-                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        separatorBuilder: (context, index) =>
+                            const Divider(height: 1),
                         itemBuilder: (context, index) {
                           final artisan = _searchResults[index];
-                          final isSelected = _selectedArtisanId == artisan['id'];
+                          final isSelected =
+                              _selectedArtisanId == artisan['id'];
 
                           return ListTile(
                             selected: isSelected,
                             selectedTileColor: AppColors.softPeach,
                             leading: CircleAvatar(
-                              backgroundColor: AppColors.orange.withOpacity(0.2),
+                              backgroundColor:
+                                  AppColors.orange.withOpacity(0.2),
                               child: Text(
                                 artisan['name'][0].toUpperCase(),
                                 style: const TextStyle(
@@ -363,7 +371,8 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                               ],
                             ),
                             trailing: isSelected
-                                ? const Icon(Icons.check_circle, color: AppColors.orange)
+                                ? const Icon(Icons.check_circle,
+                                    color: AppColors.orange)
                                 : null,
                             onTap: () {
                               setState(() {
@@ -462,11 +471,13 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.softBorder),
+                          borderSide:
+                              const BorderSide(color: AppColors.softBorder),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.softBorder),
+                          borderSide:
+                              const BorderSide(color: AppColors.softBorder),
                         ),
                       ),
                       validator: (value) {
@@ -477,7 +488,8 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                         if (amount == null || amount <= 0) {
                           return 'Please enter a valid amount';
                         }
-                        if (_paymentMethod == PaymentMethod.percentage && amount > 100) {
+                        if (_paymentMethod == PaymentMethod.percentage &&
+                            amount > 100) {
                           return 'Percentage cannot exceed 100%';
                         }
                         return null;
@@ -497,11 +509,13 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.softBorder),
+                          borderSide:
+                              const BorderSide(color: AppColors.softBorder),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: AppColors.softBorder),
+                          borderSide:
+                              const BorderSide(color: AppColors.softBorder),
                         ),
                       ),
                     ),

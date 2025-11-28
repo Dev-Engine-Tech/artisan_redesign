@@ -20,6 +20,7 @@ import 'package:artisans_circle/features/jobs/presentation/pages/change_request_
 import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_summary_page.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
+import 'client_profile_page.dart';
 
 class JobDetailsPage extends StatefulWidget {
   final Job job;
@@ -91,18 +92,20 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12.0),
-          child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-        ),
+        leading: Navigator.canPop(context)
+            ? Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.softPink,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              )
+            : null,
         title:
             const Text('Job Details', style: TextStyle(color: Colors.black87)),
       ),
@@ -135,34 +138,51 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                             color: AppColors.brownHeader),
                       ),
                       AppSpacing.spaceMD,
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Uwak Daniel',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 16)),
-                            AppSpacing.spaceXS,
-                            Text('@danuwk',
-                                style: TextStyle(color: Colors.black45)),
-                          ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          (job.clientName ?? 'Client'),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 16),
                         ),
-                      ),
-                      PrimaryButton(
-                        text: 'View Profile',
-                        onPressed: () {},
-                      ),
-                    ],
+                        AppSpacing.spaceXS,
+                        Text('Client', style: const TextStyle(color: Colors.black45)),
+                      ],
+                    ),
                   ),
-                ),
+                  if (((job.clientId ?? '').trim()).isNotEmpty)
+                    PrimaryButton(
+                      text: 'View Profile',
+                      onPressed: () {
+                        // Debug logging for troubleshooting
+                        // ignore: avoid_print
+                        print('[JobDetails] View Profile tapped: jobId=${job.id}, clientId="${job.clientId}", clientName="${job.clientName}"');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => ClientProfilePage(
+                              clientId: job.clientId!.trim(),
+                              initialName: job.clientName,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),
 
                 const SizedBox(height: 14),
 
                 // Large image banner
                 ClipRRect(
                   borderRadius: BorderRadius.circular(18),
-                  child: job.thumbnailUrl.isNotEmpty
-                      ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
+                  child: (() {
+                    final imgUrl = sanitizeImageUrl(job.thumbnailUrl);
+                    final valid = imgUrl.startsWith('http');
+                    return valid
+                        ? Image.network(imgUrl,
                           width: double.infinity,
                           height: 200,
                           fit: BoxFit.cover,
@@ -170,14 +190,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                               height: 200,
                               color: AppColors.softPink,
                               child: const Center(child: Icon(Icons.image))))
-                      : Container(
+                        : Container(
                           width: double.infinity,
                           height: 200,
                           color: AppColors.softPink,
                           child: const Center(
                               child: Icon(Icons.home_repair_service_outlined,
                                   size: 56, color: AppColors.orange)),
-                        ),
+                        );
+                  })(),
                 ),
 
                 const SizedBox(height: 14),

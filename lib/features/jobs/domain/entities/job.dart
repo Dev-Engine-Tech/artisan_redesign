@@ -45,6 +45,7 @@ class Job extends Equatable {
   final String? clientReview;
   final double? rating;
   final String? clientName;
+  final String? clientId;
   final DateTime? completedDate;
 
   const Job({
@@ -76,6 +77,7 @@ class Job extends Equatable {
     this.clientReview,
     this.rating,
     this.clientName,
+    this.clientId,
     this.completedDate,
   });
 
@@ -109,6 +111,7 @@ class Job extends Equatable {
         clientReview,
         rating,
         clientName,
+        clientId,
         completedDate,
       ];
 
@@ -161,6 +164,7 @@ class Job extends Equatable {
     String? clientReview,
     double? rating,
     String? clientName,
+    String? clientId,
     DateTime? completedDate,
   }) {
     return Job(
@@ -192,6 +196,7 @@ class Job extends Equatable {
       clientReview: clientReview ?? this.clientReview,
       rating: rating ?? this.rating,
       clientName: clientName ?? this.clientName,
+      clientId: clientId ?? this.clientId,
       completedDate: completedDate ?? this.completedDate,
     );
   }

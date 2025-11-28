@@ -174,10 +174,10 @@ class _HomeTabSectionState extends State<HomeTabSection>
     );
   }
 
-  /// Builds tab content with simple conditional rendering
+  /// Builds tab content with fixed height for stable layout
   Widget _buildTabContent() {
     return SizedBox(
-      height: 400, // Fixed height for performance
+      height: 500, // Increased from 400 for better content visibility
       child: _getSelectedTabContent(),
     );
   }
@@ -259,10 +259,16 @@ class JobsTabContent extends StatelessWidget {
             );
           }
 
-          // Performance: Use ListView.builder for lazy loading
+          // Performance: Use ListView.builder for lazy loading with optimized scroll physics
           return ListView.builder(
             itemCount: jobs.length,
             padding: AppSpacing.verticalSM,
+            physics:
+                const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
+            cacheExtent: 200, // Cache items offscreen for smooth scrolling
+            addAutomaticKeepAlives:
+                true, // Keep list items alive for better performance
+            addRepaintBoundaries: true, // Isolate repaints for performance
             itemBuilder: (context, index) {
               final job = jobs[index];
               return Padding(
@@ -276,7 +282,8 @@ class JobsTabContent extends StatelessWidget {
           );
         }
 
-        return const SizedBox.shrink();
+        // Show loading indicator for initial/unknown states instead of blank space
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -565,7 +572,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
               );
             }
 
-            // Performance: Use ListView.builder for lazy loading
+            // Performance: Use ListView.builder for lazy loading with optimizations
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<CollaborationBloc>().add(
@@ -578,6 +585,12 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
               child: ListView.builder(
                 itemCount: invites.length,
                 padding: AppSpacing.verticalSM,
+                physics:
+                    const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
+                cacheExtent: 200, // Cache items offscreen for smooth scrolling
+                addAutomaticKeepAlives:
+                    true, // Keep list items alive for better performance
+                addRepaintBoundaries: true, // Isolate repaints for performance
                 itemBuilder: (context, index) {
                   final collaboration = invites[index];
                   return Padding(
@@ -706,6 +719,12 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
             return ListView.builder(
               itemCount: orders.length,
               padding: AppSpacing.verticalSM,
+              physics:
+                  const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
+              cacheExtent: 200, // Cache items offscreen for smooth scrolling
+              addAutomaticKeepAlives:
+                  true, // Keep list items alive for better performance
+              addRepaintBoundaries: true, // Isolate repaints for performance
               itemBuilder: (context, index) {
                 final request = orders[index];
                 final jobFromRequest = Job(

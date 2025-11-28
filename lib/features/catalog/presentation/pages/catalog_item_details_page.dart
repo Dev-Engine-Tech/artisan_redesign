@@ -39,21 +39,33 @@ class CatalogItemDetailsPage extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: AppRadius.radiusLG,
-              child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                  ? Image.network(sanitizeImageUrl(item.imageUrl!),
-                      width: double.infinity,
-                      height: 180,
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, e, s) => Container(
+              child: (() {
+                final imgUrl = sanitizeImageUrl(item.imageUrl ?? '');
+                final valid = imgUrl.startsWith('http');
+                return valid
+                    ? Image.network(
+                        imgUrl,
+                        width: double.infinity,
+                        height: 180,
+                        fit: BoxFit.cover,
+                        errorBuilder: (c, e, s) => Container(
                           height: 180,
                           color: AppColors.softPink,
-                          child: const Center(child: Icon(Icons.image))))
-                  : Container(
-                      height: 180,
-                      color: AppColors.softPink,
-                      child: const Center(
-                          child: Icon(Icons.image_outlined,
-                              size: 56, color: AppColors.orange))),
+                          child: const Center(child: Icon(Icons.image)),
+                        ),
+                      )
+                    : Container(
+                        height: 180,
+                        color: AppColors.softPink,
+                        child: const Center(
+                          child: Icon(
+                            Icons.image_outlined,
+                            size: 56,
+                            color: AppColors.orange,
+                          ),
+                        ),
+                      );
+              })(),
             ),
             AppSpacing.spaceMD,
             Container(

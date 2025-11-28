@@ -245,10 +245,12 @@ class ImageUploadSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: AppRadius.radiusMD,
                   border: Border.all(color: Colors.grey.shade300),
-                  image: DecorationImage(
-                    image: NetworkImage(imageUrl!),
-                    fit: BoxFit.contain,
-                  ),
+                  image: (imageUrl != null && imageUrl!.trim().startsWith('http'))
+                      ? DecorationImage(
+                          image: NetworkImage(imageUrl!.trim()),
+                          fit: BoxFit.contain,
+                        )
+                      : null,
                 ),
               ),
               if (onRemove != null)

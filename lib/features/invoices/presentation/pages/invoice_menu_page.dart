@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../account/presentation/bloc/account_bloc.dart';
+import '../../../account/presentation/bloc/account_state.dart';
+import '../../../account/presentation/bloc/account_event.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 import 'invoices_page.dart';
 import '../../domain/entities/invoice.dart';
 import '../../data/datasources/invoice_remote_data_source.dart';
@@ -8,6 +16,7 @@ import '../../data/models/invoice_dashboard_model.dart';
 import '../../../customers/presentation/pages/customers_page.dart';
 import 'create_invoice_page.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../core/image_url.dart';
 
 class InvoiceMenuPage extends StatefulWidget {
   const InvoiceMenuPage({super.key});
@@ -25,6 +34,16 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
   void initState() {
     super.initState();
     _loadDashboard();
+    // Ensure profile is loaded to personalize greeting
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      try {
+        final accountState = context.read<AccountBloc>().state;
+        if (accountState is! AccountProfileLoaded) {
+          context.read<AccountBloc>().add(AccountLoadProfile());
+        }
+      } catch (_) {}
+    });
   }
 
   Future<void> _loadDashboard() async {
@@ -70,13 +89,37 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Hi Olivia',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.brownHeader,
-                            ),
+                          BlocBuilder<AccountBloc, AccountState>(
+                            builder: (context, accountState) {
+                              String greeting = 'Hi Artisan';
+                              if (accountState is AccountProfileLoaded) {
+                                final name = accountState.profile.fullName;
+                                if (name.isNotEmpty) greeting = 'Hi $name';
+                              } else {
+                                final authState = context.watch<AuthBloc>().state;
+                                if (authState is AuthAuthenticated) {
+                                  final user = authState.user;
+                                  final full = (user.firstName + ' ' + user.lastName).trim();
+                                  if (full.isNotEmpty) {
+                                    greeting = 'Hi $full';
+                                  } else if (user.firstName.isNotEmpty) {
+                                    greeting = 'Hi ${user.firstName}';
+                                  } else if (user.lastName.isNotEmpty) {
+                                    greeting = 'Hi ${user.lastName}';
+                                  } else if (user.phone.isNotEmpty) {
+                                    greeting = 'Hi ${user.phone}';
+                                  }
+                                }
+                              }
+                              return Text(
+                                greeting,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.brownHeader,
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(height: 2),
                           Text(
@@ -634,14 +677,15 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
               color: imageUrl == null
                   ? AppColors.orange.withOpacity(0.2)
                   : null,
-              image: imageUrl != null
+              image: (imageUrl != null &&
+                      imageUrl.trim().startsWith('http'))
                   ? DecorationImage(
-                      image: NetworkImage(imageUrl),
+                      image: NetworkImage(imageUrl.trim()),
                       fit: BoxFit.cover,
                     )
                   : null,
             ),
-            child: imageUrl == null
+            child: (imageUrl == null || !imageUrl.trim().startsWith('http'))
                 ? Center(
                     child: Text(
                       name.isNotEmpty ? name[0].toUpperCase() : '?',

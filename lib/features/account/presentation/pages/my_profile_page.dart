@@ -14,6 +14,7 @@ import 'skills_page.dart';
 import 'years_of_experience_page.dart';
 // import 'package:image_picker/image_picker.dart';
 import '../widgets/image_preview_page.dart';
+import '../../../../core/image_url.dart';
 // import 'package:image_cropper/image_cropper.dart';
 import '../../../../core/utils/responsive.dart';
 
@@ -146,7 +147,7 @@ class _ProfileView extends StatelessWidget {
                                     tag: 'profile_photo',
                                     child: ClipOval(
                                       child: Image.network(
-                                        profile.profileImage!,
+                                        sanitizeImageUrl(profile.profileImage!),
                                         width: 64,
                                         height: 64,
                                         fit: BoxFit.cover,

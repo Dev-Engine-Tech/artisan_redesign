@@ -83,7 +83,8 @@ class CollaborationModel extends Collaboration {
     final mainArtisan = ArtisanProfileModel.fromJson(mainArtisanData);
 
     // Parse collaborator
-    final collaboratorData = json['collaborator'] as Map<String, dynamic>? ?? {};
+    final collaboratorData =
+        json['collaborator'] as Map<String, dynamic>? ?? {};
     final collaborator = ArtisanProfileModel.fromJson(collaboratorData);
 
     // Parse my role
@@ -197,7 +198,8 @@ class CollaborationStatsModel extends CollaborationStats {
   factory CollaborationStatsModel.fromJson(Map<String, dynamic> json) {
     return CollaborationStatsModel(
       pendingInvitations: (json['pending_invitations'] as num?)?.toInt() ?? 0,
-      activeCollaborations: (json['active_collaborations'] as num?)?.toInt() ?? 0,
+      activeCollaborations:
+          (json['active_collaborations'] as num?)?.toInt() ?? 0,
       completedCollaborations:
           (json['completed_collaborations'] as num?)?.toInt() ?? 0,
       totalEarnings: (json['total_earnings'] as num?)?.toDouble() ?? 0.0,

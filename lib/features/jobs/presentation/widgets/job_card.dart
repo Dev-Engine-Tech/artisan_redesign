@@ -68,25 +68,33 @@ class JobCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Thumbnail
-                    Container(
-                      width: 62,
-                      height: 62,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: AppColors.softPink,
-                        image: job.thumbnailUrl.isNotEmpty
-                            ? DecorationImage(
-                                image: NetworkImage(
-                                    sanitizeImageUrl(job.thumbnailUrl)),
-                                fit: BoxFit.cover)
+                    (() {
+                      final imgUrl = sanitizeImageUrl(job.thumbnailUrl);
+                      final valid = imgUrl.startsWith('http');
+                      return Container(
+                        width: 62,
+                        height: 62,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.softPink,
+                          image: valid
+                              ? DecorationImage(
+                                  image: NetworkImage(imgUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: !valid
+                            ? const Center(
+                                child: Icon(
+                                  Icons.home_repair_service_outlined,
+                                  color: AppColors.orange,
+                                  size: 28,
+                                ),
+                              )
                             : null,
-                      ),
-                      child: job.thumbnailUrl.isEmpty
-                          ? const Center(
-                              child: Icon(Icons.home_repair_service_outlined,
-                                  color: AppColors.orange, size: 28))
-                          : null,
-                    ),
+                      );
+                    })(),
                     AppSpacing.spaceMD,
                     // Title + category + address + status
                     Expanded(

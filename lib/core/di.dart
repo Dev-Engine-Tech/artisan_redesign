@@ -140,6 +140,7 @@ import 'package:artisans_circle/features/collaboration/data/datasources/collabor
 import 'package:artisans_circle/features/collaboration/data/repositories/collaboration_repository_impl.dart';
 import 'package:artisans_circle/features/collaboration/domain/repositories/collaboration_repository.dart';
 import 'package:artisans_circle/features/collaboration/domain/usecases/invite_collaborator.dart';
+import 'package:artisans_circle/features/collaboration/domain/usecases/invite_external_collaborator.dart';
 import 'package:artisans_circle/features/collaboration/domain/usecases/get_my_collaborations.dart';
 import 'package:artisans_circle/features/collaboration/domain/usecases/respond_to_collaboration.dart';
 import 'package:artisans_circle/features/collaboration/domain/usecases/get_job_collaborators.dart';
@@ -614,6 +615,9 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   getIt.registerLazySingleton<InviteCollaborator>(
     () => InviteCollaborator(getIt<CollaborationRepository>()),
   );
+  getIt.registerLazySingleton<InviteExternalCollaborator>(
+    () => InviteExternalCollaborator(getIt<CollaborationRepository>()),
+  );
   getIt.registerLazySingleton<GetMyCollaborations>(
     () => GetMyCollaborations(getIt<CollaborationRepository>()),
   );
@@ -630,6 +634,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => CollaborationBloc(
       getMyCollaborations: getIt<GetMyCollaborations>(),
       inviteCollaborator: getIt<InviteCollaborator>(),
+      inviteExternalCollaborator: getIt<InviteExternalCollaborator>(),
       respondToCollaboration: getIt<RespondToCollaboration>(),
       getJobCollaborators: getIt<GetJobCollaborators>(),
     ),

@@ -4,6 +4,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
+import 'client_profile_page.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final Job job;
@@ -116,18 +117,20 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12.0),
-          child: Container(
-            decoration: BoxDecoration(
-                color: AppColors.softPink,
-                borderRadius: BorderRadius.circular(10)),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-        ),
+        leading: Navigator.canPop(context)
+            ? Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.softPink,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              )
+            : null,
         title: const Text('Project Request',
             style: TextStyle(color: Colors.black87)),
       ),
@@ -157,23 +160,42 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             color: AppColors.brownHeader),
                       ),
                       AppSpacing.spaceMD,
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Uwak Daniel',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 16)),
+                            Text(
+                              (job.clientName ?? 'Client'),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w700, fontSize: 16),
+                            ),
                             AppSpacing.spaceXS,
-                            Text('@danuwk',
+                            const Text('Client',
                                 style: TextStyle(color: Colors.black45)),
                           ],
                         ),
                       ),
-                      PrimaryButton(
-                        text: 'View Profile',
-                        onPressed: () {},
-                      ),
+                      if (job.clientName != null)
+                        PrimaryButton(
+                          text: 'View Profile',
+                          onPressed: () {
+                            // Navigate only if we have a non-empty clientId
+                            final cid = (job.clientId ?? '').trim();
+                            if (cid.isNotEmpty) {
+                              // Debug logging for troubleshooting
+                              // ignore: avoid_print
+                              print('[OrderDetails] View Profile tapped: jobId=${job.id}, clientId="$cid", clientName="${job.clientName}"');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ClientProfilePage(
+                                    clientId: cid,
+                                    initialName: job.clientName,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                     ],
                   ),
                 ),
@@ -183,23 +205,34 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 // Large image banner
                 ClipRRect(
                   borderRadius: BorderRadius.circular(18),
-                  child: job.thumbnailUrl.isNotEmpty
-                      ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, e, s) => Container(
+                  child: (() {
+                    final imgUrl = sanitizeImageUrl(job.thumbnailUrl);
+                    final valid = imgUrl.startsWith('http');
+                    return valid
+                        ? Image.network(
+                            imgUrl,
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, e, s) => Container(
                               height: 200,
                               color: Colors.black12,
-                              child: const Icon(Icons.image_not_supported)))
-                      : Container(
-                          width: double.infinity,
-                          height: 200,
-                          color: AppColors.softPink,
-                          child: const Center(
-                              child: Icon(Icons.home_repair_service_outlined,
-                                  size: 56, color: AppColors.orange)),
-                        ),
+                              child: const Icon(Icons.image_not_supported),
+                            ),
+                          )
+                        : Container(
+                            width: double.infinity,
+                            height: 200,
+                            color: AppColors.softPink,
+                            child: const Center(
+                              child: Icon(
+                                Icons.home_repair_service_outlined,
+                                size: 56,
+                                color: AppColors.orange,
+                              ),
+                            ),
+                          );
+                  })(),
                 ),
 
                 const SizedBox(height: 14),

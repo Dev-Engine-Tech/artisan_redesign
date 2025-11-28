@@ -46,22 +46,33 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
             // Image/banner + title block (compact)
             ClipRRect(
               borderRadius: AppRadius.radiusLG,
-              child: job.thumbnailUrl.isNotEmpty
-                  ? Image.network(sanitizeImageUrl(job.thumbnailUrl),
-                      width: double.infinity,
-                      height: 180,
-                      fit: BoxFit.cover,
-                      errorBuilder: (c, e, s) => Container(
+              child: (() {
+                final imgUrl = sanitizeImageUrl(job.thumbnailUrl);
+                final valid = imgUrl.startsWith('http');
+                return valid
+                    ? Image.network(
+                        imgUrl,
+                        width: double.infinity,
+                        height: 180,
+                        fit: BoxFit.cover,
+                        errorBuilder: (c, e, s) => Container(
                           height: 180,
                           color: AppColors.softPink,
-                          child: const Center(child: Icon(Icons.image))))
-                  : Container(
-                      height: 180,
-                      color: AppColors.softPink,
-                      child: const Center(
-                          child: Icon(Icons.home_repair_service_outlined,
-                              size: 56, color: AppColors.orange)),
-                    ),
+                          child: const Center(child: Icon(Icons.image)),
+                        ),
+                      )
+                    : Container(
+                        height: 180,
+                        color: AppColors.softPink,
+                        child: const Center(
+                          child: Icon(
+                            Icons.home_repair_service_outlined,
+                            size: 56,
+                            color: AppColors.orange,
+                          ),
+                        ),
+                      );
+              })(),
             ),
             AppSpacing.spaceMD,
             Container(

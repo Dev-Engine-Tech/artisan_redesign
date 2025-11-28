@@ -47,6 +47,8 @@ class ApiEndpoints {
   // ==================== COLLABORATION SYSTEM ====================
   static const String collaborationInvite =
       '/artisan/api/collaboration/invite/';
+  static const String collaborationInviteExternal =
+      '/artisan/api/collaboration/invite-external/';
   static const String myCollaborations =
       '/artisan/api/collaboration/my-collaborations/';
   static String collaborationRespond(int collaborationId) =>
@@ -347,7 +349,8 @@ class ApiEndpoints {
   static const String appFeedback = '/support/feedback/';
 
   // Dynamic endpoints with parameters (backward compatibility)
-  static String getUserProfileById(int userId) => '/user/profile/$userId/';
+  // Accepts string to support numeric IDs or UUIDs returned by backend
+  static String getUserProfileById(String userId) => '/user/profile/$userId/';
   static String acceptAgreementByProjectId(String id) =>
       '/job/api/project/$id/accept/';
   static String saveOrUnsaveJobById(String id) =>
