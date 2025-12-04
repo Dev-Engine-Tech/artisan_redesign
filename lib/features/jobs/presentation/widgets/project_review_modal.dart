@@ -21,7 +21,7 @@ class ProjectReviewModal extends StatelessWidget {
         padding: AppSpacing.paddingXXL,
         decoration: BoxDecoration(
           borderRadius: AppRadius.radiusXL,
-          color: Colors.white,
+          color: AppColors.cardBackground,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -80,8 +80,8 @@ class ProjectReviewModal extends StatelessWidget {
                   AppSpacing.spaceXS,
                   Text(
                     job.category,
-                    style: const TextStyle(
-                      color: Colors.black54,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
                       fontSize: 14,
                     ),
                   ),
@@ -126,7 +126,7 @@ class ProjectReviewModal extends StatelessWidget {
                       index < (job.rating ?? 0).floor()
                           ? Icons.star
                           : Icons.star_border,
-                      color: Colors.amber,
+                      color: AppColors.amber,
                       size: 24,
                     );
                   }),
@@ -159,14 +159,14 @@ class ProjectReviewModal extends StatelessWidget {
                 width: double.infinity,
                 padding: AppSpacing.paddingLG,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
+                  color: AppColors.lightGrey,
                   borderRadius: AppRadius.radiusLG,
                   border: Border.all(color: AppColors.softBorder),
                 ),
                 child: Text(
                   job.clientReview!,
-                  style: const TextStyle(
-                    color: Colors.black87,
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
                     fontSize: 14,
                     height: 1.5,
                   ),
@@ -177,7 +177,7 @@ class ProjectReviewModal extends StatelessWidget {
                 width: double.infinity,
                 padding: AppSpacing.paddingXXL,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
+                  color: AppColors.lightGrey,
                   borderRadius: AppRadius.radiusLG,
                   border: Border.all(color: AppColors.softBorder),
                 ),
@@ -186,13 +186,13 @@ class ProjectReviewModal extends StatelessWidget {
                     Icon(
                       Icons.rate_review_outlined,
                       size: 48,
-                      color: Colors.grey.shade400,
+                      color: AppColors.subtleBorder,
                     ),
                     AppSpacing.spaceSM,
                     Text(
                       'No review provided yet',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: AppColors.textSecondary,
                         fontSize: 14,
                       ),
                     ),
@@ -231,9 +231,9 @@ class ProjectReviewModal extends StatelessWidget {
 
   void _shareReview(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Text('Review shared successfully'),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.green,
       ),
     );
     Navigator.of(context).pop();
@@ -267,9 +267,9 @@ class ProjectReviewModal extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text('Response sent successfully'),
-                  backgroundColor: Colors.green,
+                  backgroundColor: AppColors.green,
                 ),
               );
             },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -60,6 +61,15 @@ class AuthRepositoryImpl implements AuthRepository {
         idDocumentUrl: data['idDocumentUrl'] as String?,
         selfieUrl: data['selfieUrl'] as String?,
       );
+
+      // If user ID is null, the cached data is invalid/incomplete
+      // Clear it and return null to force a fresh login/profile load
+      if (user.id == null) {
+        debugPrint('⚠️ Cached user has null ID - clearing invalid cache');
+        await prefs.remove('auth_current_user');
+        return null;
+      }
+
       _currentUser = user;
       return user;
     } catch (_) {

@@ -89,7 +89,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
               decoration: BoxDecoration(
                 color: _getPreviewColor(),
                 borderRadius: AppRadius.radiusMD,
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(color: AppColors.softBorder),
               ),
             ),
           ],
@@ -163,7 +163,7 @@ class InvoiceStyleCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.radiusLG,
         side: BorderSide(
-          color: isSelected ? AppColors.orange : Colors.grey.shade300,
+          color: isSelected ? AppColors.orange : AppColors.softBorder,
           width: isSelected ? 2 : 1,
         ),
       ),
@@ -178,7 +178,7 @@ class InvoiceStyleCard extends StatelessWidget {
               Icon(
                 _getStyleIcon(style),
                 size: 40,
-                color: isSelected ? AppColors.orange : Colors.grey.shade600,
+                color: isSelected ? AppColors.orange : AppColors.textSecondary,
               ),
               const SizedBox(height: 8),
               Text(
@@ -186,7 +186,7 @@ class InvoiceStyleCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  color: isSelected ? AppColors.orange : Colors.grey.shade800,
+                  color: isSelected ? AppColors.orange : AppColors.textPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -244,7 +244,7 @@ class ImageUploadSection extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: AppRadius.radiusMD,
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: AppColors.softBorder),
                   image: (imageUrl != null && imageUrl!.trim().startsWith('http'))
                       ? DecorationImage(
                           image: NetworkImage(imageUrl!.trim()),
@@ -258,9 +258,9 @@ class ImageUploadSection extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: AppColors.cardBackground),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.black54,
+                      backgroundColor: AppColors.textPrimary.withValues(alpha: 0.7),
                     ),
                     onPressed: onRemove,
                   ),
@@ -316,7 +316,7 @@ class ColorSelectionCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
+          border: Border.all(color: AppColors.softBorder),
           borderRadius: AppRadius.radiusMD,
         ),
         child: Row(
@@ -325,12 +325,12 @@ class ColorSelectionCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: color ?? Colors.grey.shade200,
+                color: color ?? AppColors.cardBackground,
                 borderRadius: AppRadius.radiusSM,
-                border: Border.all(color: Colors.grey.shade400),
+                border: Border.all(color: AppColors.subtleBorder),
               ),
               child: color == null
-                  ? const Icon(Icons.add, color: Colors.grey)
+                  ? Icon(Icons.add, color: AppColors.textSecondary)
                   : null,
             ),
             const SizedBox(width: 16),
@@ -350,13 +350,13 @@ class ColorSelectionCard extends StatelessWidget {
                     hexColor ?? 'Not selected',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.edit_outlined, color: Colors.grey.shade600),
+            Icon(Icons.edit_outlined, color: AppColors.textSecondary),
           ],
         ),
       ),
@@ -383,7 +383,7 @@ class SettingsSectionCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.radiusLG,
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: AppColors.subtleBorder),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -404,7 +404,7 @@ class SettingsSectionCard extends StatelessWidget {
                 subtitle!,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],

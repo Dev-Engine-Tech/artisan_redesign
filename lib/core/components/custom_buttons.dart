@@ -34,14 +34,17 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return LayoutBuilder(builder: (context, constraints) {
       final button = ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.orange,
-          foregroundColor: Colors.white,
+          foregroundColor: colorScheme.onPrimary,
           disabledBackgroundColor: AppColors.disabledOrange,
-          disabledForegroundColor: Colors.white70,
+          disabledForegroundColor: colorScheme.onPrimary.withValues(alpha: 0.7),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -49,12 +52,12 @@ class PrimaryButton extends StatelessWidget {
           padding: padding ?? AppSpacing.horizontalXXL,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary),
                 ),
               )
             : icon != null
@@ -118,19 +121,20 @@ class SecondaryButton extends StatelessWidget {
   final double borderRadius;
   final EdgeInsetsGeometry? padding;
 
-  const SecondaryButton({
+  SecondaryButton({
     required this.text,
     super.key,
     this.onPressed,
-    this.backgroundColor = AppColors.darkBlue,
-    this.foregroundColor = Colors.white,
+    Color? backgroundColor,
+    Color? foregroundColor,
     this.isLoading = false,
     this.icon,
     this.height = 56,
     this.width,
     this.borderRadius = 12,
     this.padding,
-  });
+  })  : backgroundColor = backgroundColor ?? AppColors.darkBlue,
+        foregroundColor = foregroundColor ?? AppColors.darkBlue;
 
   @override
   Widget build(BuildContext context) {
@@ -413,10 +417,13 @@ class AppIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final button = IconButton(
       onPressed: onPressed,
       icon: Icon(icon, size: iconSize),
-      color: color ?? AppColors.orange,
+      color: color ?? colorScheme.primary,
       padding: padding ?? EdgeInsets.zero,
       constraints: BoxConstraints(
         minWidth: size,

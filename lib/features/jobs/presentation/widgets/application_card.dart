@@ -20,14 +20,17 @@ class ApplicationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: AppRadius.radiusLG,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.onSurface.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -50,7 +53,7 @@ class ApplicationCard extends StatelessWidget {
                         Text(
                           job.title,
                           style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                              theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.brownHeader,
                                   ),
@@ -61,8 +64,8 @@ class ApplicationCard extends StatelessWidget {
                         Text(
                           job.category,
                           style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.black54,
+                              theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurface.withValues(alpha: 0.54),
                                   ),
                         ),
                       ],
@@ -75,24 +78,24 @@ class ApplicationCard extends StatelessWidget {
               AppSpacing.spaceMD,
               Text(
                 job.description,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: theme.textTheme.bodyMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               AppSpacing.spaceMD,
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.location_on_outlined,
                     size: 16,
-                    color: Colors.black54,
+                    color: colorScheme.onSurface.withValues(alpha: 0.54),
                   ),
                   AppSpacing.spaceXS,
                   Expanded(
                     child: Text(
                       job.address,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.black54,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface.withValues(alpha: 0.54),
                           ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -103,16 +106,16 @@ class ApplicationCard extends StatelessWidget {
               AppSpacing.spaceSM,
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.access_time,
                     size: 16,
-                    color: Colors.black54,
+                    color: colorScheme.onSurface.withValues(alpha: 0.54),
                   ),
                   AppSpacing.spaceXS,
                   Text(
                     job.duration,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.black54,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.54),
                         ),
                   ),
                   const Spacer(),

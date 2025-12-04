@@ -257,11 +257,11 @@ class _UnifiedBannerCarouselState extends State<UnifiedBannerCarousel> {
       case api.BannerCategory.homepage:
         return AppColors.orange;
       case api.BannerCategory.job:
-        return const Color(0xFF2E8B57);
+        return AppColors.green;
       case api.BannerCategory.catalog:
-        return const Color(0xFF6B4CD6);
+        return AppColors.purple;
       case api.BannerCategory.ads:
-        return const Color(0xFFE91E63);
+        return AppColors.pink;
     }
   }
 
@@ -281,7 +281,7 @@ class _UnifiedBannerCarouselState extends State<UnifiedBannerCarousel> {
             title: 'Find Your Perfect Job',
             subtitle: 'Browse thousands of opportunities',
             ctaText: 'Apply Now',
-            backgroundColor: Color(0xFF2E8B57),
+            backgroundColor: AppColors.green,
           ),
         ];
       case api.BannerCategory.catalog:
@@ -291,7 +291,7 @@ class _UnifiedBannerCarouselState extends State<UnifiedBannerCarousel> {
             title: 'Featured Products',
             subtitle: 'Quality items from trusted artisans',
             ctaText: 'Browse',
-            backgroundColor: Color(0xFF6B4CD6),
+            backgroundColor: AppColors.purple,
           ),
         ];
       case api.BannerCategory.ads:
@@ -301,7 +301,7 @@ class _UnifiedBannerCarouselState extends State<UnifiedBannerCarousel> {
             title: 'Special Offers',
             subtitle: 'Limited time promotions',
             ctaText: 'View Deals',
-            backgroundColor: Color(0xFFE91E63),
+            backgroundColor: AppColors.pink,
           ),
         ];
     }
@@ -394,6 +394,9 @@ class _BannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: banner.onTap,
       child: Container(
@@ -420,8 +423,8 @@ class _BannerCard extends StatelessWidget {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [
-                Colors.black.withOpacity(0.6),
-                Colors.transparent,
+                colorScheme.onSurface.withValues(alpha: 0.6),
+                colorScheme.surface.withValues(alpha: 0.0),
               ],
             ),
           ),
@@ -433,7 +436,7 @@ class _BannerCard extends StatelessWidget {
               Text(
                 banner.title,
                 style: context.textTheme.titleLarge?.copyWith(
-                  color: banner.textColor ?? Colors.white,
+                  color: banner.textColor ?? colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -441,8 +444,8 @@ class _BannerCard extends StatelessWidget {
               Text(
                 banner.subtitle,
                 style: context.textTheme.bodyMedium?.copyWith(
-                  color: banner.textColor?.withOpacity(0.9) ??
-                      Colors.white.withOpacity(0.9),
+                  color: banner.textColor?.withValues(alpha: 0.9) ??
+                      colorScheme.onPrimary.withValues(alpha: 0.9),
                 ),
               ),
               if (banner.ctaText != null) ...[
@@ -450,7 +453,7 @@ class _BannerCard extends StatelessWidget {
                 Text(
                   banner.ctaText!,
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: banner.textColor ?? Colors.white,
+                    color: banner.textColor ?? colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -512,14 +515,14 @@ class DefaultBanners {
       title: 'Grow Your Skills',
       subtitle: 'Access training and resources',
       ctaText: 'Learn More',
-      backgroundColor: Color(0xFF6B4CD6),
+      backgroundColor: AppColors.purple,
     ),
     const BannerModel(
       id: '3',
       title: 'Join Our Community',
       subtitle: 'Connect with fellow artisans',
       ctaText: 'Get Started',
-      backgroundColor: Color(0xFF2E8B57),
+      backgroundColor: AppColors.green,
     ),
   ];
 }

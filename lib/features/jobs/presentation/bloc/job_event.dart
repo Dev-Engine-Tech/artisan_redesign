@@ -112,3 +112,22 @@ class SubmitProgressEvent extends JobEvent {
     this.images,
   });
 }
+
+/// Event to load job invitations from clients
+class LoadJobInvitations extends JobEvent {
+  final int page;
+  final int limit;
+
+  LoadJobInvitations({this.page = 1, this.limit = 20});
+}
+
+/// Event to respond to a job invitation
+class RespondToJobInvitationEvent extends JobEvent {
+  final String invitationId;
+  final bool accept;
+
+  RespondToJobInvitationEvent({
+    required this.invitationId,
+    required this.accept,
+  });
+}

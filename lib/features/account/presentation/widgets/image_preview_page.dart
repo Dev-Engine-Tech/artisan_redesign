@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/theme.dart';
 import '../../../../core/image_url.dart';
 
 class ImagePreviewPage extends StatelessWidget {
@@ -18,8 +19,8 @@ class ImagePreviewPage extends StatelessWidget {
           )
         : const Icon(Icons.broken_image, size: 80);
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(backgroundColor: Colors.transparent),
+      backgroundColor: AppColors.textPrimary,
+      appBar: AppBar(backgroundColor: AppColors.textPrimary.withValues(alpha: 0.0)),
       body: Center(
         child: InteractiveViewer(
           child: heroTag != null ? Hero(tag: heroTag!, child: image) : image,

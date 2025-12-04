@@ -9,13 +9,6 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/applications_
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_request.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
-import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
-import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_event.dart';
-import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_state.dart';
-import 'package:artisans_circle/features/collaboration/presentation/widgets/collaboration_card.dart';
-import 'package:artisans_circle/features/collaboration/domain/entities/collaboration.dart';
-import 'package:artisans_circle/features/collaboration/presentation/pages/collaboration_details_page.dart';
-import 'package:artisans_circle/features/collaboration/domain/repositories/collaboration_repository.dart';
 
 /// Performance-optimized tab section following SOLID principles
 /// Single Responsibility: Manages tab display and content
@@ -94,22 +87,20 @@ class _HomeTabSectionState extends State<HomeTabSection>
         }
       }
 
-      // Load Collaboration Invites when user switches to Job Invite tab (index 2)
+      // Load Job Invitations when user switches to Job Invite tab (index 2)
       if (_selectedIndex == 2) {
         try {
-          final state = context.read<CollaborationBloc>().state;
-          if (state is! CollaborationsLoaded) {
-            context.read<CollaborationBloc>().add(
-                  LoadCollaborationsEvent(
-                    status: CollaborationStatus.pending,
-                    role: CollaborationRole.collaborator,
+          final state = context.read<JobBloc>().state;
+          if (state is! JobStateInvitationsLoaded) {
+            context.read<JobBloc>().add(
+                  LoadJobInvitations(
                     page: 1,
-                    pageSize: 10,
+                    limit: 10,
                   ),
                 );
           }
         } catch (e) {
-          // CollaborationBloc not available, ignore
+          // JobBloc not available, ignore
         }
       }
     }
@@ -133,6 +124,9 @@ class _HomeTabSectionState extends State<HomeTabSection>
 
   /// Builds performance-optimized tab bar with const widgets
   Widget _buildTabBar() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.softPeach,
@@ -142,11 +136,11 @@ class _HomeTabSectionState extends State<HomeTabSection>
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: AppRadius.radiusMD,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -156,12 +150,10 @@ class _HomeTabSectionState extends State<HomeTabSection>
         dividerColor: Colors.transparent,
         labelColor: AppColors.darkBlue,
         unselectedLabelColor: AppColors.darkBlue.withValues(alpha: 0.6),
-        labelStyle: const TextStyle(
-          fontSize: 14,
+        labelStyle: theme.textTheme.labelLarge?.copyWith(
           fontWeight: FontWeight.w600,
         ),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: 14,
+        unselectedLabelStyle: theme.textTheme.labelLarge?.copyWith(
           fontWeight: FontWeight.normal,
         ),
         tabs: const [
@@ -230,9 +222,8 @@ class JobsTabContent extends StatelessWidget {
                 AppSpacing.spaceLG,
                 Text(
                   'Failed to load jobs',
-                  style: TextStyle(
-                    color: AppColors.darkBlue.withValues(alpha: 0.7),
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
                 AppSpacing.spaceSM,
@@ -409,7 +400,7 @@ class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
   }
 }
 
-/// Separate widget for Job Invite tab - displays collaboration invites
+/// Separate widget for Job Invite tab - displays job invitations from clients
 class JobInviteTabContent extends StatefulWidget {
   const JobInviteTabContent({
     required this.onJobTap,
@@ -426,43 +417,41 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
   @override
   void initState() {
     super.initState();
-    // Load pending collaboration invites when widget initializes
+    // Load job invitations when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       try {
-        final state = context.read<CollaborationBloc>().state;
-        if (state is! CollaborationsLoaded) {
-          context.read<CollaborationBloc>().add(
-                LoadCollaborationsEvent(
-                  status: CollaborationStatus.pending,
-                  role: CollaborationRole.collaborator,
+        final state = context.read<JobBloc>().state;
+        if (state is! JobStateInvitationsLoaded) {
+          context.read<JobBloc>().add(
+                LoadJobInvitations(
                   page: 1,
-                  pageSize: 10,
+                  limit: 10,
                 ),
               );
         }
       } catch (_) {
-        // CollaborationBloc not available, ignore
+        // JobBloc not available, ignore
       }
     });
   }
 
-  void _handleAccept(Collaboration collaboration) {
-    context.read<CollaborationBloc>().add(
-          RespondToCollaborationEvent(
-            collaborationId: collaboration.id,
-            action: CollaborationAction.accept,
+  void _handleAccept(Job job) {
+    context.read<JobBloc>().add(
+          RespondToJobInvitationEvent(
+            invitationId: job.id,
+            accept: true,
           ),
         );
   }
 
-  void _handleReject(Collaboration collaboration) {
+  void _handleReject(Job job) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Decline Collaboration'),
+        title: const Text('Decline Job Invitation'),
         content: const Text(
-          'Are you sure you want to decline this collaboration invite?',
+          'Are you sure you want to decline this job invitation?',
         ),
         actions: [
           TextAppButton(
@@ -473,10 +462,10 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
             text: 'Decline',
             onPressed: () {
               Navigator.pop(ctx);
-              context.read<CollaborationBloc>().add(
-                    RespondToCollaborationEvent(
-                      collaborationId: collaboration.id,
-                      action: CollaborationAction.reject,
+              context.read<JobBloc>().add(
+                    RespondToJobInvitationEvent(
+                      invitationId: job.id,
+                      accept: false,
                     ),
                   );
             },
@@ -488,42 +477,38 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CollaborationBloc, CollaborationState>(
+    return BlocListener<JobBloc, JobState>(
       listener: (context, state) {
-        if (state is CollaborationResponseSuccess) {
+        if (state is JobStateInvitationResponseSuccess) {
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                state.action == CollaborationAction.accept
-                    ? 'Collaboration accepted successfully!'
-                    : 'Collaboration declined',
-              ),
+              content: Text(state.message),
             ),
           );
           // Refresh the list
-          context.read<CollaborationBloc>().add(
-                RefreshCollaborationsEvent(
-                  status: CollaborationStatus.pending,
-                  role: CollaborationRole.collaborator,
+          context.read<JobBloc>().add(
+                LoadJobInvitations(
+                  page: 1,
+                  limit: 10,
                 ),
               );
-        } else if (state is CollaborationError) {
+        } else if (state is JobStateError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppColors.danger,
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
         }
       },
-      child: BlocBuilder<CollaborationBloc, CollaborationState>(
+      child: BlocBuilder<JobBloc, JobState>(
         builder: (context, state) {
-          if (state is CollaborationLoading) {
+          if (state is JobStateLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is CollaborationError) {
+          if (state is JobStateError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -535,22 +520,19 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                   ),
                   AppSpacing.spaceLG,
                   Text(
-                    'Failed to load collaboration invites',
-                    style: TextStyle(
-                      color: AppColors.darkBlue.withValues(alpha: 0.7),
-                      fontSize: 16,
+                    'Failed to load job invitations',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   AppSpacing.spaceSM,
                   PrimaryButton(
                     text: 'Retry',
                     onPressed: () {
-                      context.read<CollaborationBloc>().add(
-                            LoadCollaborationsEvent(
-                              status: CollaborationStatus.pending,
-                              role: CollaborationRole.collaborator,
+                      context.read<JobBloc>().add(
+                            LoadJobInvitations(
                               page: 1,
-                              pageSize: 10,
+                              limit: 10,
                             ),
                           );
                     },
@@ -560,30 +542,30 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
             );
           }
 
-          if (state is CollaborationsLoaded) {
-            final invites = state.collaborations;
+          if (state is JobStateInvitationsLoaded) {
+            final invitations = state.invitations;
 
-            if (invites.isEmpty) {
+            if (invitations.isEmpty) {
               return const EmptyStateWidget(
                 icon: Icons.mail_outline,
-                title: 'No Collaboration Invites',
+                title: 'No Job Invitations',
                 subtitle:
-                    'Collaboration invitations from other artisans will appear here',
+                    'Job invitations from clients will appear here',
               );
             }
 
             // Performance: Use ListView.builder for lazy loading with optimizations
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<CollaborationBloc>().add(
-                      RefreshCollaborationsEvent(
-                        status: CollaborationStatus.pending,
-                        role: CollaborationRole.collaborator,
+                context.read<JobBloc>().add(
+                      LoadJobInvitations(
+                        page: 1,
+                        limit: 10,
                       ),
                     );
               },
               child: ListView.builder(
-                itemCount: invites.length,
+                itemCount: invitations.length,
                 padding: AppSpacing.verticalSM,
                 physics:
                     const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
@@ -592,33 +574,16 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                     true, // Keep list items alive for better performance
                 addRepaintBoundaries: true, // Isolate repaints for performance
                 itemBuilder: (context, index) {
-                  final collaboration = invites[index];
+                  final job = invitations[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: CollaborationCard(
-                      collaboration: collaboration,
-                      onAccept: () => _handleAccept(collaboration),
-                      onReject: () => _handleReject(collaboration),
-                      onTap: () async {
-                        // Navigate to collaboration details page
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CollaborationDetailsPage(
-                              collaboration: collaboration,
-                            ),
-                          ),
-                        );
-                        // Refresh list if collaboration was accepted/rejected
-                        if (result == true && context.mounted) {
-                          context.read<CollaborationBloc>().add(
-                                RefreshCollaborationsEvent(
-                                  status: CollaborationStatus.pending,
-                                  role: CollaborationRole.collaborator,
-                                ),
-                              );
-                        }
-                      },
+                    child: JobCard(
+                      job: job,
+                      onTap: () => widget.onJobTap(job),
+                      primaryLabel: 'Accept',
+                      secondaryLabel: 'Decline',
+                      primaryAction: () => _handleAccept(job),
+                      secondaryAction: () => _handleReject(job),
                     ),
                   );
                 },

@@ -35,10 +35,12 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocProvider.value(
       value: bloc,
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           title: const Text('Catalog Requests'),
           elevation: 0,

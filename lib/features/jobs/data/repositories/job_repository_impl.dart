@@ -81,4 +81,23 @@ class JobRepositoryImpl implements JobRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<Job>> getJobInvitations({int page = 1, int limit = 20}) async {
+    try {
+      final models = await remoteDataSource.fetchJobInvitations(page: page, limit: limit);
+      return models.map((m) => m.toEntity()).toList();
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
+    try {
+      return await remoteDataSource.respondToJobInvitation(invitationId, accept: accept);
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

@@ -14,10 +14,12 @@ class UIHelpers {
   }) {
     if (!context.mounted) return;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
+        backgroundColor: colorScheme.primary,
         duration: duration,
         behavior: SnackBarBehavior.floating,
       ),
@@ -32,10 +34,12 @@ class UIHelpers {
   }) {
     if (!context.mounted) return;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: colorScheme.error,
         duration: duration,
         behavior: SnackBarBehavior.floating,
       ),
@@ -50,10 +54,12 @@ class UIHelpers {
   }) {
     if (!context.mounted) return;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.blue,
+        backgroundColor: colorScheme.tertiary,
         duration: duration,
         behavior: SnackBarBehavior.floating,
       ),
@@ -68,10 +74,12 @@ class UIHelpers {
   }) {
     if (!context.mounted) return;
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.orange,
+        backgroundColor: colorScheme.primary,
         duration: duration,
         behavior: SnackBarBehavior.floating,
       ),

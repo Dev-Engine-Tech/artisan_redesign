@@ -59,11 +59,14 @@ class AppBottomSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       height: height,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       child: SafeArea(
         child: Column(
@@ -76,7 +79,7 @@ class AppBottomSheetContent extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: colorScheme.onSurface.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -150,21 +153,24 @@ class AppModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: showCloseButton
             ? IconButton(
-                icon: const Icon(Icons.close, color: Colors.black87),
+                icon: Icon(Icons.close, color: colorScheme.onSurface.withValues(alpha: 0.87)),
                 onPressed: onClose ?? () => Navigator.pop(context),
               )
             : null,
         title: Text(
           title,
-          style: const TextStyle(
-            color: AppColors.brownHeader,
+          style: TextStyle(
+            color: colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -183,10 +189,10 @@ class AppModal extends StatelessWidget {
             Container(
               padding: AppSpacing.paddingXXL,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: colorScheme.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: colorScheme.shadow.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, -2),
                   ),
@@ -235,81 +241,89 @@ class QuickActionSheet {
     return showModalBottomSheet<T>(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Drag handle
-              Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
 
-              // Title
-              if (title != null)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.brownHeader,
-                    ),
-                  ),
-                ),
-
-              // Actions
-              ...actions.map((action) => _buildActionTile(context, action)),
-
-              // Cancel button
-              if (showCancelButton) ...[
-                const Divider(height: 1),
-                ListTile(
-                  title: const Text(
-                    'Cancel',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  onTap: () => Navigator.pop(context),
-                ),
-              ],
-
-              AppSpacing.spaceSM,
-            ],
+        return Container(
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
           ),
-        ),
-      ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Drag handle
+                Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 8),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colorScheme.onSurface.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+
+                // Title
+                if (title != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+
+                // Actions
+                ...actions.map((action) => _buildActionTile(context, action)),
+
+                // Cancel button
+                if (showCancelButton) ...[
+                  const Divider(height: 1),
+                  ListTile(
+                    title: Text(
+                      'Cancel',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ],
+
+                AppSpacing.spaceSM,
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   static Widget _buildActionTile(BuildContext context, QuickAction action) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return ListTile(
       leading: Icon(
         action.icon,
-        color: action.isDestructive ? AppColors.danger : AppColors.orange,
+        color: action.isDestructive ? colorScheme.error : colorScheme.primary,
       ),
       title: Text(
         action.label,
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: action.isDestructive ? AppColors.danger : Colors.black87,
+          color: action.isDestructive ? colorScheme.error : colorScheme.onSurface.withValues(alpha: 0.87),
         ),
       ),
       onTap: () {

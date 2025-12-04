@@ -12,10 +12,11 @@ Future<InvoiceLineData?> showLineItemModal(
   InvoiceLineData? initial,
 }) async {
   final cubit = context.read<InvoiceFormCubit>();
+  final theme = Theme.of(context);
   return showModalBottomSheet<InvoiceLineData>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: theme.colorScheme.surface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
     ),
@@ -110,7 +111,7 @@ class _LineItemFormState extends State<_LineItemForm> {
                         width: 36,
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
-                          color: Colors.black12,
+                          color: AppColors.subtleBorder,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),

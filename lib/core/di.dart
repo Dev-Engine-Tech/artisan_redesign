@@ -15,6 +15,8 @@ import 'package:artisans_circle/features/jobs/domain/usecases/get_applications.d
 import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 
 import 'package:artisans_circle/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -304,6 +306,15 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => RequestChange(getIt<JobRepository>()),
   );
 
+  // Job invitations usecases
+  getIt.registerLazySingleton<GetJobInvitations>(
+    () => GetJobInvitations(getIt<JobRepository>()),
+  );
+
+  getIt.registerLazySingleton<RespondToJobInvitation>(
+    () => RespondToJobInvitation(getIt<JobRepository>()),
+  );
+
   // Auth feature (fake by default for development & tests)
   if (useFake) {
     getIt.registerLazySingleton<AuthRemoteDataSource>(
@@ -365,6 +376,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       applyToJob: getIt<ApplyToJob>(),
       acceptAgreement: getIt<AcceptAgreement>(),
       requestChange: getIt<RequestChange>(),
+      getJobInvitations: getIt<GetJobInvitations>(),
+      respondToJobInvitation: getIt<RespondToJobInvitation>(),
     ),
   );
 

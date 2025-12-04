@@ -28,6 +28,46 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
     ),
   );
 
+  // In-memory job invitations
+  final List<JobModel> _invitations = [
+    const JobModel(
+      id: 'inv_1',
+      title: 'Home Painting Project',
+      category: 'Painting',
+      description: 'Paint 3-bedroom apartment, include ceilings and doors.',
+      address: 'Ikeja GRA, Lagos',
+      minBudget: 120000,
+      maxBudget: 180000,
+      duration: '1-2 weeks',
+      applied: false,
+      thumbnailUrl: '',
+    ),
+    const JobModel(
+      id: 'inv_2',
+      title: 'Bathroom Plumbing Fix',
+      category: 'Plumbing',
+      description: 'Fix shower and sink leaks; replace old fittings.',
+      address: 'Lekki Phase 1, Lagos',
+      minBudget: 90000,
+      maxBudget: 150000,
+      duration: '3-5 days',
+      applied: false,
+      thumbnailUrl: '',
+    ),
+    const JobModel(
+      id: 'inv_3',
+      title: 'Wardrobe Carpentry Work',
+      category: 'Carpentry',
+      description: 'Build custom wardrobe with sliding doors and shelves.',
+      address: 'Surulere, Lagos',
+      minBudget: 200000,
+      maxBudget: 320000,
+      duration: '2-3 weeks',
+      applied: false,
+      thumbnailUrl: '',
+    ),
+  ];
+
   // Create some sample applied jobs with different statuses
   final List<JobModel> _appliedJobs = [
     // Job with pending status and agreement - should show "Request Changes" and "View Agreement" buttons
@@ -244,6 +284,51 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       projectStatus: AppliedProjectStatus.ongoing,
       agreement: model.agreement,
     );
+    return true;
+  }
+
+  @override
+  Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20}) async {
+    // Simulate small latency
+    await Future.delayed(const Duration(milliseconds: 250));
+    final start = (page - 1) * limit;
+    if (start >= _invitations.length) return <JobModel>[];
+    final end = (start + limit) > _invitations.length
+        ? _invitations.length
+        : (start + limit);
+    return _invitations.sublist(start, end);
+  }
+
+  @override
+  Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
+    // Simulate network latency
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    final idx = _invitations.indexWhere((j) => j.id == invitationId);
+    if (idx == -1) {
+      return true; // be lenient in fake for demo/tests
+    }
+
+    final invitation = _invitations.removeAt(idx);
+
+    if (accept) {
+      // When accepted, move to applied jobs list with accepted status
+      _appliedJobs.add(JobModel(
+        id: invitation.id,
+        title: invitation.title,
+        category: invitation.category,
+        description: invitation.description,
+        address: invitation.address,
+        minBudget: invitation.minBudget,
+        maxBudget: invitation.maxBudget,
+        duration: invitation.duration,
+        applied: true,
+        thumbnailUrl: invitation.thumbnailUrl,
+        status: JobStatus.accepted,
+        projectStatus: AppliedProjectStatus.ongoing,
+      ));
+    }
+
     return true;
   }
 }

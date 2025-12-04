@@ -123,10 +123,11 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     }
   }
 
-  Color _getPlanColor(SubscriptionPlan plan) {
+  Color _getPlanColor(SubscriptionPlan plan, BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     switch (plan) {
       case SubscriptionPlan.free:
-        return Colors.grey;
+        return colorScheme.onSurface.withValues(alpha: 0.6);
       case SubscriptionPlan.bronze:
         return const Color(0xFFCD7F32); // Bronze color
       case SubscriptionPlan.silver:
@@ -134,7 +135,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       case SubscriptionPlan.gold:
         return const Color(0xFFFFD700); // Gold color
       case SubscriptionPlan.unknown:
-        return Colors.grey;
+        return colorScheme.onSurface.withValues(alpha: 0.6);
     }
   }
 
@@ -452,6 +453,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   ];
 
   Widget _buildHero(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return SizedBox(
       height: 120,
       child: PageView.builder(
@@ -478,8 +482,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         Flexible(
                           child: Text(
                             data['title']!,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: colorScheme.onPrimary,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 20),
                             maxLines: 2,
@@ -490,8 +494,8 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         Flexible(
                           child: Text(
                             data['subtitle']!,
-                            style: const TextStyle(
-                                color: Colors.white70, fontSize: 13),
+                            style: TextStyle(
+                                color: colorScheme.onPrimary.withValues(alpha: 0.7), fontSize: 13),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -504,10 +508,10 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                   Container(
                       width: 72,
                       height: 72,
-                      decoration: const BoxDecoration(
-                          color: Colors.white24,
+                      decoration: BoxDecoration(
+                          color: colorScheme.onPrimary.withValues(alpha: 0.24),
                           borderRadius:
-                              BorderRadius.all(Radius.circular(AppRadius.lg)))),
+                              const BorderRadius.all(Radius.circular(AppRadius.lg)))),
                 ],
               ),
             ),
@@ -657,7 +661,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
@@ -708,14 +714,14 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                 height: 46,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white24),
-                                  color: Colors.white24,
+                                  border: Border.all(color: colorScheme.onPrimary.withValues(alpha: 0.24)),
+                                  color: colorScheme.onPrimary.withValues(alpha: 0.24),
                                 ),
-                                child: const CircleAvatar(
+                                child: CircleAvatar(
                                     radius: 20,
                                     backgroundColor: Colors.transparent,
                                     child: Icon(Icons.person,
-                                        color: Colors.white)),
+                                        color: colorScheme.onPrimary)),
                               ),
                               // Subscription badge
                               if (_currentPlan != SubscriptionPlan.unknown &&
@@ -727,17 +733,17 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: _getPlanColor(_currentPlan),
+                                      color: _getPlanColor(_currentPlan, context),
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                        color: Colors.white,
+                                        color: colorScheme.onPrimary,
                                         width: 1.5,
                                       ),
                                     ),
                                     child: Text(
                                       _getPlanDisplayName(_currentPlan)[0],
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                                      style: TextStyle(
+                                        color: colorScheme.onPrimary,
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -754,7 +760,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                               children: [
                                 Text('Hey, $userName',
                                     style: textTheme.titleLarge?.copyWith(
-                                        color: Colors.white,
+                                        color: colorScheme.onPrimary,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 18),
                                     maxLines: 1,
@@ -763,7 +769,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                   children: [
                                     Text('Welcome back!',
                                         style: textTheme.bodyMedium?.copyWith(
-                                            color: Colors.white70,
+                                            color: colorScheme.onPrimary.withValues(alpha: 0.7),
                                             fontSize: 12),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis),
@@ -776,14 +782,14 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
-                                          color: _getPlanColor(_currentPlan),
+                                          color: _getPlanColor(_currentPlan, context),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
                                         child: Text(
                                           _getPlanDisplayName(_currentPlan),
-                                          style: const TextStyle(
-                                            color: Colors.white,
+                                          style: TextStyle(
+                                            color: colorScheme.onPrimary,
                                             fontSize: 9,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -813,9 +819,9 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                  color: Colors.white24, borderRadius: AppRadius.radiusXL),
+                  color: colorScheme.onPrimary.withValues(alpha: 0.24), borderRadius: AppRadius.radiusXL),
               child: Text('Available Balance',
-                  style: textTheme.bodySmall?.copyWith(color: Colors.white70)),
+                  style: textTheme.bodySmall?.copyWith(color: colorScheme.onPrimary.withValues(alpha: 0.7))),
             ),
             AppSpacing.spaceSM,
             BlocBuilder<AccountBloc, AccountState>(
@@ -840,7 +846,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                   children: [
                     Text('NGN',
                         style: textTheme.titleLarge
-                            ?.copyWith(color: Colors.white70, fontSize: 20)),
+                            ?.copyWith(color: colorScheme.onPrimary.withValues(alpha: 0.7), fontSize: 20)),
                     AppSpacing.spaceSM,
                     Flexible(
                       child: FittedBox(
@@ -848,7 +854,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                         alignment: Alignment.centerLeft,
                         child: Text(balanceText,
                             style: textTheme.headlineLarge?.copyWith(
-                                color: Colors.white,
+                                color: colorScheme.onPrimary,
                                 fontSize: 36,
                                 fontWeight: FontWeight.w800)),
                       ),
@@ -856,12 +862,12 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                     AppSpacing.spaceMD,
                     Container(
                       decoration: BoxDecoration(
-                          color: Colors.white24,
+                          color: colorScheme.onPrimary.withValues(alpha: 0.24),
                           borderRadius: AppRadius.radiusMD),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 6),
-                      child: const Icon(Icons.visibility,
-                          color: Colors.white70, size: 18),
+                      child: Icon(Icons.visibility,
+                          color: colorScheme.onPrimary.withValues(alpha: 0.7), size: 18),
                     ),
                   ],
                 );

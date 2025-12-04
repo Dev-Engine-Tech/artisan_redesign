@@ -75,8 +75,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.brownHeader,
@@ -93,6 +96,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           if (_notifications.any((n) => !n.read))
             TextAppButton(
               text: 'Mark all read',
+              foregroundColor: Colors.white,
               onPressed: _markAllAsRead,
             ),
         ],
@@ -104,30 +108,28 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ),
             )
           : _notifications.isEmpty
-              ? const Center(
+              ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.notifications_none,
                         size: 64,
-                        color: Colors.grey,
+                        color: colorScheme.onSurface.withValues(alpha: 0.4),
                       ),
                       AppSpacing.spaceLG,
                       Text(
                         'No notifications yet',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       AppSpacing.spaceSM,
                       Text(
                         'You\'ll see updates about your jobs here',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                     ],

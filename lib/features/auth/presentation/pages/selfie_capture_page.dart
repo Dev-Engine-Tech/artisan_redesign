@@ -90,14 +90,17 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const BackButton(color: Colors.black87),
-        title: const Text('Take a selfie',
-            style: TextStyle(color: Colors.black87)),
+        leading: BackButton(color: colorScheme.onSurface),
+        title: Text('Take a selfie',
+            style: theme.textTheme.titleLarge?.copyWith(color: colorScheme.onSurface)),
       ),
       body: SafeArea(
         child: _initializing
@@ -125,27 +128,29 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                     width: 220,
                                     height: 220,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFF0F0F0),
+                                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                                       borderRadius: BorderRadius.circular(110),
                                     ),
-                                    child: const Icon(Icons.person,
-                                        size: 64, color: Colors.brown),
+                                    child: Icon(Icons.person,
+                                        size: 64, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                                   ),
                                   AppSpacing.spaceLG,
-                                  const Padding(
+                                  Padding(
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 24.0),
+                                        const EdgeInsets.symmetric(horizontal: 24.0),
                                     child: Text(
                                       'Camera not available. Use simulated capture for tests/emulator.',
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.black54),
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurface.withValues(alpha: 0.6),
+                                      ),
                                     ),
                                   ),
                                   if (_error != null) ...[
                                     AppSpacing.spaceSM,
                                     Text(_error!,
-                                        style: const TextStyle(
-                                            color: Colors.red, fontSize: 12)),
+                                        style: theme.textTheme.bodySmall?.copyWith(
+                                            color: colorScheme.error)),
                                   ],
                                 ],
                               ),

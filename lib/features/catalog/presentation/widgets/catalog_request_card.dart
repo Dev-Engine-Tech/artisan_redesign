@@ -18,10 +18,13 @@ class CatalogRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
-        color: AppColors.cardBackground,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           onTap: onTap ??
@@ -37,7 +40,7 @@ class CatalogRequestCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.subtleBorder),
+              border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
             ),
             padding: AppSpacing.paddingLG,
             child: Column(
@@ -51,9 +54,7 @@ class CatalogRequestCard extends StatelessWidget {
                         request.catalogTitle?.isNotEmpty == true
                             ? request.catalogTitle!
                             : request.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: theme.textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w600),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -199,6 +200,9 @@ class CatalogRequestCard extends StatelessWidget {
   /// Builds client information section
   Widget _buildClientInfo() {
     final client = request.client!;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
@@ -223,18 +227,16 @@ class CatalogRequestCard extends StatelessWidget {
               children: [
                 Text(
                   client.fullName,
-                  style: const TextStyle(
+                  style: theme.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 14,
                   ),
                 ),
                 if (client.email?.isNotEmpty == true) ...[
                   const SizedBox(height: 2),
                   Text(
                     client.email!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -242,9 +244,8 @@ class CatalogRequestCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     client.phone!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -258,24 +259,25 @@ class CatalogRequestCard extends StatelessWidget {
 
   /// Builds request details section
   Widget _buildRequestDetails() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (request.description.isNotEmpty) ...[
-          const Text(
+          Text(
             'Description:',
-            style: TextStyle(
+            style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
-              fontSize: 12,
-              color: AppColors.brownHeader,
+              color: colorScheme.onSurface,
             ),
           ),
           AppSpacing.spaceXS,
           Text(
             request.description,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade700,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.8),
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -288,14 +290,13 @@ class CatalogRequestCard extends StatelessWidget {
               Icon(
                 Icons.schedule,
                 size: 16,
-                color: Colors.grey.shade600,
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
               AppSpacing.spaceXS,
               Text(
                 'Delivery: ${_formatDate(request.deliveryDateTime!)}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -307,12 +308,15 @@ class CatalogRequestCard extends StatelessWidget {
 
   /// Builds approval status section
   Widget _buildApprovalStatus() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: AppRadius.radiusMD,
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -322,8 +326,7 @@ class CatalogRequestCard extends StatelessWidget {
           const Spacer(),
           Text(
             '${request.approvalCount}/2 Approved',
-            style: TextStyle(
-              fontSize: 12,
+            style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: request.isBothApproved ? Colors.green : Colors.orange,
             ),
@@ -335,6 +338,9 @@ class CatalogRequestCard extends StatelessWidget {
 
   /// Builds individual approval indicator
   Widget _buildApprovalIndicator(String label, bool approved) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Row(
       children: [
         Container(
@@ -342,9 +348,9 @@ class CatalogRequestCard extends StatelessWidget {
           height: 16,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: approved ? Colors.green : Colors.grey.shade300,
+            color: approved ? Colors.green : colorScheme.surfaceContainerHighest,
             border: Border.all(
-              color: approved ? Colors.green : Colors.grey.shade400,
+              color: approved ? Colors.green : colorScheme.outline,
               width: 1.5,
             ),
           ),
@@ -359,9 +365,8 @@ class CatalogRequestCard extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            color: approved ? Colors.green : Colors.grey.shade600,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: approved ? Colors.green : colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
         ),

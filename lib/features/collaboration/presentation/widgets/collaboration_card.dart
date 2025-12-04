@@ -57,7 +57,7 @@ class CollaborationCard extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: context.responsiveFontSize(16),
-                            color: Colors.black87,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.87),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -68,7 +68,7 @@ class CollaborationCard extends StatelessWidget {
                             'Client: ${collaboration.job.client}',
                             style: TextStyle(
                               fontSize: context.responsiveFontSize(12),
-                              color: Colors.black54,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                             ),
                           ),
                         ],
@@ -115,7 +115,7 @@ class CollaborationCard extends StatelessWidget {
                           otherArtisan.occupation,
                           style: TextStyle(
                             fontSize: context.responsiveFontSize(12),
-                            color: Colors.black54,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                           ),
                         ),
                       ],
@@ -176,7 +176,7 @@ class CollaborationCard extends StatelessWidget {
                             )})',
                         style: TextStyle(
                           fontSize: context.responsiveFontSize(12),
-                          color: Colors.black54,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                         ),
                       ),
                     ],
@@ -192,14 +192,14 @@ class CollaborationCard extends StatelessWidget {
                   Icon(
                     Icons.access_time,
                     size: context.responsiveIconSize(14),
-                    color: Colors.black54,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     _formatRelativeTime(collaboration.createdAt),
                     style: TextStyle(
                       fontSize: context.responsiveFontSize(12),
-                      color: Colors.black54,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                     ),
                   ),
                 ],

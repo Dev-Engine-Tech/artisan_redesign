@@ -194,6 +194,8 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     Performance.trackRebuild('AppShell');
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       // Provide AuthBloc, JobBloc, AccountBloc, and CollaborationBloc to descendant pages.
@@ -241,22 +243,22 @@ class _AppShellState extends State<AppShell> {
                   NavigationRail(
                     selectedIndex: _selectedIndex,
                     onDestinationSelected: _onItemTapped,
-                    backgroundColor: Colors.white,
-                    selectedIconTheme: const IconThemeData(
-                      color: AppColors.orange,
+                    backgroundColor: colorScheme.surface,
+                    selectedIconTheme: IconThemeData(
+                      color: colorScheme.primary,
                       size: 28,
                     ),
                     unselectedIconTheme: IconThemeData(
-                      color: Colors.grey[500],
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
                       size: 26,
                     ),
-                    selectedLabelTextStyle: const TextStyle(
-                      color: AppColors.orange,
+                    selectedLabelTextStyle: TextStyle(
+                      color: colorScheme.primary,
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
                     ),
                     unselectedLabelTextStyle: TextStyle(
-                      color: Colors.grey[600],
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                       fontSize: 12,
                     ),
                     labelType: context.isLargeTablet || context.isDesktop
@@ -316,16 +318,16 @@ class _AppShellState extends State<AppShell> {
                 borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(AppRadius.xxl)),
                 child: Container(
-                  color: Colors.white,
+                  color: colorScheme.surface,
                   padding: const EdgeInsets.only(top: 8),
                   child: BottomNavigationBar(
                     currentIndex: _selectedIndex,
                     onTap: _onItemTapped,
                     type: BottomNavigationBarType.fixed,
-                    backgroundColor: Colors.white,
+                    backgroundColor: colorScheme.surface,
                     elevation: 0,
-                    selectedItemColor: AppColors.orange,
-                    unselectedItemColor: Colors.grey[500],
+                    selectedItemColor: colorScheme.primary,
+                    unselectedItemColor: colorScheme.onSurface.withValues(alpha: 0.5),
                     selectedLabelStyle:
                         const TextStyle(fontWeight: FontWeight.w600),
                     showUnselectedLabels: true,

@@ -4,6 +4,8 @@ import 'package:artisans_circle/features/jobs/domain/usecases/get_applications.d
 import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart'
@@ -23,6 +25,8 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
   final ApplyToJob applyToJob;
   final AcceptAgreement acceptAgreement;
   final RequestChange requestChange;
+  final GetJobInvitations getJobInvitations;
+  final RespondToJobInvitation respondToJobInvitation;
 
   JobBloc({
     required this.getJobs,
@@ -30,6 +34,8 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     required this.applyToJob,
     required this.acceptAgreement,
     required this.requestChange,
+    required this.getJobInvitations,
+    required this.respondToJobInvitation,
   }) : super(const JobStateInitial()) {
     on<LoadJobs>(_onLoadJobs);
     on<RefreshJobs>(_onRefreshJobs);
@@ -39,6 +45,8 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     on<ApplyToJobEvent>(_onApplyToJob);
     on<AcceptAgreementEvent>(_onAcceptAgreement);
     on<RequestChangeEvent>(_onRequestChange);
+    on<LoadJobInvitations>(_onLoadJobInvitations);
+    on<RespondToJobInvitationEvent>(_onRespondToJobInvitation);
   }
 
   Future<void> _onLoadJobs(LoadJobs event, Emitter<JobState> emit) async {
@@ -227,6 +235,45 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
           .toList();
       emit(JobStateCompletedLoaded(completedJobs: completedJobs));
     } catch (e) {
+      emit(JobStateError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onLoadJobInvitations(
+      LoadJobInvitations event, Emitter<JobState> emit) async {
+    dev.log('Loading job invitations page=${event.page} limit=${event.limit}',
+        name: 'JobBloc');
+    emit(const JobStateLoading());
+    try {
+      final list = await getJobInvitations(page: event.page, limit: event.limit);
+      dev.log('Received ${list.length} job invitations', name: 'JobBloc');
+      emit(JobStateInvitationsLoaded(invitations: list));
+    } catch (e) {
+      dev.log('Error loading job invitations: $e', name: 'JobBloc', error: e);
+      emit(JobStateError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onRespondToJobInvitation(
+      RespondToJobInvitationEvent event, Emitter<JobState> emit) async {
+    dev.log('Responding to job invitation ${event.invitationId} accept=${event.accept}',
+        name: 'JobBloc');
+    emit(JobStateRespondingToInvitation(invitationId: event.invitationId));
+    try {
+      final ok = await respondToJobInvitation(event.invitationId, accept: event.accept);
+      if (ok) {
+        emit(JobStateInvitationResponseSuccess(
+          invitationId: event.invitationId,
+          accepted: event.accept,
+          message: event.accept
+              ? 'Job invitation accepted successfully!'
+              : 'Job invitation declined',
+        ));
+      } else {
+        emit(const JobStateError(message: 'Failed to respond to job invitation'));
+      }
+    } catch (e) {
+      dev.log('Error responding to job invitation: $e', name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }

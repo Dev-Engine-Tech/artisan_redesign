@@ -34,8 +34,11 @@ class MessagesListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repo = getIt<MessagesRepository>();
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -46,21 +49,21 @@ class MessagesListPage extends StatelessWidget {
                 color: AppColors.softPink,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: colorScheme.onSurface.withValues(alpha: 0.54)),
               onPressed: () => Navigator.of(context).maybePop(),
             ),
           ),
         ),
-        title: const Text('Messages',
-            style:
-                TextStyle(color: Colors.black87, fontWeight: FontWeight.w700)),
+        title: Text('Messages',
+            style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.black54),
+            icon: Icon(Icons.search, color: colorScheme.onSurface.withValues(alpha: 0.54)),
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black54),
+            icon: Icon(Icons.more_vert, color: colorScheme.onSurface.withValues(alpha: 0.54)),
             onPressed: () {},
           )
         ],
@@ -72,21 +75,23 @@ class MessagesListPage extends StatelessWidget {
             if (authState is AuthInitial || authState is AuthLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (authState is! AuthAuthenticated || authState.user.id == null) {
-              // Not authenticated
+
+            // Check if user is authenticated
+            if (authState is! AuthAuthenticated) {
+              // Not authenticated at all
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.lock_outline,
-                        size: 64, color: Colors.black26),
+                    Icon(Icons.lock_outline,
+                        size: 64, color: colorScheme.onSurface.withValues(alpha: 0.26)),
                     AppSpacing.spaceLG,
-                    const Text('Authentication Required',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600)),
+                    Text('Authentication Required',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600)),
                     AppSpacing.spaceSM,
-                    const Text('Please sign in to view your messages',
-                        style: TextStyle(color: Colors.black54)),
+                    Text('Please sign in to view your messages',
+                        style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
                     AppSpacing.spaceXXL,
                     PrimaryButton(
                       text: 'Go Back',
@@ -97,7 +102,33 @@ class MessagesListPage extends StatelessWidget {
               );
             }
 
-            final currentUserId = authState.user.id!;
+            // User is authenticated but ID might be missing
+            final userId = authState.user.id;
+            if (userId == null) {
+              // User authenticated but profile incomplete - show loading
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(),
+                    AppSpacing.spaceLG,
+                    Text('Loading your profile...',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w500)),
+                    AppSpacing.spaceSM,
+                    Text('Please wait while we sync your data',
+                        style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
+                    AppSpacing.spaceXXL,
+                    TextButton(
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      child: const Text('Go Back'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            final currentUserId = userId;
             return BlocProvider(
               create: (_) => ConversationsBloc(
                 repository: repo,
@@ -150,7 +181,7 @@ class MessagesListPage extends StatelessWidget {
                                               color: AppColors.orange,
                                               shape: BoxShape.circle,
                                               border: Border.all(
-                                                  color: Colors.white,
+                                                  color: colorScheme.surface,
                                                   width: 2)),
                                         ),
                                       )
@@ -167,19 +198,15 @@ class MessagesListPage extends StatelessWidget {
                                           Expanded(
                                             child: Text(
                                               c.name,
-                                              style: const TextStyle(
+                                              style: theme.textTheme.titleMedium?.copyWith(
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: 16,
-                                                color: Colors.black87,
                                               ),
                                             ),
                                           ),
                                           Text(
                                             _formatTime(c.lastTimestamp),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall
-                                                ?.copyWith(color: Colors.grey),
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.6)),
                                           ),
                                         ],
                                       ),
@@ -199,13 +226,11 @@ class MessagesListPage extends StatelessWidget {
                                               c.isTyping
                                                   ? 'typing…'
                                                   : (c.lastMessage ?? ''),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
+                                              style: theme.textTheme.bodyMedium
                                                   ?.copyWith(
                                                     color: c.isTyping
                                                         ? AppColors.orange
-                                                        : Colors.black54,
+                                                        : colorScheme.onSurface.withValues(alpha: 0.54),
                                                   ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -226,9 +251,8 @@ class MessagesListPage extends StatelessWidget {
                                                           12)),
                                               child: Text(
                                                 '${c.unreadCount}',
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12),
+                                                style: theme.textTheme.labelSmall?.copyWith(
+                                                    color: colorScheme.onPrimary),
                                               ),
                                             )
                                         ],

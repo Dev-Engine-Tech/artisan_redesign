@@ -37,6 +37,9 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthOtpSent) {
@@ -80,13 +83,13 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.1),
+                              color: colorScheme.onPrimary.withValues(alpha: 0.1),
                               borderRadius: AppRadius.radiusLG,
                             ),
                             child: IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.arrow_back_ios,
-                                color: Colors.white,
+                                color: colorScheme.onPrimary,
                                 size: 20,
                               ),
                               onPressed: () => Navigator.of(context).pop(),
@@ -98,10 +101,10 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                       const SizedBox(height: 40),
 
                       // Title and subtitle
-                      const Text(
+                      Text(
                         'Verify your account\nto continue',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: colorScheme.onPrimary,
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           height: 1.2,
@@ -113,7 +116,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                       Text(
                         'Your account is inactive. Verify your phone number to activate and start using all features.',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: colorScheme.onPrimary.withValues(alpha: 0.8),
                           fontSize: 16,
                         ),
                       ),
@@ -125,9 +128,9 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(32),
                       ),
                     ),
@@ -169,7 +172,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                                 : 'We\'ll send a verification code to your phone number',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: colorScheme.onSurfaceVariant,
                               fontSize: 16,
                             ),
                           ),

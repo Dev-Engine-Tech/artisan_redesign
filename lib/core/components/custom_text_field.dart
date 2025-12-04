@@ -71,6 +71,9 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final field = TextField(
       controller: controller,
       keyboardType: keyboardType,
@@ -97,7 +100,7 @@ class CustomTextField extends StatelessWidget {
           Text(
             label!,
             style: TextStyle(
-              color: Colors.grey[600],
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -112,41 +115,44 @@ class CustomTextField extends StatelessWidget {
   }
 
   InputDecoration _buildDecoration(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     switch (style) {
       case CustomTextFieldStyle.filled:
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey[400]),
+          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: Colors.grey[400])
+              ? Icon(prefixIcon, color: colorScheme.onSurface.withValues(alpha: 0.4))
               : null,
           suffixIcon: suffixIcon,
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: colorScheme.surfaceContainer,
           border: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.orange, width: 2),
+            borderSide: BorderSide(color: colorScheme.primary, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );
@@ -155,19 +161,19 @@ class CustomTextField extends StatelessWidget {
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey[400]),
+          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
               ? Container(
                   margin: AppSpacing.paddingMD,
                   padding: AppSpacing.paddingSM,
                   decoration: BoxDecoration(
-                    color: AppColors.orange.withValues(alpha: 0.1),
+                    color: colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: AppRadius.radiusMD,
                   ),
                   child: Icon(
                     prefixIcon,
                     size: 18,
-                    color: AppColors.orange,
+                    color: colorScheme.primary,
                   ),
                 )
               : null,
@@ -175,27 +181,27 @@ class CustomTextField extends StatelessWidget {
           filled: false,
           border: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: colorScheme.outline),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: colorScheme.outline),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.orange, width: 2),
+            borderSide: BorderSide(color: colorScheme.primary, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );
@@ -266,6 +272,9 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final field = TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -294,7 +303,7 @@ class CustomTextFormField extends StatelessWidget {
           Text(
             label!,
             style: TextStyle(
-              color: Colors.grey[600],
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -316,41 +325,44 @@ class CustomTextFormField extends StatelessWidget {
   }
 
   InputDecoration _buildDecoration(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     switch (style) {
       case CustomTextFieldStyle.filled:
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey[400]),
+          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: Colors.grey[400])
+              ? Icon(prefixIcon, color: colorScheme.onSurface.withValues(alpha: 0.4))
               : null,
           suffixIcon: suffixIcon,
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: colorScheme.surfaceContainer,
           border: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[200]!),
+            borderSide: BorderSide(color: colorScheme.surfaceContainerHighest),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.orange, width: 2),
+            borderSide: BorderSide(color: colorScheme.primary, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );
@@ -359,19 +371,19 @@ class CustomTextFormField extends StatelessWidget {
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey[400]),
+          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
               ? Container(
                   margin: AppSpacing.paddingMD,
                   padding: AppSpacing.paddingSM,
                   decoration: BoxDecoration(
-                    color: AppColors.orange.withValues(alpha: 0.1),
+                    color: colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: AppRadius.radiusMD,
                   ),
                   child: Icon(
                     prefixIcon,
                     size: 18,
-                    color: AppColors.orange,
+                    color: colorScheme.primary,
                   ),
                 )
               : null,
@@ -379,27 +391,27 @@ class CustomTextFormField extends StatelessWidget {
           filled: false,
           border: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: colorScheme.outline),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: colorScheme.outline),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.orange, width: 2),
+            borderSide: BorderSide(color: colorScheme.primary, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: const BorderSide(color: AppColors.danger, width: 2),
+            borderSide: BorderSide(color: colorScheme.error, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );

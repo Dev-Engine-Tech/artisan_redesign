@@ -109,3 +109,30 @@ class JobStateProgressSubmitted extends JobState {
 
   const JobStateProgressSubmitted({required this.jobId, required this.message});
 }
+
+/// State for job invitations loaded
+class JobStateInvitationsLoaded extends JobState {
+  final List<Job> invitations;
+
+  const JobStateInvitationsLoaded({required this.invitations});
+}
+
+/// State for when responding to job invitation is in progress
+class JobStateRespondingToInvitation extends JobState {
+  final String invitationId;
+
+  const JobStateRespondingToInvitation({required this.invitationId});
+}
+
+/// State for when invitation response is successful
+class JobStateInvitationResponseSuccess extends JobState {
+  final String invitationId;
+  final bool accepted;
+  final String message;
+
+  const JobStateInvitationResponseSuccess({
+    required this.invitationId,
+    required this.accepted,
+    required this.message,
+  });
+}

@@ -32,6 +32,12 @@ abstract class JobRemoteDataSource {
 
   /// Accept agreement for project/application
   Future<bool> acceptAgreement(String projectId);
+
+  /// Fetches job invitations from clients
+  Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20});
+
+  /// Respond to a job invitation
+  Future<bool> respondToJobInvitation(String invitationId, {required bool accept});
 }
 
 class JobRemoteDataSourceImpl extends BaseRemoteDataSource
@@ -356,6 +362,95 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
       await postVoid(ApiEndpoints.acceptAgreementByProjectId(projectId));
       return true;
     } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20}) async {
+    try {
+      final response = await dio.get(
+        ApiEndpoints.jobInvitations,
+        queryParameters: {'page': page, 'limit': limit, 'page_size': limit},
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        final body = response.data;
+
+        List listFromBody(dynamic b) {
+          if (b is List) return b;
+          if (b is Map) {
+            const keys = ['results', 'data', 'items', 'invitations', 'records'];
+            for (final k in keys) {
+              final v = b[k];
+              if (v is List) return v;
+              if (v is Map) {
+                for (final kk in keys) {
+                  final vv = v[kk];
+                  if (vv is List) return vv;
+                }
+              }
+            }
+          }
+          return const [];
+        }
+
+        final list = listFromBody(body);
+        final invitations = list
+            .map((e) {
+              try {
+                final inviteData = Map<String, dynamic>.from(e as Map);
+                // Job invitations typically have a 'job' field with job details
+                final jobData = inviteData['job'] is Map
+                    ? Map<String, dynamic>.from(inviteData['job'] as Map)
+                    : inviteData;
+                return JobModel.fromJson(jobData, isFromApplications: false);
+              } catch (_) {
+                return null;
+              }
+            })
+            .where((job) => job != null)
+            .cast<JobModel>()
+            .toList();
+
+        return invitations;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          error: 'Failed to fetch job invitations',
+          response: Response(
+              requestOptions: response.requestOptions,
+              statusCode: response.statusCode,
+              data: response.data),
+          type: DioExceptionType.badResponse,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
+    try {
+      final response = await dio.post(
+        ApiEndpoints.respondToInvitation,
+        data: {
+          'invitation_id': invitationId,
+          'action': accept ? 'accept' : 'decline',
+        },
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
       return false;
     }
   }

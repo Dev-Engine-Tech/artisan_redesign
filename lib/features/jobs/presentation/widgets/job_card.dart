@@ -36,15 +36,17 @@ class JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final budgetText = job.minBudget == job.maxBudget
         ? '₦${job.maxBudget.toString()}'
         : '₦${job.minBudget.toString()} - ₦${job.maxBudget.toString()}';
-    final titleStyle = Theme.of(context)
+    final titleStyle = theme
         .textTheme
         .titleLarge
         ?.copyWith(fontWeight: FontWeight.w600);
     final subtitleStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black54);
+        theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -142,14 +144,14 @@ class JobCard extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => JobShareService.shareJob(job),
-                          icon: const Icon(Icons.share_outlined,
-                              size: 20, color: Colors.black54),
+                          icon: Icon(Icons.share_outlined,
+                              size: 20, color: colorScheme.onSurface.withValues(alpha: 0.54)),
                           tooltip: 'Share Job',
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.more_vert,
-                              size: 20, color: Colors.black54),
+                          icon: Icon(Icons.more_vert,
+                              size: 20, color: colorScheme.onSurface.withValues(alpha: 0.54)),
                         ),
                       ],
                     ),
@@ -228,16 +230,16 @@ class JobCard extends StatelessWidget {
     IconData statusIcon;
 
     if (job.status == JobStatus.accepted) {
-      statusColor = Colors.green;
+      statusColor = AppColors.green;
       statusIcon = Icons.check_circle;
     } else if (job.agreement != null) {
-      statusColor = Colors.orange;
+      statusColor = AppColors.orange;
       statusIcon = Icons.assignment;
     } else if (job.changeRequest != null) {
-      statusColor = Colors.blue;
+      statusColor = AppColors.blue;
       statusIcon = Icons.change_circle;
     } else {
-      statusColor = Colors.grey;
+      statusColor = AppColors.grey;
       statusIcon = Icons.pending;
     }
 
@@ -263,13 +265,13 @@ class JobCard extends StatelessWidget {
     Color statusColor;
 
     if (status == 'Accepted') {
-      statusColor = Colors.green;
+      statusColor = AppColors.green;
     } else if (status == 'Review Agreement') {
-      statusColor = Colors.orange;
+      statusColor = AppColors.orange;
     } else if (status == 'Change request sent') {
-      statusColor = Colors.blue;
+      statusColor = AppColors.blue;
     } else {
-      statusColor = Colors.grey;
+      statusColor = AppColors.grey;
     }
 
     return Container(
@@ -314,10 +316,11 @@ class JobCard extends StatelessWidget {
     // If there's an agreement, show agreement modal directly
     if (job.agreement != null) {
       return () {
+        final theme = Theme.of(context);
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.0),
           builder: (context) => DraggableScrollableSheet(
             expand: false,
             initialChildSize: 0.9,
@@ -335,10 +338,11 @@ class JobCard extends StatelessWidget {
     // If there's a change request, show change request status modal
     if (job.changeRequest != null) {
       return () {
+        final theme = Theme.of(context);
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.0),
           builder: (context) => ChangeRequestStatusModal(
             job: job,
             changeRequest: job.changeRequest!,
@@ -376,14 +380,14 @@ class JobCard extends StatelessWidget {
     }
 
     if (job.status == JobStatus.accepted) {
-      return Colors.green;
+      return AppColors.green;
     } else if (job.agreement != null) {
-      return Colors.orange;
+      return AppColors.orange;
     } else if (job.changeRequest != null) {
-      return Colors.blue;
+      return AppColors.blue;
     } else {
       // No agreement yet - grayed out
-      return Colors.grey;
+      return AppColors.grey;
     }
   }
 

@@ -41,6 +41,9 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
@@ -97,10 +100,10 @@ class _SignInPageState extends State<SignInPage> {
                       const SizedBox(height: 20),
 
                       // Title and subtitle
-                      const Text(
+                      Text(
                         'Go ahead and set up\nyour account',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: colorScheme.onPrimary,
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           height: 1.2,
@@ -112,7 +115,7 @@ class _SignInPageState extends State<SignInPage> {
                       Text(
                         'Sign in-up to enjoy the best managing experience',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: colorScheme.onPrimary.withValues(alpha: 0.8),
                           fontSize: 16,
                         ),
                       ),
@@ -124,9 +127,9 @@ class _SignInPageState extends State<SignInPage> {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(32),
                       ),
                     ),
@@ -139,7 +142,7 @@ class _SignInPageState extends State<SignInPage> {
                             Container(
                               padding: AppSpacing.paddingXS,
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
+                                color: colorScheme.surfaceContainerHighest,
                                 borderRadius: AppRadius.radiusLG,
                               ),
                               child: Row(
@@ -153,13 +156,13 @@ class _SignInPageState extends State<SignInPage> {
                                             vertical: 12),
                                         decoration: BoxDecoration(
                                           color: _selectedTab == 0
-                                              ? Colors.white
+                                              ? colorScheme.surface
                                               : Colors.transparent,
                                           borderRadius: AppRadius.radiusMD,
                                           boxShadow: _selectedTab == 0
                                               ? [
                                                   BoxShadow(
-                                                    color: Colors.black
+                                                    color: colorScheme.shadow
                                                         .withValues(alpha: 0.1),
                                                     blurRadius: 4,
                                                   )
@@ -173,7 +176,7 @@ class _SignInPageState extends State<SignInPage> {
                                             fontWeight: FontWeight.w600,
                                             color: _selectedTab == 0
                                                 ? AppColors.brownHeader
-                                                : Colors.grey[600],
+                                                : colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                       ),
@@ -193,7 +196,7 @@ class _SignInPageState extends State<SignInPage> {
                                             vertical: 12),
                                         decoration: BoxDecoration(
                                           color: _selectedTab == 1
-                                              ? Colors.white
+                                              ? colorScheme.surface
                                               : Colors.transparent,
                                           borderRadius: AppRadius.radiusMD,
                                         ),
@@ -204,7 +207,7 @@ class _SignInPageState extends State<SignInPage> {
                                             fontWeight: FontWeight.w600,
                                             color: _selectedTab == 1
                                                 ? AppColors.brownHeader
-                                                : Colors.grey[600],
+                                                : colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                       ),
@@ -250,7 +253,7 @@ class _SignInPageState extends State<SignInPage> {
                                         _obscurePassword
                                             ? Icons.visibility_outlined
                                             : Icons.visibility_off_outlined,
-                                        color: Colors.grey[400],
+                                        color: colorScheme.onSurfaceVariant,
                                       ),
                                       onPressed: () => setState(() =>
                                           _obscurePassword = !_obscurePassword),
@@ -278,7 +281,7 @@ class _SignInPageState extends State<SignInPage> {
                                       Text(
                                         'Remember me',
                                         style: TextStyle(
-                                          color: Colors.grey[600],
+                                          color: colorScheme.onSurfaceVariant,
                                           fontSize: 14,
                                         ),
                                       ),
@@ -305,21 +308,21 @@ class _SignInPageState extends State<SignInPage> {
                                     children: [
                                       Expanded(
                                           child:
-                                              Divider(color: Colors.grey[300])),
+                                              Divider(color: colorScheme.outlineVariant)),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16),
                                         child: Text(
                                           'Or login with',
                                           style: TextStyle(
-                                            color: Colors.grey[600],
+                                            color: colorScheme.onSurfaceVariant,
                                             fontSize: 14,
                                           ),
                                         ),
                                       ),
                                       Expanded(
                                           child:
-                                              Divider(color: Colors.grey[300])),
+                                              Divider(color: colorScheme.outlineVariant)),
                                     ],
                                   ),
 

@@ -31,4 +31,10 @@ abstract class JobRepository {
 
   /// Accept agreement for a project/application by project id.
   Future<bool> acceptAgreement(String projectId);
+
+  /// Fetches job invitations from clients
+  Future<List<Job>> getJobInvitations({int page = 1, int limit = 20});
+
+  /// Respond to a job invitation
+  Future<bool> respondToJobInvitation(String invitationId, {required bool accept});
 }

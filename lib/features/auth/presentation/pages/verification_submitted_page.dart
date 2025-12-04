@@ -8,6 +8,9 @@ class VerificationSubmittedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
       backgroundColor: AppColors.lightPeach,
       body: SafeArea(
@@ -26,18 +29,18 @@ class VerificationSubmittedPage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight),
                 ),
-                child: const Center(
-                  child: Icon(Icons.check, size: 72, color: Colors.white),
+                child: Center(
+                  child: Icon(Icons.check, size: 72, color: colorScheme.onPrimary),
                 ),
               ),
               const SizedBox(height: 28),
               const Text('Congratulations!',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
               AppSpacing.spaceMD,
-              const Text(
+              Text(
                 'Your documents are under review. You will be notified about the status within the next 24 hours.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54, fontSize: 15),
+                style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 15),
               ),
               const Spacer(),
               PrimaryButton(

@@ -122,7 +122,7 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: AppRadius.radiusLG,
               ),
               child: Text(
@@ -213,7 +213,7 @@ class DiscoverTabContent extends StatelessWidget {
               Text(
                 error!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -252,13 +252,15 @@ class DiscoverTabsShimmer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: List.generate(tabCount, (index) {
-          return Container(
-            width: 100 + (index * 20), // Varying widths
-            height: height,
-            margin: const EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: AppRadius.radiusXXXL,
+          return Builder(
+            builder: (context) => Container(
+              width: 100 + (index * 20), // Varying widths
+              height: height,
+              margin: const EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                borderRadius: AppRadius.radiusXXXL,
+              ),
             ),
           );
         }),

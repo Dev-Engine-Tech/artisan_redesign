@@ -15,19 +15,21 @@ class NotificationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: notification.read ? Colors.white : Colors.blue.shade50,
+        color: notification.read ? colorScheme.surface : Colors.blue.shade50,
         borderRadius: AppRadius.radiusLG,
         border: Border.all(
-          color:
-              notification.read ? Colors.grey.shade200 : Colors.blue.shade200,
+          color: notification.read ? colorScheme.outline.withValues(alpha: 0.2) : Colors.blue.shade200,
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -67,12 +69,11 @@ class NotificationItem extends StatelessWidget {
                       // Title
                       Text(
                         notification.title,
-                        style: TextStyle(
-                          fontSize: 16,
+                        style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: notification.read
                               ? FontWeight.w500
                               : FontWeight.w600,
-                          color: Colors.black87,
+                          color: colorScheme.onSurface,
                         ),
                       ),
 
@@ -81,8 +82,7 @@ class NotificationItem extends StatelessWidget {
                       // Type/Category
                       Text(
                         notification.type.displayTitle,
-                        style: TextStyle(
-                          fontSize: 14,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: _getIconColor(),
                           fontWeight: FontWeight.w500,
                         ),
@@ -93,9 +93,8 @@ class NotificationItem extends StatelessWidget {
                       // Time ago
                       Text(
                         notification.timeAgo,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ],

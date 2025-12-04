@@ -71,6 +71,8 @@ class _SignUpViewState extends State<_SignUpView> {
   }
 
   Widget _stepIndicator(int step) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
       child: Row(
@@ -81,7 +83,7 @@ class _SignUpViewState extends State<_SignUpView> {
               margin: AppSpacing.horizontalXS,
               height: 4,
               decoration: BoxDecoration(
-                color: active ? AppColors.orange : Colors.grey[300],
+                color: active ? AppColors.orange : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -155,7 +157,7 @@ class _SignUpViewState extends State<_SignUpView> {
 
         return Scaffold(
           body: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -235,9 +237,9 @@ class _SignUpViewState extends State<_SignUpView> {
                   Expanded(
                     child: Container(
                       width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(32),
                         ),
                       ),
@@ -272,6 +274,9 @@ class _SignUpViewState extends State<_SignUpView> {
   }
 
   Widget _buildStep0(SignUpState state, SignUpCubit cubit) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Form(
       key: _formKeyStep0,
       child: Column(
@@ -355,9 +360,8 @@ class _SignUpViewState extends State<_SignUpView> {
                       ),
                     ],
                   ),
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ),
@@ -393,18 +397,17 @@ class _SignUpViewState extends State<_SignUpView> {
           // Or register with
           Row(
             children: [
-              Expanded(child: Divider(color: Colors.grey[300])),
+              Expanded(child: Divider(color: colorScheme.outline.withValues(alpha: 0.3))),
               Padding(
                 padding: AppSpacing.horizontalLG,
                 child: Text(
                   'Or register with',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ),
-              Expanded(child: Divider(color: Colors.grey[300])),
+              Expanded(child: Divider(color: colorScheme.outline.withValues(alpha: 0.3))),
             ],
           ),
 
@@ -438,6 +441,8 @@ class _SignUpViewState extends State<_SignUpView> {
   }
 
   Widget _buildStep1(SignUpState state, SignUpCubit cubit) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Form(
       key: _formKeyStep1,
       child: Column(
@@ -455,7 +460,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 _obscurePassword
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
-                color: Colors.grey[400],
+                color: colorScheme.onSurface.withValues(alpha: 0.4),
               ),
               onPressed: () =>
                   setState(() => _obscurePassword = !_obscurePassword),
@@ -477,7 +482,7 @@ class _SignUpViewState extends State<_SignUpView> {
                 _obscureConfirmPassword
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
-                color: Colors.grey[400],
+                color: colorScheme.onSurface.withValues(alpha: 0.4),
               ),
               onPressed: () => setState(
                   () => _obscureConfirmPassword = !_obscureConfirmPassword),
@@ -603,8 +608,11 @@ class _SignUpViewState extends State<_SignUpView> {
   }
 
   Widget _buildCompletedStep(SignUpState state, SignUpCubit cubit) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -629,13 +637,12 @@ class _SignUpViewState extends State<_SignUpView> {
 
               AppSpacing.spaceXXXL,
 
-              const Text(
+              Text(
                 'Welcome to\nArtisans Circle!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
+                style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.brownHeader,
+                  color: colorScheme.onSurface,
                   height: 1.2,
                 ),
               ),
@@ -645,9 +652,8 @@ class _SignUpViewState extends State<_SignUpView> {
               Text(
                 'Your account has been created successfully. Start showcasing your skills and connecting with clients.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                   height: 1.4,
                 ),
               ),

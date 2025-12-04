@@ -39,36 +39,39 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
     required String? Function(String?) validator,
     IconData? prefixIcon,
   }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
         ),
         AppSpacing.spaceSM,
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[50],
+            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             borderRadius: AppRadius.radiusLG,
-            border: Border.all(color: Colors.grey[200]!),
+            border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
           ),
           child: DropdownButtonFormField<String>(
             initialValue: value,
             items: items,
             onChanged: onChanged,
             validator: validator,
+            dropdownColor: colorScheme.surface,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey[400]),
+              hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
               border: InputBorder.none,
               contentPadding: AppSpacing.paddingLG,
               prefixIcon: prefixIcon != null
-                  ? Icon(prefixIcon, color: Colors.grey[400])
+                  ? Icon(prefixIcon, color: colorScheme.onSurface.withValues(alpha: 0.4))
                   : null,
             ),
           ),
@@ -78,6 +81,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   }
 
   Widget _docOption(String value, String label) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: () => setState(() => _docType = value),
       child: Container(
@@ -86,10 +92,10 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
         decoration: BoxDecoration(
           color: _docType == value
               ? AppColors.orange.withValues(alpha: 0.1)
-              : Colors.grey[50],
+              : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           borderRadius: AppRadius.radiusLG,
           border: Border.all(
-            color: _docType == value ? AppColors.orange : Colors.grey[200]!,
+            color: _docType == value ? AppColors.orange : colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Row(
@@ -97,11 +103,11 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
             Expanded(
               child: Text(
                 label,
-                style: TextStyle(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: _docType == value
-                      ? AppColors.brownHeader
-                      : Colors.grey[700],
+                      ? colorScheme.onSurface
+                      : colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ),
@@ -111,8 +117,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color:
-                      _docType == value ? AppColors.orange : Colors.grey[400]!,
+                  color: _docType == value ? AppColors.orange : colorScheme.onSurface.withValues(alpha: 0.4),
                   width: 2,
                 ),
               ),
@@ -138,10 +143,12 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   @override
   Widget build(BuildContext context) {
     final verificationCubit = context.read<VerificationCubit>();
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -212,9 +219,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(32),
                     ),
                   ),
@@ -239,12 +246,11 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
 
                         AppSpacing.spaceXXL,
 
-                        const Text(
+                        Text(
                           'Government ID Required',
-                          style: TextStyle(
-                            fontSize: 24,
+                          style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: AppColors.brownHeader,
+                            color: colorScheme.onSurface,
                           ),
                         ),
 
@@ -253,9 +259,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                         Text(
                           'Upload a government-issued ID and take a selfie to complete your verification',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 16,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
 
@@ -293,9 +298,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                 children: [
                                   Text(
                                     'Document Type',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 14,
+                                    style: theme.textTheme.labelMedium?.copyWith(
+                                      color: colorScheme.onSurface.withValues(alpha: 0.7),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -359,9 +363,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                 children: [
                                   Text(
                                     'Take a Selfie',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 14,
+                                    style: theme.textTheme.labelMedium?.copyWith(
+                                      color: colorScheme.onSurface.withValues(alpha: 0.7),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -459,9 +462,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                   color: AppColors.lightPeach,
                                   borderRadius: AppRadius.radiusLG,
                                 ),
-                                child: const Row(
+                                child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.security_outlined,
                                       color: AppColors.orange,
                                       size: 20,
@@ -470,9 +473,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     Expanded(
                                       child: Text(
                                         'Your identity verification helps build trust with clients and protects your account. All documents are encrypted and stored securely.',
-                                        style: TextStyle(
-                                          color: AppColors.brownHeader,
-                                          fontSize: 14,
+                                        style: theme.textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.onSurface.withValues(alpha: 0.8),
                                         ),
                                       ),
                                     ),

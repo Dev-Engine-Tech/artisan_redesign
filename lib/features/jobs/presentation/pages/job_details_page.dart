@@ -100,14 +100,14 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       color: AppColors.softPink,
                       borderRadius: BorderRadius.circular(10)),
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                    icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54)),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
               )
             : null,
         title:
-            const Text('Job Details', style: TextStyle(color: Colors.black87)),
+            Text('Job Details', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.87))),
       ),
       body: SafeArea(
         child: Center(
@@ -133,7 +133,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       AppSpacing.spaceXS,
                       CircleAvatar(
                         radius: 22,
-                        backgroundColor: Colors.grey.shade200,
+                        backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
                         child: const Icon(Icons.person,
                             color: AppColors.brownHeader),
                       ),
@@ -144,11 +144,11 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       children: [
                         Text(
                           (job.clientName ?? 'Client'),
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 16),
                         ),
                         AppSpacing.spaceXS,
-                        Text('Client', style: const TextStyle(color: Colors.black45)),
+                        Text('Client', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
                       ],
                     ),
                   ),
@@ -221,7 +221,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
-                                    ?.copyWith(color: Colors.black45)),
+                                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
                           ]),
                     ),
                     AppSpacing.spaceSM,
@@ -238,7 +238,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
-                                  ?.copyWith(color: Colors.black45)),
+                                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
                           const SizedBox(height: 6),
                           Text('₦${job.minBudget}k - ₦${job.maxBudget}k',
                               style: Theme.of(context)
@@ -246,7 +246,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                                   .titleMedium
                                   ?.copyWith(
                                       fontWeight: FontWeight.w800,
-                                      color: Colors.black87)),
+                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.87))),
                         ],
                       ),
                     )
@@ -320,7 +320,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
-                              ?.copyWith(color: Colors.black54),
+                              ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54)),
                         ),
                       ]),
                 ),
@@ -653,7 +653,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 Text(
                   job.proposal!,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                       ),
                 ),
               ],
@@ -710,7 +710,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 agreement.comment,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                     ),
               ),
               AppSpacing.spaceLG,
@@ -764,7 +764,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 changeRequest.proposedChange,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                     ),
               ),
               AppSpacing.spaceMD,
@@ -778,7 +778,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 changeRequest.reason,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                     ),
               ),
             ],
@@ -806,7 +806,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
           child: Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
                 ),
           ),
         ),
@@ -876,13 +876,13 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall
-                    ?.copyWith(color: Colors.black45)),
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
             AppSpacing.spaceSM,
             Text(body,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
-                    ?.copyWith(color: Colors.black54)),
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54))),
           ]),
         )
       ]),

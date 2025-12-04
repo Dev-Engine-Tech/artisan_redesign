@@ -40,22 +40,22 @@ class _HomeHeroSectionState extends State<HomeHeroSection>
       HeroItem(
         title: 'Discover Your Ideal\nJob match',
         subtitle: 'Personalized Recommendations for Every Artisan',
-        color: Color(0xFFE8F4FD),
-        iconColor: Color(0xFF3B82F6),
+        color: AppColors.lightBlue,
+        iconColor: AppColors.blue,
         icon: Icons.search,
       ),
       HeroItem(
         title: 'Build Your Professional\nNetwork',
         subtitle: 'Connect with clients and fellow artisans',
-        color: Color(0xFFF0F9FF),
-        iconColor: Color(0xFF0EA5E9),
+        color: AppColors.lightCyan,
+        iconColor: AppColors.cyan,
         icon: Icons.people,
       ),
       HeroItem(
         title: 'Showcase Your\nCraftsmanship',
         subtitle: 'Create a stunning portfolio that stands out',
-        color: Color(0xFFFEF3E2),
-        iconColor: Color(0xFFEA580C),
+        color: AppColors.lightOrange,
+        iconColor: AppColors.orange,
         icon: Icons.star,
       ),
     ];
@@ -147,7 +147,7 @@ class HeroCard extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.5),
+              color: AppColors.cardBackground.withValues(alpha: 0.5),
               borderRadius: AppRadius.radiusLG,
             ),
             child: Icon(
