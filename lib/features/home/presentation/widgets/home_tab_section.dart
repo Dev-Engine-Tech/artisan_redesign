@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_card.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/applications_list.dart';
@@ -87,13 +88,13 @@ class _HomeTabSectionState extends State<HomeTabSection>
         }
       }
 
-      // Load Job Invitations when user switches to Job Invite tab (index 2)
+      // Load Artisan Invitations when user switches to Job Invite tab (index 2)
       if (_selectedIndex == 2) {
         try {
           final state = context.read<JobBloc>().state;
-          if (state is! JobStateInvitationsLoaded) {
+          if (state is! JobStateArtisanInvitationsLoaded) {
             context.read<JobBloc>().add(
-                  LoadJobInvitations(
+                  LoadArtisanInvitations(
                     page: 1,
                     limit: 10,
                   ),
@@ -129,7 +130,7 @@ class _HomeTabSectionState extends State<HomeTabSection>
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.softPeach,
+        color: context.softPeachColor,
         borderRadius: AppRadius.radiusLG,
       ),
       padding: const EdgeInsets.all(6),
@@ -148,8 +149,8 @@ class _HomeTabSectionState extends State<HomeTabSection>
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
-        labelColor: AppColors.darkBlue,
-        unselectedLabelColor: AppColors.darkBlue.withValues(alpha: 0.6),
+        labelColor: context.darkBlueColor,
+        unselectedLabelColor: context.darkBlueColor.withValues(alpha: 0.6),
         labelStyle: theme.textTheme.labelLarge?.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -417,14 +418,14 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
   @override
   void initState() {
     super.initState();
-    // Load job invitations when widget initializes
+    // Load artisan invitations when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       try {
         final state = context.read<JobBloc>().state;
-        if (state is! JobStateInvitationsLoaded) {
+        if (state is! JobStateArtisanInvitationsLoaded) {
           context.read<JobBloc>().add(
-                LoadJobInvitations(
+                LoadArtisanInvitations(
                   page: 1,
                   limit: 10,
                 ),
@@ -436,36 +437,62 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
     });
   }
 
-  void _handleAccept(Job job) {
+  void _handleAccept(ArtisanInvitation invitation) {
     context.read<JobBloc>().add(
-          RespondToJobInvitationEvent(
-            invitationId: job.id,
-            accept: true,
+          AcceptArtisanInvitation(
+            invitationId: invitation.id,
           ),
         );
   }
 
-  void _handleReject(Job job) {
+  void _handleReject(ArtisanInvitation invitation) {
+    final reasonController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Decline Job Invitation'),
-        content: const Text(
-          'Are you sure you want to decline this job invitation?',
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Please provide a reason for declining this invitation:',
+            ),
+            const SizedBox(height: 12),
+            CustomTextField(
+              controller: reasonController,
+              hint: 'e.g., Busy with other projects',
+              maxLines: 3,
+            ),
+          ],
         ),
         actions: [
           TextAppButton(
             text: 'Cancel',
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () {
+              reasonController.dispose();
+              Navigator.pop(ctx);
+            },
           ),
           TextAppButton(
             text: 'Decline',
             onPressed: () {
+              final reason = reasonController.text.trim();
+              if (reason.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please provide a reason for declining'),
+                  ),
+                );
+                return;
+              }
+              reasonController.dispose();
               Navigator.pop(ctx);
               context.read<JobBloc>().add(
-                    RespondToJobInvitationEvent(
-                      invitationId: job.id,
-                      accept: false,
+                    RejectArtisanInvitation(
+                      invitationId: invitation.id,
+                      reason: reason,
                     ),
                   );
             },
@@ -479,7 +506,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
   Widget build(BuildContext context) {
     return BlocListener<JobBloc, JobState>(
       listener: (context, state) {
-        if (state is JobStateInvitationResponseSuccess) {
+        if (state is JobStateArtisanInvitationResponseSuccess) {
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -488,7 +515,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
           );
           // Refresh the list
           context.read<JobBloc>().add(
-                LoadJobInvitations(
+                LoadArtisanInvitations(
                   page: 1,
                   limit: 10,
                 ),
@@ -504,7 +531,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
       },
       child: BlocBuilder<JobBloc, JobState>(
         builder: (context, state) {
-          if (state is JobStateLoading) {
+          if (state is JobStateLoading || state is JobStateRespondingToArtisanInvitation) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -513,10 +540,10 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.error_outline,
                     size: 48,
-                    color: AppColors.danger,
+                    color: context.dangerColor,
                   ),
                   AppSpacing.spaceLG,
                   Text(
@@ -530,7 +557,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                     text: 'Retry',
                     onPressed: () {
                       context.read<JobBloc>().add(
-                            LoadJobInvitations(
+                            LoadArtisanInvitations(
                               page: 1,
                               limit: 10,
                             ),
@@ -542,7 +569,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
             );
           }
 
-          if (state is JobStateInvitationsLoaded) {
+          if (state is JobStateArtisanInvitationsLoaded) {
             final invitations = state.invitations;
 
             if (invitations.isEmpty) {
@@ -558,7 +585,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<JobBloc>().add(
-                      LoadJobInvitations(
+                      LoadArtisanInvitations(
                         page: 1,
                         limit: 10,
                       ),
@@ -574,7 +601,19 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                     true, // Keep list items alive for better performance
                 addRepaintBoundaries: true, // Isolate repaints for performance
                 itemBuilder: (context, index) {
-                  final job = invitations[index];
+                  final invitation = invitations[index];
+                  // Convert ArtisanInvitation to Job for display
+                  final job = Job(
+                    id: invitation.jobId.toString(),
+                    title: invitation.jobTitle,
+                    category: invitation.jobCategory ?? 'Job Invitation',
+                    description: invitation.jobDescription ?? '',
+                    address: invitation.address ?? invitation.clientName ?? 'Client',
+                    minBudget: invitation.minBudget ?? 0,
+                    maxBudget: invitation.maxBudget ?? 0,
+                    duration: invitation.duration ?? 'Not specified',
+                    applied: false,
+                  );
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: JobCard(
@@ -582,8 +621,8 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                       onTap: () => widget.onJobTap(job),
                       primaryLabel: 'Accept',
                       secondaryLabel: 'Decline',
-                      primaryAction: () => _handleAccept(job),
-                      secondaryAction: () => _handleReject(job),
+                      primaryAction: () => _handleAccept(invitation),
+                      secondaryAction: () => _handleReject(invitation),
                     ),
                   );
                 },
@@ -654,12 +693,12 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline,
-                      size: 48, color: AppColors.danger),
+                  Icon(Icons.error_outline,
+                      size: 48, color: context.dangerColor),
                   AppSpacing.spaceLG,
                   Text(state.message,
                       style: TextStyle(
-                          color: AppColors.darkBlue.withValues(alpha: 0.7),
+                          color: context.darkBlueColor.withValues(alpha: 0.7),
                           fontSize: 16)),
                   AppSpacing.spaceSM,
                   PrimaryButton(
@@ -780,15 +819,15 @@ class EmptyStateWidget extends StatelessWidget {
           Icon(
             icon,
             size: 64,
-            color: AppColors.darkBlue.withValues(alpha: 0.3),
+            color: context.darkBlueColor.withValues(alpha: 0.3),
           ),
           AppSpacing.spaceLG,
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: AppColors.darkBlue,
+              color: context.darkBlueColor,
             ),
           ),
           AppSpacing.spaceSM,
@@ -796,7 +835,7 @@ class EmptyStateWidget extends StatelessWidget {
             subtitle,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.darkBlue.withValues(alpha: 0.7),
+              color: context.darkBlueColor.withValues(alpha: 0.7),
             ),
             textAlign: TextAlign.center,
           ),

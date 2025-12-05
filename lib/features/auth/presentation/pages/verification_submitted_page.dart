@@ -12,7 +12,7 @@ class VerificationSubmittedPage extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48),
@@ -22,10 +22,10 @@ class VerificationSubmittedPage extends StatelessWidget {
               Container(
                 width: 140,
                 height: 140,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                      colors: [Color(0xFF6B4CD6), Color(0xFF8D5DEB)],
+                      colors: [colorScheme.tertiary, colorScheme.tertiary.withValues(alpha: 0.8)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight),
                 ),
@@ -34,13 +34,13 @@ class VerificationSubmittedPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 28),
-              const Text('Congratulations!',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+              Text('Congratulations!',
+                  style: theme.textTheme.headlineLarge?.copyWith(fontSize: 28)),
               AppSpacing.spaceMD,
               Text(
                 'Your documents are under review. You will be notified about the status within the next 24 hours.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 15),
+                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
               const Spacer(),
               PrimaryButton(

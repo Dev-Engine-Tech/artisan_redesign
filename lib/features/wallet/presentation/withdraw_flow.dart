@@ -71,14 +71,14 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                          color: AppColors.cardBackground,
+                          color: c.cardBackgroundColor,
                           borderRadius: AppRadius.radiusMD),
-                      child: const Center(
+                      child: Center(
                           child: Icon(Icons.account_balance,
-                              color: AppColors.orange))),
+                              color: c.primaryColor))),
                   title: Text(a.bank),
                   subtitle: Text(a.masked),
-                  trailing: const Icon(Icons.check, color: AppColors.orange),
+                  trailing: Icon(Icons.check, color: c.primaryColor),
                   onTap: () => Navigator.of(context).pop(a),
                 );
               }),
@@ -107,10 +107,10 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
         minChildSize: 0.32,
         maxChildSize: 0.9,
         builder: (_, controller) => Container(
-          decoration: const BoxDecoration(
-              color: Colors.white,
+          decoration: BoxDecoration(
+              color: c.colorScheme.surface,
               borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
+                  const BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
           child: Column(
             children: [
               Padding(
@@ -131,12 +131,12 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               ListTile(
                 title: const Text('Acct Name:'),
                 trailing: Text(account.name,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                    style: Theme.of(c).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
               ),
               ListTile(
                 title: const Text('Amount'),
                 trailing: Text('₦${amount.toStringAsFixed(0)}',
-                    style: const TextStyle(fontWeight: FontWeight.w700)),
+                    style: Theme.of(c).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
               ),
               Expanded(child: Container()),
               Padding(
@@ -182,7 +182,7 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -190,16 +190,16 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-                color: AppColors.softPink,
+                color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Withdraw Money',
-            style: TextStyle(color: Colors.black87)),
+        title: Text('Withdraw Money',
+            style: Theme.of(context).textTheme.titleLarge),
       ),
       body: SafeArea(
         child: ListView(
@@ -207,7 +207,7 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
+                  color: context.cardBackgroundColor,
                   borderRadius: BorderRadius.circular(10)),
               padding: AppSpacing.paddingMD,
               child: Row(
@@ -216,23 +216,23 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                          color: AppColors.cardBackground,
+                          color: context.cardBackgroundColor,
                           borderRadius: AppRadius.radiusMD),
-                      child: const Icon(Icons.account_balance,
-                          color: AppColors.orange)),
+                      child: Icon(Icons.account_balance,
+                          color: context.primaryColor)),
                   AppSpacing.spaceMD,
-                  const Expanded(
+                  Expanded(
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Zenith Bank Plc',
-                              style: TextStyle(fontWeight: FontWeight.w700)),
+                              style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
                           AppSpacing.spaceXS,
                           Text('Acct No: ******3139',
-                              style: TextStyle(color: Colors.black45)),
-                          SizedBox(height: 2),
+                              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                          const SizedBox(height: 2),
                           Text('Bank Name: Adeyeni Praise',
-                              style: TextStyle(color: Colors.black45)),
+                              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                         ]),
                   ),
                 ],
@@ -242,10 +242,10 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Amount:',
-                    style: TextStyle(fontWeight: FontWeight.w700)),
+                Text('Amount:',
+                    style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
                 Text('Earnings: ₦${widget.initialEarnings.toStringAsFixed(0)}',
-                    style: const TextStyle(color: Colors.black45)),
+                    style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
               ],
             ),
             AppSpacing.spaceSM,
@@ -253,14 +253,14 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               padding: AppSpacing.horizontalMD,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: AppColors.subtleBorder)),
+                  border: Border.all(color: context.subtleBorderColor)),
               child: TextField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                     border: InputBorder.none, hintText: '0'),
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 28),
@@ -319,10 +319,10 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
       minChildSize: 0.4,
       maxChildSize: 0.9,
       builder: (_, controller) => Container(
-        decoration: const BoxDecoration(
-            color: Colors.white,
+        decoration: BoxDecoration(
+            color: context.colorScheme.surface,
             borderRadius:
-                BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
+                const BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           children: [
@@ -332,7 +332,7 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
             AppSpacing.spaceMD,
             Text('₦${widget.amount.toStringAsFixed(0)}',
                 style:
-                    const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                    context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 18),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -343,13 +343,13 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: AppColors.subtleBorder),
+                        color: context.colorScheme.surface,
+                        border: Border.all(color: context.subtleBorderColor),
                         borderRadius: BorderRadius.circular(6)),
                     child: Center(
                         child: filled
-                            ? const Icon(Icons.circle,
-                                size: 12, color: Colors.black)
+                            ? Icon(Icons.circle,
+                                size: 12, color: context.colorScheme.onSurface)
                             : const SizedBox.shrink()),
                   );
                 })),
@@ -366,34 +366,35 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                     ElevatedButton(
                       onPressed: () => _addDigit(i.toString()),
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          backgroundColor: context.colorScheme.surface,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: AppRadius.radiusLG)),
                       child: Text('$i',
-                          style: const TextStyle(
-                              fontSize: 18, color: Colors.black)),
+                          style: context.textTheme.titleMedium?.copyWith(
+                              color: context.colorScheme.onSurface)),
                     ),
                   const SizedBox.shrink(),
                   ElevatedButton(
                     onPressed: () => _addDigit('0'),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: context.colorScheme.surface,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.radiusLG)),
-                    child: const Text('0',
-                        style: TextStyle(fontSize: 18, color: Colors.black)),
+                    child: Text('0',
+                        style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colorScheme.onSurface)),
                   ),
                   ElevatedButton(
                     onPressed: _removeDigit,
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: context.colorScheme.surface,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.radiusLG)),
-                    child: const Icon(Icons.backspace_outlined,
-                        color: Colors.black),
+                    child: Icon(Icons.backspace_outlined,
+                        color: context.colorScheme.onSurface),
                   ),
                 ],
               ),
@@ -413,8 +414,7 @@ class _WithdrawSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // white success page as in screenshots
-      backgroundColor: Colors.white,
+      backgroundColor: context.colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -423,8 +423,8 @@ class _WithdrawSuccessPage extends StatelessWidget {
               width: 140,
               height: 140,
               decoration: const BoxDecoration(shape: BoxShape.circle),
-              child: const Icon(Icons.check_circle_outline,
-                  size: 140, color: Color(0xFF6B3ECF)),
+              child: Icon(Icons.check_circle_outline,
+                  size: 140, color: context.colorScheme.tertiary),
             ),
             AppSpacing.spaceXL,
             Text('Withdraw Successful!',
@@ -440,7 +440,7 @@ class _WithdrawSuccessPage extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
-                    ?.copyWith(color: Colors.black54),
+                    ?.copyWith(color: context.colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
             ),

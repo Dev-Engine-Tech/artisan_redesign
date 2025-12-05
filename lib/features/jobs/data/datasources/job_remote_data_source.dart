@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../models/job_model.dart';
+import '../models/artisan_invitation_model.dart';
 import '../../../../core/api/endpoints.dart';
 import '../../../../core/data/base_remote_data_source.dart';
 import '../../domain/entities/job_application.dart';
@@ -33,11 +34,17 @@ abstract class JobRemoteDataSource {
   /// Accept agreement for project/application
   Future<bool> acceptAgreement(String projectId);
 
-  /// Fetches job invitations from clients
+  /// Fetches job invitations from clients (LEGACY - use fetchArtisanInvitations instead)
   Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20});
 
-  /// Respond to a job invitation
+  /// Respond to a job invitation (LEGACY - use respondToArtisanInvitation instead)
   Future<bool> respondToJobInvitation(String invitationId, {required bool accept});
+
+  /// Fetches artisan invitations using v1 endpoint (/invitation/api/artisan-invitations/)
+  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20});
+
+  /// Respond to artisan invitation using v1 PATCH endpoint with status and optional rejection_reason
+  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason});
 }
 
 class JobRemoteDataSourceImpl extends BaseRemoteDataSource
@@ -441,6 +448,97 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
           'invitation_id': invitationId,
           'action': accept ? 'accept' : 'decline',
         },
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20}) async {
+    try {
+      final response = await dio.get(
+        ApiEndpoints.artisanInvitations,
+        queryParameters: {'page': page, 'limit': limit, 'page_size': limit},
+      );
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        final body = response.data;
+
+        List listFromBody(dynamic b) {
+          if (b is List) return b;
+          if (b is Map) {
+            const keys = ['results', 'data', 'items', 'invitations', 'records'];
+            for (final k in keys) {
+              final v = b[k];
+              if (v is List) return v;
+              if (v is Map) {
+                for (final kk in keys) {
+                  final vv = v[kk];
+                  if (vv is List) return vv;
+                }
+              }
+            }
+          }
+          return const [];
+        }
+
+        final list = listFromBody(body);
+        final invitations = list
+            .map((e) {
+              try {
+                final inviteData = Map<String, dynamic>.from(e as Map);
+                return ArtisanInvitationModel.fromJson(inviteData);
+              } catch (err) {
+                // Log parse error but don't fail entire list
+                return null;
+              }
+            })
+            .where((invitation) => invitation != null)
+            .cast<ArtisanInvitationModel>()
+            .toList();
+
+        return invitations;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          error: 'Failed to fetch artisan invitations',
+          response: Response(
+              requestOptions: response.requestOptions,
+              statusCode: response.statusCode,
+              data: response.data),
+          type: DioExceptionType.badResponse,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
+    try {
+      final data = <String, dynamic>{
+        'invitation_status': status, // "Accepted" or "Rejected"
+      };
+
+      if (status.toLowerCase() == 'rejected' && rejectionReason != null) {
+        data['rejection_reason'] = rejectionReason;
+      }
+
+      final response = await dio.patch(
+        ApiEndpoints.artisanInvitationStatus(invitationId),
+        data: data,
       );
 
       if (response.statusCode != null &&

@@ -105,20 +105,20 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 width: 76,
                 height: 76,
                 decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: const Icon(Icons.check_circle_outline,
-                    size: 72, color: Color(0xFF6B4CD6)),
+                child: Icon(Icons.check_circle_outline,
+                    size: 72, color: ctx.colorScheme.tertiary),
               ),
               AppSpacing.spaceMD,
-              const Text(
+              Text(
                 'Request Sent',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
+                style: Theme.of(ctx).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
               AppSpacing.spaceMD,
-              const Text(
+              Text(
                 'Your change request has been sent successfully and the client has been notified.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant),
               ),
               const SizedBox(height: 18),
               PrimaryButton(
@@ -166,22 +166,19 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
             padding: const EdgeInsets.only(left: 12.0),
             child: Container(
               decoration: BoxDecoration(
-                  color: AppColors.softPink,
+                  color: context.softPinkColor,
                   borderRadius: BorderRadius.circular(10)),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
           ),
-          title: const Text('Change Request',
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600)),
+          title: Text('Change Request',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
           centerTitle: true,
         ),
-        backgroundColor: AppColors.lightPeach,
+        backgroundColor: context.lightPeachColor,
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -191,51 +188,51 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 // Agreement summary card
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.colorScheme.surface,
                     borderRadius: AppRadius.radiusMD,
-                    border: Border.all(color: AppColors.subtleBorder),
+                    border: Border.all(color: context.subtleBorderColor),
                   ),
                   padding: const EdgeInsets.all(14),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Agreed Payment',
-                            style: TextStyle(color: Colors.black54)),
+                        Text('Agreed Payment',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 6),
                         Text('NGN ${job.minBudget}',
-                            style: const TextStyle(
-                                color: Color(0xFF9A4B20),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: context.brownHeaderColor,
                                 fontWeight: FontWeight.w700)),
                         AppSpacing.spaceMD,
-                        const Text('Agreed Delivery Date',
-                            style: TextStyle(color: Colors.black54)),
+                        Text('Agreed Delivery Date',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 6),
-                        const Text('30/04/2024',
-                            style: TextStyle(color: Colors.black87)),
+                        Text('30/04/2024',
+                            style: Theme.of(context).textTheme.bodyMedium),
                         AppSpacing.spaceMD,
-                        const Text('Comment',
-                            style: TextStyle(color: Colors.black54)),
+                        Text('Comment',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 6),
                         Text(job.description,
-                            style: const TextStyle(color: Colors.black87)),
+                            style: Theme.of(context).textTheme.bodyMedium),
                       ]),
                 ),
                 AppSpacing.spaceXL,
 
-                const Text('Proposed Changes',
-                    style: TextStyle(color: Colors.black54)),
+                Text('Proposed Changes',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                 AppSpacing.spaceSM,
                 DropdownButtonFormField<String>(
                   initialValue: _proposedChange,
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: context.colorScheme.surface,
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 16),
                     border: OutlineInputBorder(
                         borderRadius: AppRadius.radiusMD,
                         borderSide:
-                            const BorderSide(color: AppColors.subtleBorder)),
+                            BorderSide(color: context.subtleBorderColor)),
                   ),
                   hint: const Text('Select'),
                   items: const [
@@ -257,14 +254,14 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
 
                 // Dynamic fields based on selected proposed change
                 if (_proposedChange == 'price') ...[
-                  const Text('Proposed Price',
-                      style: TextStyle(color: Colors.black54)),
+                  Text('Proposed Price',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                   AppSpacing.spaceSM,
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.colorScheme.surface,
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: AppColors.subtleBorder),
+                      border: Border.all(color: context.subtleBorderColor),
                     ),
                     padding: AppSpacing.horizontalSM,
                     child: TextFormField(
@@ -288,16 +285,16 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                   ),
                   AppSpacing.spaceMD,
                 ] else if (_proposedChange == 'delivery') ...[
-                  const Text('Proposed Delivery Date',
-                      style: TextStyle(color: Colors.black54)),
+                  Text('Proposed Delivery Date',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                   AppSpacing.spaceSM,
                   GestureDetector(
                     onTap: _pickDate,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.colorScheme.surface,
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: AppColors.subtleBorder),
+                        border: Border.all(color: context.subtleBorderColor),
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 16),
@@ -308,9 +305,9 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                               _selectedDate == null
                                   ? 'Select date'
                                   : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                              style: const TextStyle(color: Colors.black87)),
-                          const Icon(Icons.calendar_today,
-                              color: Colors.black54),
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          Icon(Icons.calendar_today,
+                              color: context.colorScheme.onSurfaceVariant),
                         ],
                       ),
                     ),
@@ -318,13 +315,13 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                   AppSpacing.spaceMD,
                 ],
 
-                const Text('Explain reasons for the proposed changes',
-                    style: TextStyle(color: Colors.black54)),
+                Text('Explain reasons for the proposed changes',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                 AppSpacing.spaceSM,
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: const Color(0xFF6B4CD6).withValues(alpha: 0.7)),
+                        color: context.colorScheme.tertiary.withValues(alpha: 0.7)),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   padding: const EdgeInsets.all(6),
@@ -332,7 +329,7 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                     controller: _reasonController,
                     maxLines: 10,
                     minLines: 6,
-                    style: const TextStyle(fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyMedium,
                     decoration: const InputDecoration(
                       hintText: 'Select',
                       border: InputBorder.none,

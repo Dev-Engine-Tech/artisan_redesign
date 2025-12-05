@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/artisan_invitation.dart';
 
 @immutable
 abstract class JobState {
@@ -124,13 +125,40 @@ class JobStateRespondingToInvitation extends JobState {
   const JobStateRespondingToInvitation({required this.invitationId});
 }
 
-/// State for when invitation response is successful
+/// State for when invitation response is successful (LEGACY)
 class JobStateInvitationResponseSuccess extends JobState {
   final String invitationId;
   final bool accepted;
   final String message;
 
   const JobStateInvitationResponseSuccess({
+    required this.invitationId,
+    required this.accepted,
+    required this.message,
+  });
+}
+
+/// State for artisan invitations loaded (v1)
+class JobStateArtisanInvitationsLoaded extends JobState {
+  final List<ArtisanInvitation> invitations;
+
+  const JobStateArtisanInvitationsLoaded({required this.invitations});
+}
+
+/// State for when responding to artisan invitation is in progress
+class JobStateRespondingToArtisanInvitation extends JobState {
+  final int invitationId;
+
+  const JobStateRespondingToArtisanInvitation({required this.invitationId});
+}
+
+/// State for when artisan invitation response is successful
+class JobStateArtisanInvitationResponseSuccess extends JobState {
+  final int invitationId;
+  final bool accepted;
+  final String message;
+
+  const JobStateArtisanInvitationResponseSuccess({
     required this.invitationId,
     required this.accepted,
     required this.message,

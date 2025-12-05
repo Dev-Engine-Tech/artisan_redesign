@@ -1,6 +1,7 @@
 import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/domain/repositories/job_repository.dart';
 
 class JobRepositoryImpl implements JobRepository {
@@ -96,6 +97,29 @@ class JobRepositoryImpl implements JobRepository {
   Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
     try {
       return await remoteDataSource.respondToJobInvitation(invitationId, accept: accept);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<ArtisanInvitation>> getArtisanInvitations({int page = 1, int limit = 20}) async {
+    try {
+      final models = await remoteDataSource.fetchArtisanInvitations(page: page, limit: limit);
+      return models.map((m) => m.toEntity()).toList();
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
+    try {
+      return await remoteDataSource.respondToArtisanInvitation(
+        invitationId,
+        status: status,
+        rejectionReason: rejectionReason,
+      );
     } catch (_) {
       rethrow;
     }

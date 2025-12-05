@@ -32,14 +32,14 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       margin: const EdgeInsets.only(right: 8, bottom: 6),
       decoration: BoxDecoration(
-        color: AppColors.softPeach,
+        color: context.softPeachColor,
         borderRadius: AppRadius.radiusLG,
       ),
       child: Text(text,
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+              ?.copyWith(color: context.brownHeaderColor)),
     );
   }
 
@@ -56,16 +56,16 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-                color: AppColors.softPink,
+                color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
         title:
-            const Text('Job Invite', style: TextStyle(color: Colors.black87)),
+            Text('Job Invite', style: Theme.of(context).textTheme.titleLarge),
       ),
       body: SafeArea(
         child: Center(
@@ -77,9 +77,9 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 // Title + category + description card (rounded)
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
+                    color: context.cardBackgroundColor,
                     borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.softBorder),
+                    border: Border.all(color: context.softBorderColor),
                   ),
                   padding: context.responsivePadding,
                   child: Column(
@@ -95,13 +95,13 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: Colors.black45)),
+                                ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 10),
                         Text(job.description,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: Colors.black54)),
+                                ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                         AppSpacing.spaceMD,
                         Wrap(
                           children: [
@@ -120,21 +120,21 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 Container(
                   padding: AppSpacing.verticalMD,
                   decoration: BoxDecoration(
-                    color: AppColors.softPink,
+                    color: context.softPinkColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Row(
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Reviews',
-                            style: TextStyle(fontWeight: FontWeight.w600)),
+                            style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
                         AppSpacing.spaceSM,
                         CircleAvatar(
                             radius: 12,
-                            backgroundColor: Color(0xFFE9692D),
+                            backgroundColor: context.primaryColor,
                             child: Text('29',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12))),
+                                style: context.textTheme.bodySmall?.copyWith(
+                                    color: context.colorScheme.onPrimary))),
                       ]),
                 ),
 
@@ -182,7 +182,7 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                         ?.copyWith(fontWeight: FontWeight.w700)),
                 AppSpacing.spaceSM,
                 Card(
-                  color: AppColors.cardBackground,
+                  color: context.cardBackgroundColor,
                   shape:
                       RoundedRectangleBorder(borderRadius: AppRadius.radiusLG),
                   child: Column(
@@ -192,17 +192,17 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                         groupValue: _deliveryOption,
                         onChanged: (v) =>
                             setState(() => _deliveryOption = v ?? 'pickup'),
-                        title: const Text('Pickup items from artisans location',
-                            style: TextStyle(color: Colors.black45)),
+                        title: Text('Pickup items from artisans location',
+                            style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                       ),
                       CompatRadioListTile<String>(
                         value: 'deliver',
                         groupValue: _deliveryOption,
                         onChanged: (v) =>
                             setState(() => _deliveryOption = v ?? 'deliver'),
-                        title: const Text(
+                        title: Text(
                             'Deliver items to a specific location',
-                            style: TextStyle(color: Colors.black45)),
+                            style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
                       ),
                       if (_deliveryOption == 'deliver')
                         Padding(
@@ -211,11 +211,12 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                             width: double.infinity,
                             padding: AppSpacing.paddingMD,
                             decoration: BoxDecoration(
-                              color: AppColors.softPeach,
+                              color: context.softPeachColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Text(
-                                '15a, Oladipo diya street, Lekki phase 1 Ido LGA, Lagos state.'),
+                            child: Text(
+                                '15a, Oladipo diya street, Lekki phase 1 Ido LGA, Lagos state.',
+                                style: context.textTheme.bodyMedium),
                           ),
                         ),
                     ],
@@ -233,9 +234,9 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 AppSpacing.spaceSM,
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
+                    color: context.cardBackgroundColor,
                     borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.softBorder),
+                    border: Border.all(color: context.softBorderColor),
                   ),
                   padding: AppSpacing.paddingMD,
                   child: TextField(
@@ -252,22 +253,24 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                   padding: AppSpacing.paddingMD,
                   decoration: BoxDecoration(
                     borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.subtleBorder),
-                    color: AppColors.cardBackground,
+                    border: Border.all(color: context.subtleBorderColor),
+                    color: context.cardBackgroundColor,
                   ),
-                  child: const Column(
+                  child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Add your preferences',
-                            style: TextStyle(
+                            style: context.textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: AppColors.brownHeader)),
+                                color: context.brownHeaderColor)),
                         AppSpacing.spaceSM,
                         Text(
-                            '• Perhaps you don\'t like the client\'s estimated budget'),
-                        SizedBox(height: 6),
+                            '• Perhaps you don\'t like the client\'s estimated budget',
+                            style: context.textTheme.bodyMedium),
+                        const SizedBox(height: 6),
                         Text(
-                            '• The start time isn\'t convenient due to several bookings'),
+                            '• The start time isn\'t convenient due to several bookings',
+                            style: context.textTheme.bodyMedium),
                       ]),
                 ),
 

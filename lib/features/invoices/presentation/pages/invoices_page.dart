@@ -67,20 +67,21 @@ class _InvoicesPageState extends State<InvoicesPage> {
     }
   }
 
-  Color _getStatusColor(InvoiceStatus status) {
+  Color _getStatusColor(InvoiceStatus status, BuildContext context) {
+    final colorScheme = context.colorScheme;
     switch (status) {
       case InvoiceStatus.draft:
-        return Colors.grey;
+        return colorScheme.outlineVariant;
       case InvoiceStatus.pending:
-        return AppColors.orange;
+        return context.primaryColor;
       case InvoiceStatus.validated:
-        return const Color(0xFF654321);
+        return context.brownHeaderColor;
       case InvoiceStatus.paid:
-        return Colors.green;
+        return colorScheme.tertiary;
       case InvoiceStatus.overdue:
-        return Colors.red;
+        return context.dangerColor;
       case InvoiceStatus.cancelled:
-        return Colors.grey[600]!;
+        return colorScheme.onSurfaceVariant;
     }
   }
 
@@ -101,24 +102,24 @@ class _InvoicesPageState extends State<InvoicesPage> {
               children: [
                 Text(
                   invoice.invoiceNumber,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.brownHeader,
+                    color: context.brownHeaderColor,
                   ),
                 ),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(invoice.status).withOpacity(0.1),
+                    color: _getStatusColor(invoice.status, context).withValues(alpha: 0.1),
                     borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: _getStatusColor(invoice.status)),
+                    border: Border.all(color: _getStatusColor(invoice.status, context)),
                   ),
                   child: Text(
                     _getStatusText(invoice.status),
                     style: TextStyle(
-                      color: _getStatusColor(invoice.status),
+                      color: _getStatusColor(invoice.status, context),
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
@@ -137,9 +138,9 @@ class _InvoicesPageState extends State<InvoicesPage> {
             AppSpacing.spaceXS,
             Text(
               'Due: ${_formatDate(invoice.dueDate)}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: context.colorScheme.outlineVariant,
               ),
             ),
             AppSpacing.spaceMD,
@@ -148,10 +149,10 @@ class _InvoicesPageState extends State<InvoicesPage> {
               children: [
                 Text(
                   _formatCurrency(invoice.total),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.brownHeader,
+                    color: context.brownHeaderColor,
                   ),
                 ),
                 Row(
@@ -202,26 +203,26 @@ class _InvoicesPageState extends State<InvoicesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         title: Text(
           widget.title ?? 'Invoices',
-          style: const TextStyle(
-            color: Colors.black87,
+          style: TextStyle(
+            color: context.colorScheme.onSurface,
             fontWeight: FontWeight.w700,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.black54),
+            icon: Icon(Icons.add, color: context.colorScheme.onSurfaceVariant),
             onPressed: () {
               _navigateToCreateInvoice(context);
             },
           ),
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black54),
+            icon: Icon(Icons.more_vert, color: context.colorScheme.onSurfaceVariant),
             onPressed: () {
               // TODO: Implement more options
             },
@@ -243,10 +244,10 @@ class _InvoicesPageState extends State<InvoicesPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
                         size: 48,
-                        color: Colors.grey,
+                        color: context.colorScheme.outlineVariant,
                       ),
                       AppSpacing.spaceLG,
                       Text(
@@ -290,10 +291,10 @@ class _InvoicesPageState extends State<InvoicesPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.receipt_long,
                           size: 64,
-                          color: Colors.grey,
+                          color: context.colorScheme.outlineVariant,
                         ),
                         AppSpacing.spaceLG,
                         Text(
@@ -333,11 +334,11 @@ class _InvoicesPageState extends State<InvoicesPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.orange,
+        backgroundColor: context.primaryColor,
         onPressed: () {
           _navigateToCreateInvoice(context);
         },
-        child: const Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: context.colorScheme.onPrimary),
       ),
     );
   }

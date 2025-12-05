@@ -129,11 +129,11 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       case SubscriptionPlan.free:
         return colorScheme.onSurface.withValues(alpha: 0.6);
       case SubscriptionPlan.bronze:
-        return const Color(0xFFCD7F32); // Bronze color
+        return colorScheme.tertiary; // Bronze color
       case SubscriptionPlan.silver:
-        return const Color(0xFFC0C0C0); // Silver color
+        return colorScheme.onSurfaceVariant; // Silver color
       case SubscriptionPlan.gold:
-        return const Color(0xFFFFD700); // Gold color
+        return colorScheme.primary; // Gold color
       case SubscriptionPlan.unknown:
         return colorScheme.onSurface.withValues(alpha: 0.6);
     }
@@ -467,7 +467,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
               decoration: BoxDecoration(
-                  color: AppColors.orange,
+                  color: context.primaryColor,
                   borderRadius: BorderRadius.circular(14)),
               padding: AppSpacing.paddingLG,
               child: Row(
@@ -535,14 +535,14 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
               height: 40,
               padding: AppSpacing.horizontalSM,
               decoration: BoxDecoration(
-                color: selected ? AppColors.softPink : AppColors.cardBackground,
+                color: selected ? context.softPinkColor : context.cardBackgroundColor,
                 borderRadius: AppRadius.radiusXXXL,
               ),
               child: Row(
                 children: [
                   Text(label,
                       style: TextStyle(
-                          color: AppColors.brownHeader,
+                          color: context.brownHeaderColor,
                           fontWeight:
                               selected ? FontWeight.w700 : FontWeight.w500,
                           fontSize: selected ? 13 : 12)),
@@ -551,10 +551,10 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                        color: Colors.white, borderRadius: AppRadius.radiusLG),
-                    child: const Text('56',
+                        color: context.colorScheme.surface, borderRadius: AppRadius.radiusLG),
+                    child: Text('56',
                         style: TextStyle(
-                            fontSize: 10, color: AppColors.brownHeader)),
+                            fontSize: 10, color: context.brownHeaderColor)),
                   ),
                 ],
               ),
@@ -566,7 +566,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
               height: selected ? 3 : 0,
               width: selected ? 36 : 0,
               decoration: BoxDecoration(
-                color: AppColors.orange,
+                color: context.primaryColor,
                 borderRadius: BorderRadius.circular(6),
               ),
             ),
@@ -614,7 +614,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     final double carouselHeight = context.isTablet ? 180 : 140;
 
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       body: SafeArea(
         child: Center(
           child: Container(
@@ -669,7 +669,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
       child: Container(
         width: double.infinity,
-        color: AppColors.brownHeader,
+        color: context.brownHeaderColor,
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -82,13 +82,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.brownHeader,
-        foregroundColor: Colors.white,
-        title: const Text(
+        backgroundColor: context.brownHeaderColor,
+        foregroundColor: context.colorScheme.surface,
+        title: Text(
           'Notifications',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
+            color: context.colorScheme.surface,
           ),
         ),
         centerTitle: true,
@@ -102,9 +103,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ],
       ),
       body: _isLoading
-          ? const Center(
+          ? Center(
               child: CircularProgressIndicator(
-                color: AppColors.orange,
+                color: context.primaryColor,
               ),
             )
           : _notifications.isEmpty

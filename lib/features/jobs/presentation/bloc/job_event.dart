@@ -121,7 +121,7 @@ class LoadJobInvitations extends JobEvent {
   LoadJobInvitations({this.page = 1, this.limit = 20});
 }
 
-/// Event to respond to a job invitation
+/// Event to respond to a job invitation (LEGACY)
 class RespondToJobInvitationEvent extends JobEvent {
   final String invitationId;
   final bool accept;
@@ -129,5 +129,31 @@ class RespondToJobInvitationEvent extends JobEvent {
   RespondToJobInvitationEvent({
     required this.invitationId,
     required this.accept,
+  });
+}
+
+/// Event to load artisan invitations from clients (v1)
+class LoadArtisanInvitations extends JobEvent {
+  final int page;
+  final int limit;
+
+  LoadArtisanInvitations({this.page = 1, this.limit = 20});
+}
+
+/// Event to accept an artisan invitation (v1)
+class AcceptArtisanInvitation extends JobEvent {
+  final int invitationId;
+
+  AcceptArtisanInvitation({required this.invitationId});
+}
+
+/// Event to reject an artisan invitation with reason (v1)
+class RejectArtisanInvitation extends JobEvent {
+  final int invitationId;
+  final String reason;
+
+  RejectArtisanInvitation({
+    required this.invitationId,
+    required this.reason,
   });
 }

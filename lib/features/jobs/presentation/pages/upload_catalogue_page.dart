@@ -266,16 +266,16 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         padding: const EdgeInsets.only(left: 12.0),
         child: Container(
           decoration: BoxDecoration(
-              color: AppColors.softPink,
+              color: context.softPinkColor,
               borderRadius: BorderRadius.circular(10)),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black54),
+            icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
             onPressed: _back,
           ),
         ),
       ),
-      title: const Text('Upload Projects',
-          style: TextStyle(color: Colors.black87)),
+      title: Text('Upload Projects',
+          style: TextStyle(color: context.colorScheme.onSurface)),
     );
   }
 
@@ -290,7 +290,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               margin: EdgeInsets.only(right: i == 2 ? 0 : 8),
               height: 8,
               decoration: BoxDecoration(
-                color: active ? AppColors.orange : AppColors.subtleBorder,
+                color: active ? context.primaryColor : context.subtleBorderColor,
                 borderRadius: BorderRadius.circular(6),
               ),
             ),
@@ -312,7 +312,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           controller: _titleController,
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.cardBackground,
+            fillColor: context.cardBackgroundColor,
             hintText: 'what are you working on ?',
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -326,8 +326,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.softBorder),
-            color: AppColors.cardBackground,
+            border: Border.all(color: context.softBorderColor),
+            color: context.cardBackgroundColor,
           ),
           child: const Text(
               'Title Samples\n• Modern 4-seater dinning table.\n• Eternal elegance wedding gown.\n• Metal staircases handrails.'),
@@ -341,7 +341,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: context.cardBackgroundColor,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.softBorder),
             ),
@@ -366,7 +366,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           maxLines: 6,
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.cardBackground,
+            fillColor: context.cardBackgroundColor,
             hintText: 'Describe what your project is',
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -381,8 +381,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-                color: AppColors.softBorder, style: BorderStyle.solid),
-            color: AppColors.cardBackground,
+                color: context.softBorderColor, style: BorderStyle.solid),
+            color: context.cardBackgroundColor,
           ),
           child: const Text(
               'Descriptions should be specific to the product\n• Clear description of what your preferences and specifications are\n• Details about how you and your team likes to work'),
@@ -403,17 +403,17 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             decoration: BoxDecoration(
               borderRadius: AppRadius.radiusLG,
               border: Border.all(
-                  color: AppColors.softBorder,
+                  color: context.softBorderColor,
                   style: BorderStyle.solid,
                   width: 1.5),
-              color: Colors.white,
+              color: context.colorScheme.surface,
             ),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.perm_media_outlined,
-                      color: AppColors.orange, size: 36),
+                  Icon(Icons.perm_media_outlined,
+                      color: context.primaryColor, size: 36),
                   AppSpacing.spaceSM,
                   const Text(
                       'Copy and paste images, videos or any file from your device.'),
@@ -476,7 +476,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 decoration: InputDecoration(
                   prefixText: 'NGN ',
                   filled: true,
-                  fillColor: AppColors.cardBackground,
+                  fillColor: context.cardBackgroundColor,
                   hintText: '100,000',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -494,7 +494,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 decoration: InputDecoration(
                   prefixText: 'NGN ',
                   filled: true,
-                  fillColor: AppColors.cardBackground,
+                  fillColor: context.cardBackgroundColor,
                   hintText: '100,000',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -518,7 +518,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           onChanged: (v) => setState(() => _timeline = v),
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.cardBackground,
+            fillColor: context.cardBackgroundColor,
             hintText: 'Select preferable timeline',
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -534,7 +534,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         Container(
           padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: context.cardBackgroundColor,
               borderRadius: BorderRadius.circular(10)),
           child: Wrap(
             spacing: 8,
@@ -551,10 +551,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                     _selectedSkills.remove(s);
                   }
                 }),
-                selectedColor: const Color(0xFF9A4B20),
-                backgroundColor: Colors.white,
+                selectedColor: context.brownHeaderColor,
+                backgroundColor: context.colorScheme.surface,
                 labelStyle:
-                    TextStyle(color: selected ? Colors.white : Colors.black87),
+                    TextStyle(color: selected ? context.colorScheme.onPrimary : context.colorScheme.onSurface),
               );
             }).toList(),
           ),
@@ -566,7 +566,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         Container(
           padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: context.cardBackgroundColor,
               borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
@@ -601,7 +601,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
         Container(
           padding: AppSpacing.paddingMD,
           decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: context.cardBackgroundColor,
               borderRadius: BorderRadius.circular(10)),
           child: SwitchListTile(
             title: const Text('Enable instant selling'),
@@ -618,7 +618,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             controller: _brandController,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.cardBackground,
+              fillColor: context.cardBackgroundColor,
               hintText: 'Enter brand name',
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -639,7 +639,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             onChanged: (v) => setState(() => _condition = v),
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.cardBackground,
+              fillColor: context.cardBackgroundColor,
               hintText: 'Select item condition',
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -656,7 +656,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
             controller: _salesCategoryController,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.cardBackground,
+              fillColor: context.cardBackgroundColor,
               hintText: 'e.g., Electronics, Furniture, etc.',
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -672,7 +672,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           Container(
             padding: AppSpacing.paddingMD,
             decoration: BoxDecoration(
-                color: AppColors.cardBackground,
+                color: context.cardBackgroundColor,
                 borderRadius: BorderRadius.circular(10)),
             child: Column(
               children: [
@@ -770,11 +770,11 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           borderRadius: BorderRadius.circular(18),
           child: Container(
             height: 180,
-            color: AppColors.softPink,
+            color: context.softPinkColor,
             child: Center(
               child: _media.isEmpty
-                  ? const Icon(Icons.image_outlined,
-                      size: 56, color: AppColors.orange)
+                  ? Icon(Icons.image_outlined,
+                      size: 56, color: context.primaryColor)
                   : Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -794,7 +794,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: context.cardBackgroundColor,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: AppColors.softBorder),
           ),
@@ -802,12 +802,12 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: AppColors.brownHeader)),
+                  ?.copyWith(color: context.brownHeaderColor)),
         ),
         const SizedBox(height: 14),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: context.cardBackgroundColor,
             borderRadius: AppRadius.radiusLG,
             border: Border.all(color: AppColors.softBorder),
           ),
@@ -821,7 +821,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                 _descriptionController.text.isEmpty
                     ? 'No description provided.'
                     : _descriptionController.text,
-                style: const TextStyle(color: Colors.black54)),
+                style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
           ]),
         ),
         const SizedBox(height: 14),

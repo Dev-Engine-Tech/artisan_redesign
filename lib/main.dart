@@ -7,6 +7,7 @@ import 'core/di.dart';
 import 'core/storage/secure_storage.dart';
 import 'core/analytics/firebase_analytics_service.dart';
 import 'core/performance/performance_monitor.dart';
+import 'core/services/theme_service.dart';
 import 'features/auth/presentation/pages/splash_page.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'firebase_options.dart';
@@ -72,14 +73,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Artisans Circle',
-      theme: AppThemes.lightTheme(),
-      themeMode: ThemeMode.light, // Always use light theme regardless of system settings
-      navigatorObservers: [
-        FirebaseAnalyticsRouteObserver(getIt<AnalyticsService>()),
-      ],
-      home: const SplashPage(),
+    return AnimatedBuilder(
+      animation: getIt<ThemeService>(),
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'Artisans Circle',
+          theme: AppThemes.lightTheme(),
+          darkTheme: AppThemes.darkTheme(),
+          themeMode: getIt<ThemeService>().themeMode,
+          navigatorObservers: [
+            FirebaseAnalyticsRouteObserver(getIt<AnalyticsService>()),
+          ],
+          home: const SplashPage(),
+        );
+      },
     );
   }
 }

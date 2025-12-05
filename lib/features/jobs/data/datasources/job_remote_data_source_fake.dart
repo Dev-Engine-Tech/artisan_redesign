@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
+import 'package:artisans_circle/features/jobs/data/models/artisan_invitation_model.dart';
 import 'package:artisans_circle/features/jobs/data/datasources/job_remote_data_source.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
@@ -324,6 +325,138 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
         duration: invitation.duration,
         applied: true,
         thumbnailUrl: invitation.thumbnailUrl,
+        status: JobStatus.accepted,
+        projectStatus: AppliedProjectStatus.ongoing,
+      ));
+    }
+
+    return true;
+  }
+
+  // Fake artisan invitations for testing
+  final List<ArtisanInvitationModel> _artisanInvitations = [
+    ArtisanInvitationModel(
+      id: 1,
+      jobId: 101,
+      jobTitle: 'Modern Kitchen Renovation',
+      jobDescription: 'Complete kitchen remodeling with new cabinets, countertops, and appliances.',
+      jobCategory: 'Carpentry',
+      minBudget: 500000,
+      maxBudget: 800000,
+      duration: '2-3 months',
+      workMode: 'On-site',
+      address: 'Victoria Island, Lagos',
+      clientName: 'Mrs. Adeyemi',
+      clientId: 201,
+      invitationStatus: 'Pending',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      message: 'We saw your work on Instagram and would love to work with you on this project.',
+    ),
+    ArtisanInvitationModel(
+      id: 2,
+      jobId: 102,
+      jobTitle: 'Bathroom Plumbing Installation',
+      jobDescription: 'Install new bathroom fixtures including bathtub, shower, and vanity.',
+      jobCategory: 'Plumbing',
+      minBudget: 200000,
+      maxBudget: 350000,
+      duration: '2-4 weeks',
+      workMode: 'On-site',
+      address: 'Lekki Phase 1, Lagos',
+      clientName: 'Mr. Okonkwo',
+      clientId: 202,
+      invitationStatus: 'Pending',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+      message: 'You were highly recommended by a friend. Looking forward to working with you.',
+    ),
+    ArtisanInvitationModel(
+      id: 3,
+      jobId: 103,
+      jobTitle: 'Electrical Wiring for New Building',
+      jobDescription: 'Complete electrical installation for a 4-bedroom duplex.',
+      jobCategory: 'Electrical',
+      minBudget: 600000,
+      maxBudget: 900000,
+      duration: '1-2 months',
+      workMode: 'On-site',
+      address: 'Ajah, Lagos',
+      clientName: 'Chief Bello',
+      clientId: 203,
+      invitationStatus: 'Pending',
+      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+      message: 'Urgent project. Please review and let us know if you can start soon.',
+    ),
+  ];
+
+  @override
+  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20}) async {
+    // Simulate network latency
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    // Filter only pending invitations
+    final pendingInvitations = _artisanInvitations
+        .where((inv) => inv.invitationStatus.toLowerCase() == 'pending')
+        .toList();
+
+    // Simple pagination
+    final start = (page - 1) * limit;
+    final end = start + limit;
+
+    if (start >= pendingInvitations.length) {
+      return [];
+    }
+
+    return pendingInvitations.sublist(
+      start,
+      end > pendingInvitations.length ? pendingInvitations.length : end,
+    );
+  }
+
+  @override
+  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
+    // Simulate network latency
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    final idx = _artisanInvitations.indexWhere((inv) => inv.id == invitationId);
+    if (idx == -1) {
+      return true; // be lenient in fake for demo/tests
+    }
+
+    // Update the invitation status
+    final invitation = _artisanInvitations[idx];
+    _artisanInvitations[idx] = ArtisanInvitationModel(
+      id: invitation.id,
+      jobId: invitation.jobId,
+      jobTitle: invitation.jobTitle,
+      jobDescription: invitation.jobDescription,
+      jobCategory: invitation.jobCategory,
+      minBudget: invitation.minBudget,
+      maxBudget: invitation.maxBudget,
+      duration: invitation.duration,
+      workMode: invitation.workMode,
+      address: invitation.address,
+      clientName: invitation.clientName,
+      clientId: invitation.clientId,
+      invitationStatus: status,
+      rejectionReason: rejectionReason,
+      createdAt: invitation.createdAt,
+      respondedAt: DateTime.now(),
+      message: invitation.message,
+    );
+
+    // If accepted, create a job application (in a real scenario)
+    if (status.toLowerCase() == 'accepted') {
+      _appliedJobs.add(JobModel(
+        id: 'job_${invitation.jobId}',
+        title: invitation.jobTitle,
+        category: invitation.jobCategory ?? 'General',
+        description: invitation.jobDescription ?? '',
+        address: invitation.address ?? '',
+        minBudget: invitation.minBudget ?? 0,
+        maxBudget: invitation.maxBudget ?? 0,
+        duration: invitation.duration ?? 'Not specified',
+        applied: true,
+        thumbnailUrl: '',
         status: JobStatus.accepted,
         projectStatus: AppliedProjectStatus.ongoing,
       ));

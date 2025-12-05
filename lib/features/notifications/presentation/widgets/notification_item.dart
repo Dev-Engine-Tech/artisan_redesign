@@ -21,10 +21,10 @@ class NotificationItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: notification.read ? colorScheme.surface : Colors.blue.shade50,
+        color: notification.read ? colorScheme.surface : colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: AppRadius.radiusLG,
         border: Border.all(
-          color: notification.read ? colorScheme.outline.withValues(alpha: 0.2) : Colors.blue.shade200,
+          color: notification.read ? colorScheme.outline.withValues(alpha: 0.2) : colorScheme.primary.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
@@ -50,12 +50,12 @@ class NotificationItem extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: _getIconBackgroundColor(),
+                    color: _getIconBackgroundColor(context),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     _getNotificationIcon(),
-                    color: _getIconColor(),
+                    color: _getIconColor(context),
                     size: 20,
                   ),
                 ),
@@ -83,7 +83,7 @@ class NotificationItem extends StatelessWidget {
                       Text(
                         notification.type.displayTitle,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: _getIconColor(),
+                          color: _getIconColor(context),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -106,8 +106,8 @@ class NotificationItem extends StatelessWidget {
                   Container(
                     width: 8,
                     height: 8,
-                    decoration: const BoxDecoration(
-                      color: AppColors.orange,
+                    decoration: BoxDecoration(
+                      color: context.primaryColor,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -148,12 +148,12 @@ class NotificationItem extends StatelessWidget {
     }
   }
 
-  Color _getIconColor() {
+  Color _getIconColor(BuildContext context) {
     switch (notification.type) {
       case entities.NotificationType.paymentRelease:
         return Colors.green.shade600;
       case entities.NotificationType.jobApplication:
-        return AppColors.orange;
+        return context.primaryColor;
       case entities.NotificationType.acceptProjectAgreement:
         return Colors.blue.shade600;
       case entities.NotificationType.requestChangeOfAgreement:
@@ -171,13 +171,13 @@ class NotificationItem extends StatelessWidget {
       case entities.NotificationType.milestoneSubmission:
         return Colors.amber.shade700;
       case entities.NotificationType.hireArtisan:
-        return AppColors.brownHeader;
+        return context.brownHeaderColor;
       case entities.NotificationType.newAccount:
         return Colors.cyan.shade600;
     }
   }
 
-  Color _getIconBackgroundColor() {
-    return _getIconColor().withValues(alpha: 0.1);
+  Color _getIconBackgroundColor(BuildContext context) {
+    return _getIconColor(context).withValues(alpha: 0.1);
   }
 }

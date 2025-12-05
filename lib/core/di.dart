@@ -17,6 +17,8 @@ import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.d
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_artisan_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 
 import 'package:artisans_circle/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -39,6 +41,7 @@ import 'package:artisans_circle/core/network/ssl_overrides_stub.dart'
     as ssl;
 import 'package:artisans_circle/core/services/banner_service.dart';
 import 'package:artisans_circle/core/services/login_state_service.dart';
+import 'package:artisans_circle/core/services/theme_service.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
 import 'package:artisans_circle/core/services/push_registration_service.dart';
@@ -236,6 +239,11 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => BannerService(),
   );
 
+  // Register Theme Service
+  getIt.registerLazySingleton<ThemeService>(
+    () => ThemeService(getIt<SharedPreferences>()),
+  );
+
   // Subscription service
   getIt.registerLazySingleton<SubscriptionService>(
     () => SubscriptionService(getIt<Dio>()),
@@ -306,13 +314,22 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => RequestChange(getIt<JobRepository>()),
   );
 
-  // Job invitations usecases
+  // Job invitations usecases (legacy)
   getIt.registerLazySingleton<GetJobInvitations>(
     () => GetJobInvitations(getIt<JobRepository>()),
   );
 
   getIt.registerLazySingleton<RespondToJobInvitation>(
     () => RespondToJobInvitation(getIt<JobRepository>()),
+  );
+
+  // Artisan invitations usecases (v1)
+  getIt.registerLazySingleton<GetArtisanInvitations>(
+    () => GetArtisanInvitations(getIt<JobRepository>()),
+  );
+
+  getIt.registerLazySingleton<RespondToArtisanInvitation>(
+    () => RespondToArtisanInvitation(getIt<JobRepository>()),
   );
 
   // Auth feature (fake by default for development & tests)
@@ -378,6 +395,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       requestChange: getIt<RequestChange>(),
       getJobInvitations: getIt<GetJobInvitations>(),
       respondToJobInvitation: getIt<RespondToJobInvitation>(),
+      getArtisanInvitations: getIt<GetArtisanInvitations>(),
+      respondToArtisanInvitation: getIt<RespondToArtisanInvitation>(),
     ),
   );
 

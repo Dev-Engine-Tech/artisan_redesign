@@ -193,6 +193,10 @@ class ApiEndpoints {
   static const String jobSkills = '/job/api/skills/';
   static const String jobSkillsAutocomplete = '/job/api/skills/autocomplete/';
 
+  // Job Invitations (v1 - new artisan invitation endpoints)
+  static const String artisanInvitations = '/invitation/api/artisan-invitations/';
+  static String artisanInvitationStatus(int id) => '/invitation/api/artisan/invitations/$id/status/';
+
   // Job Contracts
   static String jobContracts(int jobId) =>
       '/job/api/job/$jobId/contracts/list-create/';

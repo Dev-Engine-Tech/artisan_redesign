@@ -27,6 +27,7 @@ import '../../../../core/services/push_registration_service.dart';
 import '../../../../features/notifications/data/datasources/notification_remote_data_source.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/image_url.dart';
+import '../../../../core/services/theme_service.dart';
 
 class SupportAccountPage extends StatefulWidget {
   const SupportAccountPage({super.key});
@@ -62,7 +63,7 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Support'),
-          backgroundColor: AppColors.brownHeader,
+          backgroundColor: context.brownHeaderColor,
         ),
         body: BlocConsumer<AccountBloc, AccountState>(
           listener: (context, state) {
@@ -158,6 +159,9 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                       ),
                     ),
                     AppSpacing.spaceMD,
+                    const _SectionTitle('Appearance'),
+                    _DarkModeToggle(),
+                    AppSpacing.spaceMD,
                     const _SectionTitle('Security'),
                     _MenuTile(
                       icon: Icons.lock_outline,
@@ -242,7 +246,7 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
                   'Last error: $lastError',
-                  style: const TextStyle(color: Colors.red, fontSize: 12),
+                  style: TextStyle(color: context.colorScheme.error, fontSize: 12),
                 ),
               ),
           ],
@@ -299,7 +303,7 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
             SizedBox(
                 width: 120,
                 child: Text(k,
-                    style: const TextStyle(fontWeight: FontWeight.w600))),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600) ?? TextStyle(fontWeight: FontWeight.w600))),
             AppSpacing.spaceSM,
             Expanded(child: Text(v)),
           ],
@@ -447,7 +451,7 @@ class _HeaderCard extends StatelessWidget {
                   },
                   child: CircleAvatar(
                     radius: 28,
-                    backgroundColor: AppColors.softPink,
+                    backgroundColor: context.softPinkColor,
                     child: profile?.profileImage != null &&
                             profile!.profileImage!.isNotEmpty
                         ? Hero(
@@ -458,14 +462,14 @@ class _HeaderCard extends StatelessWidget {
                                 width: 56,
                                 height: 56,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Icon(
+                                errorBuilder: (_, __, ___) => Icon(
                                     Icons.person_outline,
-                                    color: AppColors.orange),
+                                    color: context.primaryColor),
                               ),
                             ),
                           )
-                        : const Icon(Icons.person_outline,
-                            color: AppColors.orange),
+                        : Icon(Icons.person_outline,
+                            color: context.primaryColor),
                   ),
                 ),
                 Material(
@@ -504,11 +508,11 @@ class _HeaderCard extends StatelessWidget {
                       //       .add(AccountUploadProfileImage(path));
                       // }
                     },
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       radius: 10,
-                      backgroundColor: AppColors.orange,
+                      backgroundColor: context.primaryColor,
                       child:
-                          Icon(Icons.camera_alt, size: 12, color: Colors.white),
+                          Icon(Icons.camera_alt, size: 12, color: context.colorScheme.surface),
                     ),
                   ),
                 )
@@ -549,7 +553,7 @@ class _SectionTitle extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .titleMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+              ?.copyWith(color: context.brownHeaderColor)),
     );
   }
 }
@@ -571,17 +575,60 @@ class _MenuTile extends StatelessWidget {
       child: ListTile(
         leading: Container(
           decoration: BoxDecoration(
-              color: AppColors.badgeBackground,
+              color: context.badgeBackgroundColor,
               borderRadius: BorderRadius.circular(10)),
           padding: AppSpacing.paddingSM,
           child: Icon(icon,
-              color: isDestructive ? AppColors.danger : AppColors.orange),
+              color: isDestructive ? context.dangerColor : context.primaryColor),
         ),
         title: Text(title,
-            style: TextStyle(color: isDestructive ? AppColors.danger : null)),
+            style: TextStyle(color: isDestructive ? context.dangerColor : null)),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),
+    );
+  }
+}
+
+class _DarkModeToggle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeService = getIt<ThemeService>();
+
+    return AnimatedBuilder(
+      animation: themeService,
+      builder: (context, _) {
+        final isDark = themeService.isDarkMode;
+
+        return Card(
+          child: ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                color: context.badgeBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: AppSpacing.paddingSM,
+              child: Icon(
+                isDark ? Icons.dark_mode : Icons.light_mode,
+                color: context.primaryColor,
+              ),
+            ),
+            title: Text(isDark ? 'Dark Mode' : 'Light Mode'),
+            subtitle: Text(
+              isDark ? 'Switch to light mode' : 'Switch to dark mode',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+            ),
+            trailing: Switch(
+              value: isDark,
+              onChanged: (_) => themeService.toggleTheme(),
+              activeTrackColor: context.primaryColor,
+              activeThumbColor: context.colorScheme.surface,
+            ),
+          ),
+        );
+      },
     );
   }
 }

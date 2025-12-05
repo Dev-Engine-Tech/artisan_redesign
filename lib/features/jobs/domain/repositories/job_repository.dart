@@ -1,5 +1,6 @@
 import '../entities/job.dart';
 import '../entities/job_application.dart';
+import '../entities/artisan_invitation.dart';
 
 abstract class JobRepository {
   /// Fetches a page/list of available jobs.
@@ -32,9 +33,15 @@ abstract class JobRepository {
   /// Accept agreement for a project/application by project id.
   Future<bool> acceptAgreement(String projectId);
 
-  /// Fetches job invitations from clients
+  /// Fetches job invitations from clients (LEGACY)
   Future<List<Job>> getJobInvitations({int page = 1, int limit = 20});
 
-  /// Respond to a job invitation
+  /// Respond to a job invitation (LEGACY)
   Future<bool> respondToJobInvitation(String invitationId, {required bool accept});
+
+  /// Fetches artisan invitations from clients (v1 endpoints)
+  Future<List<ArtisanInvitation>> getArtisanInvitations({int page = 1, int limit = 20});
+
+  /// Respond to an artisan invitation with status and optional rejection reason
+  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason});
 }

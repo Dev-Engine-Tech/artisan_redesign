@@ -77,18 +77,18 @@ class AgreementPage extends StatelessWidget {
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-                color: AppColors.softPink,
+                color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
         title:
-            const Text('Application', style: TextStyle(color: Colors.black87)),
+            Text('Application', style: Theme.of(context).textTheme.titleLarge),
       ),
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -154,14 +154,14 @@ class AgreementContent extends StatelessWidget {
       // content card
       Container(
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: context.cardBackgroundColor,
           borderRadius: AppRadius.radiusMD,
-          border: Border.all(color: AppColors.softBorder),
+          border: Border.all(color: context.softBorderColor),
         ),
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Job Details',
-              style: TextStyle(fontWeight: FontWeight.w700)),
+          Text('Job Details',
+              style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
           AppSpacing.spaceSM,
           Text(job.title,
               style: Theme.of(context)
@@ -173,7 +173,7 @@ class AgreementContent extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
-                  ?.copyWith(color: Colors.black45)),
+                  ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           AppSpacing.spaceSM,
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
         ]),
@@ -183,9 +183,9 @@ class AgreementContent extends StatelessWidget {
       // Application Details (distinct from Job Details)
       Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colorScheme.surface,
           borderRadius: AppRadius.radiusMD,
-          border: Border.all(color: AppColors.subtleBorder),
+          border: Border.all(color: context.subtleBorderColor),
         ),
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -197,7 +197,7 @@ class AgreementContent extends StatelessWidget {
                           .textTheme
                           .titleMedium
                           ?.copyWith(fontWeight: FontWeight.w700))),
-              const Icon(Icons.expand_more, color: AppColors.brownHeader),
+              Icon(Icons.expand_more, color: context.brownHeaderColor),
             ],
           ),
           AppSpacing.spaceMD,
@@ -206,24 +206,24 @@ class AgreementContent extends StatelessWidget {
           const SizedBox(height: 6),
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
           AppSpacing.spaceMD,
-          const Text('How long will this project take you?',
-              style: TextStyle(color: Colors.black54)),
+          Text('How long will this project take you?',
+              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           Text(job.duration, style: Theme.of(context).textTheme.bodyMedium),
           AppSpacing.spaceMD,
-          const Text('How do you want to be paid?',
-              style: TextStyle(color: Colors.black54)),
+          Text('How do you want to be paid?',
+              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           Text('By Project', style: Theme.of(context).textTheme.bodyMedium),
           AppSpacing.spaceMD,
-          const Text('Desired pay (optional)',
-              style: TextStyle(color: Colors.black54)),
+          Text('Desired pay (optional)',
+              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           Text('NGN ${job.minBudget}',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: AppColors.brownHeader)),
+                  ?.copyWith(color: context.brownHeaderColor)),
           AppSpacing.spaceMD,
 
           // Material list
@@ -235,9 +235,9 @@ class AgreementContent extends StatelessWidget {
           AppSpacing.spaceSM,
           Container(
             decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: context.cardBackgroundColor,
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppColors.subtleBorder),
+              border: Border.all(color: context.subtleBorderColor),
             ),
             child: Column(
               children: [
@@ -255,7 +255,7 @@ class AgreementContent extends StatelessWidget {
                                   .bodyMedium
                                   ?.copyWith(
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader))),
+                                      color: context.brownHeaderColor))),
                       Expanded(
                           flex: 2,
                           child: Text('Quantity',
@@ -264,7 +264,7 @@ class AgreementContent extends StatelessWidget {
                                   .bodyMedium
                                   ?.copyWith(
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader))),
+                                      color: context.brownHeaderColor))),
                       Expanded(
                           flex: 3,
                           child: Text('Cost',
@@ -273,7 +273,7 @@ class AgreementContent extends StatelessWidget {
                                   .bodyMedium
                                   ?.copyWith(
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.brownHeader))),
+                                      color: context.brownHeaderColor))),
                     ],
                   ),
                 ),
@@ -308,10 +308,10 @@ class AgreementContent extends StatelessWidget {
                       horizontal: 12.0, vertical: 12),
                   child: Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                           flex: 5,
                           child: Text('Total',
-                              style: TextStyle(fontWeight: FontWeight.w700))),
+                              style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700))),
                       const Expanded(flex: 2, child: SizedBox()),
                       Expanded(
                           flex: 3,
@@ -332,10 +332,10 @@ class AgreementContent extends StatelessWidget {
           AppSpacing.spaceSM,
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF9C27B0).withValues(alpha: 0.05),
+              color: context.colorScheme.tertiaryContainer.withValues(alpha: 0.3),
               borderRadius: AppRadius.radiusMD,
               border: Border.all(
-                  color: const Color(0xFF9C27B0).withValues(alpha: 0.15)),
+                  color: context.colorScheme.tertiary.withValues(alpha: 0.3)),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: Row(
@@ -344,10 +344,10 @@ class AgreementContent extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                        color: AppColors.orange,
+                        color: context.primaryColor,
                         borderRadius: AppRadius.radiusMD),
                     child:
-                        const Icon(Icons.picture_as_pdf, color: Colors.white)),
+                        Icon(Icons.picture_as_pdf, color: context.colorScheme.onPrimary)),
                 AppSpacing.spaceMD,
                 Expanded(
                     child: Text(
@@ -362,12 +362,12 @@ class AgreementContent extends StatelessWidget {
       // Agreement section (expanded inline) — enhanced to match design with breakdown
       Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.colorScheme.surface,
           borderRadius: AppRadius.radiusMD,
-          border: Border.all(color: AppColors.subtleBorder),
+          border: Border.all(color: context.subtleBorderColor),
         ),
         padding: const EdgeInsets.all(14),
-        child: Builder(builder: (context) {
+        child: Builder(builder: (ctx) {
           final agreed = agreedPayment;
           final serviceCharge = (agreed * 0.02).round();
           final wht = (agreed * 0.01).round();
@@ -381,11 +381,11 @@ class AgreementContent extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Text(label,
-                          style: const TextStyle(color: Colors.black54))),
+                          style: ctx.textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant))),
                   AppSpacing.spaceSM,
                   Text(value,
                       style:
-                          valueStyle ?? Theme.of(context).textTheme.bodyMedium),
+                          valueStyle ?? Theme.of(ctx).textTheme.bodyMedium),
                 ],
               ),
             );
@@ -397,7 +397,7 @@ class AgreementContent extends StatelessWidget {
                 Row(
                   children: [
                     Text('Project Agreement',
-                        style: Theme.of(context)
+                        style: Theme.of(ctx)
                             .textTheme
                             .titleMedium
                             ?.copyWith(fontWeight: FontWeight.w700)),
@@ -406,13 +406,13 @@ class AgreementContent extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                          color: AppColors.softPeach,
+                          color: ctx.softPeachColor,
                           borderRadius: BorderRadius.circular(6)),
                       child: Text(
                           job.status.name == 'accepted'
                               ? 'Accepted'
                               : 'Pending',
-                          style: const TextStyle(fontSize: 12)),
+                          style: ctx.textTheme.bodySmall),
                     )
                   ],
                 ),
@@ -420,47 +420,47 @@ class AgreementContent extends StatelessWidget {
                 // Breakdown box (matches design blue-framed area)
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.softBorder),
+                    border: Border.all(color: ctx.softBorderColor),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   padding: AppSpacing.paddingMD,
                   child: Column(
                     children: [
                       row('Agreed Payment:', 'NGN ${agreed.toString()}',
-                          valueStyle: Theme.of(context)
+                          valueStyle: Theme.of(ctx)
                               .textTheme
                               .titleMedium
                               ?.copyWith(
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.brownHeader)),
+                                  color: ctx.brownHeaderColor)),
                       row('Service Charge:',
                           '- NGN ${serviceCharge.toString()}',
                           valueStyle:
-                              const TextStyle(color: Color(0xFF9A4B20))),
+                              ctx.textTheme.bodyMedium?.copyWith(color: ctx.brownHeaderColor)),
                       row('WHT (2%):', '- NGN ${wht.toString()}',
                           valueStyle:
-                              const TextStyle(color: Color(0xFF9A4B20))),
+                              ctx.textTheme.bodyMedium?.copyWith(color: ctx.brownHeaderColor)),
                       const Divider(),
                       row('Amount You will get:',
                           'NGN ${amountYouGet.toString()}',
-                          valueStyle: Theme.of(context)
+                          valueStyle: Theme.of(ctx)
                               .textTheme
                               .titleMedium
                               ?.copyWith(
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.brownHeader)),
+                                  color: ctx.brownHeaderColor)),
                     ],
                   ),
                 ),
                 AppSpacing.spaceMD,
-                const Text('Agreed Delivery Date',
-                    style: TextStyle(color: Colors.black54)),
+                Text('Agreed Delivery Date',
+                    style: ctx.textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant)),
                 const SizedBox(height: 6),
-                const Text(agreedDate, style: TextStyle(color: Colors.black87)),
+                Text(agreedDate, style: Theme.of(ctx).textTheme.bodyMedium),
                 AppSpacing.spaceMD,
-                const Text('Comment', style: TextStyle(color: Colors.black54)),
+                Text('Comment', style: ctx.textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant)),
                 const SizedBox(height: 6),
-                Text(comment, style: Theme.of(context).textTheme.bodyMedium),
+                Text(comment, style: Theme.of(ctx).textTheme.bodyMedium),
                 AppSpacing.spaceSM,
               ]);
         }),
