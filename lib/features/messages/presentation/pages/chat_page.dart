@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/image_url.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
@@ -118,7 +119,8 @@ class _ChatPageState extends State<ChatPage> {
     }
 
     if (m.type == domain.MessageType.image) {
-      final isRemote = (m.mediaUrl ?? '').startsWith('http');
+      final fixedUrl = sanitizeImageUrl(m.mediaUrl);
+      final isRemote = fixedUrl.startsWith('http');
       return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
@@ -133,23 +135,27 @@ class _ChatPageState extends State<ChatPage> {
                 width: 180,
                 height: 180,
                 child: isRemote
-                  ? ((m.mediaUrl ?? '').startsWith('http')
-                      ? Image.network(m.mediaUrl!, fit: BoxFit.cover)
-                      : Container(
+                  ? (Image.network(
+                          fixedUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                                color: colorScheme.surfaceContainerHighest,
+                                child: Icon(
+                                  Icons.image,
+                                  color: mine
+                                      ? colorScheme.onPrimary
+                                      : AppColors.brownHeader,
+                                  size: 48,
+                                ),
+                              )))
+                  : Container(
                           color: colorScheme.surfaceContainerHighest,
                           child: Icon(
                             Icons.image,
                             color: mine ? colorScheme.onPrimary : AppColors.brownHeader,
                             size: 48,
                           ),
-                        ))
-                  : Center(
-                      child: Icon(
-                        Icons.image,
-                        color: mine ? colorScheme.onPrimary : AppColors.brownHeader,
-                        size: 48,
-                      ),
-                    ),
+                        ),
               ),
           ),
           AppSpacing.spaceXS,
@@ -1005,12 +1011,26 @@ class _ChatPageState extends State<ChatPage> {
                                                   child: SizedBox(
                                                     width: 100,
                                                     height: 100,
-                                                    child: (g.mediaUrl ?? '')
-                                                            .startsWith('http')
-                                                        ? Image.network(
-                                                            g.mediaUrl!,
-                                                            fit: BoxFit.cover)
-                                                        : Container(
+                                                    child: (() {
+                                                      final fixed = sanitizeImageUrl(g.mediaUrl);
+                                                      final valid = fixed.startsWith('http');
+                                                      return valid
+                                                          ? Image.network(
+                                                              fixed,
+                                                              fit: BoxFit.cover,
+                                                              errorBuilder: (_, __, ___) => Container(
+                                                                    color: colorScheme
+                                                                        .surfaceContainerHighest,
+                                                                    child: Icon(
+                                                                        Icons.image,
+                                                                        color: mine
+                                                                            ? colorScheme
+                                                                                .onPrimary
+                                                                            : AppColors
+                                                                                .brownHeader),
+                                                                  ),
+                                                            )
+                                                          : Container(
                                                             color:
                                                                 colorScheme.surfaceContainerHighest,
                                                             child: Icon(
@@ -1020,7 +1040,8 @@ class _ChatPageState extends State<ChatPage> {
                                                                         .onPrimary
                                                                     : AppColors
                                                                         .brownHeader),
-                                                          ),
+                                                          );
+                                                    })(),
                                                   ),
                                                 ),
                                             ],

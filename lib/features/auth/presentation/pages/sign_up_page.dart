@@ -83,7 +83,7 @@ class _SignUpViewState extends State<_SignUpView> {
               margin: AppSpacing.horizontalXS,
               height: 4,
               decoration: BoxDecoration(
-                color: active ? AppColors.orange : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                color: active ? context.primaryColor : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -162,8 +162,8 @@ class _SignUpViewState extends State<_SignUpView> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.brownHeader,
-                  AppColors.darkBlue,
+                  context.brownHeaderColor,
+                  context.darkBlueColor,
                 ],
               ),
             ),
@@ -183,13 +183,13 @@ class _SignUpViewState extends State<_SignUpView> {
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.1),
+                                color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.1),
                                 borderRadius: AppRadius.radiusLG,
                               ),
                               child: IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.arrow_back_ios,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   size: 20,
                                 ),
                                 onPressed: () {
@@ -212,10 +212,9 @@ class _SignUpViewState extends State<_SignUpView> {
                         // Title and subtitle
                         Text(
                           _getStepTitle(state.step),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.w700,
                             height: 1.2,
                           ),
                         ),
@@ -224,9 +223,8 @@ class _SignUpViewState extends State<_SignUpView> {
 
                         Text(
                           _getStepSubtitle(state.step),
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.8),
-                            fontSize: 16,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.8),
                           ),
                         ),
                       ],
@@ -336,25 +334,25 @@ class _SignUpViewState extends State<_SignUpView> {
                 shape: RoundedRectangleBorder(
                   borderRadius: AppRadius.radiusSM,
                 ),
-                activeColor: AppColors.orange,
+                activeColor: context.primaryColor,
               ),
               Expanded(
                 child: Text.rich(
-                  const TextSpan(
+                  TextSpan(
                     text: 'I agree to the ',
                     children: [
                       TextSpan(
                         text: 'Terms & Conditions',
                         style: TextStyle(
-                          color: AppColors.orange,
+                          color: context.primaryColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      TextSpan(text: ' and '),
+                      const TextSpan(text: ' and '),
                       TextSpan(
                         text: 'Privacy Policy',
                         style: TextStyle(
-                          color: AppColors.orange,
+                          color: context.primaryColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -624,14 +622,14 @@ class _SignUpViewState extends State<_SignUpView> {
               Container(
                 width: 120,
                 height: 120,
-                decoration: const BoxDecoration(
-                  color: AppColors.orange,
+                decoration: BoxDecoration(
+                  color: context.primaryColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.check,
                   size: 60,
-                  color: Colors.white,
+                  color: colorScheme.onPrimary,
                 ),
               ),
 
@@ -679,8 +677,8 @@ class _SignUpViewState extends State<_SignUpView> {
 
               OutlinedAppButton(
                 text: 'Skip for Now',
-                borderColor: AppColors.brownHeader,
-                foregroundColor: AppColors.brownHeader,
+                borderColor: context.brownHeaderColor,
+                foregroundColor: context.brownHeaderColor,
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (_) => const AppShell()),

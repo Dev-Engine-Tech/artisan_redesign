@@ -229,10 +229,27 @@ class LinesTab extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(label, style: style),
-                          Text(value, style: style),
+                          Expanded(
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: style,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                value,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: style,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );

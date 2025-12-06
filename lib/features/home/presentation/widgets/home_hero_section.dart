@@ -36,26 +36,27 @@ class _HomeHeroSectionState extends State<HomeHeroSection>
   /// Factory method for creating hero items
   /// Follows Single Responsibility and makes testing easier
   List<HeroItem> _createHeroItems() {
-    return const [
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return [
       HeroItem(
         title: 'Discover Your Ideal\nJob match',
         subtitle: 'Personalized Recommendations for Every Artisan',
-        color: AppColors.lightBlue,
-        iconColor: AppColors.blue,
+        color: isDark ? const Color(0xFF1E3A5F) : AppColors.lightBlue,
+        iconColor: isDark ? const Color(0xFF64B5F6) : AppColors.blue,
         icon: Icons.search,
       ),
       HeroItem(
         title: 'Build Your Professional\nNetwork',
         subtitle: 'Connect with clients and fellow artisans',
-        color: AppColors.lightCyan,
-        iconColor: AppColors.cyan,
+        color: isDark ? const Color(0xFF1E3D3D) : AppColors.lightCyan,
+        iconColor: isDark ? const Color(0xFF4DD0E1) : AppColors.cyan,
         icon: Icons.people,
       ),
       HeroItem(
         title: 'Showcase Your\nCraftsmanship',
         subtitle: 'Create a stunning portfolio that stands out',
-        color: AppColors.lightOrange,
-        iconColor: AppColors.orange,
+        color: isDark ? const Color(0xFF3D2E1E) : AppColors.lightOrange,
+        iconColor: context.primaryColor,
         icon: Icons.star,
       ),
     ];
@@ -109,6 +110,10 @@ class HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).brightness == Brightness.dark
+        ? context.colorScheme.onSurface
+        : context.darkBlueColor;
+
     return Container(
       margin: AppSpacing.horizontalXS,
       padding: AppSpacing.paddingXL,
@@ -125,18 +130,16 @@ class HeroCard extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkBlue,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: textColor,
                   ),
                 ),
                 AppSpacing.spaceSM,
                 Text(
                   item.subtitle,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.darkBlue.withValues(alpha: 0.7),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: textColor.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -147,7 +150,7 @@ class HeroCard extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: AppColors.cardBackground.withValues(alpha: 0.5),
+              color: context.cardBackgroundColor.withValues(alpha: 0.5),
               borderRadius: AppRadius.radiusLG,
             ),
             child: Icon(

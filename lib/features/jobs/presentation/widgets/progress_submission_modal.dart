@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/image_url.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
@@ -309,12 +310,19 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: AppRadius.radiusMD,
-                                        child: Image.network(
-                                          _imageUrls[index],
-                                          width: 120,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: (() {
+                                          final fixed = sanitizeImageUrl(_imageUrls[index]);
+                                          return Image.network(
+                                            fixed,
+                                            width: 120,
+                                            height: 120,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) => Container(
+                                              color: AppColors.softBorder,
+                                              child: const Icon(Icons.broken_image),
+                                            ),
+                                          );
+                                        })(),
                                       ),
                                       Positioned(
                                         top: 4,

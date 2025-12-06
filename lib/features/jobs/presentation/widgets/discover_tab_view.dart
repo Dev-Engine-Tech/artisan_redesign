@@ -100,10 +100,10 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
       height: widget.height,
       padding: AppSpacing.horizontalLG,
       decoration: BoxDecoration(
-        color: isSelected ? AppColors.softPink : AppColors.cardBackground,
+        color: isSelected ? context.softPinkColor : context.cardBackgroundColor,
         borderRadius: AppRadius.radiusXXXL,
         border: Border.all(
-          color: isSelected ? AppColors.softPink : AppColors.subtleBorder,
+          color: isSelected ? context.softPinkColor : context.subtleBorderColor,
         ),
       ),
       child: Row(
@@ -111,10 +111,9 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
         children: [
           Text(
             tab.label,
-            style: TextStyle(
-              color: AppColors.brownHeader,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: context.brownHeaderColor,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              fontSize: 14,
             ),
           ),
           if (tab.count != null) ...[
@@ -127,9 +126,8 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
               ),
               child: Text(
                 tab.count!.toString(),
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.brownHeader,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: context.brownHeaderColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -140,7 +138,7 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
             Icon(
               tab.icon,
               size: 16,
-              color: AppColors.brownHeader,
+              color: context.brownHeaderColor,
             ),
           ],
         ],

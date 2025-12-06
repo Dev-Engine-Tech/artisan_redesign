@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/theme.dart';
+import '../../../../core/image_url.dart';
 import '../../domain/entities/business_settings.dart';
 
 /// Color picker dialog for selecting hex colors
@@ -245,12 +246,15 @@ class ImageUploadSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: AppRadius.radiusMD,
                   border: Border.all(color: AppColors.softBorder),
-                  image: (imageUrl != null && imageUrl!.trim().startsWith('http'))
-                      ? DecorationImage(
-                          image: NetworkImage(imageUrl!.trim()),
-                          fit: BoxFit.contain,
-                        )
-                      : null,
+                  image: (() {
+                    final fixed = sanitizeImageUrl(imageUrl);
+                    return fixed.startsWith('http')
+                        ? DecorationImage(
+                            image: NetworkImage(fixed),
+                            fit: BoxFit.contain,
+                          )
+                        : null;
+                  })(),
                 ),
               ),
               if (onRemove != null)

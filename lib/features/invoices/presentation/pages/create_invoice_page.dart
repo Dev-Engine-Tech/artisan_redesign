@@ -392,23 +392,24 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return BlocProvider.value(
         value: _formCubit,
         child: Builder(builder: (context) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: colorScheme.surface,
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: colorScheme.surface,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               title: Text(
                 _getAppBarTitle(),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -416,33 +417,35 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                 if (_invoice != null &&
                     _invoice!.id.isNotEmpty &&
                     _invoice!.status == InvoiceStatus.draft)
-                  PopupMenuButton<_MenuAction>(
-                    icon: const Icon(Icons.more_vert, color: Colors.grey),
-                    onSelected: (action) async {
-                      switch (action) {
-                        case _MenuAction.delete:
-                          await _confirmAndDeleteInvoice();
-                          break;
-                      }
-                    },
-                    itemBuilder: (context) {
-                      final items = <PopupMenuEntry<_MenuAction>>[];
-                      // Delete is only available for draft invoices
-                      items.add(
-                        const PopupMenuItem<_MenuAction>(
-                          value: _MenuAction.delete,
-                          child: Row(
-                            children: [
-                              Icon(Icons.delete_forever,
-                                  color: Colors.redAccent),
-                              SizedBox(width: 8),
-                              Text('Delete Invoice'),
-                            ],
+                  Builder(
+                    builder: (ctx) => PopupMenuButton<_MenuAction>(
+                      icon: Icon(Icons.more_vert, color: ctx.colorScheme.onSurfaceVariant),
+                      onSelected: (action) async {
+                        switch (action) {
+                          case _MenuAction.delete:
+                            await _confirmAndDeleteInvoice();
+                            break;
+                        }
+                      },
+                      itemBuilder: (context) {
+                        final items = <PopupMenuEntry<_MenuAction>>[];
+                        // Delete is only available for draft invoices
+                        items.add(
+                          PopupMenuItem<_MenuAction>(
+                            value: _MenuAction.delete,
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete_forever,
+                                    color: context.dangerColor),
+                                const SizedBox(width: 8),
+                                const Text('Delete Invoice'),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                      return items;
-                    },
+                        );
+                        return items;
+                      },
+                    ),
                   ),
                 const SizedBox(width: 8),
               ],
@@ -461,12 +464,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Customer Invoice',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ),
                           AppSpacing.spaceSM,
@@ -502,9 +503,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                               children: [
                                 Text(
                                   statusText,
-                                  style: const TextStyle(
-                                    fontSize: 32,
-                                    color: Colors.black,
+                                  style: theme.textTheme.headlineMedium?.copyWith(
+                                    color: colorScheme.onSurface,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -521,19 +521,18 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                               : Icons.check_circle,
                                           size: 14,
                                           color: _autoSavingDraft
-                                              ? Colors.orange
-                                              : Colors.green,
+                                              ? context.primaryColor
+                                              : context.colorScheme.tertiary,
                                         ),
                                         const SizedBox(width: 6),
                                         Text(
                                           _autoSavingDraft
                                               ? 'Saving…'
                                               : 'Saved',
-                                          style: TextStyle(
-                                            fontSize: 12,
+                                          style: theme.textTheme.bodySmall?.copyWith(
                                             color: _autoSavingDraft
-                                                ? Colors.orange
-                                                : Colors.green,
+                                                ? context.primaryColor
+                                                : context.colorScheme.tertiary,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -548,9 +547,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                             const SizedBox(height: 6),
                             Text(
                               'Invoice #: ${_invoice!.invoiceNumber}',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.black54,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurface.withValues(alpha: 0.54),
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -596,42 +594,48 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                     AppSpacing.spaceLG,
                                     Row(
                                       children: [
-                                        const Text(
-                                          'Currency',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
+                                        Expanded(
+                                          child: Text(
+                                            'Currency',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: theme.textTheme.bodyMedium?.copyWith(
+                                              color: colorScheme.onSurface,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
                                         ),
-                                        AppSpacing.spaceLG,
-                                        DropdownButton<String>(
-                                          value: _selectedCurrency,
-                                          items: const [
-                                            DropdownMenuItem(
-                                                value: 'NGN',
-                                                child: Text('NGN')),
-                                            DropdownMenuItem(
-                                                value: 'USD',
-                                                child: Text('USD')),
-                                            DropdownMenuItem(
-                                                value: 'GBP',
-                                                child: Text('GBP')),
-                                            DropdownMenuItem(
-                                                value: 'EUR',
-                                                child: Text('EUR')),
-                                            DropdownMenuItem(
-                                                value: 'GHS',
-                                                child: Text('GHS')),
-                                            DropdownMenuItem(
-                                                value: 'KES',
-                                                child: Text('KES')),
-                                          ],
-                                          onChanged: _isFormReadOnly
-                                              ? null
-                                              : (v) => setState(() =>
-                                                  _selectedCurrency =
-                                                      v ?? 'NGN'),
+                                        AppSpacing.spaceSM,
+                                        Flexible(
+                                          child: DropdownButton<String>(
+                                            isExpanded: true,
+                                            value: _selectedCurrency,
+                                            items: const [
+                                              DropdownMenuItem(
+                                                  value: 'NGN',
+                                                  child: Text('NGN')),
+                                              DropdownMenuItem(
+                                                  value: 'USD',
+                                                  child: Text('USD')),
+                                              DropdownMenuItem(
+                                                  value: 'GBP',
+                                                  child: Text('GBP')),
+                                              DropdownMenuItem(
+                                                  value: 'EUR',
+                                                  child: Text('EUR')),
+                                              DropdownMenuItem(
+                                                  value: 'GHS',
+                                                  child: Text('GHS')),
+                                              DropdownMenuItem(
+                                                  value: 'KES',
+                                                  child: Text('KES')),
+                                            ],
+                                            onChanged: _isFormReadOnly
+                                                ? null
+                                                : (v) => setState(() =>
+                                                    _selectedCurrency =
+                                                        v ?? 'NGN'),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -646,9 +650,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                           // Tab Bar
                           TabBar(
                             controller: _tabController,
-                            labelColor: AppColors.orange,
-                            unselectedLabelColor: Colors.grey,
-                            indicatorColor: AppColors.orange,
+                            labelColor: context.primaryColor,
+                            unselectedLabelColor: colorScheme.onSurfaceVariant,
+                            indicatorColor: context.primaryColor,
                             tabs: const [
                               Tab(text: 'Invoice Lines'),
                               Tab(text: 'Materials'),
@@ -687,7 +691,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                 padding: context.responsivePadding,
                                 decoration: BoxDecoration(
                                   border:
-                                      Border.all(color: Colors.grey.shade300),
+                                      Border.all(color: colorScheme.outlineVariant),
                                   borderRadius: AppRadius.radiusMD,
                                 ),
                                 child: Column(
@@ -713,11 +717,10 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Terms & Conditions:',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurface,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -726,7 +729,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                                 height: 80,
                                 decoration: BoxDecoration(
                                   border:
-                                      Border.all(color: Colors.grey.shade300),
+                                      Border.all(color: colorScheme.outlineVariant),
                                   borderRadius: AppRadius.radiusSM,
                                 ),
                                 child: TextFormField(
@@ -888,22 +891,24 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
       ),
     );
 
-    return Container(
-      padding: context.responsivePadding,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.3),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, -2),
+    return Builder(
+      builder: (context) => Container(
+        padding: context.responsivePadding,
+        decoration: BoxDecoration(
+          color: context.colorScheme.surface,
+          boxShadow: [
+            BoxShadow(
+              color: context.colorScheme.shadow.withValues(alpha: 0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Row(
+            children: buttons,
           ),
-        ],
-      ),
-      child: SafeArea(
-        child: Row(
-          children: buttons,
         ),
       ),
     );
@@ -1473,49 +1478,59 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   Widget _buildFormField(
       String label, String hint, TextEditingController controller,
       {bool? readOnly}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (label.isNotEmpty) ...[
-          Row(
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (label.isNotEmpty) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  AppSpacing.spaceXS,
+                  Icon(Icons.help_outline, size: 16, color: colorScheme.onSurfaceVariant),
+                ],
               ),
-              AppSpacing.spaceXS,
-              const Icon(Icons.help_outline, size: 16, color: Colors.grey),
+              AppSpacing.spaceSM,
             ],
-          ),
-          AppSpacing.spaceSM,
-        ],
-        TextFormField(
-          controller: controller,
-          readOnly: readOnly ?? _isFormReadOnly,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(color: Colors.grey),
-            border: OutlineInputBorder(
-              borderRadius: AppRadius.radiusSM,
-              borderSide: BorderSide(color: Colors.grey.shade300),
+            TextFormField(
+              controller: controller,
+              readOnly: readOnly ?? _isFormReadOnly,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                border: OutlineInputBorder(
+                  borderRadius: AppRadius.radiusSM,
+                  borderSide: BorderSide(color: colorScheme.outlineVariant),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: AppRadius.radiusSM,
+                  borderSide: BorderSide(color: colorScheme.outlineVariant),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: AppRadius.radiusSM,
+                  borderSide: BorderSide(color: context.primaryColor),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusSM,
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: AppRadius.radiusSM,
-              borderSide: const BorderSide(color: AppColors.orange),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
@@ -1546,47 +1561,57 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
   // Management of sections/lines/materials/measurements moved to InvoiceFormCubit
 
   Widget _buildSelectableDateField(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            AppSpacing.spaceXS,
-            const Icon(Icons.help_outline, size: 16, color: Colors.grey),
-          ],
-        ),
-        AppSpacing.spaceSM,
-        GestureDetector(
-          onTap: _isFormReadOnly ? null : () => _selectDate(context, label),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: AppRadius.radiusSM,
-            ),
-            child: Row(
+            Row(
               children: [
                 Expanded(
                   child: Text(
-                    value,
-                    style: const TextStyle(fontSize: 14),
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-                const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                AppSpacing.spaceXS,
+                Icon(Icons.help_outline, size: 16, color: colorScheme.onSurfaceVariant),
               ],
             ),
-          ),
-        ),
-      ],
+            AppSpacing.spaceSM,
+            GestureDetector(
+              onTap: _isFormReadOnly ? null : () => _selectDate(context, label),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: colorScheme.outlineVariant),
+                  borderRadius: AppRadius.radiusSM,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        value,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                    Icon(Icons.calendar_today, size: 16, color: colorScheme.onSurfaceVariant),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -1600,20 +1625,31 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+              ),
             ),
           ),
-          Text(
-            amount,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+          const SizedBox(width: 8),
+          Flexible(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                amount,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
             ),
           ),
         ],

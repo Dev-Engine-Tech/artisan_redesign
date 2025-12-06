@@ -61,7 +61,9 @@ class CatalogRequestCard extends StatelessWidget {
                       ),
                     ),
                     AppSpacing.spaceMD,
-                    _buildStatusBadge(),
+                    Builder(
+                      builder: (ctx) => _buildStatusBadge(ctx),
+                    ),
                   ],
                 ),
 
@@ -74,17 +76,17 @@ class CatalogRequestCard extends StatelessWidget {
 
                 // Client information
                 if (request.client != null) ...[
-                  _buildClientInfo(),
+                  _buildClientInfo(context),
                   AppSpacing.spaceMD,
                 ],
 
                 // Request details
-                _buildRequestDetails(),
+                _buildRequestDetails(context),
 
                 AppSpacing.spaceMD,
 
                 // Approval status
-                _buildApprovalStatus(),
+                _buildApprovalStatus(context),
 
                 AppSpacing.spaceLG,
 
@@ -147,38 +149,41 @@ class CatalogRequestCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.orange.withValues(alpha: 0.1),
-        borderRadius: AppRadius.radiusMD,
-        border: Border.all(color: AppColors.orange.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.attach_money,
-            size: 18,
-            color: AppColors.orange,
+    return Builder(
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: context.primaryColor.withValues(alpha: 0.1),
+            borderRadius: AppRadius.radiusMD,
+            border: Border.all(color: context.primaryColor.withValues(alpha: 0.3)),
           ),
-          const SizedBox(width: 4),
-          Text(
-            priceDisplay,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.orange,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.attach_money,
+                size: 18,
+                color: context.primaryColor,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                priceDisplay!,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: context.primaryColor,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      }
     );
   }
 
   /// Builds the status badge
-  Widget _buildStatusBadge() {
-    final statusInfo = _getStatusInfo();
+  Widget _buildStatusBadge(BuildContext context) {
+    final statusInfo = _getStatusInfo(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -188,9 +193,8 @@ class CatalogRequestCard extends StatelessWidget {
       ),
       child: Text(
         statusInfo.text,
-        style: TextStyle(
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
           color: statusInfo.color,
-          fontSize: 12,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -198,7 +202,7 @@ class CatalogRequestCard extends StatelessWidget {
   }
 
   /// Builds client information section
-  Widget _buildClientInfo() {
+  Widget _buildClientInfo(BuildContext context) {
     final client = request.client!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -206,17 +210,17 @@ class CatalogRequestCard extends StatelessWidget {
     return Container(
       padding: AppSpacing.paddingMD,
       decoration: BoxDecoration(
-        color: AppColors.softPink,
+        color: context.softPinkColor,
         borderRadius: AppRadius.radiusMD,
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: AppColors.orange.withValues(alpha: 0.1),
-            child: const Icon(
+            backgroundColor: context.primaryColor.withValues(alpha: 0.1),
+            child: Icon(
               Icons.person,
-              color: AppColors.orange,
+              color: context.primaryColor,
               size: 20,
             ),
           ),
@@ -258,7 +262,7 @@ class CatalogRequestCard extends StatelessWidget {
   }
 
   /// Builds request details section
-  Widget _buildRequestDetails() {
+  Widget _buildRequestDetails(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -307,7 +311,7 @@ class CatalogRequestCard extends StatelessWidget {
   }
 
   /// Builds approval status section
-  Widget _buildApprovalStatus() {
+  Widget _buildApprovalStatus(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -320,15 +324,15 @@ class CatalogRequestCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _buildApprovalIndicator('Artisan', request.isArtisanApproved),
+          _buildApprovalIndicator('Artisan', request.isArtisanApproved, context),
           AppSpacing.spaceLG,
-          _buildApprovalIndicator('Client', request.isClientApproved),
+          _buildApprovalIndicator('Client', request.isClientApproved, context),
           const Spacer(),
           Text(
             '${request.approvalCount}/2 Approved',
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color: request.isBothApproved ? Colors.green : Colors.orange,
+              color: request.isBothApproved ? colorScheme.tertiary : context.primaryColor,
             ),
           ),
         ],
@@ -337,7 +341,7 @@ class CatalogRequestCard extends StatelessWidget {
   }
 
   /// Builds individual approval indicator
-  Widget _buildApprovalIndicator(String label, bool approved) {
+  Widget _buildApprovalIndicator(String label, bool approved, BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -348,17 +352,17 @@ class CatalogRequestCard extends StatelessWidget {
           height: 16,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: approved ? Colors.green : colorScheme.surfaceContainerHighest,
+            color: approved ? colorScheme.tertiary : colorScheme.surfaceContainerHighest,
             border: Border.all(
-              color: approved ? Colors.green : colorScheme.outline,
+              color: approved ? colorScheme.tertiary : colorScheme.outline,
               width: 1.5,
             ),
           ),
           child: approved
-              ? const Icon(
+              ? Icon(
                   Icons.check,
                   size: 12,
-                  color: Colors.white,
+                  color: colorScheme.onPrimary,
                 )
               : null,
         ),
@@ -366,7 +370,7 @@ class CatalogRequestCard extends StatelessWidget {
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: approved ? Colors.green : colorScheme.onSurface.withValues(alpha: 0.7),
+            color: approved ? colorScheme.tertiary : colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -432,15 +436,15 @@ class CatalogRequestCard extends StatelessWidget {
   }
 
   /// Gets status information (color and text)
-  ({Color color, String text}) _getStatusInfo() {
+  ({Color color, String text}) _getStatusInfo(BuildContext context) {
     if (request.isBothApproved) {
-      return (color: Colors.green, text: 'Approved');
+      return (color: context.colorScheme.tertiary, text: 'Approved');
     } else if (request.isArtisanApproved) {
-      return (color: Colors.orange, text: 'Awaiting Client');
+      return (color: context.primaryColor, text: 'Awaiting Client');
     } else if (request.isClientApproved) {
-      return (color: Colors.blue, text: 'Awaiting Approval');
+      return (color: context.darkBlueColor, text: 'Awaiting Approval');
     } else {
-      return (color: Colors.grey, text: 'Pending');
+      return (color: context.colorScheme.onSurfaceVariant, text: 'Pending');
     }
   }
 

@@ -9,6 +9,11 @@ import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart'
 import 'package:artisans_circle/features/jobs/domain/usecases/accept_agreement.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
+import 'package:artisans_circle/core/cache/api_cache_manager.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_artisan_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_artisan_invitation.dart';
 
 class MockGetJobs extends Mock implements GetJobs {}
 
@@ -20,12 +25,29 @@ class MockAcceptAgreement extends Mock implements AcceptAgreement {}
 
 class MockRequestChange extends Mock implements RequestChange {}
 
+class MockGetJobInvitations extends Mock implements GetJobInvitations {}
+
+class MockRespondToJobInvitation extends Mock
+    implements RespondToJobInvitation {}
+
+class MockGetArtisanInvitations extends Mock
+    implements GetArtisanInvitations {}
+
+class MockRespondToArtisanInvitation extends Mock
+    implements RespondToArtisanInvitation {}
+
+class _FakeJobApplication extends Fake implements JobApplication {}
+
 void main() {
   late MockGetJobs mockGetJobs;
   late MockGetApplications mockGetApplications;
   late MockApplyToJob mockApplyToJob;
   late MockAcceptAgreement mockAcceptAgreement;
   late MockRequestChange mockRequestChange;
+  late MockGetJobInvitations mockGetJobInvitations;
+  late MockRespondToJobInvitation mockRespondToJobInvitation;
+  late MockGetArtisanInvitations mockGetArtisanInvitations;
+  late MockRespondToArtisanInvitation mockRespondToArtisanInvitation;
   late JobBloc bloc;
 
   final sampleJob = const Job(
@@ -55,14 +77,21 @@ void main() {
     ));
     registerFallbackValue(AcceptAgreementEvent(jobId: '1'));
     registerFallbackValue(RequestChangeEvent(jobId: '1', reason: 'reason'));
+    registerFallbackValue(_FakeJobApplication());
   });
 
   setUp(() {
+    // Ensure cache does not leak between tests
+    ApiCacheManager().clearAll();
     mockGetJobs = MockGetJobs();
     mockGetApplications = MockGetApplications();
     mockApplyToJob = MockApplyToJob();
     mockAcceptAgreement = MockAcceptAgreement();
     mockRequestChange = MockRequestChange();
+    mockGetJobInvitations = MockGetJobInvitations();
+    mockRespondToJobInvitation = MockRespondToJobInvitation();
+    mockGetArtisanInvitations = MockGetArtisanInvitations();
+    mockRespondToArtisanInvitation = MockRespondToArtisanInvitation();
 
     bloc = JobBloc(
       getJobs: mockGetJobs,
@@ -70,6 +99,10 @@ void main() {
       applyToJob: mockApplyToJob,
       acceptAgreement: mockAcceptAgreement,
       requestChange: mockRequestChange,
+      getJobInvitations: mockGetJobInvitations,
+      respondToJobInvitation: mockRespondToJobInvitation,
+      getArtisanInvitations: mockGetArtisanInvitations,
+      respondToArtisanInvitation: mockRespondToArtisanInvitation,
     );
   });
 
@@ -103,6 +136,8 @@ void main() {
     blocTest<JobBloc, JobState>(
       'emits [Loading, Error] when getJobs throws',
       build: () {
+        // Clear cache to avoid hit from previous test's success
+        ApiCacheManager().clearAll();
         when(() => mockGetJobs(
             page: any(named: 'page'),
             limit: any(named: 'limit'))).thenThrow(Exception('network'));
@@ -122,6 +157,9 @@ void main() {
       build: () {
         when(() => mockApplyToJob(any(that: isA<JobApplication>())))
             .thenAnswer((_) async => true);
+        when(() => mockGetApplications(
+            page: any(named: 'page'), limit: any(named: 'limit')))
+            .thenAnswer((_) async => [sampleJob]);
         when(() => mockGetJobs(
             page: any(named: 'page'),
             limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
@@ -143,7 +181,7 @@ void main() {
       verify: (_) {
         verify(() => mockApplyToJob(any(that: isA<JobApplication>())))
             .called(1);
-        verify(() => mockGetJobs()).called(1);
+        verify(() => mockGetApplications()).called(1);
       },
     );
 
@@ -204,7 +242,7 @@ void main() {
       },
       act: (bloc) => bloc.add(AcceptAgreementEvent(jobId: '1')),
       expect: () => [
-        isA<JobStateApplying>(),
+        isA<JobStateAcceptingAgreement>(),
         isA<JobStateAgreementAccepted>(),
       ],
       verify: (_) {
@@ -221,7 +259,7 @@ void main() {
       },
       act: (bloc) => bloc.add(AcceptAgreementEvent(jobId: '1')),
       expect: () => [
-        isA<JobStateApplying>(),
+        isA<JobStateAcceptingAgreement>(),
         isA<JobStateError>(),
       ],
     );
@@ -235,7 +273,7 @@ void main() {
       },
       act: (bloc) => bloc.add(AcceptAgreementEvent(jobId: '1')),
       expect: () => [
-        isA<JobStateApplying>(),
+        isA<JobStateAcceptingAgreement>(),
         isA<JobStateError>(),
       ],
     );

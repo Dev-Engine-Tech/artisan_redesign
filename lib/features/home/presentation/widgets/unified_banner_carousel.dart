@@ -402,15 +402,14 @@ class _BannerCard extends StatelessWidget {
       child: Container(
         margin: AppSpacing.horizontalXS,
         decoration: (() {
-          final hasImage = (banner.imageUrl != null &&
-              banner.imageUrl!.trim().isNotEmpty &&
-              banner.imageUrl!.startsWith('http'));
+          final fixedUrl = sanitizeImageUrl(banner.imageUrl ?? '');
+          final hasImage = fixedUrl.startsWith('http');
           return BoxDecoration(
             color: banner.backgroundColor ?? AppColors.orange,
             borderRadius: AppRadius.radiusLG,
             image: hasImage
                 ? DecorationImage(
-                    image: NetworkImage(banner.imageUrl!.trim()),
+                    image: NetworkImage(fixedUrl),
                     fit: BoxFit.cover,
                   )
                 : null,

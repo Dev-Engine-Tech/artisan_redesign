@@ -148,7 +148,7 @@ class _HomeTabSectionState extends State<HomeTabSection>
           ],
         ),
         indicatorSize: TabBarIndicatorSize.tab,
-        dividerColor: Colors.transparent,
+        dividerColor: colorScheme.surface.withValues(alpha: 0.0),
         labelColor: context.darkBlueColor,
         unselectedLabelColor: context.darkBlueColor.withValues(alpha: 0.6),
         labelStyle: theme.textTheme.labelLarge?.copyWith(

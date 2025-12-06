@@ -97,7 +97,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           if (_notifications.any((n) => !n.read))
             TextAppButton(
               text: 'Mark all read',
-              foregroundColor: Colors.white,
+              foregroundColor: colorScheme.surface,
               onPressed: _markAllAsRead,
             ),
         ],

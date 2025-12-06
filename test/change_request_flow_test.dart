@@ -13,6 +13,11 @@ import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dar
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/change_request_page.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_application.dart';
+import 'package:artisans_circle/core/cache/api_cache_manager.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_artisan_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_artisan_invitation.dart';
 
 class MockGetJobs extends Mock implements GetJobs {}
 
@@ -24,6 +29,17 @@ class MockAcceptAgreement extends Mock implements AcceptAgreement {}
 
 class MockRequestChange extends Mock implements RequestChange {}
 
+class MockGetJobInvitations extends Mock implements GetJobInvitations {}
+
+class MockRespondToJobInvitation extends Mock
+    implements RespondToJobInvitation {}
+
+class MockGetArtisanInvitations extends Mock
+    implements GetArtisanInvitations {}
+
+class MockRespondToArtisanInvitation extends Mock
+    implements RespondToArtisanInvitation {}
+
 // Mock Bloc for widget tests so we can drive state emissions deterministically.
 class MockJobBloc extends MockBloc<JobEvent, JobState> implements JobBloc {}
 
@@ -33,6 +49,10 @@ void main() {
   late MockApplyToJob mockApplyToJob;
   late MockAcceptAgreement mockAcceptAgreement;
   late MockRequestChange mockRequestChange;
+  late MockGetJobInvitations mockGetJobInvitations;
+  late MockRespondToJobInvitation mockRespondToJobInvitation;
+  late MockGetArtisanInvitations mockGetArtisanInvitations;
+  late MockRespondToArtisanInvitation mockRespondToArtisanInvitation;
   late JobBloc bloc;
 
   final sampleJob = const Job(
@@ -65,11 +85,17 @@ void main() {
   });
 
   setUp(() {
+    // Clear cache to ensure deterministic tests
+    ApiCacheManager().clearAll();
     mockGetJobs = MockGetJobs();
     mockGetApplications = MockGetApplications();
     mockApplyToJob = MockApplyToJob();
     mockAcceptAgreement = MockAcceptAgreement();
     mockRequestChange = MockRequestChange();
+    mockGetJobInvitations = MockGetJobInvitations();
+    mockRespondToJobInvitation = MockRespondToJobInvitation();
+    mockGetArtisanInvitations = MockGetArtisanInvitations();
+    mockRespondToArtisanInvitation = MockRespondToArtisanInvitation();
 
     when(() =>
             mockGetJobs(page: any(named: 'page'), limit: any(named: 'limit')))
@@ -81,6 +107,10 @@ void main() {
       applyToJob: mockApplyToJob,
       acceptAgreement: mockAcceptAgreement,
       requestChange: mockRequestChange,
+      getJobInvitations: mockGetJobInvitations,
+      respondToJobInvitation: mockRespondToJobInvitation,
+      getArtisanInvitations: mockGetArtisanInvitations,
+      respondToArtisanInvitation: mockRespondToArtisanInvitation,
     );
   });
 
@@ -103,7 +133,7 @@ void main() {
       act: (bloc) =>
           bloc.add(RequestChangeEvent(jobId: '1', reason: 'please change')),
       expect: () => [
-        isA<JobStateApplying>(),
+        isA<JobStateRequestingChange>(),
         isA<JobStateChangeRequested>(),
       ],
       verify: (_) {
@@ -124,7 +154,7 @@ void main() {
       act: (bloc) =>
           bloc.add(RequestChangeEvent(jobId: '1', reason: 'please change')),
       expect: () => [
-        isA<JobStateApplying>(),
+        isA<JobStateRequestingChange>(),
         isA<JobStateError>(),
       ],
     );

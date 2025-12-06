@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
 import '../../domain/entities/collaboration.dart';
 
@@ -87,12 +88,12 @@ class CollaborationCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: context.responsiveIconSize(20),
-                    backgroundImage: (otherArtisan.profilePic != null &&
-                            otherArtisan.profilePic!.trim().startsWith('http'))
-                        ? NetworkImage(otherArtisan.profilePic!.trim())
-                        : null,
+                    backgroundImage: (() {
+                      final fixed = sanitizeImageUrl(otherArtisan.profilePic);
+                      return fixed.startsWith('http') ? NetworkImage(fixed) : null;
+                    })(),
                     child: (otherArtisan.profilePic == null ||
-                            !otherArtisan.profilePic!.trim().startsWith('http'))
+                            !sanitizeImageUrl(otherArtisan.profilePic).startsWith('http'))
                         ? Text(
                             otherArtisan.name[0].toUpperCase(),
                             style: const TextStyle(fontWeight: FontWeight.bold),

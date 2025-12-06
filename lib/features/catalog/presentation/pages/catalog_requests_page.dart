@@ -44,7 +44,7 @@ class _CatalogRequestsPageState extends State<CatalogRequestsPage> {
         appBar: AppBar(
           title: const Text('Catalog Requests'),
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: theme.colorScheme.surface.withValues(alpha: 0.0),
         ),
         body: BlocConsumer<CatalogRequestsBloc, CatalogRequestsState>(
           listener: (context, state) {

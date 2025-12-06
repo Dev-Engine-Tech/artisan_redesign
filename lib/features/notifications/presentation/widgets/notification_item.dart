@@ -36,7 +36,7 @@ class NotificationItem extends StatelessWidget {
         ],
       ),
       child: Material(
-        color: Colors.transparent,
+        color: colorScheme.surface.withValues(alpha: 0.0),
         child: InkWell(
           onTap: onTap,
           borderRadius: AppRadius.radiusLG,
@@ -149,31 +149,32 @@ class NotificationItem extends StatelessWidget {
   }
 
   Color _getIconColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     switch (notification.type) {
       case entities.NotificationType.paymentRelease:
-        return Colors.green.shade600;
+        return context.colorScheme.tertiary;
       case entities.NotificationType.jobApplication:
         return context.primaryColor;
       case entities.NotificationType.acceptProjectAgreement:
-        return Colors.blue.shade600;
+        return context.darkBlueColor;
       case entities.NotificationType.requestChangeOfAgreement:
-        return Colors.orange.shade600;
+        return context.primaryColor;
       case entities.NotificationType.cancelContract:
-        return Colors.red.shade600;
+        return context.dangerColor;
       case entities.NotificationType.materialPayment:
-        return Colors.purple.shade600;
+        return isDark ? const Color(0xFFCE93D8) : const Color(0xFF8E24AA);
       case entities.NotificationType.jobSubmission:
-        return Colors.teal.shade600;
+        return isDark ? const Color(0xFF80CBC4) : const Color(0xFF00897B);
       case entities.NotificationType.loginActivity:
-        return Colors.grey.shade600;
+        return context.colorScheme.onSurfaceVariant;
       case entities.NotificationType.agreementQuote:
-        return Colors.indigo.shade600;
+        return isDark ? const Color(0xFF9FA8DA) : const Color(0xFF5C6BC0);
       case entities.NotificationType.milestoneSubmission:
-        return Colors.amber.shade700;
+        return isDark ? const Color(0xFFFFD54F) : const Color(0xFFFFA000);
       case entities.NotificationType.hireArtisan:
         return context.brownHeaderColor;
       case entities.NotificationType.newAccount:
-        return Colors.cyan.shade600;
+        return isDark ? const Color(0xFF80DEEA) : const Color(0xFF00ACC1);
     }
   }
 

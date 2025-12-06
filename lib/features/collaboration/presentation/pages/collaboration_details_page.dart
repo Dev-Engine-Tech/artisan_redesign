@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
 import '../../domain/entities/collaboration.dart';
@@ -308,12 +309,12 @@ class CollaborationDetailsPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 32,
-                backgroundImage: (artisan.profilePic != null &&
-                        artisan.profilePic!.trim().startsWith('http'))
-                    ? NetworkImage(artisan.profilePic!.trim())
-                    : null,
+                backgroundImage: (() {
+                  final fixed = sanitizeImageUrl(artisan.profilePic);
+                  return fixed.startsWith('http') ? NetworkImage(fixed) : null;
+                })(),
                 child: (artisan.profilePic == null ||
-                        !artisan.profilePic!.trim().startsWith('http'))
+                        !sanitizeImageUrl(artisan.profilePic).startsWith('http'))
                     ? Text(
                         artisan.name[0].toUpperCase(),
                         style: const TextStyle(

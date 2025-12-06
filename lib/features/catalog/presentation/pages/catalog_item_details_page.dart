@@ -14,24 +14,27 @@ class CatalogItemDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: colorScheme.surface.withValues(alpha: 0.0),
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-                color: AppColors.softPink,
+                color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Catalogue', style: TextStyle(color: Colors.black87)),
+        title: Text('Catalogue', style: theme.textTheme.titleLarge),
       ),
       body: SafeArea(
         child: ListView(
@@ -50,18 +53,18 @@ class CatalogItemDetailsPage extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (c, e, s) => Container(
                           height: 180,
-                          color: AppColors.softPink,
+                          color: context.softPinkColor,
                           child: const Center(child: Icon(Icons.image)),
                         ),
                       )
                     : Container(
                         height: 180,
-                        color: AppColors.softPink,
-                        child: const Center(
+                        color: context.softPinkColor,
+                        child: Center(
                           child: Icon(
                             Icons.image_outlined,
                             size: 56,
-                            color: AppColors.orange,
+                            color: context.primaryColor,
                           ),
                         ),
                       );
@@ -71,30 +74,24 @@ class CatalogItemDetailsPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
+                  color: context.cardBackgroundColor,
                   borderRadius: AppRadius.radiusLG,
-                  border: Border.all(color: AppColors.softBorder)),
+                  border: Border.all(color: context.softBorderColor)),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(item.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
+                        style: theme.textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 6),
                     if (item.ownerName != null && item.ownerName!.isNotEmpty)
                       Text(item.ownerName!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.black45)),
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.45))),
                     AppSpacing.spaceMD,
                     Text(item.description,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.black54)),
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
                     AppSpacing.spaceMD,
                     Wrap(spacing: 8, runSpacing: 8, children: [
                       if (item.priceMin != null)
@@ -169,12 +166,12 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-          color: AppColors.softPeach, borderRadius: AppRadius.radiusMD),
+          color: context.softPeachColor, borderRadius: AppRadius.radiusMD),
       child: Text(label,
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+              ?.copyWith(color: context.brownHeaderColor)),
     );
   }
 }

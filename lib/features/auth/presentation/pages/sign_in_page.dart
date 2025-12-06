@@ -78,13 +78,13 @@ class _SignInPageState extends State<SignInPage> {
       },
       child: Scaffold(
         body: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.brownHeader,
-                AppColors.darkBlue,
+                context.brownHeaderColor,
+                context.darkBlueColor,
               ],
             ),
           ),
@@ -102,10 +102,9 @@ class _SignInPageState extends State<SignInPage> {
                       // Title and subtitle
                       Text(
                         'Go ahead and set up\nyour account',
-                        style: TextStyle(
+                        style: theme.textTheme.headlineMedium?.copyWith(
                           color: colorScheme.onPrimary,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                           height: 1.2,
                         ),
                       ),
@@ -114,9 +113,8 @@ class _SignInPageState extends State<SignInPage> {
 
                       Text(
                         'Sign in-up to enjoy the best managing experience',
-                        style: TextStyle(
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           color: colorScheme.onPrimary.withValues(alpha: 0.8),
-                          fontSize: 16,
                         ),
                       ),
                     ],
@@ -172,10 +170,10 @@ class _SignInPageState extends State<SignInPage> {
                                         child: Text(
                                           'Login',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                          style: theme.textTheme.bodyMedium?.copyWith(
                                             fontWeight: FontWeight.w600,
                                             color: _selectedTab == 0
-                                                ? AppColors.brownHeader
+                                                ? context.brownHeaderColor
                                                 : colorScheme.onSurfaceVariant,
                                           ),
                                         ),
@@ -203,10 +201,10 @@ class _SignInPageState extends State<SignInPage> {
                                         child: Text(
                                           'Register',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
+                                          style: theme.textTheme.bodyMedium?.copyWith(
                                             fontWeight: FontWeight.w600,
                                             color: _selectedTab == 1
-                                                ? AppColors.brownHeader
+                                                ? context.brownHeaderColor
                                                 : colorScheme.onSurfaceVariant,
                                           ),
                                         ),
@@ -276,13 +274,12 @@ class _SignInPageState extends State<SignInPage> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius: AppRadius.radiusSM,
                                         ),
-                                        activeColor: AppColors.orange,
+                                        activeColor: context.primaryColor,
                                       ),
                                       Text(
                                         'Remember me',
-                                        style: TextStyle(
+                                        style: theme.textTheme.bodySmall?.copyWith(
                                           color: colorScheme.onSurfaceVariant,
-                                          fontSize: 14,
                                         ),
                                       ),
                                       const Spacer(),
@@ -314,9 +311,8 @@ class _SignInPageState extends State<SignInPage> {
                                             horizontal: 16),
                                         child: Text(
                                           'Or login with',
-                                          style: TextStyle(
+                                          style: theme.textTheme.bodySmall?.copyWith(
                                             color: colorScheme.onSurfaceVariant,
-                                            fontSize: 14,
                                           ),
                                         ),
                                       ),

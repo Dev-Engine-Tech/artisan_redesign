@@ -71,8 +71,11 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -113,10 +116,9 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                               }
                               return Text(
                                 greeting,
-                                style: const TextStyle(
-                                  fontSize: 24,
+                                style: theme.textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.brownHeader,
+                                  color: context.brownHeaderColor,
                                 ),
                               );
                             },
@@ -124,9 +126,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                           const SizedBox(height: 2),
                           Text(
                             'Take a look for your last activity',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -137,15 +138,15 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       children: [
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.search,
-                              color: Colors.grey, size: 20),
+                          icon: Icon(Icons.search,
+                              color: colorScheme.onSurfaceVariant, size: 20),
                           padding: AppSpacing.paddingSM,
                           constraints: const BoxConstraints(),
                         ),
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.notifications_outlined,
-                              color: Colors.grey, size: 20),
+                          icon: Icon(Icons.notifications_outlined,
+                              color: colorScheme.onSurfaceVariant, size: 20),
                           padding: AppSpacing.paddingSM,
                           constraints: const BoxConstraints(),
                         ),
@@ -162,36 +163,40 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                 children: [
                   Expanded(
                     child: _buildTopIcon(
+                      context,
                       'Draft',
                       Icons.description_outlined,
-                      AppColors.orange,
+                      context.primaryColor,
                       () => _navigateToInvoiceList(
                           context, InvoiceStatus.draft, 'Draft'),
                     ),
                   ),
                   Expanded(
                     child: _buildTopIcon(
+                      context,
                       'Validated',
                       Icons.check_circle_outline,
-                      AppColors.orange,
+                      context.primaryColor,
                       () => _navigateToInvoiceList(
                           context, InvoiceStatus.validated, 'Validated'),
                     ),
                   ),
                   Expanded(
                     child: _buildTopIcon(
+                      context,
                       'Paid',
                       Icons.payments_outlined,
-                      AppColors.orange,
+                      context.primaryColor,
                       () => _navigateToInvoiceList(
                           context, InvoiceStatus.paid, 'Paid'),
                     ),
                   ),
                   Expanded(
                     child: _buildTopIcon(
+                      context,
                       'Customers',
                       Icons.people_outline,
-                      AppColors.orange,
+                      context.primaryColor,
                       () => _navigateToCustomers(context),
                     ),
                   ),
@@ -209,8 +214,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppColors.orange,
-                      AppColors.orange.withOpacity(0.8)
+                      context.primaryColor,
+                      context.primaryColor.withValues(alpha: 0.8)
                     ],
                   ),
                   borderRadius: AppRadius.radiusLG,
@@ -218,11 +223,10 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Earnings balance',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onPrimary.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -231,9 +235,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       _loading
                           ? 'Loading...'
                           : 'NGN ${(_dashboard?.earningsBalance ?? 0).toStringAsFixed(0)}',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: colorScheme.onPrimary,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -276,9 +279,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       children: [
                         Text(
                           'Total outstanding',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade700,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -287,9 +289,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                           _loading
                               ? 'Loading...'
                               : 'NGN ${(_dashboard?.totalOutstanding ?? 0).toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            color: AppColors.brownHeader,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: context.brownHeaderColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -298,9 +299,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                           _loading
                               ? 'Loading...'
                               : '${_dashboard?.validatedCount ?? 0} Waiting invoice${(_dashboard?.validatedCount ?? 0) == 1 ? '' : 's'}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -312,9 +312,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       children: [
                         Text(
                           'Paid this month',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade700,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -323,9 +322,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                           _loading
                               ? 'Loading...'
                               : 'NGN ${(_dashboard?.paidThisMonth ?? 0).toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            color: AppColors.brownHeader,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: context.brownHeaderColor,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -334,9 +332,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                           _loading
                               ? 'Loading...'
                               : '${_dashboard?.paidCount ?? 0} Paid invoice${(_dashboard?.paidCount ?? 0) == 1 ? '' : 's'}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -351,7 +348,7 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
               Container(
                 padding: AppSpacing.paddingXL,
                 decoration: BoxDecoration(
-                  color: AppColors.cardBackground,
+                  color: context.cardBackgroundColor,
                   borderRadius: AppRadius.radiusXL,
                 ),
                 child: Row(
@@ -360,20 +357,18 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Watch tutorial',
-                            style: TextStyle(
-                              fontSize: 18,
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
-                              color: AppColors.brownHeader,
+                              color: context.brownHeaderColor,
                             ),
                           ),
                           AppSpacing.spaceXS,
                           Text(
                             'How to send on invoice in 1 minute',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -383,12 +378,12 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: AppColors.lightPeach,
+                        color: context.lightPeachColor,
                         borderRadius: AppRadius.radiusLG,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.play_circle_outline,
-                        color: AppColors.orange,
+                        color: context.primaryColor,
                         size: 24,
                       ),
                     ),
@@ -399,22 +394,20 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
               AppSpacing.spaceLG,
 
               // Frequently client section
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Frequently client',
-                    style: TextStyle(
-                      fontSize: 18,
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.brownHeader,
+                      color: context.brownHeaderColor,
                     ),
                   ),
                   Text(
                     'See more',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.orange,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: context.primaryColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -431,9 +424,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                         ? Center(
                             child: Text(
                               'No frequent customers yet',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                           )
@@ -454,22 +446,20 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
               AppSpacing.spaceLG,
 
               // Recent invoice section
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Recent invoice',
-                    style: TextStyle(
-                      fontSize: 18,
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.brownHeader,
+                      color: context.brownHeaderColor,
                     ),
                   ),
                   Text(
                     'See more',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.orange,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: context.primaryColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -484,15 +474,14 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       ? Container(
                           padding: context.responsivePadding,
                           decoration: BoxDecoration(
-                            color: AppColors.cardBackground,
+                            color: context.cardBackgroundColor,
                             borderRadius: AppRadius.radiusXL,
                           ),
                           child: Center(
                             child: Text(
                               'No recent invoices',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -508,7 +497,7 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                             return Container(
                               padding: context.responsivePadding,
                               decoration: BoxDecoration(
-                                color: AppColors.cardBackground,
+                                color: context.cardBackgroundColor,
                                 borderRadius: AppRadius.radiusXL,
                               ),
                               child: Row(
@@ -518,11 +507,11 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: AppRadius.radiusLG,
-                                      color: AppColors.orange.withOpacity(0.2),
+                                      color: context.primaryColor.withValues(alpha: 0.2),
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.receipt,
-                                      color: AppColors.orange,
+                                      color: context.primaryColor,
                                     ),
                                   ),
                                   AppSpacing.spaceMD,
@@ -532,27 +521,24 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                       children: [
                                         Text(
                                           entity.clientName,
-                                          style: const TextStyle(
-                                            fontSize: 16,
+                                          style: theme.textTheme.titleMedium?.copyWith(
                                             fontWeight: FontWeight.w600,
-                                            color: AppColors.brownHeader,
+                                            color: context.brownHeaderColor,
                                           ),
                                         ),
                                         AppSpacing.spaceXS,
                                         Text(
                                           'Invoice #${entity.invoiceNumber}',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey,
+                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                            color: colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         AppSpacing.spaceSM,
                                         Text(
                                           'NGN ${entity.total.toStringAsFixed(0)}',
-                                          style: const TextStyle(
-                                            fontSize: 16,
+                                          style: theme.textTheme.titleMedium?.copyWith(
                                             fontWeight: FontWeight.w600,
-                                            color: AppColors.brownHeader,
+                                            color: context.brownHeaderColor,
                                           ),
                                         ),
                                       ],
@@ -566,13 +552,12 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                             horizontal: 12, vertical: 4),
                                         decoration: BoxDecoration(
                                           color: _getStatusColor(entity.status)
-                                              .withOpacity(0.2),
+                                              .withValues(alpha: 0.2),
                                           borderRadius: AppRadius.radiusMD,
                                         ),
                                         child: Text(
                                           _getStatusText(entity.status),
-                                          style: TextStyle(
-                                            fontSize: 12,
+                                          style: theme.textTheme.bodySmall?.copyWith(
                                             fontWeight: FontWeight.w500,
                                             color: _getStatusColor(entity.status),
                                           ),
@@ -581,9 +566,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                       AppSpacing.spaceSM,
                                       Text(
                                         _formatDate(entity.issueDate),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey.shade600,
+                                        style: theme.textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                     ],
@@ -600,25 +584,26 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.orange,
+        backgroundColor: context.primaryColor,
         onPressed: () => _navigateToCreateInvoice(context),
-        child: const Icon(Icons.add, color: Colors.white),
+        child: Icon(Icons.add, color: colorScheme.onPrimary),
       ),
     );
   }
 
   Widget _buildTopIcon(
-      String title, IconData icon, Color color, VoidCallback onTap) {
+      BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: AppSpacing.horizontalXS,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: context.cardBackgroundColor,
           borderRadius: AppRadius.radiusLG,
           border: Border.all(
-            color: AppColors.subtleBorder,
+            color: context.subtleBorderColor,
             width: 1,
           ),
         ),
@@ -628,7 +613,7 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: AppRadius.radiusMD,
               ),
               child: Icon(
@@ -640,10 +625,9 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
             const SizedBox(height: 6),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 12,
+              style: theme.textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.brownHeader,
+                color: context.brownHeaderColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -654,61 +638,71 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
   }
 
   Widget _buildChartBar(double height) {
-    return Container(
-      width: 6,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(3),
+    return Builder(
+      builder: (context) => Container(
+        width: 6,
+        height: height,
+        decoration: BoxDecoration(
+          color: context.colorScheme.onPrimary.withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(3),
+        ),
       ),
     );
   }
 
   Widget _buildClientAvatar(String name, String? imageUrl) {
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              borderRadius: AppRadius.radiusLG,
-              color: imageUrl == null
-                  ? AppColors.orange.withOpacity(0.2)
-                  : null,
-              image: (imageUrl != null &&
-                      imageUrl.trim().startsWith('http'))
-                  ? DecorationImage(
-                      image: NetworkImage(imageUrl.trim()),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
-            ),
-            child: (imageUrl == null || !imageUrl.trim().startsWith('http'))
-                ? Center(
-                    child: Text(
-                      name.isNotEmpty ? name[0].toUpperCase() : '?',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.orange,
-                      ),
-                    ),
-                  )
-                : null,
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Container(
+          margin: const EdgeInsets.only(right: 16),
+          child: Column(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  borderRadius: AppRadius.radiusLG,
+                  color: imageUrl == null
+                      ? context.primaryColor.withValues(alpha: 0.2)
+                      : null,
+                  image: (() {
+                    final fixed = sanitizeImageUrl(imageUrl);
+                    return fixed.startsWith('http')
+                        ? DecorationImage(
+                            image: NetworkImage(fixed),
+                            fit: BoxFit.cover,
+                          )
+                        : null;
+                  })(),
+                ),
+                child: (() {
+                  final valid = sanitizeImageUrl(imageUrl).startsWith('http');
+                  return !valid;
+                })()
+                    ? Center(
+                        child: Text(
+                          name.isNotEmpty ? name[0].toUpperCase() : '?',
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: context.primaryColor,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
+              AppSpacing.spaceSM,
+              Text(
+                name,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: context.brownHeaderColor,
+                ),
+              ),
+            ],
           ),
-          AppSpacing.spaceSM,
-          Text(
-            name,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.brownHeader,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

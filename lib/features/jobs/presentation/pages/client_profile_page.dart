@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/api/endpoints.dart';
 import '../../../../core/components/components.dart';
 import '../../../../core/theme.dart';
+import '../../../../core/image_url.dart';
 
 class ClientProfilePage extends StatefulWidget {
   final String clientId; // may be numeric or UUID
@@ -230,7 +231,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
     final phone = (p['phone']?.toString() ?? widget.initialPhone);
     final location = (p['location'] ?? p['address'] ?? p['city'])?.toString();
     final avatarUrl = (p['profile_pic'] ?? p['avatar'] ?? p['photo'] ?? widget.initialAvatarUrl)?.toString();
-    final avatarValid = avatarUrl != null && (avatarUrl.trim().startsWith('http://') || avatarUrl.trim().startsWith('https://'));
+    final fixedAvatar = sanitizeImageUrl(avatarUrl);
+    final avatarValid = fixedAvatar.startsWith('http');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -239,7 +241,7 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
             CircleAvatar(
               radius: 28,
               backgroundColor: AppColors.orange.withValues(alpha: 0.1),
-              backgroundImage: avatarValid ? NetworkImage(avatarUrl!.trim()) : null,
+              backgroundImage: avatarValid ? NetworkImage(fixedAvatar) : null,
               child: !avatarValid
                   ? const Icon(Icons.person, color: AppColors.orange)
                   : null,

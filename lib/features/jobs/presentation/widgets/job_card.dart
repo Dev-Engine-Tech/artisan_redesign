@@ -51,7 +51,7 @@ class JobCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
-        color: AppColors.cardBackground,
+        color: context.cardBackgroundColor,
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
           onTap: onTap,
@@ -59,7 +59,7 @@ class JobCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.subtleBorder),
+              border: Border.all(color: context.subtleBorderColor),
             ),
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -78,7 +78,7 @@ class JobCard extends StatelessWidget {
                         height: 62,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: AppColors.softPink,
+                          color: context.softPinkColor,
                           image: valid
                               ? DecorationImage(
                                   image: NetworkImage(imgUrl),
@@ -87,10 +87,10 @@ class JobCard extends StatelessWidget {
                               : null,
                         ),
                         child: !valid
-                            ? const Center(
+                            ? Center(
                                 child: Icon(
                                   Icons.home_repair_service_outlined,
-                                  color: AppColors.orange,
+                                  color: context.primaryColor,
                                   size: 28,
                                 ),
                               )
@@ -121,15 +121,15 @@ class JobCard extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 6),
                             decoration: BoxDecoration(
-                              color: AppColors.softPink,
+                              color: context.softPinkColor,
                               borderRadius: AppRadius.radiusMD,
                             ),
                             child: Text(
                               job.address,
-                              style: Theme.of(context)
+                              style: theme
                                   .textTheme
                                   .bodySmall
-                                  ?.copyWith(color: AppColors.brownHeader),
+                                  ?.copyWith(color: context.brownHeaderColor),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -165,7 +165,7 @@ class JobCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(budgetText,
-                        style: Theme.of(context)
+                        style: theme
                             .textTheme
                             .bodyLarge
                             ?.copyWith(fontWeight: FontWeight.w700)),
@@ -173,12 +173,12 @@ class JobCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 6),
                       decoration: BoxDecoration(
-                        color: AppColors.cardBackground,
+                        color: context.cardBackgroundColor,
                         borderRadius: AppRadius.radiusMD,
-                        border: Border.all(color: AppColors.subtleBorder),
+                        border: Border.all(color: context.subtleBorderColor),
                       ),
                       child: Text(job.duration,
-                          style: Theme.of(context).textTheme.bodyMedium),
+                          style: theme.textTheme.bodyMedium),
                     )
                   ],
                 ),
@@ -188,7 +188,7 @@ class JobCard extends StatelessWidget {
                 // description snippet
                 Text(
                   job.description,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -226,70 +226,77 @@ class JobCard extends StatelessWidget {
 
   /// Builds a small circular status indicator based on application status
   Widget _buildStatusIndicator() {
-    Color statusColor;
-    IconData statusIcon;
+    return Builder(
+      builder: (context) {
+        Color statusColor;
+        IconData statusIcon;
 
-    if (job.status == JobStatus.accepted) {
-      statusColor = AppColors.green;
-      statusIcon = Icons.check_circle;
-    } else if (job.agreement != null) {
-      statusColor = AppColors.orange;
-      statusIcon = Icons.assignment;
-    } else if (job.changeRequest != null) {
-      statusColor = AppColors.blue;
-      statusIcon = Icons.change_circle;
-    } else {
-      statusColor = AppColors.grey;
-      statusIcon = Icons.pending;
-    }
+        if (job.status == JobStatus.accepted) {
+          statusColor = context.colorScheme.tertiary;
+          statusIcon = Icons.check_circle;
+        } else if (job.agreement != null) {
+          statusColor = context.primaryColor;
+          statusIcon = Icons.assignment;
+        } else if (job.changeRequest != null) {
+          statusColor = context.darkBlueColor;
+          statusIcon = Icons.change_circle;
+        } else {
+          statusColor = context.colorScheme.onSurfaceVariant;
+          statusIcon = Icons.pending;
+        }
 
-    return Container(
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: 0.1),
-        shape: BoxShape.circle,
-        border: Border.all(color: statusColor, width: 1.5),
-      ),
-      child: Icon(
-        statusIcon,
-        size: 14,
-        color: statusColor,
-      ),
+        return Container(
+          width: 24,
+          height: 24,
+          decoration: BoxDecoration(
+            color: statusColor.withValues(alpha: 0.1),
+            shape: BoxShape.circle,
+            border: Border.all(color: statusColor, width: 1.5),
+          ),
+          child: Icon(
+            statusIcon,
+            size: 14,
+            color: statusColor,
+          ),
+        );
+      }
     );
   }
 
   /// Builds the application status text
   Widget _buildApplicationStatus() {
-    final status = job.applicationStatus;
-    Color statusColor;
+    return Builder(
+      builder: (context) {
+        final status = job.applicationStatus;
+        Color statusColor;
 
-    if (status == 'Accepted') {
-      statusColor = AppColors.green;
-    } else if (status == 'Review Agreement') {
-      statusColor = AppColors.orange;
-    } else if (status == 'Change request sent') {
-      statusColor = AppColors.blue;
-    } else {
-      statusColor = AppColors.grey;
-    }
+        if (status == 'Accepted') {
+          statusColor = context.colorScheme.tertiary;
+        } else if (status == 'Review Agreement') {
+          statusColor = context.primaryColor;
+        } else if (status == 'Change request sent') {
+          statusColor = context.darkBlueColor;
+        } else {
+          statusColor = context.colorScheme.onSurfaceVariant;
+        }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: 0.1),
-        borderRadius: AppRadius.radiusSM,
-        border:
-            Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
-      ),
-      child: Text(
-        status,
-        style: TextStyle(
-          fontSize: 11,
-          color: statusColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: statusColor.withValues(alpha: 0.1),
+            borderRadius: AppRadius.radiusSM,
+            border:
+                Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
+          ),
+          child: Text(
+            status,
+            style: context.textTheme.bodySmall?.copyWith(
+              color: statusColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        );
+      }
     );
   }
 
@@ -373,23 +380,6 @@ class JobCard extends StatelessWidget {
     }
   }
 
-  /// Gets the primary button color based on application status
-  Color _getPrimaryButtonColor() {
-    if (!job.applied) {
-      return AppColors.orange;
-    }
-
-    if (job.status == JobStatus.accepted) {
-      return AppColors.green;
-    } else if (job.agreement != null) {
-      return AppColors.orange;
-    } else if (job.changeRequest != null) {
-      return AppColors.blue;
-    } else {
-      // No agreement yet - grayed out
-      return AppColors.grey;
-    }
-  }
 
   /// Gets the secondary button label based on application status
   String _getSecondaryLabel() {

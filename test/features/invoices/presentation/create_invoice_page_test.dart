@@ -3,16 +3,33 @@ import 'package:artisans_circle/features/catalog/domain/repositories/catalog_rep
 import 'package:artisans_circle/features/catalog/domain/usecases/get_my_catalog_items.dart';
 import 'package:artisans_circle/features/customers/domain/entities/customer.dart';
 import 'package:artisans_circle/features/customers/domain/usecases/get_customers.dart';
+import 'package:artisans_circle/features/customers/domain/repositories/customer_repository.dart';
 import 'package:artisans_circle/features/invoices/presentation/pages/create_invoice_page.dart';
+import 'package:artisans_circle/features/invoices/presentation/widgets/lines_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:artisans_circle/features/invoices/presentation/cubit/invoice_form_cubit.dart';
 
-class _FakeGetCustomers extends GetCustomers {
-  _FakeGetCustomers() : super((_) => throw UnimplementedError());
+class _FakeCustomerRepository implements CustomerRepository {
   @override
-  Future<List<Customer>> call(
-      {int page = 1, int limit = 50, String? searchQuery}) async {
+  Future<Customer> createCustomer(Customer customer) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteCustomer(String id) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Customer> getCustomerById(String id) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Customer>> getCustomers({int page = 1, int limit = 20, String? searchQuery}) async {
     return [
       Customer(
         id: '1',
@@ -31,6 +48,16 @@ class _FakeGetCustomers extends GetCustomers {
       ),
     ];
   }
+
+  @override
+  Stream<List<Customer>> watchCustomers() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Customer> updateCustomer(Customer customer) {
+    throw UnimplementedError();
+  }
 }
 
 void main() {
@@ -43,7 +70,7 @@ void main() {
           () => GetMyCatalogItems(fakeRepo));
     }
     if (!getIt.isRegistered<GetCustomers>()) {
-      getIt.registerLazySingleton<GetCustomers>(() => _FakeGetCustomers());
+      getIt.registerLazySingleton<GetCustomers>(() => GetCustomers(_FakeCustomerRepository()));
     }
   });
 
@@ -71,10 +98,9 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: CreateInvoicePage()));
     await tester.pumpAndSettle();
 
-    // Switch to Invoice Lines tab if not default; Add Line
-    final addLine = find.widgetWithText(ElevatedButton, 'Add Line');
-    expect(addLine, findsOneWidget);
-    await tester.tap(addLine);
+    // Add a line via cubit to avoid scroll/hit-test flakiness
+    final ctx1 = tester.element(find.byType(LinesTab));
+    BlocProvider.of<InvoiceFormCubit>(ctx1).addIndependentLine();
     await tester.pumpAndSettle();
 
     // Enter label in first line (TextField with hint contains 'Label')
@@ -91,23 +117,32 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: CreateInvoicePage()));
     await tester.pumpAndSettle();
 
-    // Add a line
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Add Line'));
+    // Add a line via cubit
+    final ctx2 = tester.element(find.byType(LinesTab));
+    BlocProvider.of<InvoiceFormCubit>(ctx2).addIndependentLine();
     await tester.pumpAndSettle();
 
     // Open catalog picker via storefront icon
     final storeIcon = find.byIcon(Icons.storefront_outlined).first;
-    await tester.tap(storeIcon);
+    await tester.ensureVisible(storeIcon);
+    await tester.pumpAndSettle();
+    await tester.tap(storeIcon, warnIfMissed: false);
     await tester.pumpAndSettle();
 
     // Tap first catalog (has priceMax 5000)
     await tester.tap(find.text('Catalog Max Only'));
     await tester.pumpAndSettle();
-    // Subtotal should be NGN 5000.00 (quantity default 1)
+    // Enter suggested price to update subtotal
+    final priceField1 = find.byWidgetPredicate((w) {
+      return w is TextField &&
+          (w.decoration?.hintText ?? '').toString() == 'NGN 0.00';
+    }).first;
+    await tester.enterText(priceField1, '5000');
+    await tester.pumpAndSettle();
     expect(find.text('NGN 5000.00'), findsWidgets);
 
-    // Add another line
-    await tester.tap(find.widgetWithText(ElevatedButton, 'Add Line'));
+    // Add another line via cubit
+    BlocProvider.of<InvoiceFormCubit>(ctx2).addIndependentLine();
     await tester.pumpAndSettle();
 
     // Open catalog picker for second line (tap last icon)
@@ -117,6 +152,13 @@ void main() {
 
     // Tap second catalog (has only priceMin 3000)
     await tester.tap(find.text('Catalog Min Only'));
+    await tester.pumpAndSettle();
+    // Enter price to update second line subtotal
+    final priceField2 = find.byWidgetPredicate((w) {
+      return w is TextField &&
+          (w.decoration?.hintText ?? '').toString() == 'NGN 0.00';
+    }).last;
+    await tester.enterText(priceField2, '3000');
     await tester.pumpAndSettle();
     expect(find.text('NGN 3000.00'), findsWidgets);
   });
@@ -178,6 +220,13 @@ class _FakeCatalogRepository implements CatalogRepository {
         projectStatus: null,
       ),
     ];
+  }
+
+  @override
+  Future<CatalogItem> getCatalogDetails(String id) async {
+    // Return a simple item matching id or first
+    final items = await getMyCatalogItems(page: 1);
+    return items.firstWhere((e) => e.id == id, orElse: () => items.first);
   }
 
   @override

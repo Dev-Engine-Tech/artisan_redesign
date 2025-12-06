@@ -9,6 +9,8 @@ import 'package:artisans_circle/features/jobs/presentation/bloc/job_state.dart';
 import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import 'package:artisans_circle/core/cache/api_cache_manager.dart';
 import 'dart:developer' as dev;
+import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 
 /// ✅ OPTIMIZED JobBloc with automatic caching
 ///
@@ -63,7 +65,7 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     }
 
     try {
-      final list = await executeWithCache(
+      final list = await executeWithCache<List<Job>>( // ensure proper typing
         cacheKey: cacheKey,
         fetch: () => getJobs(
           page: event.page,
@@ -80,21 +82,28 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
           lgas: event.lgas,
         ),
         fromJson: (json) {
-          // Deserialize from cache
+          // Deserialize from cached JSON into List<Job>
           return (json as List)
-              .map((item) => item as Map<String, dynamic>)
-              .map((map) {
-            // Create Job entities from cached JSON
-            // Note: Adjust based on your actual Job entity structure
-            return map; // Simplified - actual implementation would parse Job
-          }).toList();
+              .map((item) => JobModel.fromJson(item as Map<String, dynamic>).toEntity())
+              .toList();
         },
         toJson: (jobs) {
-          // Serialize for cache
+          // Serialize List<Job> to JSON-encodable List<Map>
           return jobs.map((job) {
-            // Convert Job entity to JSON
-            // Note: Adjust based on your actual Job entity structure
-            return job; // Simplified - actual implementation would serialize Job
+            if (job is JobModel) return job.toJson();
+            return {
+              'id': job.id,
+              'title': job.title,
+              'category': job.category,
+              'description': job.description,
+              'address': job.address,
+              'min_budget': job.minBudget,
+              'max_budget': job.maxBudget,
+              'duration': job.duration,
+              'applied': job.applied,
+              'saved': job.saved,
+              'thumbnail_url': job.thumbnailUrl,
+            };
           }).toList();
         },
         ttl: ApiCacheManager.defaultTTL,
@@ -121,17 +130,31 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     }
 
     try {
-      final list = await executeWithCache(
+      final list = await executeWithCache<List<Job>>( // ensure proper typing
         cacheKey: cacheKey,
         fetch: () => getApplications(page: event.page, limit: event.limit),
         fromJson: (json) {
           return (json as List)
-              .map((item) => item as Map<String, dynamic>)
-              .map((map) => map) // Simplified
+              .map((item) => JobModel.fromJson(item as Map<String, dynamic>, isFromApplications: true).toEntity())
               .toList();
         },
         toJson: (jobs) {
-          return jobs.map((job) => job).toList(); // Simplified
+          return jobs.map((job) {
+            if (job is JobModel) return job.toJson();
+            return {
+              'id': job.id,
+              'title': job.title,
+              'category': job.category,
+              'description': job.description,
+              'address': job.address,
+              'min_budget': job.minBudget,
+              'max_budget': job.maxBudget,
+              'duration': job.duration,
+              'applied': job.applied,
+              'saved': job.saved,
+              'thumbnail_url': job.thumbnailUrl,
+            };
+          }).toList();
         },
         ttl: ApiCacheManager.shortTTL, // Applications change frequently
         persistent: false,
@@ -186,14 +209,16 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
   /// Accept agreement and invalidate cache
   Future<void> _onAcceptAgreement(
       AcceptAgreementEvent event, Emitter<JobState> emit) async {
-    emit(const JobStateProcessing());
+    emit(JobStateAcceptingAgreement(jobId: event.jobId));
     try {
-      await acceptAgreement(jobId: event.jobId);
+      await acceptAgreement(event.jobId);
 
       // ✅ Invalidate applications cache (agreement status changed)
       await invalidatePatternCache('job_applications');
 
-      emit(JobStateAgreementAccepted(jobId: event.jobId));
+      // Refresh applications to reflect new agreement state
+      final apps = await getApplications();
+      emit(JobStateAgreementAccepted(jobs: apps, jobId: event.jobId));
     } catch (e) {
       emit(JobStateError(message: e.toString()));
     }
@@ -202,17 +227,16 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
   /// Request changes and invalidate cache
   Future<void> _onRequestChange(
       RequestChangeEvent event, Emitter<JobState> emit) async {
-    emit(const JobStateProcessing());
+    emit(JobStateRequestingChange(jobId: event.jobId));
     try {
-      await requestChange(
-        jobId: event.jobId,
-        requestedChanges: event.requestedChanges,
-      );
+      await requestChange(jobId: event.jobId, reason: event.reason);
 
       // ✅ Invalidate applications cache
       await invalidatePatternCache('job_applications');
 
-      emit(JobStateChangeRequested(jobId: event.jobId));
+      // Refresh applications to reflect requested changes
+      final apps = await getApplications();
+      emit(JobStateChangeRequested(jobs: apps, jobId: event.jobId));
     } catch (e) {
       emit(JobStateError(message: e.toString()));
     }
