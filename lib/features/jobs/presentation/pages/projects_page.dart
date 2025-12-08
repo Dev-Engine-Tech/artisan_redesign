@@ -48,13 +48,14 @@ class _CatalogPageState extends State<CatalogPage>
   }
 
   Widget _uploadPanel(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: context.cardBackgroundColor,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.softBorder),
+          border: Border.all(color: context.softBorderColor),
         ),
         padding: AppSpacing.paddingLG,
         child: Column(
@@ -65,7 +66,7 @@ class _CatalogPageState extends State<CatalogPage>
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.black54),
+                  ?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
             AppSpacing.spaceMD,
             OutlinedAppButton(
@@ -82,34 +83,35 @@ class _CatalogPageState extends State<CatalogPage>
   }
 
   Widget _searchBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: context.cardBackgroundColor,
           borderRadius: AppRadius.radiusLG,
-          border: Border.all(color: AppColors.subtleBorder),
+          border: Border.all(color: context.subtleBorderColor),
         ),
         child: Row(
           children: [
-            const Icon(Icons.search, color: Colors.black26),
+            Icon(Icons.search, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
             AppSpacing.spaceSM,
             Expanded(
               child: Text('Search products, services and artisans',
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(color: Colors.black38)),
+                      ?.copyWith(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6))),
             ),
             AppSpacing.spaceSM,
             Container(
               margin: const EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
-                  color: AppColors.softPink, borderRadius: AppRadius.radiusMD),
+                  color: context.softPinkColor, borderRadius: AppRadius.radiusMD),
               child: IconButton(
                 icon:
-                    const Icon(Icons.filter_list, color: AppColors.brownHeader),
+                    Icon(Icons.filter_list, color: context.brownHeaderColor),
                 onPressed: () {},
               ),
             ),
@@ -120,29 +122,31 @@ class _CatalogPageState extends State<CatalogPage>
   }
 
   Widget _hero(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         height: 160,
         decoration: BoxDecoration(
-            color: AppColors.orange, borderRadius: BorderRadius.circular(14)),
+            color: context.primaryColor, borderRadius: BorderRadius.circular(14)),
         padding: AppSpacing.paddingLG,
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Discover Your Ideal\nJob match',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20)),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                          color: colorScheme.onPrimary,
+                          fontWeight: FontWeight.w700)),
                   AppSpacing.spaceSM,
                   Text(
                       'Find rewarding projects, connect with clients, and take your career to new heights.',
-                      style: TextStyle(color: Colors.white70, fontSize: 13)),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onPrimary.withValues(alpha: 0.8))),
                 ],
               ),
             ),
@@ -150,10 +154,10 @@ class _CatalogPageState extends State<CatalogPage>
             Container(
                 width: 86,
                 height: 86,
-                decoration: const BoxDecoration(
-                    color: Colors.white24,
+                decoration: BoxDecoration(
+                    color: colorScheme.onPrimary.withValues(alpha: 0.2),
                     borderRadius:
-                        BorderRadius.all(Radius.circular(AppRadius.lg)))),
+                        const BorderRadius.all(Radius.circular(AppRadius.lg)))),
           ],
         ),
       ),
@@ -162,17 +166,18 @@ class _CatalogPageState extends State<CatalogPage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return BlocProvider<CatalogBloc>.value(
       value: bloc,
       child: Scaffold(
-        backgroundColor: AppColors.lightPeach,
+        backgroundColor: context.lightPeachColor,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: colorScheme.surface.withValues(alpha: 0.0),
           automaticallyImplyLeading: false,
           title: Text('Projects',
-              style: TextStyle(
-                  color: Colors.black87,
+              style: theme.textTheme.titleLarge?.copyWith(
                   fontSize: context.responsiveFontSize(20),
                   fontWeight: FontWeight.w600)),
           bottom: PreferredSize(
@@ -186,20 +191,20 @@ class _CatalogPageState extends State<CatalogPage>
                   horizontal: context.responsiveSpacing(16),
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.cardBackgroundColor,
                   borderRadius: AppRadius.radiusLG,
-                  border: Border.all(color: AppColors.softBorder),
+                  border: Border.all(color: context.softBorderColor),
                 ),
                 child: TabBar(
                   controller: _tabController,
                   indicator: BoxDecoration(
-                    color: AppColors.orange,
+                    color: context.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.black54,
+                  labelColor: colorScheme.onPrimary,
+                  unselectedLabelColor: colorScheme.onSurfaceVariant,
                   labelStyle: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: context.responsiveFontSize(14),
@@ -316,218 +321,223 @@ class _CatalogPageState extends State<CatalogPage>
   }
 
   Widget _catalogTile(CatalogItem item) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: context.responsiveSpacing(16),
-        vertical: context.responsiveSpacing(8),
-      ),
-      child: Card(
-        elevation: Responsive.cardElevation(context),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            context.responsiveBorderRadius(12),
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: context.responsiveSpacing(16),
+            vertical: context.responsiveSpacing(8),
           ),
-        ),
-        color: Colors.white,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(
-            context.responsiveBorderRadius(12),
-          ),
-          onTap: () async {
-            final changed = await Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                  builder: (_) => CatalogItemDetailsPage(item: item)),
-            );
-            // ✅ PERFORMANCE FIX: Reload after item edit is intentional
-            if (changed == true && mounted) {
-              context.read<CatalogBloc>().add(RefreshMyCatalog());
-            }
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Large image banner
-              ClipRRect(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(context.responsiveBorderRadius(12)),
-                ),
-                child: Container(
-                  height: context.isTablet ? 240 : 180,
-                  width: double.infinity,
-                  decoration: (() {
-                    final imgUrl = sanitizeImageUrl(item.imageUrl ?? '');
-                    final valid = imgUrl.startsWith('http');
-                    return BoxDecoration(
-                      color: AppColors.cardBackground,
-                      image: valid
-                          ? DecorationImage(
-                              image: NetworkImage(imgUrl),
-                              fit: BoxFit.cover,
+          child: Card(
+            elevation: Responsive.cardElevation(context),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                context.responsiveBorderRadius(12),
+              ),
+            ),
+            color: context.cardBackgroundColor,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(
+                context.responsiveBorderRadius(12),
+              ),
+              onTap: () async {
+                final changed = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(
+                      builder: (_) => CatalogItemDetailsPage(item: item)),
+                );
+                // ✅ PERFORMANCE FIX: Reload after item edit is intentional
+                if (changed == true && mounted) {
+                  context.read<CatalogBloc>().add(RefreshMyCatalog());
+                }
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Large image banner
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(context.responsiveBorderRadius(12)),
+                    ),
+                    child: Container(
+                      height: context.isTablet ? 240 : 180,
+                      width: double.infinity,
+                      decoration: (() {
+                        final imgUrl = sanitizeImageUrl(item.imageUrl ?? '');
+                        final valid = imgUrl.startsWith('http');
+                        return BoxDecoration(
+                          color: context.cardBackgroundColor,
+                          image: valid
+                              ? DecorationImage(
+                                  image: NetworkImage(imgUrl),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        );
+                      })(),
+                      child: item.imageUrl == null || item.imageUrl!.isEmpty
+                          ? Center(
+                              child: Icon(Icons.image_outlined,
+                                  size: context.responsiveIconSize(48),
+                                  color: colorScheme.onSurfaceVariant),
                             )
                           : null,
-                    );
-                  })(),
-                  child: item.imageUrl == null || item.imageUrl!.isEmpty
-                      ? Center(
-                          child: Icon(Icons.image_outlined,
-                              size: context.responsiveIconSize(48),
-                              color: Colors.grey),
-                        )
-                      : null,
-                ),
-              ),
-
-              // Content section
-              Padding(
-                padding: context.responsivePadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title and vendor
-                    Text(
-                      item.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: context.responsiveFontSize(16),
-                        color: Colors.black87,
-                      ),
                     ),
+                  ),
 
-                    // Sub-category badge
-                    if (item.subCategoryName != null && item.subCategoryName!.isNotEmpty) ...[
-                      AppSpacing.spaceXS,
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.orange.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: AppColors.orange.withValues(alpha: 0.3)),
-                        ),
-                        child: Text(
-                          item.subCategoryName!,
-                          style: const TextStyle(
-                            color: AppColors.orange,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
+                  // Content section
+                  Padding(
+                    padding: context.responsivePadding,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title and vendor
+                        Text(
+                          item.title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: context.responsiveFontSize(16),
                           ),
                         ),
-                      ),
-                    ],
 
-                    if (item.ownerName != null) ...[
-                      AppSpacing.spaceXS,
-                      Text(
-                        item.ownerName!,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-
-                    AppSpacing.spaceMD,
-
-                    // Description excerpt
-                    if (item.description.isNotEmpty) ...[
-                      Text(
-                        item.description,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 13,
-                        ),
-                      ),
-                      AppSpacing.spaceMD,
-                    ],
-
-                    // Feature badges (hot sale, condition, warranty, delivery)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: [
-                        if (item.hotSale == true)
-                          _buildFeatureBadge('🔥 Hot Sale', Colors.red),
-                        if (item.condition != null && item.condition!.isNotEmpty)
-                          _buildFeatureBadge(
-                            item.condition!.toUpperCase(),
-                            item.condition?.toLowerCase() == 'new' ? Colors.green : Colors.orange,
-                          ),
-                        if (item.warranty == true)
-                          _buildFeatureBadge('✓ Warranty', Colors.blue),
-                        if (item.delivery == true)
-                          _buildFeatureBadge('🚚 Delivery', Colors.teal),
-                        if (item.discountPercent != null && item.discountPercent! > 0)
-                          _buildFeatureBadge('${item.discountPercent}% OFF', Colors.red),
-                      ],
-                    ),
-                    if ((item.hotSale == true) ||
-                        (item.condition != null && item.condition!.isNotEmpty) ||
-                        (item.warranty == true) ||
-                        (item.delivery == true) ||
-                        (item.discountPercent != null && item.discountPercent! > 0))
-                      AppSpacing.spaceMD,
-
-                    // Price and timeline row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Price range
-                        if (item.priceMin != null || item.priceMax != null)
+                        // Sub-category badge
+                        if (item.subCategoryName != null && item.subCategoryName!.isNotEmpty) ...[
+                          AppSpacing.spaceXS,
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.softPeach,
-                              borderRadius: BorderRadius.circular(6),
+                              color: context.primaryColor.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: context.primaryColor.withValues(alpha: 0.3)),
                             ),
                             child: Text(
-                              item.priceMin != null && item.priceMax != null
-                                  ? '₦${_formatPrice(item.priceMin!)} - ₦${_formatPrice(item.priceMax!)}'
-                                  : '₦${_formatPrice(item.priceMin ?? item.priceMax ?? 0)}',
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 13,
+                              item.subCategoryName!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: context.primaryColor,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
+                        ],
 
-                        // Status indicator
-                        _buildStatusBadge(item.projectStatus ?? item.status),
-                      ],
-                    ),
-
-                    if (item.projectTimeline != null) ...[
-                      AppSpacing.spaceSM,
-                      Row(
-                        children: [
-                          const Icon(Icons.schedule,
-                              size: 16, color: Colors.black87),
+                        if (item.ownerName != null) ...[
                           AppSpacing.spaceXS,
                           Text(
-                            'Duration: ${item.projectTimeline}',
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                            item.ownerName!,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 14,
                             ),
                           ),
                         ],
-                      ),
-                    ],
-                  ],
-                ),
+
+                        AppSpacing.spaceMD,
+
+                        // Description excerpt
+                        if (item.description.isNotEmpty) ...[
+                          Text(
+                            item.description,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontSize: 13,
+                            ),
+                          ),
+                          AppSpacing.spaceMD,
+                        ],
+
+                        // Feature badges (hot sale, condition, warranty, delivery)
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            if (item.hotSale == true)
+                              _buildFeatureBadge(context, '🔥 Hot Sale', Colors.red),
+                            if (item.condition != null && item.condition!.isNotEmpty)
+                              _buildFeatureBadge(
+                                context,
+                                item.condition!.toUpperCase(),
+                                item.condition?.toLowerCase() == 'new' ? Colors.green : Colors.orange,
+                              ),
+                            if (item.warranty == true)
+                              _buildFeatureBadge(context, '✓ Warranty', Colors.blue),
+                            if (item.delivery == true)
+                              _buildFeatureBadge(context, '🚚 Delivery', Colors.teal),
+                            if (item.discountPercent != null && item.discountPercent! > 0)
+                              _buildFeatureBadge(context, '${item.discountPercent}% OFF', Colors.red),
+                          ],
+                        ),
+                        if ((item.hotSale == true) ||
+                            (item.condition != null && item.condition!.isNotEmpty) ||
+                            (item.warranty == true) ||
+                            (item.delivery == true) ||
+                            (item.discountPercent != null && item.discountPercent! > 0))
+                          AppSpacing.spaceMD,
+
+                        // Price and timeline row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Price range
+                            if (item.priceMin != null || item.priceMax != null)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: context.softPeachColor,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  item.priceMin != null && item.priceMax != null
+                                      ? '₦${_formatPrice(item.priceMin!)} - ₦${_formatPrice(item.priceMax!)}'
+                                      : '₦${_formatPrice(item.priceMin ?? item.priceMax ?? 0)}',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+
+                            // Status indicator
+                            _buildStatusBadge(context, item.projectStatus ?? item.status),
+                          ],
+                        ),
+
+                        if (item.projectTimeline != null) ...[
+                          AppSpacing.spaceSM,
+                          Row(
+                            children: [
+                              Icon(Icons.schedule,
+                                  size: 16, color: colorScheme.onSurface),
+                              AppSpacing.spaceXS,
+                              Text(
+                                'Duration: ${item.projectTimeline}',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildStatusBadge(String? status) {
+  Widget _buildStatusBadge(BuildContext context, String? status) {
     if (status == null) return const SizedBox.shrink();
+
+    final brightness = Theme.of(context).brightness;
+    final isDark = brightness == Brightness.dark;
 
     Color badgeColor;
     Color textColor;
@@ -536,30 +546,30 @@ class _CatalogPageState extends State<CatalogPage>
     switch (status.toLowerCase()) {
       case 'ongoing':
       case 'started':
-        badgeColor = Colors.blue.shade100;
-        textColor = Colors.blue.shade800;
+        badgeColor = isDark ? Colors.blue.withValues(alpha: 0.3) : Colors.blue.shade100;
+        textColor = isDark ? Colors.blue.shade200 : Colors.blue.shade800;
         displayText = 'Started';
         break;
       case 'completed':
-        badgeColor = Colors.green.shade100;
-        textColor = Colors.green.shade800;
+        badgeColor = isDark ? Colors.green.withValues(alpha: 0.3) : Colors.green.shade100;
+        textColor = isDark ? Colors.green.shade200 : Colors.green.shade800;
         displayText = 'Completed';
         break;
       case 'paused':
       case 'pending':
-        badgeColor = Colors.orange.shade100;
-        textColor = Colors.orange.shade800;
+        badgeColor = isDark ? Colors.orange.withValues(alpha: 0.3) : Colors.orange.shade100;
+        textColor = isDark ? Colors.orange.shade200 : Colors.orange.shade800;
         displayText = 'Paused';
         break;
       case 'rejected':
       case 'cancelled':
-        badgeColor = Colors.red.shade100;
-        textColor = Colors.red.shade800;
+        badgeColor = isDark ? Colors.red.withValues(alpha: 0.3) : Colors.red.shade100;
+        textColor = isDark ? Colors.red.shade200 : Colors.red.shade800;
         displayText = 'Cancelled';
         break;
       default:
-        badgeColor = Colors.grey.shade100;
-        textColor = Colors.grey.shade800;
+        badgeColor = isDark ? Colors.grey.withValues(alpha: 0.3) : Colors.grey.shade100;
+        textColor = isDark ? Colors.grey.shade200 : Colors.grey.shade800;
         displayText = status;
     }
 
@@ -581,7 +591,7 @@ class _CatalogPageState extends State<CatalogPage>
   }
 
   /// Helper method to build feature badges (hot sale, warranty, delivery, etc.)
-  Widget _buildFeatureBadge(String label, Color color) {
+  Widget _buildFeatureBadge(BuildContext context, String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(

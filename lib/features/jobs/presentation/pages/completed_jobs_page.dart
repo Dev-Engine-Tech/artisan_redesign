@@ -42,28 +42,29 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: colorScheme.surface.withValues(alpha: 0.0),
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.softPink,
+              color: context.softPinkColor,
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text(
+        title: Text(
           'Completed Projects',
-          style: TextStyle(
-            color: Colors.black87,
+          style: theme.textTheme.titleLarge?.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -71,14 +72,14 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
         actions: [
           IconButton(
             onPressed: _showSortOptions,
-            icon: const Icon(Icons.sort, color: Colors.black54),
+            icon: Icon(Icons.sort, color: colorScheme.onSurfaceVariant),
           ),
           IconButton(
             onPressed: () {
               // ✅ PERFORMANCE FIX: Force refresh is intentional here
               context.read<JobBloc>().add(LoadCompletedJobs());
             },
-            icon: const Icon(Icons.refresh, color: Colors.black54),
+            icon: Icon(Icons.refresh, color: colorScheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -114,198 +115,211 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
   }
 
   Widget _buildEarningsSummary() {
-    return Container(
-      margin: AppSpacing.paddingLG,
-      padding: context.responsivePadding,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.orange, AppColors.orange.withOpacity(0.8)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: AppRadius.radiusXL,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.orange.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.account_balance_wallet,
-                color: Colors.white,
-                size: 24,
-              ),
-              AppSpacing.spaceSM,
-              Text(
-                'Total Earnings',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                'This Month',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.7),
-                  fontSize: 12,
-                ),
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return Container(
+          margin: AppSpacing.paddingLG,
+          padding: context.responsivePadding,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [context.primaryColor, context.primaryColor.withValues(alpha: 0.8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: AppRadius.radiusXL,
+            boxShadow: [
+              BoxShadow(
+                color: context.primaryColor.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          AppSpacing.spaceMD,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  const Text(
-                    'NGN 2,850,000',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
+                  Icon(
+                    Icons.account_balance_wallet,
+                    color: colorScheme.onPrimary,
+                    size: 24,
+                  ),
+                  AppSpacing.spaceSM,
+                  Text(
+                    'Total Earnings',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onPrimary.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
+                  const Spacer(),
                   Text(
-                    'From 12 completed projects',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 12,
+                    'This Month',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onPrimary.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: AppRadius.radiusLG,
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.trending_up,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                    AppSpacing.spaceXS,
-                    Text(
-                      '+23%',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+              AppSpacing.spaceMD,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'NGN 2,850,000',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: colorScheme.onPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
+                      Text(
+                        'From 12 completed projects',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onPrimary.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: colorScheme.onPrimary.withValues(alpha: 0.2),
+                      borderRadius: AppRadius.radiusLG,
                     ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.trending_up,
+                          color: colorScheme.onPrimary,
+                          size: 16,
+                        ),
+                        AppSpacing.spaceXS,
+                        Text(
+                          '+23%',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFiltersAndSearch() {
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return Container(
+          padding: context.responsivePadding,
+          color: context.cardBackgroundColor,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: context.cardBackgroundColor,
+                  borderRadius: AppRadius.radiusLG,
+                  border: Border.all(color: context.softBorderColor),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search completed projects...',
+                    prefixIcon: Icon(Icons.search, color: colorScheme.onSurfaceVariant),
+                    suffixIcon: _searchQuery.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(Icons.clear, color: colorScheme.onSurfaceVariant),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _searchQuery = '';
+                              });
+                            },
+                          )
+                        : null,
+                    border: InputBorder.none,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                ),
+              ),
+              AppSpacing.spaceMD,
+              SizedBox(
+                height: 36,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    _buildFilterChip('All', 'all'),
+                    AppSpacing.spaceSM,
+                    _buildFilterChip('Paid', 'paid'),
+                    AppSpacing.spaceSM,
+                    _buildFilterChip('Pending Payment', 'pending_payment'),
+                    AppSpacing.spaceSM,
+                    _buildFilterChip('Reviewed', 'reviewed'),
+                    AppSpacing.spaceSM,
+                    _buildFilterChip('High Rating', 'high_rating'),
                   ],
                 ),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFiltersAndSearch() {
-    return Container(
-      padding: context.responsivePadding,
-      color: Colors.white,
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.cardBackground,
-              borderRadius: AppRadius.radiusLG,
-              border: Border.all(color: AppColors.softBorder),
-            ),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search completed projects...',
-                prefixIcon: const Icon(Icons.search, color: Colors.black54),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.black54),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
-                border: InputBorder.none,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
-          ),
-          AppSpacing.spaceMD,
-          SizedBox(
-            height: 36,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                _buildFilterChip('All', 'all'),
-                AppSpacing.spaceSM,
-                _buildFilterChip('Paid', 'paid'),
-                AppSpacing.spaceSM,
-                _buildFilterChip('Pending Payment', 'pending_payment'),
-                AppSpacing.spaceSM,
-                _buildFilterChip('Reviewed', 'reviewed'),
-                AppSpacing.spaceSM,
-                _buildFilterChip('High Rating', 'high_rating'),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildFilterChip(String label, String value) {
     final isSelected = _filterStatus == value;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _filterStatus = value;
-        });
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _filterStatus = value;
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? context.primaryColor : context.cardBackgroundColor,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isSelected ? context.primaryColor : context.softBorderColor,
+              ),
+            ),
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: isSelected ? colorScheme.onPrimary : context.brownHeaderColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        );
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.orange : AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: isSelected ? AppColors.orange : AppColors.softBorder,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.brownHeader,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
     );
   }
 
@@ -396,10 +410,10 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.check_circle_outline,
             size: 64,
-            color: Colors.black26,
+            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
           ),
           AppSpacing.spaceLG,
           Text(
@@ -407,7 +421,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                 ? 'No projects match your search'
                 : 'No completed projects yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
           ),
@@ -417,7 +431,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                 ? 'Try adjusting your search filters'
                 : 'Complete projects to see them here with earnings and reviews',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black38,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -448,7 +462,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
             textAlign: TextAlign.center,
           ),
@@ -471,16 +485,16 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
-      builder: (context) => Container(
-        padding: context.responsivePadding,
+      builder: (modalContext) => Container(
+        padding: modalContext.responsivePadding,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               'Sort by',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              style: Theme.of(modalContext).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.brownHeader,
+                    color: modalContext.brownHeaderColor,
                   ),
             ),
             AppSpacing.spaceLG,
@@ -501,7 +515,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                       });
                       Navigator.of(context).pop();
                     },
-                    activeColor: AppColors.orange,
+                    activeColor: modalContext.primaryColor,
                   ),
                   onTap: () {
                     setState(() {
@@ -563,7 +577,7 @@ class CompletedJobCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
         boxShadow: [
           BoxShadow(
@@ -616,7 +630,7 @@ class CompletedJobCard extends StatelessWidget {
                   job.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.brownHeader,
+                        color: context.brownHeaderColor,
                       ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -626,18 +640,16 @@ class CompletedJobCard extends StatelessWidget {
                   children: [
                     Text(
                       'Completed',
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.green.shade700,
-                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     AppSpacing.spaceSM,
                     Text(
                       _formatCompletionDate(job.completedDate),
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -708,70 +720,73 @@ class CompletedJobCard extends StatelessWidget {
     final rating = job.rating ?? 0.0;
     final hasReview = job.clientReview != null;
 
-    return Container(
-      padding: AppSpacing.paddingMD,
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: AppRadius.radiusMD,
-        border: Border.all(color: AppColors.softBorder),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return Container(
+          padding: AppSpacing.paddingMD,
+          decoration: BoxDecoration(
+            color: context.cardBackgroundColor,
+            borderRadius: AppRadius.radiusMD,
+            border: Border.all(color: context.softBorderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Client Rating',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.brownHeader,
-                  fontSize: 14,
-                ),
+              Row(
+                children: [
+                  Text(
+                    'Client Rating',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: context.brownHeaderColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (rating > 0) ...[
+                    ...List.generate(5, (index) {
+                      return Icon(
+                        index < rating ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                        size: 16,
+                      );
+                    }),
+                    AppSpacing.spaceXS,
+                    Text(
+                      rating.toStringAsFixed(1),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: context.brownHeaderColor,
+                      ),
+                    ),
+                  ] else ...[
+                    Text(
+                      'Not rated yet',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              const Spacer(),
-              if (rating > 0) ...[
-                ...List.generate(5, (index) {
-                  return Icon(
-                    index < rating ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
-                    size: 16,
-                  );
-                }),
-                AppSpacing.spaceXS,
+              if (hasReview) ...[
+                AppSpacing.spaceSM,
                 Text(
-                  rating.toStringAsFixed(1),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.brownHeader,
-                    fontSize: 12,
+                  job.clientReview!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontStyle: FontStyle.italic,
                   ),
-                ),
-              ] else ...[
-                const Text(
-                  'Not rated yet',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 12,
-                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ],
           ),
-          if (hasReview) ...[
-            AppSpacing.spaceSM,
-            Text(
-              job.clientReview!,
-              style: const TextStyle(
-                color: Colors.black87,
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -807,45 +822,51 @@ class CompletedJobCard extends StatelessWidget {
   }
 
   Widget _buildMetricItem(IconData icon, String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 14, color: Colors.black54),
+            Row(
+              children: [
+                Icon(icon, size: 14, color: colorScheme.onSurfaceVariant),
+                AppSpacing.spaceXS,
+                Text(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
             AppSpacing.spaceXS,
             Text(
-              label,
-              style: const TextStyle(
-                color: Colors.black54,
-                fontSize: 11,
+              value,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                color: context.brownHeaderColor,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
-        ),
-        AppSpacing.spaceXS,
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-            color: AppColors.brownHeader,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildFooter(BuildContext context) {
     return Container(
       padding: context.responsivePadding,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.softBorder),
+          top: BorderSide(color: context.softBorderColor),
         ),
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(AppRadius.lg),
         ),
       ),

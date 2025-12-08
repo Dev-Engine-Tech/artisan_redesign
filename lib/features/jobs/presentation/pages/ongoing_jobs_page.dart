@@ -44,29 +44,30 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightPeach,
+      backgroundColor: context.lightPeachColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.0),
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.softPink,
+              color: context.softPinkColor,
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text(
-          'Ongoing Projects',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+        title: Builder(
+          builder: (context) => Text(
+            'Ongoing Projects',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         actions: [
@@ -75,7 +76,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
               // ✅ PERFORMANCE FIX: Force refresh is intentional here
               context.read<JobBloc>().add(LoadOngoingJobs());
             },
-            icon: const Icon(Icons.refresh, color: Colors.black54),
+            icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -112,23 +113,23 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
   Widget _buildFiltersAndSearch() {
     return Container(
       padding: context.responsivePadding,
-      color: Colors.white,
+      color: context.cardBackgroundColor,
       child: Column(
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: context.cardBackgroundColor,
               borderRadius: AppRadius.radiusLG,
-              border: Border.all(color: AppColors.softBorder),
+              border: Border.all(color: context.softBorderColor),
             ),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search ongoing projects...',
-                prefixIcon: const Icon(Icons.search, color: Colors.black54),
+                prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.black54),
+                        icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurfaceVariant),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
@@ -173,30 +174,36 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
 
   Widget _buildFilterChip(String label, String value) {
     final isSelected = _filterStatus == value;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _filterStatus = value;
-        });
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _filterStatus = value;
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isSelected ? context.primaryColor : context.cardBackgroundColor,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isSelected ? context.primaryColor : context.softBorderColor,
+              ),
+            ),
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: isSelected ? colorScheme.onPrimary : context.brownHeaderColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        );
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.orange : AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: isSelected ? AppColors.orange : AppColors.softBorder,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : AppColors.brownHeader,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
     );
   }
 
@@ -271,10 +278,10 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.work_outline,
             size: 64,
-            color: Colors.black26,
+            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
           ),
           AppSpacing.spaceLG,
           Text(
@@ -282,7 +289,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                 ? 'No projects match your search'
                 : 'No ongoing projects',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
           ),
@@ -292,7 +299,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                 ? 'Try adjusting your search filters'
                 : 'Start working on projects to see them here',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black38,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -323,7 +330,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           Text(
             message,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
             textAlign: TextAlign.center,
           ),
@@ -356,7 +363,7 @@ class OngoingJobCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
         boxShadow: [
           BoxShadow(
@@ -380,9 +387,9 @@ class OngoingJobCard extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: context.responsivePadding,
-      decoration: const BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.vertical(
+      decoration: BoxDecoration(
+        color: context.cardBackgroundColor,
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppRadius.lg),
         ),
       ),
@@ -396,7 +403,7 @@ class OngoingJobCard extends StatelessWidget {
                   job.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: AppColors.brownHeader,
+                        color: context.brownHeaderColor,
                       ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -405,20 +412,23 @@ class OngoingJobCard extends StatelessWidget {
                 Text(
                   job.category,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.black54,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
               ],
             ),
           ),
           AppSpacing.spaceSM,
-          _buildStatusBadge(),
+          Builder(builder: (context) => _buildStatusBadge(context)),
         ],
       ),
     );
   }
 
-  Widget _buildStatusBadge() {
+  Widget _buildStatusBadge(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final isDark = brightness == Brightness.dark;
+
     Color backgroundColor;
     Color textColor;
     String statusText;
@@ -426,20 +436,20 @@ class OngoingJobCard extends StatelessWidget {
 
     switch (job.status) {
       case JobStatus.inProgress:
-        backgroundColor = Colors.blue.withValues(alpha: 0.1);
-        textColor = Colors.blue.shade700;
+        backgroundColor = isDark ? Colors.blue.withValues(alpha: 0.3) : Colors.blue.withValues(alpha: 0.1);
+        textColor = isDark ? Colors.blue.shade200 : Colors.blue.shade700;
         statusText = 'In Progress';
         icon = Icons.work;
         break;
       case JobStatus.pending:
-        backgroundColor = Colors.orange.withValues(alpha: 0.1);
-        textColor = Colors.orange.shade700;
+        backgroundColor = isDark ? Colors.orange.withValues(alpha: 0.3) : Colors.orange.withValues(alpha: 0.1);
+        textColor = isDark ? Colors.orange.shade200 : Colors.orange.shade700;
         statusText = 'Pending Review';
         icon = Icons.pending;
         break;
       default:
-        backgroundColor = AppColors.cardBackground;
-        textColor = Colors.black54;
+        backgroundColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+        textColor = Theme.of(context).colorScheme.onSurfaceVariant;
         statusText = 'Active';
         icon = Icons.work_outline;
     }
@@ -499,20 +509,24 @@ class OngoingJobCard extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Progress',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: AppColors.brownHeader,
-                fontSize: 14,
+            Builder(
+              builder: (context) => Text(
+                'Progress',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: context.brownHeaderColor,
+                  fontSize: 14,
+                ),
               ),
             ),
-            Text(
-              '$progressPercent%',
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: AppColors.brownHeader,
-                fontSize: 14,
+            Builder(
+              builder: (context) => Text(
+                '$progressPercent%',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: context.brownHeaderColor,
+                  fontSize: 14,
+                ),
               ),
             ),
           ],
@@ -564,22 +578,27 @@ class OngoingJobCard extends StatelessWidget {
   }
 
   Widget _buildDetailItem(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: Colors.black54),
-        AppSpacing.spaceXS,
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black54,
+    return Builder(
+      builder: (context) {
+        final colorScheme = Theme.of(context).colorScheme;
+        return Row(
+          children: [
+            Icon(icon, size: 14, color: colorScheme.onSurfaceVariant),
+            AppSpacing.spaceXS,
+            Expanded(
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontSize: 12,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
@@ -606,11 +625,11 @@ class OngoingJobCard extends StatelessWidget {
   Widget _buildFooter(BuildContext context) {
     return Container(
       padding: context.responsivePadding,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.softBorder),
+          top: BorderSide(color: context.softBorderColor),
         ),
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(AppRadius.lg),
         ),
       ),
@@ -673,9 +692,9 @@ class OngoingJobCard extends StatelessWidget {
         maxChildSize: 0.95,
         expand: false,
         builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(
+          decoration: BoxDecoration(
+            color: context.cardBackgroundColor,
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppRadius.xxl),
             ),
           ),

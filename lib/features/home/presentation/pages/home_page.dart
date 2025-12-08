@@ -614,20 +614,23 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
     final double carouselHeight = context.isTablet ? 180 : 140;
 
     return Scaffold(
-      backgroundColor: context.lightPeachColor,
+      backgroundColor: AppColors.brownHeader, // Match SafeArea with wallet card
       body: SafeArea(
-        child: Center(
-          child: Container(
-            constraints: BoxConstraints(
-              maxWidth: context.maxContentWidth,
-            ),
-            child: ListView(
-              controller: _scrollController,
-              padding: EdgeInsets.zero,
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
+        bottom: false, // Only apply SafeArea to top
+        child: Container(
+          color: context.lightPeachColor, // Body background
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: context.maxContentWidth,
               ),
-              children: [
+              child: ListView(
+                controller: _scrollController,
+                padding: EdgeInsets.zero,
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                children: [
                 RepaintBoundary(
                   child: _buildHeader(context),
                 ),
@@ -657,6 +660,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -669,7 +673,7 @@ class _HomePageState extends State<HomePage> with PerformanceTrackingMixin {
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
       child: Container(
         width: double.infinity,
-        color: context.brownHeaderColor,
+        color: AppColors.brownHeader, // Fixed color - doesn't change with theme
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

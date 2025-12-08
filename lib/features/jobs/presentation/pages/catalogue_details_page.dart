@@ -20,24 +20,26 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final job = widget.job;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: colorScheme.surface.withValues(alpha: 0.0),
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
             decoration: BoxDecoration(
-                color: AppColors.softPink,
+                color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black54),
+              icon: Icon(Icons.arrow_back, color: colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text('Catalogue', style: TextStyle(color: Colors.black87)),
+        title: Text('Catalogue', style: theme.textTheme.titleLarge),
       ),
       body: SafeArea(
         child: ListView(
@@ -57,18 +59,18 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
                         fit: BoxFit.cover,
                         errorBuilder: (c, e, s) => Container(
                           height: 180,
-                          color: AppColors.softPink,
-                          child: const Center(child: Icon(Icons.image)),
+                          color: context.softPinkColor,
+                          child: Center(child: Icon(Icons.image, color: colorScheme.onSurfaceVariant)),
                         ),
                       )
                     : Container(
                         height: 180,
-                        color: AppColors.softPink,
-                        child: const Center(
+                        color: context.softPinkColor,
+                        child: Center(
                           child: Icon(
                             Icons.home_repair_service_outlined,
                             size: 56,
-                            color: AppColors.orange,
+                            color: context.primaryColor,
                           ),
                         ),
                       );
@@ -78,30 +80,24 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: AppColors.cardBackground,
+                color: context.cardBackgroundColor,
                 borderRadius: AppRadius.radiusLG,
-                border: Border.all(color: AppColors.softBorder),
+                border: Border.all(color: context.softBorderColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(job.title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall
+                      style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   Text(job.category,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black45)),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: colorScheme.onSurfaceVariant)),
                   AppSpacing.spaceMD,
                   Text(job.description,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black54)),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: colorScheme.onSurfaceVariant)),
                   AppSpacing.spaceMD,
                   Wrap(
                     spacing: 8,
@@ -132,22 +128,20 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
             // Additional details preserved
             Container(
               decoration: BoxDecoration(
-                color: AppColors.cardBackground,
+                color: context.cardBackgroundColor,
                 borderRadius: AppRadius.radiusLG,
-                border: Border.all(color: AppColors.softBorder),
+                border: Border.all(color: context.softBorderColor),
               ),
               padding: AppSpacing.paddingMD,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Description',
-                      style: TextStyle(fontWeight: FontWeight.w700)),
+                  Text('Description',
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
                   AppSpacing.spaceSM,
                   Text(job.description,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.black54)),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: colorScheme.onSurfaceVariant)),
                 ],
               ),
             ),
@@ -165,17 +159,16 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.softPeach,
+        color: context.softPeachColor,
         borderRadius: AppRadius.radiusMD,
       ),
       child: Text(label,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.brownHeader)),
+          style: theme.textTheme.bodyMedium
+              ?.copyWith(color: context.brownHeaderColor)),
     );
   }
 }

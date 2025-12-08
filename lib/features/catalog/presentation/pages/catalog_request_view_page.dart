@@ -34,24 +34,26 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return BlocProvider.value(
       value: bloc,
       child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           title: const Text('Request Details'),
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: colorScheme.surface.withValues(alpha: 0.0),
           leading: Navigator.canPop(context)
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.softPink,
+                      color: context.softPinkColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                      icon: Icon(Icons.arrow_back, color: colorScheme.onSurfaceVariant),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
@@ -159,11 +161,13 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
   }
 
   Widget _buildHeaderCard(BuildContext context, CatalogRequest request) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
-        border: Border.all(color: AppColors.subtleBorder),
+        border: Border.all(color: context.subtleBorderColor),
       ),
       padding: context.responsivePadding,
       child: Column(
@@ -174,7 +178,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
               Expanded(
                 child: Text(
                   request.title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                 ),
@@ -186,13 +190,13 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             AppSpacing.spaceSM,
             Row(
               children: [
-                Icon(Icons.schedule, size: 16, color: Colors.grey.shade600),
+                Icon(Icons.schedule, size: 16, color: colorScheme.onSurfaceVariant),
                 AppSpacing.spaceXS,
                 Text(
                   'Created: ${_formatDate(request.createdAt!)}',
-                  style: TextStyle(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -206,9 +210,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
   Widget _buildClientCard(BuildContext context, CatalogClient client) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
-        border: Border.all(color: AppColors.subtleBorder),
+        border: Border.all(color: context.subtleBorderColor),
       ),
       padding: context.responsivePadding,
       child: Column(
@@ -223,13 +227,15 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
           AppSpacing.spaceMD,
           Row(
             children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: AppColors.orange.withValues(alpha: 0.1),
-                child: const Icon(
-                  Icons.person,
-                  color: AppColors.orange,
-                  size: 24,
+              Builder(
+                builder: (context) => CircleAvatar(
+                  radius: 24,
+                  backgroundColor: context.primaryColor.withValues(alpha: 0.1),
+                  child: Icon(
+                    Icons.person,
+                    color: context.primaryColor,
+                    size: 24,
+                  ),
                 ),
               ),
               AppSpacing.spaceMD,
@@ -249,13 +255,13 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       Row(
                         children: [
                           Icon(Icons.email,
-                              size: 14, color: Colors.grey.shade600),
+                              size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           AppSpacing.spaceXS,
                           Text(
                             client.email!,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -266,13 +272,13 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       Row(
                         children: [
                           Icon(Icons.phone,
-                              size: 14, color: Colors.grey.shade600),
+                              size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           AppSpacing.spaceXS,
                           Text(
                             client.phone!,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -291,9 +297,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
   Widget _buildDescriptionCard(BuildContext context, CatalogRequest request) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
-        border: Border.all(color: AppColors.subtleBorder),
+        border: Border.all(color: context.subtleBorderColor),
       ),
       padding: context.responsivePadding,
       child: Column(
@@ -311,7 +317,7 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                 ? request.description
                 : 'No description provided',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
         ],
@@ -322,9 +328,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
   Widget _buildDeliveryCard(BuildContext context, CatalogRequest request) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
-        border: Border.all(color: AppColors.subtleBorder),
+        border: Border.all(color: context.subtleBorderColor),
       ),
       padding: context.responsivePadding,
       child: Column(
@@ -357,9 +363,9 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
       BuildContext context, CatalogRequest request) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: context.cardBackgroundColor,
         borderRadius: AppRadius.radiusLG,
-        border: Border.all(color: AppColors.subtleBorder),
+        border: Border.all(color: context.subtleBorderColor),
       ),
       padding: context.responsivePadding,
       child: Column(

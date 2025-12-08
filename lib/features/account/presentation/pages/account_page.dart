@@ -58,12 +58,16 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return BlocProvider<AccountBloc>.value(
       value: _bloc,
       child: Scaffold(
+        backgroundColor: context.lightPeachColor,
         appBar: AppBar(
           title: const Text('Support'),
-          backgroundColor: context.brownHeaderColor,
+          backgroundColor: colorScheme.surface.withValues(alpha: 0.0),
+          elevation: 0,
         ),
         body: BlocConsumer<AccountBloc, AccountState>(
           listener: (context, state) {
