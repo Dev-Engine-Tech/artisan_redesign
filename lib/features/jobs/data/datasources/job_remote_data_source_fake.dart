@@ -413,6 +413,34 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   }
 
   @override
+  Future<List<ArtisanInvitationModel>> fetchRecentArtisanInvitations() async {
+    // Simulate network latency
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    // Return only pending invitations, sorted by created date (most recent first)
+    final pendingInvitations = _artisanInvitations
+        .where((inv) => inv.invitationStatus.toLowerCase() == 'pending')
+        .toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    // Return top 5 most recent
+    return pendingInvitations.take(5).toList();
+  }
+
+  @override
+  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(int invitationId) async {
+    // Simulate network latency
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    final invitation = _artisanInvitations.firstWhere(
+      (inv) => inv.id == invitationId,
+      orElse: () => _artisanInvitations.first, // fallback for demo
+    );
+
+    return invitation;
+  }
+
+  @override
   Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 250));

@@ -43,6 +43,12 @@ abstract class JobRemoteDataSource {
   /// Fetches artisan invitations using v1 endpoint (/invitation/api/artisan-invitations/)
   Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20});
 
+  /// Fetches recent artisan invitations (top 5) using v1 endpoint (/invitation/api/recent-artisan-invitations/)
+  Future<List<ArtisanInvitationModel>> fetchRecentArtisanInvitations();
+
+  /// Fetch single artisan invitation detail by ID
+  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(int invitationId);
+
   /// Respond to artisan invitation using v1 PATCH endpoint with status and optional rejection_reason
   Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason});
 }
@@ -513,6 +519,101 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
         throw DioException(
           requestOptions: response.requestOptions,
           error: 'Failed to fetch artisan invitations',
+          response: Response(
+              requestOptions: response.requestOptions,
+              statusCode: response.statusCode,
+              data: response.data),
+          type: DioExceptionType.badResponse,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<ArtisanInvitationModel>> fetchRecentArtisanInvitations() async {
+    try {
+      print('🔍 Fetching recent artisan invitations from: ${ApiEndpoints.recentArtisanInvitations}');
+      final response = await dio.get(ApiEndpoints.recentArtisanInvitations);
+
+      print('📡 Response status: ${response.statusCode}');
+      print('📦 Response data type: ${response.data.runtimeType}');
+      print('📦 Response data: ${response.data}');
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        final body = response.data;
+
+        List listFromBody(dynamic b) {
+          if (b is List) return b;
+          if (b is Map) {
+            const keys = ['results', 'data', 'items', 'invitations', 'records'];
+            for (final k in keys) {
+              final v = b[k];
+              if (v is List) return v;
+              if (v is Map) {
+                for (final kk in keys) {
+                  final vv = v[kk];
+                  if (vv is List) return vv;
+                }
+              }
+            }
+          }
+          return const [];
+        }
+
+        final list = listFromBody(body);
+        print('📋 Extracted list length: ${list.length}');
+
+        final invitations = list
+            .map((e) {
+              try {
+                final inviteData = Map<String, dynamic>.from(e as Map);
+                return ArtisanInvitationModel.fromJson(inviteData);
+              } catch (err) {
+                print('❌ Error parsing invitation: $err');
+                return null;
+              }
+            })
+            .where((invitation) => invitation != null)
+            .cast<ArtisanInvitationModel>()
+            .toList();
+
+        print('✅ Successfully parsed ${invitations.length} invitations');
+        return invitations;
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          error: 'Failed to fetch recent artisan invitations',
+          response: Response(
+              requestOptions: response.requestOptions,
+              statusCode: response.statusCode,
+              data: response.data),
+          type: DioExceptionType.badResponse,
+        );
+      }
+    } catch (e) {
+      print('💥 Error fetching recent artisan invitations: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(int invitationId) async {
+    try {
+      final response = await dio.get(ApiEndpoints.artisanInvitationDetail(invitationId));
+
+      if (response.statusCode != null &&
+          response.statusCode! >= 200 &&
+          response.statusCode! < 300) {
+        final body = response.data;
+        return ArtisanInvitationModel.fromJson(Map<String, dynamic>.from(body as Map));
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          error: 'Failed to fetch artisan invitation detail',
           response: Response(
               requestOptions: response.requestOptions,
               statusCode: response.statusCode,

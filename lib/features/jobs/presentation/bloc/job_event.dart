@@ -140,6 +140,11 @@ class LoadArtisanInvitations extends JobEvent {
   LoadArtisanInvitations({this.page = 1, this.limit = 20});
 }
 
+/// Event to load recent artisan invitations (top 5)
+class LoadRecentArtisanInvitations extends JobEvent {
+  LoadRecentArtisanInvitations();
+}
+
 /// Event to accept an artisan invitation (v1)
 class AcceptArtisanInvitation extends JobEvent {
   final int invitationId;

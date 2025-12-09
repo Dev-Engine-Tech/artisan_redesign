@@ -25,19 +25,45 @@ class ArtisanInvitationModel extends ArtisanInvitation {
     // Parse job details from nested 'job' object or root level
     final jobData = json['job'] is Map ? json['job'] as Map<String, dynamic> : json;
 
+    // Parse client details from nested 'client' object
+    final clientData = jobData['client'] is Map ? jobData['client'] as Map<String, dynamic> : null;
+
+    // Parse category - it can be a string or an object with 'name' field
+    String? categoryName;
+    final categoryField = jobData['category'];
+    if (categoryField is String) {
+      categoryName = categoryField;
+    } else if (categoryField is Map) {
+      categoryName = categoryField['name'] as String?;
+    }
+
+    // Build client name from first_name and last_name if available
+    String? clientName;
+    if (clientData != null) {
+      final firstName = clientData['first_name'] as String?;
+      final lastName = clientData['last_name'] as String?;
+      if (firstName != null && lastName != null) {
+        clientName = '$firstName $lastName'.trim();
+      } else if (firstName != null) {
+        clientName = firstName;
+      } else if (lastName != null) {
+        clientName = lastName;
+      }
+    }
+
     return ArtisanInvitationModel(
       id: json['id'] as int,
       jobId: (jobData['id'] ?? jobData['job_id']) as int,
       jobTitle: (jobData['title'] ?? jobData['job_title'] ?? 'Untitled Job') as String,
       jobDescription: jobData['description'] as String?,
-      jobCategory: jobData['category'] as String?,
+      jobCategory: categoryName,
       minBudget: _parseIntOrNull(jobData['min_budget'] ?? jobData['budget_min']),
       maxBudget: _parseIntOrNull(jobData['max_budget'] ?? jobData['budget_max']),
       duration: jobData['duration'] as String?,
       workMode: jobData['work_mode'] as String?,
       address: jobData['address'] ?? jobData['location'] as String?,
-      clientName: json['client_name'] ?? json['client']?['name'] as String?,
-      clientId: _parseIntOrNull(json['client_id'] ?? json['client']?['id']),
+      clientName: clientName ?? json['client_name'] as String?,
+      clientId: _parseIntOrNull(clientData?['id'] ?? json['client_id']),
       invitationStatus: (json['invitation_status'] ?? 'Pending') as String,
       rejectionReason: json['rejection_reason'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),

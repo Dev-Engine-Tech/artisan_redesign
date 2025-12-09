@@ -13,6 +13,7 @@ import 'package:artisans_circle/core/cache/api_cache_manager.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_artisan_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_recent_artisan_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_artisan_invitation.dart';
 
 class MockGetJobs extends Mock implements GetJobs {}
@@ -33,6 +34,9 @@ class MockRespondToJobInvitation extends Mock
 class MockGetArtisanInvitations extends Mock
     implements GetArtisanInvitations {}
 
+class MockGetRecentArtisanInvitations extends Mock
+    implements GetRecentArtisanInvitations {}
+
 class MockRespondToArtisanInvitation extends Mock
     implements RespondToArtisanInvitation {}
 
@@ -47,6 +51,7 @@ void main() {
   late MockGetJobInvitations mockGetJobInvitations;
   late MockRespondToJobInvitation mockRespondToJobInvitation;
   late MockGetArtisanInvitations mockGetArtisanInvitations;
+  late MockGetRecentArtisanInvitations mockGetRecentArtisanInvitations;
   late MockRespondToArtisanInvitation mockRespondToArtisanInvitation;
   late JobBloc bloc;
 
@@ -91,6 +96,7 @@ void main() {
     mockGetJobInvitations = MockGetJobInvitations();
     mockRespondToJobInvitation = MockRespondToJobInvitation();
     mockGetArtisanInvitations = MockGetArtisanInvitations();
+    mockGetRecentArtisanInvitations = MockGetRecentArtisanInvitations();
     mockRespondToArtisanInvitation = MockRespondToArtisanInvitation();
 
     bloc = JobBloc(
@@ -102,6 +108,7 @@ void main() {
       getJobInvitations: mockGetJobInvitations,
       respondToJobInvitation: mockRespondToJobInvitation,
       getArtisanInvitations: mockGetArtisanInvitations,
+      getRecentArtisanInvitations: mockGetRecentArtisanInvitations,
       respondToArtisanInvitation: mockRespondToArtisanInvitation,
     );
   });

@@ -7,6 +7,7 @@ import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dar
 import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_artisan_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_recent_artisan_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
@@ -30,6 +31,7 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
   final GetJobInvitations getJobInvitations;
   final RespondToJobInvitation respondToJobInvitation;
   final GetArtisanInvitations getArtisanInvitations;
+  final GetRecentArtisanInvitations getRecentArtisanInvitations;
   final RespondToArtisanInvitation respondToArtisanInvitation;
 
   JobBloc({
@@ -41,6 +43,7 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     required this.getJobInvitations,
     required this.respondToJobInvitation,
     required this.getArtisanInvitations,
+    required this.getRecentArtisanInvitations,
     required this.respondToArtisanInvitation,
   }) : super(const JobStateInitial()) {
     on<LoadJobs>(_onLoadJobs);
@@ -54,6 +57,7 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     on<LoadJobInvitations>(_onLoadJobInvitations);
     on<RespondToJobInvitationEvent>(_onRespondToJobInvitation);
     on<LoadArtisanInvitations>(_onLoadArtisanInvitations);
+    on<LoadRecentArtisanInvitations>(_onLoadRecentArtisanInvitations);
     on<AcceptArtisanInvitation>(_onAcceptArtisanInvitation);
     on<RejectArtisanInvitation>(_onRejectArtisanInvitation);
   }
@@ -298,6 +302,26 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
       emit(JobStateArtisanInvitationsLoaded(invitations: list));
     } catch (e) {
       dev.log('Error loading artisan invitations: $e', name: 'JobBloc', error: e);
+      emit(JobStateError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onLoadRecentArtisanInvitations(
+      LoadRecentArtisanInvitations event, Emitter<JobState> emit) async {
+    dev.log('Loading recent artisan invitations (top 5 for current artisan)', name: 'JobBloc');
+    emit(const JobStateLoading());
+    try {
+      final list = await getRecentArtisanInvitations();
+      dev.log('Received ${list.length} recent artisan invitations for current user', name: 'JobBloc');
+
+      // Log invitation details for debugging
+      for (final inv in list) {
+        dev.log('Invitation: id=${inv.id}, jobId=${inv.jobId}, title=${inv.jobTitle}, status=${inv.invitationStatus}', name: 'JobBloc');
+      }
+
+      emit(JobStateArtisanInvitationsLoaded(invitations: list));
+    } catch (e, stackTrace) {
+      dev.log('Error loading recent artisan invitations: $e', name: 'JobBloc', error: e, stackTrace: stackTrace);
       emit(JobStateError(message: e.toString()));
     }
   }

@@ -42,6 +42,12 @@ abstract class JobRepository {
   /// Fetches artisan invitations from clients (v1 endpoints)
   Future<List<ArtisanInvitation>> getArtisanInvitations({int page = 1, int limit = 20});
 
+  /// Fetches recent artisan invitations (top 5 most recent)
+  Future<List<ArtisanInvitation>> getRecentArtisanInvitations();
+
+  /// Fetch single artisan invitation detail by ID
+  Future<ArtisanInvitation> getArtisanInvitationDetail(int invitationId);
+
   /// Respond to an artisan invitation with status and optional rejection reason
   Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason});
 }

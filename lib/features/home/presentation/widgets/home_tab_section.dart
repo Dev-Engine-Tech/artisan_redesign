@@ -88,17 +88,12 @@ class _HomeTabSectionState extends State<HomeTabSection>
         }
       }
 
-      // Load Artisan Invitations when user switches to Job Invite tab (index 2)
+      // Load Recent Artisan Invitations when user switches to Job Invite tab (index 2)
       if (_selectedIndex == 2) {
         try {
           final state = context.read<JobBloc>().state;
           if (state is! JobStateArtisanInvitationsLoaded) {
-            context.read<JobBloc>().add(
-                  LoadArtisanInvitations(
-                    page: 1,
-                    limit: 10,
-                  ),
-                );
+            context.read<JobBloc>().add(LoadRecentArtisanInvitations());
           }
         } catch (e) {
           // JobBloc not available, ignore
@@ -418,18 +413,13 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
   @override
   void initState() {
     super.initState();
-    // Load artisan invitations when widget initializes
+    // Load recent artisan invitations when widget initializes (top 5 most recent)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       try {
         final state = context.read<JobBloc>().state;
         if (state is! JobStateArtisanInvitationsLoaded) {
-          context.read<JobBloc>().add(
-                LoadArtisanInvitations(
-                  page: 1,
-                  limit: 10,
-                ),
-              );
+          context.read<JobBloc>().add(LoadRecentArtisanInvitations());
         }
       } catch (_) {
         // JobBloc not available, ignore
@@ -513,13 +503,8 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
               content: Text(state.message),
             ),
           );
-          // Refresh the list
-          context.read<JobBloc>().add(
-                LoadArtisanInvitations(
-                  page: 1,
-                  limit: 10,
-                ),
-              );
+          // Refresh the list (recent invitations)
+          context.read<JobBloc>().add(LoadRecentArtisanInvitations());
         } else if (state is JobStateError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -556,12 +541,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                   PrimaryButton(
                     text: 'Retry',
                     onPressed: () {
-                      context.read<JobBloc>().add(
-                            LoadArtisanInvitations(
-                              page: 1,
-                              limit: 10,
-                            ),
-                          );
+                      context.read<JobBloc>().add(LoadRecentArtisanInvitations());
                     },
                   ),
                 ],
@@ -584,12 +564,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
             // Performance: Use ListView.builder for lazy loading with optimizations
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<JobBloc>().add(
-                      LoadArtisanInvitations(
-                        page: 1,
-                        limit: 10,
-                      ),
-                    );
+                context.read<JobBloc>().add(LoadRecentArtisanInvitations());
               },
               child: ListView.builder(
                 itemCount: invitations.length,

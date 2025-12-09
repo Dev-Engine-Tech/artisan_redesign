@@ -18,6 +18,7 @@ import 'package:artisans_circle/features/jobs/domain/usecases/request_change.dar
 import 'package:artisans_circle/features/jobs/domain/usecases/get_job_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_job_invitation.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_artisan_invitations.dart';
+import 'package:artisans_circle/features/jobs/domain/usecases/get_recent_artisan_invitations.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/respond_to_artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 
@@ -328,6 +329,10 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => GetArtisanInvitations(getIt<JobRepository>()),
   );
 
+  getIt.registerLazySingleton<GetRecentArtisanInvitations>(
+    () => GetRecentArtisanInvitations(getIt<JobRepository>()),
+  );
+
   getIt.registerLazySingleton<RespondToArtisanInvitation>(
     () => RespondToArtisanInvitation(getIt<JobRepository>()),
   );
@@ -396,6 +401,7 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
       getJobInvitations: getIt<GetJobInvitations>(),
       respondToJobInvitation: getIt<RespondToJobInvitation>(),
       getArtisanInvitations: getIt<GetArtisanInvitations>(),
+      getRecentArtisanInvitations: getIt<GetRecentArtisanInvitations>(),
       respondToArtisanInvitation: getIt<RespondToArtisanInvitation>(),
     ),
   );
