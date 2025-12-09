@@ -51,26 +51,35 @@ class ArtisanInvitationModel extends ArtisanInvitation {
       }
     }
 
+    // Debug: Print budget fields to see what's in the API response
+    print('🔍 Budget fields in jobData:');
+    print('  min_budget: ${jobData['min_budget']}');
+    print('  budget_min: ${jobData['budget_min']}');
+    print('  max_budget: ${jobData['max_budget']}');
+    print('  budget_max: ${jobData['budget_max']}');
+    print('  budget: ${jobData['budget']}');
+    print('  All jobData keys: ${jobData.keys.toList()}');
+
     return ArtisanInvitationModel(
       id: json['id'] as int,
       jobId: (jobData['id'] ?? jobData['job_id']) as int,
       jobTitle: (jobData['title'] ?? jobData['job_title'] ?? 'Untitled Job') as String,
-      jobDescription: jobData['description'] as String?,
+      jobDescription: jobData['description'] is String ? jobData['description'] as String? : null,
       jobCategory: categoryName,
       minBudget: _parseIntOrNull(jobData['min_budget'] ?? jobData['budget_min']),
       maxBudget: _parseIntOrNull(jobData['max_budget'] ?? jobData['budget_max']),
-      duration: jobData['duration'] as String?,
-      workMode: jobData['work_mode'] as String?,
-      address: jobData['address'] ?? jobData['location'] as String?,
-      clientName: clientName ?? json['client_name'] as String?,
+      duration: jobData['duration'] is String ? jobData['duration'] as String? : null,
+      workMode: jobData['work_mode'] is String ? jobData['work_mode'] as String? : null,
+      address: _extractAddress(jobData),
+      clientName: clientName ?? (json['client_name'] is String ? json['client_name'] as String? : null),
       clientId: _parseIntOrNull(clientData?['id'] ?? json['client_id']),
-      invitationStatus: (json['invitation_status'] ?? 'Pending') as String,
-      rejectionReason: json['rejection_reason'] as String?,
+      invitationStatus: json['invitation_status'] is String ? json['invitation_status'] as String : 'Pending',
+      rejectionReason: json['rejection_reason'] is String ? json['rejection_reason'] as String? : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       respondedAt: json['responded_at'] != null
           ? DateTime.parse(json['responded_at'] as String)
           : null,
-      message: json['message'] as String?,
+      message: json['message'] is String ? json['message'] as String? : null,
     );
   }
 
@@ -79,6 +88,29 @@ class ArtisanInvitationModel extends ArtisanInvitation {
     if (value is int) return value;
     if (value is double) return value.toInt();
     if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static String? _extractAddress(Map<String, dynamic> jobData) {
+    // First try the address field
+    final address = jobData['address'];
+    if (address != null && address is String && address.isNotEmpty) {
+      return address;
+    }
+
+    // Fall back to state display name if available
+    final state = jobData['state'];
+    if (state is Map) {
+      final displayName = state['display_name'];
+      if (displayName != null && displayName is String) {
+        return displayName;
+      }
+      final name = state['name'];
+      if (name != null && name is String) {
+        return name;
+      }
+    }
+
     return null;
   }
 
