@@ -107,12 +107,12 @@ class JobCard extends StatelessWidget {
                             children: [
                               Expanded(
                                   child: Text(job.title, style: titleStyle)),
-                              if (job.applied) _buildStatusIndicator(),
+                              if (job.applied || job.invitationId != null) _buildStatusIndicator(),
                             ],
                           ),
                           AppSpacing.spaceXS,
                           Text(job.category, style: subtitleStyle),
-                          if (job.applied) ...[
+                          if (job.applied || job.invitationId != null) ...[
                             AppSpacing.spaceXS,
                             _buildApplicationStatus(),
                           ],
@@ -231,7 +231,26 @@ class JobCard extends StatelessWidget {
         Color statusColor;
         IconData statusIcon;
 
-        if (job.status == JobStatus.accepted) {
+        // Check if this is an invitation
+        if (job.invitationId != null) {
+          switch (job.status) {
+            case JobStatus.pending:
+              statusColor = context.colorScheme.primary;
+              statusIcon = Icons.mail_outline;
+              break;
+            case JobStatus.rejected:
+              statusColor = context.colorScheme.error;
+              statusIcon = Icons.cancel_outlined;
+              break;
+            case JobStatus.inProgress:
+              statusColor = context.colorScheme.tertiary;
+              statusIcon = Icons.check_circle;
+              break;
+            default:
+              statusColor = context.colorScheme.onSurfaceVariant;
+              statusIcon = Icons.pending;
+          }
+        } else if (job.status == JobStatus.accepted) {
           statusColor = context.colorScheme.tertiary;
           statusIcon = Icons.check_circle;
         } else if (job.agreement != null) {
@@ -267,17 +286,39 @@ class JobCard extends StatelessWidget {
   Widget _buildApplicationStatus() {
     return Builder(
       builder: (context) {
-        final status = job.applicationStatus;
+        String status;
         Color statusColor;
 
-        if (status == 'Accepted') {
-          statusColor = context.colorScheme.tertiary;
-        } else if (status == 'Review Agreement') {
-          statusColor = context.primaryColor;
-        } else if (status == 'Change request sent') {
-          statusColor = context.darkBlueColor;
+        // Check if this is an invitation
+        if (job.invitationId != null) {
+          switch (job.status) {
+            case JobStatus.pending:
+              status = 'Pending Invitation';
+              statusColor = context.colorScheme.primary;
+              break;
+            case JobStatus.rejected:
+              status = 'Invitation Declined';
+              statusColor = context.colorScheme.error;
+              break;
+            case JobStatus.inProgress:
+              status = 'Invitation Accepted';
+              statusColor = context.colorScheme.tertiary;
+              break;
+            default:
+              status = 'Invitation';
+              statusColor = context.colorScheme.onSurfaceVariant;
+          }
         } else {
-          statusColor = context.colorScheme.onSurfaceVariant;
+          status = job.applicationStatus;
+          if (status == 'Accepted') {
+            statusColor = context.colorScheme.tertiary;
+          } else if (status == 'Review Agreement') {
+            statusColor = context.primaryColor;
+          } else if (status == 'Change request sent') {
+            statusColor = context.darkBlueColor;
+          } else {
+            statusColor = context.colorScheme.onSurfaceVariant;
+          }
         }
 
         return Container(

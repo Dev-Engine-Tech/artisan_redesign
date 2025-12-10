@@ -222,6 +222,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                                     .textTheme
                                     .bodyMedium
                                     ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
+                            if (job.invitationId != null) ...[
+                              const SizedBox(height: 8),
+                              _buildInvitationStatusBadge(context, job),
+                            ],
                           ]),
                     ),
                     AppSpacing.spaceSM,
@@ -460,10 +464,14 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
 
   /// Dynamic primary actions for the details page based on job status
   Widget _buildPrimaryActionButtons(BuildContext context, Job job) {
-    // Not applied yet → Apply
+    // Check if this is an invitation (has invitationId) and still pending
+    final bool isInvitation = job.invitationId != null;
+    final bool isPendingInvitation = isInvitation && job.status == JobStatus.pending;
+
+    // Not applied yet → Apply (or Accept Invite for invitations)
     if (!job.applied) {
       return PrimaryButton(
-        text: 'Apply',
+        text: isPendingInvitation ? 'Accept Invite' : 'Apply',
         onPressed: () {
           // Provide the current JobBloc to the apply sheet
           showModalBottomSheet(
@@ -789,6 +797,45 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
   }
 
   /// Helper to build info rows
+  Widget _buildInvitationStatusBadge(BuildContext context, Job job) {
+    String status;
+    Color statusColor;
+
+    switch (job.status) {
+      case JobStatus.pending:
+        status = 'Pending Invitation';
+        statusColor = Theme.of(context).colorScheme.primary;
+        break;
+      case JobStatus.rejected:
+        status = 'Invitation Declined';
+        statusColor = Theme.of(context).colorScheme.error;
+        break;
+      case JobStatus.inProgress:
+        status = 'Invitation Accepted';
+        statusColor = Theme.of(context).colorScheme.tertiary;
+        break;
+      default:
+        status = 'Invitation';
+        statusColor = Theme.of(context).colorScheme.onSurfaceVariant;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Text(
+        status,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: statusColor,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
   Widget _buildInfoRow(String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

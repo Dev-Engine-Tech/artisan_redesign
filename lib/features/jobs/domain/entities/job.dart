@@ -48,6 +48,9 @@ class Job extends Equatable {
   final String? clientId;
   final DateTime? completedDate;
 
+  // Invitation tracking
+  final int? invitationId;
+
   const Job({
     required this.id,
     required this.title,
@@ -79,6 +82,7 @@ class Job extends Equatable {
     this.clientName,
     this.clientId,
     this.completedDate,
+    this.invitationId,
   });
 
   @override
@@ -113,6 +117,7 @@ class Job extends Equatable {
         clientName,
         clientId,
         completedDate,
+        invitationId,
       ];
 
   /// Determines the current application status for display

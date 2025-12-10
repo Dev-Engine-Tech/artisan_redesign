@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
+import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_card.dart';
@@ -578,6 +579,22 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                 itemBuilder: (context, index) {
                   final invitation = invitations[index];
                   // Convert ArtisanInvitation to Job for display
+                  // Map invitation status to JobStatus for display
+                  JobStatus jobStatus;
+                  switch (invitation.invitationStatus.toLowerCase()) {
+                    case 'pending':
+                      jobStatus = JobStatus.pending;
+                      break;
+                    case 'accepted':
+                      jobStatus = JobStatus.inProgress;
+                      break;
+                    case 'rejected':
+                      jobStatus = JobStatus.rejected;
+                      break;
+                    default:
+                      jobStatus = JobStatus.pending;
+                  }
+
                   final job = Job(
                     id: invitation.jobId.toString(),
                     title: invitation.jobTitle,
@@ -588,6 +605,10 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                     maxBudget: invitation.maxBudget ?? 0,
                     duration: invitation.duration ?? 'Not specified',
                     applied: false,
+                    status: jobStatus,
+                    clientName: invitation.clientName,
+                    clientId: invitation.clientId?.toString(),
+                    invitationId: invitation.id,
                   );
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
