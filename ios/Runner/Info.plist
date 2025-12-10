@@ -84,5 +84,16 @@
 		<string>remote-notification</string>
 		<string>fetch</string>
 	</array>
+
+	<!-- Allow WebView to load content from external sources including YouTube -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
+	<!-- Allow inline media playback in WebView -->
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 </dict>
 </plist>

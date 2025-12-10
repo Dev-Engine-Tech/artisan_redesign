@@ -104,26 +104,40 @@ class MessagesListPage extends StatelessWidget {
 
             // User is authenticated but ID might be missing
             final userId = authState.user.id;
+
+            // Debug logging to see what's in the user object
+            debugPrint('🔍 Messages: User ID: $userId');
+            debugPrint('🔍 Messages: User phone: ${authState.user.phone}');
+            debugPrint('🔍 Messages: User name: ${authState.user.fullName}');
+
             if (userId == null) {
-              // User authenticated but profile incomplete - show loading
+              // User authenticated but profile incomplete - show error
+              debugPrint('❌ Messages: User ID is null! Cannot load messages.');
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    AppSpacing.spaceLG,
-                    Text('Loading your profile...',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w500)),
-                    AppSpacing.spaceSM,
-                    Text('Please wait while we sync your data',
-                        style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
-                    AppSpacing.spaceXXL,
-                    TextButton(
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      child: const Text('Go Back'),
-                    ),
-                  ],
+                child: Padding(
+                  padding: AppSpacing.paddingXL,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline,
+                          size: 64, color: colorScheme.error.withValues(alpha: 0.5)),
+                      AppSpacing.spaceLG,
+                      Text('Profile Error',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600)),
+                      AppSpacing.spaceSM,
+                      Text(
+                        'Your user profile is missing required information (User ID). Please try logging out and logging back in.',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                      ),
+                      AppSpacing.spaceXXL,
+                      PrimaryButton(
+                        text: 'Go Back',
+                        onPressed: () => Navigator.of(context).maybePop(),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }

@@ -278,8 +278,27 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
     }
 
     try {
+      print('🚀 =================================');
+      print('🚀 APPLY TO JOB - REQUEST DETAILS');
+      print('🚀 =================================');
+      print('📍 URL: ${ApiEndpoints.applyToJob}');
+      print('📦 Request Body:');
+      applicationData.forEach((key, value) {
+        print('   $key: $value');
+      });
+      print('🚀 =================================\n');
+
       final response =
           await dio.post(ApiEndpoints.applyToJob, data: applicationData);
+
+      print('✅ =================================');
+      print('✅ APPLY TO JOB - RESPONSE DETAILS');
+      print('✅ =================================');
+      print('📊 Status Code: ${response.statusCode}');
+      print('📊 Status Message: ${response.statusMessage}');
+      print('📦 Response Data Type: ${response.data.runtimeType}');
+      print('📦 Response Data: ${response.data}');
+      print('✅ =================================\n');
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
@@ -300,6 +319,17 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
         return false;
       }
     } on DioException catch (e) {
+      print('❌ =================================');
+      print('❌ APPLY TO JOB - ERROR DETAILS');
+      print('❌ =================================');
+      print('🔴 Error Type: ${e.type}');
+      print('🔴 Error Message: ${e.message}');
+      print('📊 Response Status Code: ${e.response?.statusCode}');
+      print('📊 Response Status Message: ${e.response?.statusMessage}');
+      print('📦 Response Data Type: ${e.response?.data.runtimeType}');
+      print('📦 Response Data: ${e.response?.data}');
+      print('📦 Response Headers: ${e.response?.headers}');
+      print('❌ =================================\n');
       final data = e.response?.data;
       String message = 'Failed to apply to job';
       if (data is Map) {

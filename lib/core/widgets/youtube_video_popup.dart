@@ -35,14 +35,19 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
       final videoId = _extractVideoId(widget.videoUrl);
 
       if (videoId == null) {
+        debugPrint('❌ Failed to extract video ID from URL: ${widget.videoUrl}');
         setState(() => _hasError = true);
         return;
       }
 
       // Create YouTube embed URL with autoplay enabled
       // Note: User can unmute using video controls
+      // Added fs=1 for fullscreen support and origin parameter
       final embedUrl =
-          'https://www.youtube.com/embed/$videoId?autoplay=1&mute=1&rel=0&showinfo=0&controls=1&modestbranding=1&playsinline=1&enablejsapi=1';
+          'https://www.youtube.com/embed/$videoId?autoplay=1&mute=1&rel=0&showinfo=0&controls=1&modestbranding=1&playsinline=1&enablejsapi=1&fs=1&origin=https://www.artisanscircle.com';
+
+      debugPrint('🎬 Video ID extracted: $videoId');
+      debugPrint('🎬 Loading YouTube embed: $embedUrl');
 
       _controller = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -51,25 +56,33 @@ class _YouTubeVideoPopupState extends State<YouTubeVideoPopup> {
         ..setNavigationDelegate(
           NavigationDelegate(
             onPageStarted: (String url) {
+              debugPrint('📄 WebView page started: $url');
               setState(() => _isLoading = true);
             },
             onPageFinished: (String url) {
+              debugPrint('✅ WebView page finished: $url');
               setState(() => _isLoading = false);
             },
             onWebResourceError: (WebResourceError error) {
               debugPrint('❗ WebView error: ${error.description}');
+              debugPrint('❗ Error type: ${error.errorType}');
+              debugPrint('❗ Error code: ${error.errorCode}');
               setState(() {
                 _hasError = true;
                 _isLoading = false;
               });
             },
+            onNavigationRequest: (NavigationRequest request) {
+              debugPrint('🔗 Navigation request: ${request.url}');
+              return NavigationDecision.navigate;
+            },
           ),
         );
 
       // Load the embed URL
-      debugPrint('🎬 Loading YouTube embed: $embedUrl');
       _controller.loadRequest(Uri.parse(embedUrl));
     } catch (e) {
+      debugPrint('💥 Exception in _initializeWebView: $e');
       setState(() => _hasError = true);
     }
   }

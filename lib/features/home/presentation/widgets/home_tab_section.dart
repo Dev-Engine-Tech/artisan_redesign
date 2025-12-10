@@ -429,11 +429,41 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
   }
 
   void _handleAccept(ArtisanInvitation invitation) {
-    context.read<JobBloc>().add(
-          AcceptArtisanInvitation(
-            invitationId: invitation.id,
-          ),
-        );
+    // Convert invitation to Job and navigate to job details page
+    // The job details page will show "Accept Invite" button which redirects to application form
+    JobStatus jobStatus;
+    switch (invitation.invitationStatus.toLowerCase()) {
+      case 'pending':
+        jobStatus = JobStatus.pending;
+        break;
+      case 'accepted':
+        jobStatus = JobStatus.inProgress;
+        break;
+      case 'rejected':
+        jobStatus = JobStatus.rejected;
+        break;
+      default:
+        jobStatus = JobStatus.pending;
+    }
+
+    final job = Job(
+      id: invitation.jobId.toString(),
+      title: invitation.jobTitle,
+      category: invitation.jobCategory ?? 'Job Invitation',
+      description: invitation.jobDescription ?? '',
+      address: invitation.address ?? invitation.clientName ?? 'Client',
+      minBudget: invitation.minBudget ?? 0,
+      maxBudget: invitation.maxBudget ?? 0,
+      duration: invitation.duration ?? 'Not specified',
+      applied: false,
+      status: jobStatus,
+      clientName: invitation.clientName,
+      clientId: invitation.clientId?.toString(),
+      invitationId: invitation.id,
+    );
+
+    // Navigate to job details page
+    widget.onJobTap(job);
   }
 
   void _handleReject(ArtisanInvitation invitation) {
