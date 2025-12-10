@@ -42,31 +42,46 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User?> getCurrentUser() async {
-    if (_currentUser != null) return _currentUser;
+    if (_currentUser != null) {
+      debugPrint('🔄 Returning cached user from memory');
+      return _currentUser;
+    }
 
     // Try to restore from SharedPreferences (persisted fake)
     try {
       final prefs = await SharedPreferences.getInstance();
-      final raw = prefs.getString('auth_current_user');
+      final raw = prefs.getString('logged_in_user');
+
+      if (kDebugMode) {
+        debugPrint('📖 Reading user from SharedPreferences with key: logged_in_user');
+        debugPrint('📖 Raw data found: ${raw != null ? "YES" : "NO"}');
+      }
+
       if (raw == null) return null;
       final Map<String, dynamic> data = jsonDecode(raw) as Map<String, dynamic>;
+
+      if (kDebugMode) {
+        debugPrint('📖 Parsed JSON keys: ${data.keys.toList()}');
+        debugPrint('📖 User ID from storage: ${data['id']}');
+        debugPrint('📖 User phone from storage: ${data['phone']}');
+      }
       final user = User(
         id: data['id'] as int?,
-        phone: data['phone'] as String,
-        firstName: data['firstName'] as String,
-        lastName: data['lastName'] as String,
+        phone: (data['phone'] ?? '').toString(),
+        firstName: (data['first_name'] ?? '').toString(),
+        lastName: (data['last_name'] ?? '').toString(),
         email: data['email'] as String?,
-        isArtisan: data['isArtisan'] == true,
-        isVerified: data['isVerified'] == true,
-        idDocumentUrl: data['idDocumentUrl'] as String?,
-        selfieUrl: data['selfieUrl'] as String?,
+        isArtisan: data['is_artisan'] == true,
+        isVerified: data['is_verified'] == true,
+        idDocumentUrl: data['id_document_url'] as String?,
+        selfieUrl: data['selfie_url'] as String?,
       );
 
       // If user ID is null, the cached data is invalid/incomplete
       // Clear it and return null to force a fresh login/profile load
       if (user.id == null) {
         debugPrint('⚠️ Cached user has null ID - clearing invalid cache');
-        await prefs.remove('auth_current_user');
+        await prefs.remove('logged_in_user');
         return null;
       }
 
@@ -108,15 +123,15 @@ class AuthRepositoryImpl implements AuthRepository {
       final Map<String, dynamic> data = {
         'id': user.id,
         'phone': user.phone,
-        'firstName': user.firstName,
-        'lastName': user.lastName,
+        'first_name': user.firstName,
+        'last_name': user.lastName,
         'email': user.email,
-        'isArtisan': user.isArtisan,
-        'isVerified': user.isVerified,
-        'idDocumentUrl': user.idDocumentUrl,
-        'selfieUrl': user.selfieUrl,
+        'is_artisan': user.isArtisan,
+        'is_verified': user.isVerified,
+        'id_document_url': user.idDocumentUrl,
+        'selfie_url': user.selfieUrl,
       };
-      await prefs.setString('auth_current_user', jsonEncode(data));
+      await prefs.setString('logged_in_user', jsonEncode(data));
     } catch (_) {
       // ignore persistence failures for fake implementation
     }

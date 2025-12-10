@@ -69,7 +69,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   Future<void> _saveUser(User user) async {
     final userModel = UserModel.fromUser(user);
-    await sharedPreferences.setString(_userKey, jsonEncode(userModel.toJson()));
+    final jsonData = userModel.toJson();
+    await sharedPreferences.setString(_userKey, jsonEncode(jsonData));
+
+    if (kDebugMode) {
+      debugPrint('💾 Saving user to SharedPreferences with key: $_userKey');
+      debugPrint('💾 User ID: ${user.id}');
+      debugPrint('💾 User Phone: ${user.phone}');
+      debugPrint('💾 User Name: ${user.firstName} ${user.lastName}');
+      debugPrint('💾 JSON data keys: ${jsonData.keys.toList()}');
+    }
   }
 
   Future<void> _clearAuthData() async {
@@ -252,22 +261,38 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<User?> fetchUser(String identifier) async {
     try {
       final headers = await _authHeaders;
-      if (kDebugMode) {}
+      if (kDebugMode) {
+        debugPrint('📥 Fetching user profile for: $identifier');
+      }
 
       final response = await dio.get(
         '${ApiEndpoints.baseUrl}${ApiEndpoints.userProfile}',
         options: Options(headers: headers),
       );
 
-      if (kDebugMode) {}
+      if (kDebugMode) {
+        debugPrint('📥 User profile response status: ${response.statusCode}');
+        debugPrint('📥 Raw response data: ${response.data}');
+      }
 
       if (response.statusCode == 200) {
         final data = response.data;
         if (data is Map<String, dynamic>) {
-          // The backend returns { "user": { ... }, ... } for profile.
-          final u = (data['user'] is Map)
+          // The backend returns { "user": { "user": { ... } } } for profile.
+          // First, extract the outer 'user' wrapper
+          var u = (data['user'] is Map)
               ? Map<String, dynamic>.from(data['user'] as Map)
               : Map<String, dynamic>.from(data);
+
+          // Then check if there's another nested 'user' object
+          if (u['user'] is Map) {
+            u = Map<String, dynamic>.from(u['user'] as Map);
+          }
+
+          if (kDebugMode) {
+            debugPrint('📥 Extracted user data keys: ${u.keys.toList()}');
+            debugPrint('📥 User ID from response: ${u['id']}');
+          }
 
           final user = User(
             id: (u['id'] as num?)?.toInt(),
@@ -284,14 +309,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             isPhoneVerified: true,
           );
 
-          if (kDebugMode) {}
+          if (kDebugMode) {
+            debugPrint('✅ User object created:');
+            debugPrint('   ID: ${user.id}');
+            debugPrint('   Phone: ${user.phone}');
+            debugPrint('   Name: ${user.firstName} ${user.lastName}');
+            debugPrint('   Email: ${user.email}');
+          }
 
           return user;
         }
       }
       return null;
     } catch (e) {
-      if (kDebugMode) {}
+      if (kDebugMode) {
+        debugPrint('❌ Error fetching user profile: $e');
+      }
       return null;
     }
   }

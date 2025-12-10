@@ -49,9 +49,9 @@ class MessagesRepositoryFirebase implements MessagesRepository {
       jobTitle: m['jobTitle']?.toString(),
       lastMessage: m['lastMessage']?.toString(),
       lastTimestamp: _parseTime(m['timeSent']),
-      unreadCount: (m['unreadCount'] ?? 0) is int
+      unreadCount: m['unreadCount'] is int
           ? m['unreadCount'] as int
-          : int.tryParse('${m['unreadCount']}') ?? 0,
+          : int.tryParse('${m['unreadCount'] ?? 0}') ?? 0,
       online: (m['online'] ?? false) == true,
       isTyping: (m['isTyping'] ?? false) == true,
     );
