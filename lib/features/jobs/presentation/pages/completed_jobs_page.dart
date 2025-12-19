@@ -8,6 +8,9 @@ import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/payment_summary_widget.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/project_review_modal.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_completion_certificate.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/completed_jobs_earnings_summary.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/jobs_filter_bar.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/jobs_empty_state.dart';
 import '../../../../core/utils/responsive.dart';
 
 class CompletedJobsPage extends StatefulWidget {
@@ -86,8 +89,30 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildEarningsSummary(),
-            _buildFiltersAndSearch(),
+            const CompletedJobsEarningsSummary(
+              totalEarnings: '₦1,250,000',
+              completedProjectsCount: 12,
+              percentageIncrease: '+23%',
+            ),
+            JobsFilterBar(
+              searchController: _searchController,
+              searchQuery: _searchQuery,
+              selectedFilter: _filterStatus,
+              searchHint: 'Search completed projects...',
+              filterOptions: const [
+                FilterOption(label: 'All', value: 'all'),
+                FilterOption(label: 'Paid', value: 'paid'),
+                FilterOption(label: 'Pending Payment', value: 'pending_payment'),
+                FilterOption(label: 'Reviewed', value: 'reviewed'),
+                FilterOption(label: 'High Rating', value: 'high_rating'),
+              ],
+              onSearchChanged: (value) => setState(() => _searchQuery = value),
+              onSearchClear: () {
+                _searchController.clear();
+                setState(() => _searchQuery = '');
+              },
+              onFilterChanged: (value) => setState(() => _filterStatus = value),
+            ),
             Expanded(
               child: BlocBuilder<JobBloc, JobState>(
                 builder: (context, state) {
@@ -104,7 +129,11 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
                     return _buildJobsList(filteredJobs);
                   }
 
-                  return _buildEmptyState();
+                  return const JobsEmptyState(
+                    title: 'No Completed Jobs',
+                    subtitle: 'Your completed projects will appear here',
+                    icon: Icons.work_off_outlined,
+                  );
                 },
               ),
             ),
@@ -114,6 +143,10 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
     );
   }
 
+  // UNUSED: Earnings summary builder - replaced by CompletedJobsEarningsSummary widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildEarningsSummary() {
     return Builder(
       builder: (context) {
@@ -219,7 +252,12 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       },
     );
   }
+  */
 
+  // UNUSED: Filters and search builder - replaced by CompletedJobsFilterBar widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildFiltersAndSearch() {
     return Builder(
       builder: (context) {
@@ -289,39 +327,9 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
   }
 
   Widget _buildFilterChip(String label, String value) {
-    final isSelected = _filterStatus == value;
-    return Builder(
-      builder: (context) {
-        final theme = Theme.of(context);
-        final colorScheme = theme.colorScheme;
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              _filterStatus = value;
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: isSelected ? context.primaryColor : context.cardBackgroundColor,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: isSelected ? context.primaryColor : context.softBorderColor,
-              ),
-            ),
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: isSelected ? colorScheme.onPrimary : context.brownHeaderColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    // Method moved to CompletedJobsFilterBar widget
   }
+  */
 
   List<Job> _getFilteredJobs(List<Job> jobs) {
     List<Job> filtered =
@@ -381,7 +389,11 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
 
   Widget _buildJobsList(List<Job> jobs) {
     if (jobs.isEmpty) {
-      return _buildEmptyState();
+      return const JobsEmptyState(
+        title: 'No Completed Jobs',
+        subtitle: 'Your completed projects will appear here',
+        icon: Icons.work_off_outlined,
+      );
     }
 
     return RefreshIndicator(
@@ -405,6 +417,10 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
     );
   }
 
+  // UNUSED: Empty state builder - replaced by CompletedJobsEmptyState widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -439,6 +455,7 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       ),
     );
   }
+  */
 
   Widget _buildErrorState(String message) {
     return Center(

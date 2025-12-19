@@ -20,6 +20,8 @@ import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_reque
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_request.dart';
 import 'package:artisans_circle/features/account/presentation/pages/transactions_page.dart';
 import 'package:artisans_circle/features/home/presentation/widgets/profile_action_buttons.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/home_hero_banner.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/home_tab_chip.dart';
 import 'package:artisans_circle/features/home/utils/profile_utils.dart';
 import 'package:artisans_circle/features/notifications/presentation/widgets/notification_icon.dart';
 import 'package:artisans_circle/features/messages/presentation/widgets/message_icon.dart';

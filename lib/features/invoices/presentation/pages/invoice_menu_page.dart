@@ -7,14 +7,14 @@ import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../account/presentation/bloc/account_bloc.dart';
 import '../../../account/presentation/bloc/account_state.dart';
 import '../../../account/presentation/bloc/account_event.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
 import 'invoices_page.dart';
 import '../../domain/entities/invoice.dart';
 import '../../data/datasources/invoice_remote_data_source.dart';
 import '../../data/models/invoice_dashboard_model.dart';
 import '../../../customers/presentation/pages/customers_page.dart';
 import 'create_invoice_page.dart';
+import '../widgets/invoice_earnings_card.dart';
+import '../widgets/invoice_status_icon.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/image_url.dart';
 
@@ -205,67 +205,9 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
 
               AppSpacing.spaceLG,
 
-              // Earnings Balance Card - Reduced size
-              Container(
-                width: double.infinity,
-                padding: context.responsivePadding,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      context.primaryColor,
-                      context.primaryColor.withValues(alpha: 0.8)
-                    ],
-                  ),
-                  borderRadius: AppRadius.radiusLG,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Earnings balance',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onPrimary.withValues(alpha: 0.7),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    AppSpacing.spaceXS,
-                    Text(
-                      _loading
-                          ? 'Loading...'
-                          : 'NGN ${(_dashboard?.earningsBalance ?? 0).toStringAsFixed(0)}',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: colorScheme.onPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    AppSpacing.spaceMD,
-                    // Simple chart representation
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        _buildChartBar(20),
-                        const SizedBox(width: 3),
-                        _buildChartBar(30),
-                        const SizedBox(width: 3),
-                        _buildChartBar(18),
-                        const SizedBox(width: 3),
-                        _buildChartBar(35),
-                        const SizedBox(width: 3),
-                        _buildChartBar(25),
-                        const SizedBox(width: 3),
-                        _buildChartBar(40),
-                        const SizedBox(width: 3),
-                        _buildChartBar(32),
-                        const SizedBox(width: 3),
-                        _buildChartBar(22),
-                        const SizedBox(width: 3),
-                        _buildChartBar(28),
-                      ],
-                    ),
-                  ],
-                ),
+              InvoiceEarningsCard(
+                earningsBalance: _dashboard?.earningsBalance ?? 0,
+                loading: _loading,
               ),
 
               AppSpacing.spaceLG,
@@ -637,6 +579,10 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
     );
   }
 
+  // UNUSED: Chart bar - moved to InvoiceEarningsCard widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildChartBar(double height) {
     return Builder(
       builder: (context) => Container(
@@ -649,6 +595,7 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
       ),
     );
   }
+  */
 
   Widget _buildClientAvatar(String name, String? imageUrl) {
     return Builder(

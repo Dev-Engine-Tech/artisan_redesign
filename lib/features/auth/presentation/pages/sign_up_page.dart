@@ -11,6 +11,7 @@ import 'package:artisans_circle/core/app_shell.dart';
 import 'package:artisans_circle/features/auth/presentation/bloc/verification_cubit.dart';
 import 'package:artisans_circle/features/auth/presentation/pages/identity_verification_page.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
+import '../widgets/signup_step_indicator.dart';
 
 /// Single-page sign-up stepper wizard with redesigned UI to match sign in page.
 class SignUpPage extends StatelessWidget {
@@ -70,6 +71,10 @@ class _SignUpViewState extends State<_SignUpView> {
     super.dispose();
   }
 
+// UNUSED: Step indicator builder - replaced by SignupStepIndicator widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _stepIndicator(int step) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -92,6 +97,7 @@ class _SignUpViewState extends State<_SignUpView> {
       ),
     );
   }
+  */
 
   bool _isValidPhone(String phone) {
     final p = phone.replaceAll(' ', '');
@@ -205,7 +211,7 @@ class _SignUpViewState extends State<_SignUpView> {
                         ),
 
                         // Step indicator
-                        _stepIndicator(state.step),
+                        SignupStepIndicator(currentStep: state.step),
 
                         AppSpacing.spaceXXL,
 

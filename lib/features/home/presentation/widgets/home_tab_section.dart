@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:artisans_circle/core/components/components.dart';
-import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
-import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
-import 'package:artisans_circle/features/jobs/domain/entities/artisan_invitation.dart';
 import 'package:artisans_circle/features/jobs/data/models/job_model.dart';
-import 'package:artisans_circle/features/jobs/presentation/widgets/job_card.dart';
-import 'package:artisans_circle/features/jobs/presentation/widgets/applications_list.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_request.dart';
+import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
-import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_requests_bloc.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/tabs/jobs_tab_content.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/tabs/applications_tab_content.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/tabs/job_invite_tab_content.dart';
+import 'package:artisans_circle/features/home/presentation/widgets/tabs/orders_tab_content.dart';
 
 /// Performance-optimized tab section following SOLID principles
 /// Single Responsibility: Manages tab display and content
@@ -48,20 +46,12 @@ class _HomeTabSectionState extends State<HomeTabSection>
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_onTabChanged);
 
-    // Load Jobs for initial tab (Jobs tab is index 0) once after first frame
-    if (_selectedIndex == 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        try {
-          final state = context.read<JobBloc>().state;
-          if (state is! JobStateLoaded) {
-            context.read<JobBloc>().add(LoadJobs(page: 1, limit: 10));
-          }
-        } catch (_) {
-          // JobBloc not available, ignore
-        }
-      });
-    }
+    // Load jobs data when widget is first created (Jobs tab is selected by default)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadJobsIfNeeded();
+      }
+    });
   }
 
   @override
@@ -77,29 +67,25 @@ class _HomeTabSectionState extends State<HomeTabSection>
         _selectedIndex = _tabController.index;
       });
 
-      // Load Jobs when user switches to Jobs tab (index 0) if not already loaded
+      // Load jobs data when Jobs tab is selected
       if (_selectedIndex == 0) {
-        try {
-          final state = context.read<JobBloc>().state;
-          if (state is! JobStateLoaded) {
-            context.read<JobBloc>().add(LoadJobs(page: 1, limit: 10));
-          }
-        } catch (e) {
-          // JobBloc not available, ignore
-        }
+        _loadJobsIfNeeded();
       }
+    }
+  }
 
-      // Load Recent Artisan Invitations when user switches to Job Invite tab (index 2)
-      if (_selectedIndex == 2) {
-        try {
-          final state = context.read<JobBloc>().state;
-          if (state is! JobStateArtisanInvitationsLoaded) {
-            context.read<JobBloc>().add(LoadRecentArtisanInvitations());
-          }
-        } catch (e) {
-          // JobBloc not available, ignore
-        }
+  /// Load jobs data if not already loaded
+  void _loadJobsIfNeeded() {
+    try {
+      final jobBloc = context.read<JobBloc>();
+      final state = jobBloc.state;
+
+      // Only load if not already loaded or loading
+      if (state is! JobStateLoaded && state is! JobStateLoading) {
+        jobBloc.add(LoadJobs(page: 1, limit: 10));
       }
+    } catch (e) {
+      debugPrint('❌ Failed to load jobs: $e');
     }
   }
 
@@ -107,13 +93,11 @@ class _HomeTabSectionState extends State<HomeTabSection>
   Widget build(BuildContext context) {
     super.build(context); // Required for AutomaticKeepAliveClientMixin
 
-    // debug: selected tab index
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTabBar(),
-        AppSpacing.spaceLG,
+        const SizedBox(height: 16),
         _buildTabContent(),
       ],
     );
@@ -127,14 +111,14 @@ class _HomeTabSectionState extends State<HomeTabSection>
     return Container(
       decoration: BoxDecoration(
         color: context.softPeachColor,
-        borderRadius: AppRadius.radiusLG,
+        borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(6),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
           color: colorScheme.surface,
-          borderRadius: AppRadius.radiusMD,
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: colorScheme.shadow.withValues(alpha: 0.1),
@@ -172,7 +156,6 @@ class _HomeTabSectionState extends State<HomeTabSection>
   }
 
   Widget _getSelectedTabContent() {
-    // debug: returning tab content for index
     switch (_selectedIndex) {
       case 0:
         return JobsTabContent(onJobTap: widget.onJobTap);
@@ -189,684 +172,5 @@ class _HomeTabSectionState extends State<HomeTabSection>
       default:
         return JobsTabContent(onJobTap: widget.onJobTap);
     }
-  }
-}
-
-/// Separate widget for Jobs tab following Single Responsibility Principle
-class JobsTabContent extends StatelessWidget {
-  const JobsTabContent({
-    required this.onJobTap,
-    super.key,
-  });
-
-  final Function(Job) onJobTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<JobBloc, JobState>(
-      builder: (context, state) {
-        if (state is JobStateLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is JobStateError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline,
-                    size: 48, color: AppColors.danger),
-                AppSpacing.spaceLG,
-                Text(
-                  'Failed to load jobs',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-                ),
-                AppSpacing.spaceSM,
-                PrimaryButton(
-                  text: 'Retry',
-                  onPressed: () {
-                    context.read<JobBloc>().add(LoadJobs());
-                  },
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (state is JobStateLoaded) {
-          // Only show jobs that the artisan has NOT applied for
-          final jobs = state.jobs.where((j) => !j.applied).toList();
-
-          if (jobs.isEmpty) {
-            return const EmptyStateWidget(
-              icon: Icons.work_outline,
-              title: 'No Jobs Available',
-              subtitle: 'Check back later for new opportunities',
-            );
-          }
-
-          // Performance: Use ListView.builder for lazy loading with optimized scroll physics
-          return ListView.builder(
-            itemCount: jobs.length,
-            padding: AppSpacing.verticalSM,
-            physics:
-                const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
-            cacheExtent: 200, // Cache items offscreen for smooth scrolling
-            addAutomaticKeepAlives:
-                true, // Keep list items alive for better performance
-            addRepaintBoundaries: true, // Isolate repaints for performance
-            itemBuilder: (context, index) {
-              final job = jobs[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: JobCard(
-                  job: job,
-                  onTap: () => onJobTap(job),
-                ),
-              );
-            },
-          );
-        }
-
-        // Show loading indicator for initial/unknown states instead of blank space
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-  }
-}
-
-/// Separate widget for Applications tab
-class ApplicationsTabContent extends StatefulWidget {
-  const ApplicationsTabContent({
-    required this.applications,
-    required this.onJobTap,
-    required this.onApplicationUpdate,
-    super.key,
-  });
-
-  final List<JobModel> applications;
-  final Function(Job) onJobTap;
-  final Function(List<JobModel>) onApplicationUpdate;
-
-  @override
-  State<ApplicationsTabContent> createState() => _ApplicationsTabContentState();
-}
-
-class _ApplicationsTabContentState extends State<ApplicationsTabContent> {
-  @override
-  void initState() {
-    super.initState();
-    // Applications are loaded by the parent HomePage, no need to duplicate the call
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<JobBloc, JobState>(
-      builder: (context, state) {
-        bool isLoading = state is JobStateLoading;
-        String? errorMessage;
-        List<Job> applications = [];
-
-        if (state is JobStateError) {
-          errorMessage = state.message;
-        } else if (state is JobStateAppliedSuccess) {
-          // Convert JobModel list to Job list for the ApplicationsList widget
-          applications = state.jobs
-              .map((jobModel) => Job(
-                    id: jobModel.id,
-                    title: jobModel.title,
-                    category: jobModel.category,
-                    description: jobModel.description,
-                    address: jobModel.address,
-                    minBudget: jobModel.minBudget,
-                    maxBudget: jobModel.maxBudget,
-                    duration: jobModel.duration,
-                    applied: jobModel.applied,
-                    thumbnailUrl: jobModel.thumbnailUrl,
-                    status: jobModel.status,
-                    agreement: jobModel.agreement,
-                    changeRequest: jobModel.changeRequest,
-                    materials: jobModel.materials,
-                  ))
-              .toList();
-        } else {
-          // Fallback to applications provided by parent when bloc doesn't currently hold applications
-          applications = widget.applications
-              .map((m) => Job(
-                    id: m.id,
-                    title: m.title,
-                    category: m.category,
-                    description: m.description,
-                    address: m.address,
-                    minBudget: m.minBudget,
-                    maxBudget: m.maxBudget,
-                    duration: m.duration,
-                    applied: true,
-                    thumbnailUrl: m.thumbnailUrl,
-                    status: m.status,
-                    agreement: m.agreement,
-                    changeRequest: m.changeRequest,
-                    materials: m.materials,
-                  ))
-              .toList();
-        }
-
-        return ApplicationsList(
-          applications: applications,
-          isLoading: isLoading,
-          error: errorMessage,
-          onRefresh: () {
-            context.read<JobBloc>().add(LoadApplications(page: 1, limit: 10));
-          },
-          onApplicationUpdate: (updatedJob) {
-            // Update the applications list in the parent
-            final updatedApplications = applications.map((app) {
-              if (app.id == updatedJob.id) {
-                return updatedJob;
-              }
-              return app;
-            }).toList();
-
-            // Convert back to JobModel list for parent callback
-            final updatedJobModels = updatedApplications
-                .map((job) => JobModel(
-                      id: job.id,
-                      title: job.title,
-                      category: job.category,
-                      description: job.description,
-                      address: job.address,
-                      minBudget: job.minBudget,
-                      maxBudget: job.maxBudget,
-                      duration: job.duration,
-                      applied: job.applied,
-                      thumbnailUrl: job.thumbnailUrl,
-                      status: job.status,
-                      agreement: job.agreement,
-                      changeRequest: job.changeRequest,
-                      materials: job.materials,
-                    ))
-                .toList();
-
-            widget.onApplicationUpdate(updatedJobModels);
-          },
-        );
-      },
-    );
-  }
-}
-
-/// Separate widget for Job Invite tab - displays job invitations from clients
-class JobInviteTabContent extends StatefulWidget {
-  const JobInviteTabContent({
-    required this.onJobTap,
-    super.key,
-  });
-
-  final Function(Job) onJobTap;
-
-  @override
-  State<JobInviteTabContent> createState() => _JobInviteTabContentState();
-}
-
-class _JobInviteTabContentState extends State<JobInviteTabContent> {
-  @override
-  void initState() {
-    super.initState();
-    // Load recent artisan invitations when widget initializes (top 5 most recent)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      try {
-        final state = context.read<JobBloc>().state;
-        if (state is! JobStateArtisanInvitationsLoaded) {
-          context.read<JobBloc>().add(LoadRecentArtisanInvitations());
-        }
-      } catch (_) {
-        // JobBloc not available, ignore
-      }
-    });
-  }
-
-  void _handleAccept(ArtisanInvitation invitation) {
-    // Convert invitation to Job and navigate to job details page
-    // The job details page will show "Accept Invite" button which redirects to application form
-    JobStatus jobStatus;
-    switch (invitation.invitationStatus.toLowerCase()) {
-      case 'pending':
-        jobStatus = JobStatus.pending;
-        break;
-      case 'accepted':
-        jobStatus = JobStatus.inProgress;
-        break;
-      case 'rejected':
-        jobStatus = JobStatus.rejected;
-        break;
-      default:
-        jobStatus = JobStatus.pending;
-    }
-
-    final job = Job(
-      id: invitation.jobId.toString(),
-      title: invitation.jobTitle,
-      category: invitation.jobCategory ?? 'Job Invitation',
-      description: invitation.jobDescription ?? '',
-      address: invitation.address ?? invitation.clientName ?? 'Client',
-      minBudget: invitation.minBudget ?? 0,
-      maxBudget: invitation.maxBudget ?? 0,
-      duration: invitation.duration ?? 'Not specified',
-      applied: false,
-      status: jobStatus,
-      clientName: invitation.clientName,
-      clientId: invitation.clientId?.toString(),
-      invitationId: invitation.id,
-    );
-
-    // Navigate to job details page
-    widget.onJobTap(job);
-  }
-
-  void _handleReject(ArtisanInvitation invitation) {
-    final reasonController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Decline Job Invitation'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Please provide a reason for declining this invitation:',
-            ),
-            const SizedBox(height: 12),
-            CustomTextField(
-              controller: reasonController,
-              hint: 'e.g., Busy with other projects',
-              maxLines: 3,
-            ),
-          ],
-        ),
-        actions: [
-          TextAppButton(
-            text: 'Cancel',
-            onPressed: () {
-              reasonController.dispose();
-              Navigator.pop(ctx);
-            },
-          ),
-          TextAppButton(
-            text: 'Decline',
-            onPressed: () {
-              final reason = reasonController.text.trim();
-              if (reason.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please provide a reason for declining'),
-                  ),
-                );
-                return;
-              }
-              reasonController.dispose();
-              Navigator.pop(ctx);
-              context.read<JobBloc>().add(
-                    RejectArtisanInvitation(
-                      invitationId: invitation.id,
-                      reason: reason,
-                    ),
-                  );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<JobBloc, JobState>(
-      listener: (context, state) {
-        if (state is JobStateArtisanInvitationResponseSuccess) {
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
-          );
-          // Refresh the list (recent invitations)
-          context.read<JobBloc>().add(LoadRecentArtisanInvitations());
-        } else if (state is JobStateError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
-        }
-      },
-      child: BlocBuilder<JobBloc, JobState>(
-        builder: (context, state) {
-          if (state is JobStateLoading || state is JobStateRespondingToArtisanInvitation) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is JobStateError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 48,
-                    color: context.dangerColor,
-                  ),
-                  AppSpacing.spaceLG,
-                  Text(
-                    'Failed to load job invitations',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  AppSpacing.spaceSM,
-                  PrimaryButton(
-                    text: 'Retry',
-                    onPressed: () {
-                      context.read<JobBloc>().add(LoadRecentArtisanInvitations());
-                    },
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (state is JobStateArtisanInvitationsLoaded) {
-            final invitations = state.invitations;
-
-            if (invitations.isEmpty) {
-              return const EmptyStateWidget(
-                icon: Icons.mail_outline,
-                title: 'No Job Invitations',
-                subtitle:
-                    'Job invitations from clients will appear here',
-              );
-            }
-
-            // Performance: Use ListView.builder for lazy loading with optimizations
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<JobBloc>().add(LoadRecentArtisanInvitations());
-              },
-              child: ListView.builder(
-                itemCount: invitations.length,
-                padding: AppSpacing.verticalSM,
-                physics:
-                    const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
-                cacheExtent: 200, // Cache items offscreen for smooth scrolling
-                addAutomaticKeepAlives:
-                    true, // Keep list items alive for better performance
-                addRepaintBoundaries: true, // Isolate repaints for performance
-                itemBuilder: (context, index) {
-                  final invitation = invitations[index];
-                  // Convert ArtisanInvitation to Job for display
-                  // Map invitation status to JobStatus for display
-                  JobStatus jobStatus;
-                  switch (invitation.invitationStatus.toLowerCase()) {
-                    case 'pending':
-                      jobStatus = JobStatus.pending;
-                      break;
-                    case 'accepted':
-                      jobStatus = JobStatus.inProgress;
-                      break;
-                    case 'rejected':
-                      jobStatus = JobStatus.rejected;
-                      break;
-                    default:
-                      jobStatus = JobStatus.pending;
-                  }
-
-                  final job = Job(
-                    id: invitation.jobId.toString(),
-                    title: invitation.jobTitle,
-                    category: invitation.jobCategory ?? 'Job Invitation',
-                    description: invitation.jobDescription ?? '',
-                    address: invitation.address ?? invitation.clientName ?? 'Client',
-                    minBudget: invitation.minBudget ?? 0,
-                    maxBudget: invitation.maxBudget ?? 0,
-                    duration: invitation.duration ?? 'Not specified',
-                    applied: false,
-                    status: jobStatus,
-                    clientName: invitation.clientName,
-                    clientId: invitation.clientId?.toString(),
-                    invitationId: invitation.id,
-                  );
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: JobCard(
-                      job: job,
-                      onTap: () => widget.onJobTap(job),
-                      primaryLabel: 'Accept',
-                      secondaryLabel: 'Decline',
-                      primaryAction: () => _handleAccept(invitation),
-                      secondaryAction: () => _handleReject(invitation),
-                    ),
-                  );
-                },
-              ),
-            );
-          }
-
-          return const SizedBox.shrink();
-        },
-      ),
-    );
-  }
-}
-
-/// Separate widget for Orders tab
-class OrdersTabContent extends StatefulWidget {
-  const OrdersTabContent({
-    required this.onRequestTap,
-    super.key,
-  });
-
-  final Function(CatalogRequest) onRequestTap;
-
-  @override
-  State<OrdersTabContent> createState() => _OrdersTabContentState();
-}
-
-class _OrdersTabContentState extends State<OrdersTabContent> {
-  String? _processingId; // request id currently being processed
-
-  @override
-  Widget build(BuildContext context) {
-    // Drive UI from CatalogRequestsBloc state
-    return BlocListener<CatalogRequestsBloc, CatalogRequestsState>(
-      listener: (context, state) {
-        if (state is CatalogRequestApproving ||
-            state is CatalogRequestDeclining) {
-          setState(() {
-            _processingId = (state is CatalogRequestApproving)
-                ? state.id
-                : (state as CatalogRequestDeclining).id;
-          });
-        } else if (state is CatalogRequestActionSuccess) {
-          // Reset processing id; and refresh real data
-          setState(() {
-            _processingId = null;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Request updated successfully')),
-          );
-          context.read<CatalogRequestsBloc>().add(RefreshCatalogRequests());
-        } else if (state is CatalogRequestsError) {
-          setState(() {
-            _processingId = null;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-        }
-      },
-      child: BlocBuilder<CatalogRequestsBloc, CatalogRequestsState>(
-        builder: (context, state) {
-          if (state is CatalogRequestsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is CatalogRequestsError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline,
-                      size: 48, color: context.dangerColor),
-                  AppSpacing.spaceLG,
-                  Text(state.message,
-                      style: TextStyle(
-                          color: context.darkBlueColor.withValues(alpha: 0.7),
-                          fontSize: 16)),
-                  AppSpacing.spaceSM,
-                  PrimaryButton(
-                    text: 'Retry',
-                    onPressed: () => context
-                        .read<CatalogRequestsBloc>()
-                        .add(LoadCatalogRequests()),
-                  ),
-                ],
-              ),
-            );
-          }
-          if (state is CatalogRequestsLoaded) {
-            final orders = state.items;
-            if (orders.isEmpty) {
-              return const EmptyStateWidget(
-                icon: Icons.shopping_cart_outlined,
-                title: 'No Orders',
-                subtitle: 'Catalog requests will appear here',
-              );
-            }
-            return ListView.builder(
-              itemCount: orders.length,
-              padding: AppSpacing.verticalSM,
-              physics:
-                  const ClampingScrollPhysics(), // Prevents overscroll within nested scroll
-              cacheExtent: 200, // Cache items offscreen for smooth scrolling
-              addAutomaticKeepAlives:
-                  true, // Keep list items alive for better performance
-              addRepaintBoundaries: true, // Isolate repaints for performance
-              itemBuilder: (context, index) {
-                final request = orders[index];
-                final jobFromRequest = Job(
-                  id: request.id,
-                  title: request.title,
-                  category: 'Catalog Request',
-                  description: request.description,
-                  address: request.clientName ?? 'Client',
-                  minBudget:
-                      (double.tryParse(request.priceMin ?? '0') ?? 0).toInt(),
-                  maxBudget:
-                      (double.tryParse(request.priceMax ?? '0') ?? 0).toInt(),
-                  duration: request.status?.toUpperCase() ?? 'PENDING',
-                  applied: false,
-                );
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: JobCard(
-                    job: jobFromRequest,
-                    onTap: () => widget.onRequestTap(request),
-                    primaryLabel: 'Accept',
-                    secondaryLabel: 'Reject',
-                    primaryAction: (_processingId == request.id)
-                        ? null
-                        : () {
-                            context
-                                .read<CatalogRequestsBloc>()
-                                .add(ApproveRequestEvent(request.id));
-                          },
-                    secondaryAction: (_processingId == request.id)
-                        ? null
-                        : () async {
-                            final confirmed = await showDialog<bool>(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                title: const Text('Reject Request'),
-                                content: const Text(
-                                    'Are you sure you want to reject this request?'),
-                                actions: [
-                                  TextAppButton(
-                                    text: 'Cancel',
-                                    onPressed: () => Navigator.pop(ctx, false),
-                                  ),
-                                  TextAppButton(
-                                    text: 'Reject',
-                                    onPressed: () => Navigator.pop(ctx, true),
-                                  ),
-                                ],
-                              ),
-                            );
-                            if (confirmed == true) {
-                              context
-                                  .read<CatalogRequestsBloc>()
-                                  .add(DeclineRequestEvent(request.id));
-                            }
-                          },
-                  ),
-                );
-              },
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
-  }
-}
-
-/// Reusable empty state widget following DRY principle
-class EmptyStateWidget extends StatelessWidget {
-  const EmptyStateWidget({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    super.key,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 64,
-            color: context.darkBlueColor.withValues(alpha: 0.3),
-          ),
-          AppSpacing.spaceLG,
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: context.darkBlueColor,
-            ),
-          ),
-          AppSpacing.spaceSM,
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 14,
-              color: context.darkBlueColor.withValues(alpha: 0.7),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
   }
 }

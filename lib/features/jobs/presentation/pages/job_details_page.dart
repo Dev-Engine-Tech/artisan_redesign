@@ -21,6 +21,13 @@ import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_pa
 import 'package:artisans_circle/features/jobs/presentation/pages/job_summary_page.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
 import 'client_profile_page.dart';
+import '../widgets/job_action_buttons.dart';
+import '../widgets/job_client_header.dart';
+import '../widgets/job_thumbnail_banner.dart';
+import '../widgets/job_status_chip.dart';
+import '../widgets/job_description_card.dart';
+import '../widgets/job_duration_pill.dart';
+import '../widgets/job_review_item.dart';
 
 class JobDetailsPage extends StatefulWidget {
   final Job job;
@@ -120,86 +127,27 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               padding: context.responsivePadding,
               children: [
                 // Buyer info header (rounded card with avatar + view profile)
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.softBorder),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  child: Row(
-                    children: [
-                      AppSpacing.spaceXS,
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-                        child: const Icon(Icons.person,
-                            color: AppColors.brownHeader),
-                      ),
-                      AppSpacing.spaceMD,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          (job.clientName ?? 'Client'),
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 16),
+                JobClientHeader(
+                  job: job,
+                  onViewProfile: () {
+                    // Debug logging for troubleshooting
+                    // ignore: avoid_print
+                    print('[JobDetails] View Profile tapped: jobId=${job.id}, clientId="${job.clientId}", clientName="${job.clientName}"');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ClientProfilePage(
+                          clientId: job.clientId!.trim(),
+                          initialName: job.clientName,
                         ),
-                        AppSpacing.spaceXS,
-                        Text('Client', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
-                      ],
-                    ),
-                  ),
-                  if (((job.clientId ?? '').trim()).isNotEmpty)
-                    PrimaryButton(
-                      text: 'View Profile',
-                      onPressed: () {
-                        // Debug logging for troubleshooting
-                        // ignore: avoid_print
-                        print('[JobDetails] View Profile tapped: jobId=${job.id}, clientId="${job.clientId}", clientName="${job.clientName}"');
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => ClientProfilePage(
-                              clientId: job.clientId!.trim(),
-                              initialName: job.clientName,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                ],
-              ),
-            ),
+                      ),
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 14),
 
                 // Large image banner
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: (() {
-                    final imgUrl = sanitizeImageUrl(job.thumbnailUrl);
-                    final valid = imgUrl.startsWith('http');
-                    return valid
-                        ? Image.network(imgUrl,
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                          errorBuilder: (c, e, s) => Container(
-                              height: 200,
-                              color: AppColors.softPink,
-                              child: const Center(child: Icon(Icons.image))))
-                        : Container(
-                          width: double.infinity,
-                          height: 200,
-                          color: AppColors.softPink,
-                          child: const Center(
-                              child: Icon(Icons.home_repair_service_outlined,
-                                  size: 56, color: AppColors.orange)),
-                        );
-                  })(),
-                ),
+                JobThumbnailBanner(thumbnailUrl: job.thumbnailUrl),
 
                 const SizedBox(height: 14),
 
@@ -262,72 +210,16 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 // Status chip
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(job.applicationStatus)
-                          .withValues(alpha: 0.1),
-                      borderRadius: AppRadius.radiusLG,
-                      border: Border.all(
-                          color: _getStatusColor(job.applicationStatus)
-                              .withValues(alpha: 0.4)),
-                    ),
-                    child: Text(
-                      job.applicationStatus,
-                      style: TextStyle(
-                        color: _getStatusColor(job.applicationStatus),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                  child: JobStatusChip(status: job.applicationStatus),
                 ),
 
                 // Duration pill
-                Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.softBorder),
-                  ),
-                  child: Text('Duration: ${job.duration}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: AppColors.brownHeader)),
-                ),
+                JobDurationPill(duration: job.duration),
 
                 const SizedBox(height: 18),
 
                 // Description card
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBackground,
-                    borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: AppColors.softBorder),
-                  ),
-                  padding: AppSpacing.paddingLG,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Description',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w700)),
-                        const SizedBox(height: 10),
-                        Text(
-                          job.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54)),
-                        ),
-                      ]),
-                ),
+                JobDescriptionCard(description: job.description),
 
                 const SizedBox(height: 18),
 
@@ -390,7 +282,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 ],
 
                 // Primary job actions (dynamic by status)
-                _buildPrimaryActionButtons(context, job),
+                JobActionButtons(
+                  job: job,
+                  onAgreementView: () => _showAgreementModal(context, job.agreement!),
+                ),
 
                 AppSpacing.spaceMD,
 
@@ -436,11 +331,17 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                               style: TextStyle(fontWeight: FontWeight.w600)),
                         ),
                         const Divider(height: 1),
-                        _reviewItem(context, 'Kate Henshaw', 'May 02, 2025',
-                            'Lorem ipsum dolor sit amet consectetur. Nunc fermentum praesent a sapien. Tristique turpis aliquet non mattis neque scelerisque semper.'),
+                        const JobReviewItem(
+                          name: 'Kate Henshaw',
+                          date: 'May 02, 2025',
+                          body: 'Lorem ipsum dolor sit amet consectetur. Nunc fermentum praesent a sapien. Tristique turpis aliquet non mattis neque scelerisque semper.',
+                        ),
                         const Divider(height: 1),
-                        _reviewItem(context, 'John Doe', 'Apr 25, 2025',
-                            'Excellent work, timely delivery and great communication.'),
+                        const JobReviewItem(
+                          name: 'John Doe',
+                          date: 'Apr 25, 2025',
+                          body: 'Excellent work, timely delivery and great communication.',
+                        ),
                         AppSpacing.spaceSM,
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -462,141 +363,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
     );
   }
 
+  // UNUSED: Primary action buttons - replaced by JobActionButtons widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   /// Dynamic primary actions for the details page based on job status
   Widget _buildPrimaryActionButtons(BuildContext context, Job job) {
-    // Check if this is an invitation (has invitationId) and still pending
-    final bool isInvitation = job.invitationId != null;
-    final bool isPendingInvitation = isInvitation && job.status == JobStatus.pending;
-
-    // Not applied yet → Apply (or Accept Invite for invitations)
-    if (!job.applied) {
-      return PrimaryButton(
-        text: isPendingInvitation ? 'Accept Invite' : 'Apply',
-        onPressed: () {
-          // Provide the current JobBloc to the apply sheet
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (c) {
-              JobBloc sheetBloc;
-              try {
-                sheetBloc = BlocProvider.of<JobBloc>(context);
-              } catch (_) {
-                sheetBloc = getIt<JobBloc>();
-              }
-
-              return DraggableScrollableSheet(
-                expand: false,
-                initialChildSize: 0.92,
-                minChildSize: 0.5,
-                maxChildSize: 0.95,
-                builder: (_, controller) => Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(AppRadius.xl)),
-                  ),
-                  child: BlocProvider.value(
-                    value: sheetBloc,
-                    child: ApplyForJobPage(job: job),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      );
-    }
-
-    // Applied with agreement pending → Request Changes / View Agreement
-    if (job.agreement != null && job.status == JobStatus.pending) {
-      return Row(
-        children: [
-          Expanded(
-            child: OutlinedAppButton(
-              text: 'Request Changes',
-              onPressed: () async {
-                // Navigate to request change page
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => BlocProvider.value(
-                    value: BlocProvider.of<JobBloc>(context),
-                    child: ChangeRequestPage(job: job),
-                  ),
-                ));
-              },
-            ),
-          ),
-          AppSpacing.spaceMD,
-          Expanded(
-            child: PrimaryButton(
-              text: 'View Agreement',
-              onPressed: () {
-                _showAgreementModal(context, job.agreement!);
-              },
-            ),
-          ),
-        ],
-      );
-    }
-
-    // Change request exists → View Change Request
-    if (job.changeRequest != null) {
-      return OutlinedAppButton(
-        text: 'View Change Request',
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => DraggableScrollableSheet(
-              expand: false,
-              initialChildSize: 0.9,
-              minChildSize: 0.5,
-              maxChildSize: 0.95,
-              builder: (context, controller) => ChangeRequestStatusModal(
-                job: job,
-                changeRequest: job.changeRequest!,
-              ),
-            ),
-          );
-        },
-      );
-    }
-
-    // Accepted / in progress → Open Project
-    if (job.status == JobStatus.accepted ||
-        job.status == JobStatus.inProgress) {
-      return PrimaryButton(
-        text: 'Open Project',
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => const OngoingJobsPage(),
-          ));
-        },
-      );
-    }
-
-    // Completed → View Summary (simple placeholder)
-    if (job.status == JobStatus.completed) {
-      return OutlinedAppButton(
-        text: 'View Summary',
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => JobSummaryPage(job: job),
-            ),
-          );
-        },
-      );
-    }
-
-    // Default (applied but waiting) → disable button
-    return const PrimaryButton(
-      text: 'Waiting Agreement',
-      onPressed: null,
-    );
+    // Method moved to JobActionButtons widget
   }
+  */
 
   /// Builds the application status section
   Widget _buildApplicationStatusSection(Job job) {
@@ -861,7 +636,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
     );
   }
 
-  /// Helper to get status color
+/// Helper to get status color
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Accepted':
@@ -899,6 +674,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
     );
   }
 
+// UNUSED: Review item builder - replaced by JobReviewItem widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _reviewItem(
       BuildContext context, String name, String date, String body) {
     return Padding(
@@ -935,6 +714,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       ]),
     );
   }
+  */
 }
 
 class _SkillChip extends StatelessWidget {

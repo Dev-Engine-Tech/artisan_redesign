@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../domain/entities/conversation.dart';
 import '../../domain/repositories/messages_repository.dart';
@@ -16,6 +17,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
 
   ConversationsBloc({required this.repository, required this.currentUserId})
       : super(ConversationsLoading()) {
+    debugPrint('✅ ConversationsBloc initialized');
     on<ConversationsStarted>((event, emit) async {
       emit(ConversationsLoading());
       await _sub?.cancel();

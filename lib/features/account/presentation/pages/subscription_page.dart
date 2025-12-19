@@ -8,6 +8,9 @@ import '../../../../core/api/endpoints.dart';
 import '../../../../core/di.dart';
 import '../../../../core/services/subscription_service.dart';
 import 'subscription_bank_transfer_page.dart';
+import '../widgets/subscription_pricing_card.dart';
+import '../widgets/payment_provider_dialog.dart';
+import '../widgets/billing_cycle_toggle.dart';
 
 class SubscriptionModal {
   static void show(BuildContext context) {
@@ -201,7 +204,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
         }
 
         // Show payment provider selection dialog
-        final selectedProvider = await _showPaymentProviderSelection(
+        final selectedProvider = await PaymentProviderDialog.show(
+          context,
           shortfall: shortfall,
           requiredAmount: requiredAmount,
         );
@@ -276,6 +280,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     }
   }
 
+  // UNUSED: Payment provider selection dialog - replaced by PaymentProviderDialog widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Future<String?> _showPaymentProviderSelection({
     double? shortfall,
     double? requiredAmount,
@@ -451,6 +459,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ),
     );
   }
+  */
 
   Future<void> _retryPaymentWithProvider(
     String planName,
@@ -659,77 +668,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
             ),
             AppSpacing.spaceLG,
             // Monthly/Yearly toggle
-            Container(
-              margin: AppSpacing.horizontalLG,
-              padding: AppSpacing.paddingXS,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: AppRadius.radiusMD,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _isYearly = false),
-                      child: Container(
-                        padding: AppSpacing.verticalSM,
-                        decoration: BoxDecoration(
-                          color: !_isYearly ? Colors.white : Colors.transparent,
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: !_isYearly
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
-                                    blurRadius: 2,
-                                  )
-                                ]
-                              : null,
-                        ),
-                        child: Text(
-                          'Monthly',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: !_isYearly
-                                ? AppColors.brownHeader
-                                : Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _isYearly = true),
-                      child: Container(
-                        padding: AppSpacing.verticalSM,
-                        decoration: BoxDecoration(
-                          color: _isYearly ? Colors.white : Colors.transparent,
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: _isYearly
-                              ? [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
-                                    blurRadius: 2,
-                                  )
-                                ]
-                              : null,
-                        ),
-                        child: Text(
-                          'Yearly',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: _isYearly
-                                ? AppColors.brownHeader
-                                : Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            BillingCycleToggle(
+              isYearly: _isYearly,
+              onChanged: (value) => setState(() => _isYearly = value),
             ),
             AppSpacing.spaceLG,
             // Content
@@ -738,7 +679,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 controller: _pageController,
                 onPageChanged: (page) => setState(() => _currentPage = page),
                 children: [
-                  _buildPricingCard(
+                  SubscriptionPricingCard(
                     title: 'Bronze Plan',
                     description:
                         'Perfect for individuals starting their artisan journey',
@@ -754,7 +695,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     ),
                     buttonText: 'Upgrade',
                     planName: 'bronze',
-                    features: [
+                    onUpgradePressed: () => _initiateUpgrade('bronze'),
+                    features: const [
                       'All Free features + Priority support, Profile badge, Extended profile visibility',
                       'Smart limits: 10 applications/week; 20 invoices/month; 10 catalog products; up to 2 collaborators/job',
                       'Visibility: Elevated vs Free',
@@ -762,7 +704,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       'Best for: Getting noticed more and moving faster with priority support',
                     ],
                   ),
-                  _buildPricingCard(
+                  SubscriptionPricingCard(
                     title: 'Silver Plan',
                     description:
                         'Best for established artisans looking to grow their business',
@@ -778,10 +720,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     ),
                     buttonText: 'Upgrade',
                     planName: 'silver',
+                    onUpgradePressed: () => _initiateUpgrade('silver'),
                     savePercent: _isYearly ? '17%' : null,
                     isHierarchical: true,
                     previousPlan: 'Bronze',
-                    features: [
+                    features: const [
                       'All Bronze features + Job matching (smart recommendations to fit your skills), Advanced analytics, Featured profile listing, Priority job applications',
                       'Smart limits: 20 applications/week; 50 invoices/month; 50 catalog products; up to 5 collaborators/job',
                       'Visibility: Featured listing placement',
@@ -789,7 +732,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                       'Best for: Consistent lead flow with smarter matches and stronger visibility',
                     ],
                   ),
-                  _buildPricingCard(
+                  SubscriptionPricingCard(
                     title: 'Gold Plan',
                     description:
                         'Comprehensive solution for large artisan businesses',
@@ -805,10 +748,11 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     ),
                     buttonText: 'Upgrade',
                     planName: 'gold',
+                    onUpgradePressed: () => _initiateUpgrade('gold'),
                     savePercent: _isYearly ? '17%' : null,
                     isHierarchical: true,
                     previousPlan: 'Silver',
-                    features: [
+                    features: const [
                       'All Silver features + AI-powered job recommendations, Personalized career insights, Unlimited job applications, Premium profile badge, Dedicated account manager',
                       'Limits: Unlimited applications; Unlimited invoices; Unlimited catalog products; Unlimited collaborators/job',
                       'Visibility: Top-tier presence and branding',
@@ -825,6 +769,10 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     );
   }
 
+  // UNUSED: Pricing card builder - replaced by SubscriptionPricingCard widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildPricingCard({
     required String title,
     required String description,
@@ -1030,6 +978,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       ),
     );
   }
+  */
+  // End of _SubscriptionPageState class
 }
 
 // Payment WebView widget

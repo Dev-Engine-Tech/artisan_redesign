@@ -11,6 +11,7 @@ import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/features/catalog/presentation/bloc/catalog_bloc.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
+import '../widgets/project_status_badge.dart';
 
 /// Projects page (catalogue) with tabbed interface:
 /// - Catalog: Upload and manage catalog items
@@ -500,7 +501,7 @@ class _CatalogPageState extends State<CatalogPage>
                               ),
 
                             // Status indicator
-                            _buildStatusBadge(context, item.projectStatus ?? item.status),
+                            ProjectStatusBadge(status: item.projectStatus ?? item.status),
                           ],
                         ),
 
@@ -533,6 +534,10 @@ class _CatalogPageState extends State<CatalogPage>
     );
   }
 
+// UNUSED: Status badge builder - replaced by ProjectStatusBadge widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildStatusBadge(BuildContext context, String? status) {
     if (status == null) return const SizedBox.shrink();
 
@@ -589,6 +594,7 @@ class _CatalogPageState extends State<CatalogPage>
       ),
     );
   }
+  */
 
   /// Helper method to build feature badges (hot sale, warranty, delivery, etc.)
   Widget _buildFeatureBadge(BuildContext context, String label, Color color) {

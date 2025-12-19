@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:artisans_circle/core/bloc/cached_bloc_mixin.dart';
 import 'account_event.dart';
 import 'account_state.dart';
@@ -80,6 +81,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState>
     required this.deleteEducation,
     required this.uploadProfileImage,
   }) : super(AccountInitial()) {
+    debugPrint('✅ AccountBloc initialized');
     on<AccountLoadProfile>(_onLoadProfile);
     on<AccountUpdateProfile>(_onUpdateProfile);
     on<AccountLoadEarnings>(_onLoadEarnings);

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../../domain/usecases/get_catalog_requests.dart';
 import '../../domain/usecases/get_catalog_request_details.dart';
@@ -116,6 +117,7 @@ class CatalogRequestsBloc
       required this.approve,
       required this.decline})
       : super(const CatalogRequestsInitial()) {
+    debugPrint('✅ CatalogRequestsBloc initialized');
     on<LoadCatalogRequests>((event, emit) async {
       emit(const CatalogRequestsLoading());
       try {

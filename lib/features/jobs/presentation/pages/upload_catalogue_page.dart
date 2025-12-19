@@ -7,6 +7,9 @@ import 'package:artisans_circle/features/catalog/domain/usecases/update_catalog.
 import 'package:artisans_circle/features/catalog/domain/usecases/get_my_catalog_items.dart';
 import 'package:artisans_circle/features/catalog/domain/entities/catalog_item.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/upload_catalogue_step1.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/upload_catalogue_step2.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/upload_catalogue_step3.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/utils/subscription_guard.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -300,6 +303,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     );
   }
 
+  // UNUSED: Step 1 form - replaced by UploadCatalogueStep1 widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _step1() {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -458,7 +465,12 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       ],
     );
   }
+  */
 
+  // UNUSED: Step 2 form - replaced by UploadCatalogueStep2 widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _step2() {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -704,6 +716,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       ],
     );
   }
+  */
 
   Future<void> _pickSubcategory() async {
     try {
@@ -760,6 +773,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     }
   }
 
+  // UNUSED: Step 3 review - replaced by UploadCatalogueStep3 widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _step3() {
     // Simple read-only preview
     return ListView(
@@ -853,6 +870,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
       ],
     );
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -867,9 +885,60 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                _step1(),
-                _step2(),
-                _step3(),
+                UploadCatalogueStep1(
+                  titleController: _titleController,
+                  descriptionController: _descriptionController,
+                  selectedSubcategoryName: _selectedSubcategoryName,
+                  media: _media,
+                  onNext: _next,
+                  onPickSubcategory: _pickSubcategory,
+                  onPickMedia: () async {
+                    // Temporarily disabled
+                  },
+                  onRemoveMedia: (m) => setState(() => _media.remove(m)),
+                ),
+                UploadCatalogueStep2(
+                  minPriceController: _minPriceController,
+                  maxPriceController: _maxPriceController,
+                  timeline: _timeline,
+                  timelines: _timelines,
+                  selectedSkills: _selectedSkills,
+                  skills: _skills,
+                  materialsIncluded: _materialsIncluded,
+                  instantSelling: _instantSelling,
+                  brandController: _brandController,
+                  condition: _condition,
+                  conditions: _conditions,
+                  salesCategoryController: _salesCategoryController,
+                  warranty: _warranty,
+                  delivery: _delivery,
+                  onTimelineChanged: (v) => setState(() => _timeline = v),
+                  onSkillToggled: (s) => setState(() {
+                    if (_selectedSkills.contains(s)) {
+                      _selectedSkills.remove(s);
+                    } else {
+                      _selectedSkills.add(s);
+                    }
+                  }),
+                  onMaterialsChanged: (v) => setState(() => _materialsIncluded = v),
+                  onInstantSellingChanged: (v) => setState(() => _instantSelling = v),
+                  onConditionChanged: (v) => setState(() => _condition = v),
+                  onWarrantyChanged: (v) => setState(() => _warranty = v),
+                  onDeliveryChanged: (v) => setState(() => _delivery = v),
+                  onNext: _next,
+                ),
+                UploadCatalogueStep3(
+                  media: _media,
+                  title: _titleController.text,
+                  description: _descriptionController.text,
+                  timeline: _timeline,
+                  selectedSkills: _selectedSkills,
+                  onEdit: () {
+                    setState(() => _step = 0);
+                    _pageController.jumpToPage(0);
+                  },
+                  onSubmit: _submit,
+                ),
               ],
             ),
           ),

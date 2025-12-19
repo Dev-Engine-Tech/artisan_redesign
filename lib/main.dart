@@ -76,11 +76,13 @@ class MyApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: getIt<ThemeService>(),
       builder: (context, _) {
+        final themeService = getIt<ThemeService>();
+        debugPrint('🎨 Current theme mode: ${themeService.themeMode}');
         return MaterialApp(
           title: 'Artisans Circle',
           theme: AppThemes.lightTheme(),
           darkTheme: AppThemes.darkTheme(),
-          themeMode: getIt<ThemeService>().themeMode,
+          themeMode: themeService.themeMode,
           navigatorObservers: [
             FirebaseAnalyticsRouteObserver(getIt<AnalyticsService>()),
           ],

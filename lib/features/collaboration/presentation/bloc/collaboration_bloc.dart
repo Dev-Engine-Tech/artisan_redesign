@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart';
 import '../../domain/usecases/get_my_collaborations.dart';
 import '../../domain/usecases/invite_collaborator.dart';
 import '../../domain/usecases/invite_external_collaborator.dart';
@@ -21,6 +22,7 @@ class CollaborationBloc extends Bloc<CollaborationEvent, CollaborationState> {
     required this.respondToCollaboration,
     required this.getJobCollaborators,
   }) : super(const CollaborationInitial()) {
+    debugPrint('✅ CollaborationBloc initialized');
     on<LoadCollaborationsEvent>(_onLoadCollaborations);
     on<RefreshCollaborationsEvent>(_onRefreshCollaborations);
     on<InviteCollaboratorEvent>(_onInviteCollaborator);

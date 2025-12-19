@@ -7,6 +7,8 @@ import 'package:artisans_circle/features/jobs/domain/entities/job_status.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/progress_submission_modal.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/job_timeline_widget.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/jobs_filter_bar.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/jobs_empty_state.dart';
 import 'package:artisans_circle/features/collaboration/presentation/pages/invite_collaborator_page_refactored.dart';
 import 'package:artisans_circle/features/collaboration/presentation/bloc/collaboration_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
@@ -83,7 +85,25 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildFiltersAndSearch(),
+            JobsFilterBar(
+              searchController: _searchController,
+              searchQuery: _searchQuery,
+              selectedFilter: _filterStatus,
+              searchHint: 'Search ongoing projects...',
+              filterOptions: const [
+                FilterOption(label: 'All', value: 'all'),
+                FilterOption(label: 'Started', value: 'inProgress'),
+                FilterOption(label: 'Awaiting Client', value: 'pending_approval'),
+                FilterOption(label: 'Paused', value: 'paused'),
+                FilterOption(label: 'Near Deadline', value: 'urgent'),
+              ],
+              onSearchChanged: (value) => setState(() => _searchQuery = value),
+              onSearchClear: () {
+                _searchController.clear();
+                setState(() => _searchQuery = '');
+              },
+              onFilterChanged: (value) => setState(() => _filterStatus = value),
+            ),
             Expanded(
               child: BlocBuilder<JobBloc, JobState>(
                 builder: (context, state) {
@@ -100,7 +120,14 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
                     return _buildJobsList(filteredJobs);
                   }
 
-                  return _buildEmptyState();
+                  return JobsEmptyState(
+                    title: _searchQuery.isNotEmpty
+                        ? 'No projects match your search'
+                        : 'No ongoing projects',
+                    subtitle: _searchQuery.isNotEmpty
+                        ? 'Try adjusting your search filters'
+                        : 'Start working on projects to see them here',
+                  );
                 },
               ),
             ),
@@ -110,6 +137,10 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
     );
   }
 
+  // UNUSED: Filters and search - replaced by JobsFilterBar widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildFiltersAndSearch() {
     return Container(
       padding: context.responsivePadding,
@@ -207,6 +238,11 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
     );
   }
 
+  Widget _buildFilterChip(String label, String value) {
+    // Method moved to JobsFilterBar widget
+  }
+  */
+
   List<Job> _getFilteredJobs(List<Job> jobs) {
     List<Job> filtered = jobs;
 
@@ -248,7 +284,14 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
 
   Widget _buildJobsList(List<Job> jobs) {
     if (jobs.isEmpty) {
-      return _buildEmptyState();
+      return JobsEmptyState(
+        title: _searchQuery.isNotEmpty
+            ? 'No projects match your search'
+            : 'No ongoing projects',
+        subtitle: _searchQuery.isNotEmpty
+            ? 'Try adjusting your search filters'
+            : 'Start working on projects to see them here',
+      );
     }
 
     return RefreshIndicator(
@@ -273,6 +316,10 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
     );
   }
 
+  // UNUSED: Empty state - replaced by JobsEmptyState widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -307,6 +354,7 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
       ),
     );
   }
+  */
 
   Widget _buildErrorState(String message) {
     return Center(

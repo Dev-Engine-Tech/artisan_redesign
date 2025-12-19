@@ -10,6 +10,8 @@ import 'package:artisans_circle/features/home/presentation/widgets/unified_banne
 import 'package:artisans_circle/core/models/banner_model.dart' as api;
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_search_bar.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/discover_tab_view.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/discover_filter_chips.dart';
+import 'package:artisans_circle/features/jobs/presentation/widgets/discover_empty_state.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/utils/filtering_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -295,93 +297,42 @@ class _DiscoverPageState extends State<DiscoverPage> {
       ),
 
       // Active filters chips row
-      _buildActiveFiltersChips(),
+      DiscoverFilterChips(
+        categoryIds: _categoryIds,
+        categoryNameById: _categoryNameById,
+        postedDateLabel: _postedDateLabel,
+        workModeLabel: _workModeLabel,
+        budgetTypeLabel: _budgetTypeLabel,
+        durationLabel: _durationLabel,
+        stateFilter: _stateFilter,
+        stateName: _stateName,
+        lgasList: _lgasList,
+        onRemoveCategory: _removeCategory,
+        onClearPostedDate: _clearPostedDate,
+        onClearWorkMode: _clearWorkMode,
+        onClearBudgetType: _clearBudgetType,
+        onClearDuration: _clearDuration,
+        onClearState: _clearState,
+        onClearLgas: _clearLgas,
+        onClearAll: _clearAllFilters,
+      ),
 
       AppSpacing.spaceSM,
     ];
   }
 
+  // UNUSED: Active filter chips builder - replaced by DiscoverFilterChips widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildActiveFiltersChips() {
-    final chips = <Widget>[];
-
-    // Category chips
-    if (_categoryIds.isNotEmpty) {
-      for (final id in _categoryIds) {
-        final name = _categoryNameById[id] ?? 'Category';
-        chips.add(_filterChip(name, () => _removeCategory(id)));
-      }
-    }
-
-    // Simple label chips
-    if (_postedDateLabel != null) {
-      chips.add(_filterChip(_postedDateLabel!, _clearPostedDate));
-    }
-    if (_workModeLabel != null) {
-      chips.add(_filterChip(_workModeLabel!, _clearWorkMode));
-    }
-    if (_budgetTypeLabel != null) {
-      chips.add(_filterChip(_budgetTypeLabel!, _clearBudgetType));
-    }
-    if (_durationLabel != null) {
-      chips.add(_filterChip(_durationLabel!, _clearDuration));
-    }
-    if (_stateFilter != null && _stateFilter!.isNotEmpty) {
-      chips.add(_filterChip(_stateName ?? 'State', _clearState));
-    }
-    if (_lgasList.isNotEmpty) {
-      final n = _lgasList.length;
-      chips.add(_filterChip('LGA ($n)', _clearLgas));
-    }
-
-    if (chips.isEmpty) return const SizedBox.shrink();
-
-    // Add Clear All action
-    chips.add(
-      GestureDetector(
-        onTap: _clearAllFilters,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: AppRadius.radiusXL,
-            border: Border.all(color: AppColors.subtleBorder),
-          ),
-          child: const Text(
-            'Clear all',
-            style: TextStyle(fontSize: 12, color: AppColors.brownHeader),
-          ),
-        ),
-      ),
-    );
-
-    return Container(
-      width: double.infinity,
-      padding: AppSpacing.horizontalLG,
-      child: Wrap(
-        spacing: 6,
-        runSpacing: 6,
-        children: chips,
-      ),
-    );
+    // Method moved to DiscoverFilterChips widget
   }
 
   Widget _filterChip(String label, VoidCallback onDelete) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
-      child: Chip(
-        label: Text(label, style: const TextStyle(fontSize: 12)),
-        deleteIcon: const Icon(Icons.close, size: 16),
-        onDeleted: onDelete,
-        backgroundColor: AppColors.cardBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.radiusXL,
-          side: const BorderSide(color: AppColors.subtleBorder),
-        ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-    );
+    // Method moved to DiscoverFilterChips widget
   }
+  */
 
   Future<void> _updatePersistedFilters(
       void Function(Map<String, dynamic>) mutate) async {
@@ -559,7 +510,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
         if (jobs.isEmpty) {
           return DiscoverTabContent(
-            child: _buildEmptyState(index),
+            child: DiscoverEmptyState(
+              tabIndex: index,
+              hasSearchQuery: _searchController.text.isNotEmpty,
+            ),
           );
         }
 
@@ -621,62 +575,14 @@ class _DiscoverPageState extends State<DiscoverPage> {
     }
   }
 
+  // UNUSED: Empty state builder - replaced by DiscoverEmptyState widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildEmptyState(int tabIndex) {
-    String title;
-    String subtitle;
-    IconData icon;
-
-    switch (tabIndex) {
-      case 0:
-        title = 'No Jobs Found';
-        subtitle = _searchController.text.isNotEmpty
-            ? 'No jobs match your search criteria'
-            : 'No job matches available right now';
-        icon = Icons.work_outline;
-        break;
-      case 1:
-        title = 'No Saved Jobs';
-        subtitle = 'Start saving jobs to see them here';
-        icon = Icons.bookmark_outline;
-        break;
-      default:
-        title = 'No Jobs';
-        subtitle = 'No jobs available';
-        icon = Icons.work_outline;
-    }
-
-    return Center(
-      child: Padding(
-        padding: AppSpacing.paddingXXXL,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 64,
-              color: Colors.grey[400],
-            ),
-            AppSpacing.spaceLG,
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[600],
-                  ),
-            ),
-            AppSpacing.spaceSM,
-            Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[500],
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
+    // Method moved to DiscoverEmptyState widget
   }
+  */
 
   void _handleSearch(String query) {
     // ✅ PERFORMANCE FIX: Reload with new search query is intentional

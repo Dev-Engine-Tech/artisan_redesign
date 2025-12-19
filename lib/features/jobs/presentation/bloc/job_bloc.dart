@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_jobs.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/get_applications.dart';
 import 'package:artisans_circle/features/jobs/domain/usecases/apply_to_job.dart';
@@ -46,6 +47,7 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     required this.getRecentArtisanInvitations,
     required this.respondToArtisanInvitation,
   }) : super(const JobStateInitial()) {
+    debugPrint('✅ JobBloc initialized');
     on<LoadJobs>(_onLoadJobs);
     on<RefreshJobs>(_onRefreshJobs);
     on<LoadApplications>(_onLoadApplications);

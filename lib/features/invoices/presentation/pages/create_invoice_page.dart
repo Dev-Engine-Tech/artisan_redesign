@@ -18,7 +18,12 @@ import '../widgets/customer_field.dart';
 import '../widgets/lines_tab.dart';
 import '../widgets/materials_tab.dart';
 import '../widgets/measurement_tab.dart';
-import '../../../../core/utils/responsive.dart';
+import '../widgets/invoice_header_section.dart';
+import '../widgets/invoice_status_widget.dart';
+import '../widgets/invoice_totals_section.dart';
+import '../widgets/invoice_bottom_action_bar.dart';
+import '../widgets/invoice_share_dialog.dart';
+// import '../../../../core/utils/responsive.dart'; // UNUSED after modularization
 // import '../../../../core/utils/subscription_guard.dart';
 // import '../../../account/presentation/pages/subscription_page.dart';
 
@@ -471,88 +476,11 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                             ),
                           ),
                           AppSpacing.spaceSM,
-                          Builder(builder: (_) {
-                            final String statusText;
-                            if (_invoice == null ||
-                                (_invoice?.id.isEmpty ?? true)) {
-                              statusText = 'New';
-                            } else {
-                              switch (_invoice!.status) {
-                                case InvoiceStatus.draft:
-                                  statusText = 'Draft';
-                                  break;
-                                case InvoiceStatus.validated:
-                                  statusText = 'Validated';
-                                  break;
-                                case InvoiceStatus.paid:
-                                  statusText = 'Paid';
-                                  break;
-                                case InvoiceStatus.pending:
-                                  statusText = 'Pending';
-                                  break;
-                                case InvoiceStatus.overdue:
-                                  statusText = 'Overdue';
-                                  break;
-                                case InvoiceStatus.cancelled:
-                                  statusText = 'Cancelled';
-                                  break;
-                              }
-                            }
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  statusText,
-                                  style: theme.textTheme.headlineMedium?.copyWith(
-                                    color: colorScheme.onSurface,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                if (_invoice?.status == InvoiceStatus.draft &&
-                                    (_autoSavingDraft || _showSavedIndicator))
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          _autoSavingDraft
-                                              ? Icons.autorenew
-                                              : Icons.check_circle,
-                                          size: 14,
-                                          color: _autoSavingDraft
-                                              ? context.primaryColor
-                                              : context.colorScheme.tertiary,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          _autoSavingDraft
-                                              ? 'Saving…'
-                                              : 'Saved',
-                                          style: theme.textTheme.bodySmall?.copyWith(
-                                            color: _autoSavingDraft
-                                                ? context.primaryColor
-                                                : context.colorScheme.tertiary,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            );
-                          }),
-                          if (_invoice != null &&
-                              _invoice!.invoiceNumber.isNotEmpty) ...[
-                            const SizedBox(height: 6),
-                            Text(
-                              'Invoice #: ${_invoice!.invoiceNumber}',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurface.withValues(alpha: 0.54),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                          InvoiceStatusWidget(
+                            invoice: _invoice,
+                            autoSaving: _autoSavingDraft,
+                            showSavedIndicator: _showSavedIndicator,
+                          ),
                           AppSpacing.spaceXXL,
 
                           // Form Fields Row
@@ -583,63 +511,17 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
                               // Right Column
                               Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildSelectableDateField('Invoice Date',
-                                        _formatDate(_invoiceDate)),
-                                    AppSpacing.spaceLG,
-                                    _buildSelectableDateField(
-                                        'Due Date', _formatDate(_dueDate)),
-                                    AppSpacing.spaceLG,
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            'Currency',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: theme.textTheme.bodyMedium?.copyWith(
-                                              color: colorScheme.onSurface,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                        AppSpacing.spaceSM,
-                                        Flexible(
-                                          child: DropdownButton<String>(
-                                            isExpanded: true,
-                                            value: _selectedCurrency,
-                                            items: const [
-                                              DropdownMenuItem(
-                                                  value: 'NGN',
-                                                  child: Text('NGN')),
-                                              DropdownMenuItem(
-                                                  value: 'USD',
-                                                  child: Text('USD')),
-                                              DropdownMenuItem(
-                                                  value: 'GBP',
-                                                  child: Text('GBP')),
-                                              DropdownMenuItem(
-                                                  value: 'EUR',
-                                                  child: Text('EUR')),
-                                              DropdownMenuItem(
-                                                  value: 'GHS',
-                                                  child: Text('GHS')),
-                                              DropdownMenuItem(
-                                                  value: 'KES',
-                                                  child: Text('KES')),
-                                            ],
-                                            onChanged: _isFormReadOnly
-                                                ? null
-                                                : (v) => setState(() =>
-                                                    _selectedCurrency =
-                                                        v ?? 'NGN'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                child: InvoiceHeaderSection(
+                                  invoiceDate: _invoiceDate,
+                                  dueDate: _dueDate,
+                                  selectedCurrency: _selectedCurrency,
+                                  readOnly: _isFormReadOnly,
+                                  onCurrencyChanged: (v) =>
+                                      setState(() => _selectedCurrency = v),
+                                  onInvoiceDateChanged: (d) =>
+                                      setState(() => _invoiceDate = d),
+                                  onDueDateChanged: (d) =>
+                                      setState(() => _dueDate = d),
                                 ),
                               ),
                             ],
@@ -683,33 +565,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                           AppSpacing.spaceXXL,
 
                           // Totals Section (computed by InvoiceFormCubit)
-                          BlocBuilder<InvoiceFormCubit, InvoiceFormState>(
-                            builder: (context, state) {
-                              final cubit = context.read<InvoiceFormCubit>();
-                              return Container(
-                                width: double.infinity,
-                                padding: context.responsivePadding,
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: colorScheme.outlineVariant),
-                                  borderRadius: AppRadius.radiusMD,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    _buildTotalRow('Subtotal (Invoice):',
-                                        'NGN ${cubit.invoiceLinesTotal.toStringAsFixed(2)}'),
-                                    _buildTotalRow('Subtotal (Materials):',
-                                        'NGN ${cubit.materialsTotal.toStringAsFixed(2)}'),
-                                    const Divider(),
-                                    _buildTotalRow('Total:',
-                                        'NGN ${cubit.grandTotal.toStringAsFixed(2)}',
-                                        isBold: true),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                          const InvoiceTotalsSection(),
 
                           AppSpacing.spaceXXL,
 
@@ -756,7 +612,16 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                 // Spacer removed to avoid minor vertical overflows
               ],
             ),
-            bottomNavigationBar: _buildBottomActionBar(),
+            bottomNavigationBar: InvoiceBottomActionBar(
+              invoice: _invoice,
+              hasUnsavedChanges: _hasUnsavedChanges,
+              onShare: _shareInvoice,
+              onCreateJob: _createJob,
+              onUpdate: _updateInvoice,
+              onSave: _saveDraft,
+              onConfirm: _confirmInvoice,
+              onPaid: _payInvoice,
+            ),
           );
         }));
   }
@@ -807,112 +672,14 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     }
   }
 
+  // UNUSED: Bottom action bar - replaced by InvoiceBottomActionBar widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildBottomActionBar() {
-    List<Widget> buttons = [];
-
-    // Always show Share button
-    buttons.add(
-      Expanded(
-        child: OutlinedAppButton(
-          text: 'Share',
-          onPressed: _shareInvoice,
-        ),
-      ),
-    );
-
-    buttons.add(AppSpacing.spaceSM);
-
-    // Show Create Job button for draft and validated invoices
-    final currentStatus =
-        (_invoice == null || _invoice!.id.isEmpty) ? null : _invoice!.status;
-    if (currentStatus == null ||
-        currentStatus == InvoiceStatus.draft ||
-        currentStatus == InvoiceStatus.validated) {
-      buttons.add(
-        Expanded(
-          child: OutlinedAppButton(
-            text: 'Create Job',
-            onPressed: _createJob,
-          ),
-        ),
-      );
-
-      buttons.add(AppSpacing.spaceSM);
-    }
-
-    // Show Update button when validated (persist edited lines)
-    if (currentStatus == InvoiceStatus.validated) {
-      buttons.add(
-        Expanded(
-          child: OutlinedAppButton(
-            text: _hasUnsavedChanges ? 'Update •' : 'Update',
-            onPressed: () {
-              _updateInvoice();
-            },
-          ),
-        ),
-      );
-
-      buttons.add(AppSpacing.spaceSM);
-    }
-
-    // Add main action button (Save → Confirm → Paid)
-    String buttonText = 'Save';
-    VoidCallback? onPressed = _saveDraft;
-
-    if (currentStatus == null) {
-      // New/unsaved: Save
-      buttonText = 'Save';
-      onPressed = _saveDraft;
-    } else if (currentStatus == InvoiceStatus.draft) {
-      // Draft: Confirm
-      buttonText = 'Confirm';
-      onPressed = _confirmInvoice;
-    } else if (currentStatus == InvoiceStatus.validated) {
-      // Validated: Paid
-      buttonText = 'Paid';
-      onPressed = _payInvoice;
-    } else if (currentStatus == InvoiceStatus.paid) {
-      // Paid: show disabled Paid
-      buttonText = 'Paid';
-      onPressed = null;
-    } else {
-      // Fallback: allow confirm
-      buttonText = 'Confirm';
-      onPressed = _confirmInvoice;
-    }
-
-    buttons.add(
-      Expanded(
-        child: PrimaryButton(
-          text: buttonText,
-          onPressed: onPressed,
-        ),
-      ),
-    );
-
-    return Builder(
-      builder: (context) => Container(
-        padding: context.responsivePadding,
-        decoration: BoxDecoration(
-          color: context.colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: context.colorScheme.shadow.withValues(alpha: 0.3),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Row(
-            children: buttons,
-          ),
-        ),
-      ),
-    );
+    // Method moved to InvoiceBottomActionBar widget
   }
+  */
 
   void _shareInvoice() async {
     // Offer the three backend-driven options (A/B/C)
@@ -928,50 +695,11 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
 
     final id = _invoice!.id;
 
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Share Invoice',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-              const SizedBox(height: 12),
-              PrimaryButton(
-                text: 'Generate Link and Share',
-                height: 48,
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await _sharePdfLink(id);
-                },
-              ),
-              const SizedBox(height: 10),
-              OutlinedAppButton(
-                text: 'Download PDF and Share (File)',
-                height: 48,
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await _sharePdfFile(id);
-                },
-              ),
-              const SizedBox(height: 10),
-              TextAppButton(
-                text: 'Send Email to Customer',
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await _sendInvoiceEmail(id);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+    await InvoiceShareDialog.show(
+      context,
+      onShareLink: () => _sharePdfLink(id),
+      onShareFile: () => _sharePdfFile(id),
+      onSendEmail: () => _sendInvoiceEmail(id),
     );
   }
 
@@ -1534,128 +1262,32 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
     );
   }
 
+  // UNUSED: Date formatting and selection - replaced by InvoiceHeaderSection widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
   }
 
   Future<void> _selectDate(BuildContext context, String label) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: label == 'Invoice Date' ? _invoiceDate : _dueDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null) {
-      setState(() {
-        if (label == 'Invoice Date') {
-          _invoiceDate = picked;
-        } else {
-          _dueDate = picked;
-        }
-      });
-    }
+    // Method moved to InvoiceHeaderSection widget
   }
-
-// (enum moved to top-level)
-
-  // Management of sections/lines/materials/measurements moved to InvoiceFormCubit
 
   Widget _buildSelectableDateField(String label, String value) {
-    return Builder(
-      builder: (context) {
-        final theme = Theme.of(context);
-        final colorScheme = theme.colorScheme;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurface,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                AppSpacing.spaceXS,
-                Icon(Icons.help_outline, size: 16, color: colorScheme.onSurfaceVariant),
-              ],
-            ),
-            AppSpacing.spaceSM,
-            GestureDetector(
-              onTap: _isFormReadOnly ? null : () => _selectDate(context, label),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(color: colorScheme.outlineVariant),
-                  borderRadius: AppRadius.radiusSM,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        value,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ),
-                    Icon(Icons.calendar_today, size: 16, color: colorScheme.onSurfaceVariant),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+    // Method moved to InvoiceHeaderSection widget
   }
+  */
 
-  // Obsolete placeholders removed; tabs and content are rendered by LinesTab,
-  // MaterialsTab, and MeasurementTab widgets.
-
-  // Totals are computed by InvoiceFormCubit
-
+  // UNUSED: Total row builder - replaced by InvoiceTotalsSection widget
+  // COMMENTED OUT: 2025-12-18 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildTotalRow(String label, String amount,
       {bool isBold = false, double fontSize = 14}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                amount,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    // Method moved to InvoiceTotalsSection widget
   }
+  */
 }
 
 // Obsolete local models removed (now handled by InvoiceFormCubit)

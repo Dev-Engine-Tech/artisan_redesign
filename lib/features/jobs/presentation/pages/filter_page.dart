@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:artisans_circle/features/catalog/data/datasources/catalog_categories_remote_data_source.dart';
 import 'package:artisans_circle/core/location/location_remote_data_source.dart';
 import '../../../../core/utils/responsive.dart';
+import '../widgets/filter_section_title.dart';
 
 class FilterPage extends StatefulWidget {
   const FilterPage({super.key});
@@ -461,12 +462,17 @@ class _FilterPageState extends State<FilterPage> {
     if (mounted) setState(() {});
   }
 
+// UNUSED: Section title builder - replaced by FilterSectionTitle widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  // Can be safely deleted after testing
+  /*
   Widget _buildSectionTitle(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(text, style: const TextStyle(fontWeight: FontWeight.w700)),
     );
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -507,7 +513,7 @@ class _FilterPageState extends State<FilterPage> {
             child: ListView(
               padding: context.responsivePadding,
               children: [
-                _buildSectionTitle('Categories'),
+                const FilterSectionTitle('Categories'),
                 if (_loadingCategories)
                   InputDecorator(
                     decoration: InputDecoration(
@@ -559,7 +565,7 @@ class _FilterPageState extends State<FilterPage> {
                     ),
                   ),
                 const SizedBox(height: 14),
-                _buildSectionTitle('Posted Date'),
+                const FilterSectionTitle('Posted Date'),
                 ..._postedDate.keys.map((k) => CheckboxListTile(
                       value: _postedDate[k],
                       onChanged: (v) =>
@@ -568,7 +574,7 @@ class _FilterPageState extends State<FilterPage> {
                       controlAffinity: ListTileControlAffinity.leading,
                     )),
                 const SizedBox(height: 6),
-                _buildSectionTitle('Type of workspace'),
+                const FilterSectionTitle('Type of workspace'),
                 ..._workspace.keys.map((k) => CheckboxListTile(
                       value: _workspace[k],
                       onChanged: (v) =>
@@ -577,7 +583,7 @@ class _FilterPageState extends State<FilterPage> {
                       controlAffinity: ListTileControlAffinity.leading,
                     )),
                 const SizedBox(height: 6),
-                _buildSectionTitle('Project Location'),
+                const FilterSectionTitle('Project Location'),
                 const SizedBox(height: 6),
                 const Text('State', style: TextStyle(color: Colors.black54)),
                 const SizedBox(height: 6),
@@ -664,7 +670,7 @@ class _FilterPageState extends State<FilterPage> {
                   ),
                 ),
                 AppSpacing.spaceMD,
-                _buildSectionTitle('Budget Type'),
+                const FilterSectionTitle('Budget Type'),
                 ..._budgetType.keys.map((k) => CheckboxListTile(
                       value: _budgetType[k],
                       onChanged: (v) =>
@@ -673,7 +679,7 @@ class _FilterPageState extends State<FilterPage> {
                       controlAffinity: ListTileControlAffinity.leading,
                     )),
                 const SizedBox(height: 6),
-                _buildSectionTitle('Project Duration'),
+                const FilterSectionTitle('Project Duration'),
                 ..._projectDuration.keys.map((k) => CheckboxListTile(
                       value: _projectDuration[k],
                       onChanged: (v) =>
