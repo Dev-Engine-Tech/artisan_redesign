@@ -49,6 +49,10 @@ import 'package:artisans_circle/features/customers/data/datasources/customer_rem
 import 'package:artisans_circle/features/customers/data/repositories/customer_repository_impl.dart';
 import 'package:artisans_circle/features/customers/domain/repositories/customer_repository.dart';
 import 'package:artisans_circle/features/customers/domain/usecases/get_customers.dart';
+// Clients
+import 'package:artisans_circle/features/clients/data/datasources/client_remote_data_source.dart';
+import 'package:artisans_circle/features/clients/data/repositories/client_repository_impl.dart';
+import 'package:artisans_circle/features/clients/domain/repositories/client_repository.dart';
 // Collaboration feature
 import 'package:artisans_circle/features/collaboration/data/datasources/collaboration_remote_data_source.dart';
 import 'package:artisans_circle/features/collaboration/data/repositories/collaboration_repository_impl.dart';
@@ -197,6 +201,14 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
   );
   getIt.registerLazySingleton<GetCustomers>(
     () => GetCustomers(getIt<CustomerRepository>()),
+  );
+
+  // Client Profile feature - Real API implementation
+  getIt.registerLazySingleton<ClientRemoteDataSource>(
+    () => ClientRemoteDataSourceImpl(dio: getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<ClientRepository>(
+    () => ClientRepositoryImpl(remoteDataSource: getIt<ClientRemoteDataSource>()),
   );
 
   // Collaboration feature - Real API implementation

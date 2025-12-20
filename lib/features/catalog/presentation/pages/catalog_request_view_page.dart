@@ -7,6 +7,7 @@ import '../../domain/entities/catalog_request.dart';
 import '../bloc/catalog_requests_bloc.dart';
 import '../widgets/material_management_widget.dart';
 import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/features/clients/presentation/pages/client_profile_page.dart';
 
 class CatalogRequestViewPage extends StatefulWidget {
   final String requestId;
@@ -286,6 +287,16 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                     ],
                   ],
                 ),
+              ),
+              PrimaryButton(
+                text: 'View Profile',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ClientProfilePage(clientId: client.id),
+                    ),
+                  );
+                },
               ),
             ],
           ),

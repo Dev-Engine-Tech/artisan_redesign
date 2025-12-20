@@ -5,6 +5,8 @@ import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
 import 'client_profile_page.dart';
+import '../widgets/order_badge.dart';
+import '../widgets/order_agreement_row.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final Job job;
@@ -25,6 +27,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     super.dispose();
   }
 
+// UNUSED: Badge builder - replaced by OrderBadge widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  /*
   Widget _badge(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -40,6 +45,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ?.copyWith(color: AppColors.brownHeader)),
     );
   }
+  */
 
   Widget _agreementsCard() {
     // These values are placeholders to match the design. In a real app
@@ -67,15 +73,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700)),
           AppSpacing.spaceMD,
-          _agreementRow('Agreed Payment:', agreedPayment),
+          const OrderAgreementRow(label: 'Agreed Payment:', value: agreedPayment),
           AppSpacing.spaceSM,
-          _agreementRow('Delivery Fee:', deliveryFee),
+          const OrderAgreementRow(label: 'Delivery Fee:', value: deliveryFee),
           AppSpacing.spaceSM,
-          _agreementRow('Service Charge:', serviceCharge),
+          const OrderAgreementRow(label: 'Service Charge:', value: serviceCharge),
           AppSpacing.spaceSM,
-          _agreementRow('WHT (2%):', wht),
+          const OrderAgreementRow(label: 'WHT (2%):', value: wht),
           AppSpacing.spaceSM,
-          _agreementRow('Amount you will get:', amountYouGet),
+          const OrderAgreementRow(label: 'Amount you will get:', value: amountYouGet),
           AppSpacing.spaceMD,
           Container(
             width: double.infinity,
@@ -94,6 +100,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
+// UNUSED: Agreement row builder - replaced by OrderAgreementRow widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  /*
   Widget _agreementRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,6 +116,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       ],
     );
   }
+  */
 
   @override
   Widget build(BuildContext context) {

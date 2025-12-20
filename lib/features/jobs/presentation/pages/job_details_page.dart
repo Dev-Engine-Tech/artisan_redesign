@@ -20,7 +20,7 @@ import 'package:artisans_circle/features/jobs/presentation/pages/change_request_
 import 'package:artisans_circle/features/jobs/presentation/pages/ongoing_jobs_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/job_summary_page.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
-import 'client_profile_page.dart';
+import 'package:artisans_circle/features/clients/presentation/pages/client_profile_page.dart';
 import '../widgets/job_action_buttons.dart';
 import '../widgets/job_client_header.dart';
 import '../widgets/job_thumbnail_banner.dart';
@@ -133,14 +133,23 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                     // Debug logging for troubleshooting
                     // ignore: avoid_print
                     print('[JobDetails] View Profile tapped: jobId=${job.id}, clientId="${job.clientId}", clientName="${job.clientName}"');
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ClientProfilePage(
-                          clientId: job.clientId!.trim(),
-                          initialName: job.clientName,
-                        ),
-                      ),
-                    );
+                    final clientIdStr = job.clientId?.trim();
+                    if (clientIdStr != null && clientIdStr.isNotEmpty) {
+                      final clientId = int.tryParse(clientIdStr);
+                      if (clientId != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => ClientProfilePage(clientId: clientId),
+                          ),
+                        );
+                      } else {
+                        // ignore: avoid_print
+                        print('[JobDetails] Invalid client ID format: $clientIdStr');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Invalid client ID')),
+                        );
+                      }
+                    }
                   },
                 ),
 

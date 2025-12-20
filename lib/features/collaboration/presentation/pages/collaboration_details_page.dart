@@ -10,6 +10,7 @@ import '../../domain/repositories/collaboration_repository.dart';
 import '../bloc/collaboration_bloc.dart';
 import '../bloc/collaboration_event.dart';
 import '../bloc/collaboration_state.dart';
+import '../widgets/collaboration_status_badge.dart';
 
 /// Detailed view of a collaboration with full job and artisan information
 class CollaborationDetailsPage extends StatelessWidget {
@@ -81,7 +82,7 @@ class CollaborationDetailsPage extends StatelessWidget {
                 padding: context.responsivePadding,
                 children: [
                   // Status Badge
-                  _buildStatusBadge(context),
+                  CollaborationStatusBadge(status: collaboration.status),
 
                   AppSpacing.spaceLG,
 
@@ -125,6 +126,9 @@ class CollaborationDetailsPage extends StatelessWidget {
     );
   }
 
+// UNUSED: Status badge builder - replaced by CollaborationStatusBadge widget
+  // COMMENTED OUT: 2025-12-19 - Modularization
+  /*
   Widget _buildStatusBadge(BuildContext context) {
     Color color;
     String label;
@@ -182,6 +186,7 @@ class CollaborationDetailsPage extends StatelessWidget {
       ),
     );
   }
+  */
 
   Widget _buildJobInfoCard(BuildContext context) {
     final job = collaboration.job;

@@ -9,12 +9,22 @@ String sanitizeImageUrl(String? url) {
   if (s.startsWith('/media/http:/')) {
     return 'http://${s.replaceFirst('/media/http:/', '')}';
   }
-  // Fix missing slash in protocol (https:/ -> https://)
-  if (s.startsWith('https:/') && !s.startsWith('https://')) {
-    return s.replaceFirst('https:/', 'https://');
+  // Fix missing slashes in protocol (https:/ -> https:// or https:/example -> https://example)
+  if (s.startsWith('https:') && !s.startsWith('https://')) {
+    // Handle both https:/ and https:example cases
+    if (s.startsWith('https:/')) {
+      return s.replaceFirst('https:/', 'https://');
+    } else {
+      return s.replaceFirst('https:', 'https://');
+    }
   }
-  if (s.startsWith('http:/') && !s.startsWith('http://')) {
-    return s.replaceFirst('http:/', 'http://');
+  if (s.startsWith('http:') && !s.startsWith('http://')) {
+    // Handle both http:/ and http:example cases
+    if (s.startsWith('http:/')) {
+      return s.replaceFirst('http:/', 'http://');
+    } else {
+      return s.replaceFirst('http:', 'http://');
+    }
   }
   bool hasEncoded = s.contains('%3A') || s.contains('%2F');
   if (s.contains('cloudfront.net/')) {
