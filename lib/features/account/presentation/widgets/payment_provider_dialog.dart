@@ -75,14 +75,14 @@ class PaymentProviderDialog extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Amount needed: ₦${requiredAmount?.toStringAsFixed(0) ?? 'N/A'}',
+                      'Amount needed: NGN ${requiredAmount?.toStringAsFixed(0) ?? 'N/A'}',
                       style: TextStyle(
                         color: AppColors.brownHeader.withValues(alpha: 0.8),
                         fontSize: 13,
                       ),
                     ),
                     Text(
-                      'Shortfall: ₦${shortfall?.toStringAsFixed(0) ?? 'N/A'}',
+                      'Shortfall: NGN ${shortfall?.toStringAsFixed(0) ?? 'N/A'}',
                       style: const TextStyle(
                         color: AppColors.orange,
                         fontSize: 13,

@@ -85,7 +85,8 @@ class _SubscriptionBankTransferPageState
         final fileSize = await file.length();
         final fileSizeMB = fileSize / (1024 * 1024);
 
-        debugPrint('📸 Selected image size: ${fileSizeMB.toStringAsFixed(2)} MB');
+        debugPrint(
+            '📸 Selected image size: ${fileSizeMB.toStringAsFixed(2)} MB');
 
         if (fileSizeMB > 1.0) {
           if (mounted) {
@@ -352,7 +353,7 @@ class _SubscriptionBankTransferPageState
                         style: TextStyle(fontSize: 14),
                       ),
                       Text(
-                        '₦${widget.amount.toStringAsFixed(0)}',
+                        'NGN ${widget.amount.toStringAsFixed(0)}',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

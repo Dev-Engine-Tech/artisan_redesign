@@ -49,7 +49,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
       backgroundColor: context.lightPeachColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.0),
+        backgroundColor:
+            Theme.of(context).colorScheme.surface.withValues(alpha: 0.0),
         leading: Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: Container(
@@ -58,7 +59,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              icon: Icon(Icons.arrow_back,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -67,9 +69,9 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
           builder: (context) => Text(
             'Ongoing Projects',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
         actions: [
@@ -78,7 +80,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
               // ✅ PERFORMANCE FIX: Force refresh is intentional here
               context.read<JobBloc>().add(LoadOngoingJobs());
             },
-            icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.onSurfaceVariant),
+            icon: Icon(Icons.refresh,
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -93,7 +96,8 @@ class _OngoingJobsPageState extends State<OngoingJobsPage> {
               filterOptions: const [
                 FilterOption(label: 'All', value: 'all'),
                 FilterOption(label: 'Started', value: 'inProgress'),
-                FilterOption(label: 'Awaiting Client', value: 'pending_approval'),
+                FilterOption(
+                    label: 'Awaiting Client', value: 'pending_approval'),
                 FilterOption(label: 'Paused', value: 'paused'),
                 FilterOption(label: 'Near Deadline', value: 'urgent'),
               ],
@@ -484,13 +488,17 @@ class OngoingJobCard extends StatelessWidget {
 
     switch (job.status) {
       case JobStatus.inProgress:
-        backgroundColor = isDark ? Colors.blue.withValues(alpha: 0.3) : Colors.blue.withValues(alpha: 0.1);
+        backgroundColor = isDark
+            ? Colors.blue.withValues(alpha: 0.3)
+            : Colors.blue.withValues(alpha: 0.1);
         textColor = isDark ? Colors.blue.shade200 : Colors.blue.shade700;
         statusText = 'In Progress';
         icon = Icons.work;
         break;
       case JobStatus.pending:
-        backgroundColor = isDark ? Colors.orange.withValues(alpha: 0.3) : Colors.orange.withValues(alpha: 0.1);
+        backgroundColor = isDark
+            ? Colors.orange.withValues(alpha: 0.3)
+            : Colors.orange.withValues(alpha: 0.1);
         textColor = isDark ? Colors.orange.shade200 : Colors.orange.shade700;
         statusText = 'Pending Review';
         icon = Icons.pending;
@@ -561,20 +569,20 @@ class OngoingJobCard extends StatelessWidget {
               builder: (context) => Text(
                 'Progress',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: context.brownHeaderColor,
-                  fontSize: 14,
-                ),
+                      fontWeight: FontWeight.w600,
+                      color: context.brownHeaderColor,
+                      fontSize: 14,
+                    ),
               ),
             ),
             Builder(
               builder: (context) => Text(
                 '$progressPercent%',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: context.brownHeaderColor,
-                  fontSize: 14,
-                ),
+                      fontWeight: FontWeight.w700,
+                      color: context.brownHeaderColor,
+                      fontSize: 14,
+                    ),
               ),
             ),
           ],
@@ -637,9 +645,9 @@ class OngoingJobCard extends StatelessWidget {
               child: Text(
                 text,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: 12,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                      fontSize: 12,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

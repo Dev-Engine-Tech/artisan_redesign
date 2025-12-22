@@ -87,7 +87,7 @@ class CatalogItemModel extends CatalogItem {
       return int.tryParse(v.toString());
     }
 
-    // Extract min/max from a range-like string e.g. "1000 - 2000" or "₦100,000–200,000"
+    // Extract min/max from a range-like string e.g. "1000 - 2000" or "NGN 100,000–200,000"
     (int?, int?) _rangeToInts(dynamic range) {
       if (range == null) return (null, null);
       final s = range.toString();

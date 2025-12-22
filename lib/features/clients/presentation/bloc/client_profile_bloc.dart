@@ -7,7 +7,8 @@ import 'client_profile_state.dart';
 class ClientProfileBloc extends Bloc<ClientProfileEvent, ClientProfileState> {
   final ClientRepository repository;
 
-  ClientProfileBloc({required this.repository}) : super(ClientProfileInitial()) {
+  ClientProfileBloc({required this.repository})
+      : super(ClientProfileInitial()) {
     on<LoadClientProfile>(_onLoadClientProfile);
   }
 

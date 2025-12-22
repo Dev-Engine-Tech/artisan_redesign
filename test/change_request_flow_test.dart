@@ -35,8 +35,7 @@ class MockGetJobInvitations extends Mock implements GetJobInvitations {}
 class MockRespondToJobInvitation extends Mock
     implements RespondToJobInvitation {}
 
-class MockGetArtisanInvitations extends Mock
-    implements GetArtisanInvitations {}
+class MockGetArtisanInvitations extends Mock implements GetArtisanInvitations {}
 
 class MockGetRecentArtisanInvitations extends Mock
     implements GetRecentArtisanInvitations {}

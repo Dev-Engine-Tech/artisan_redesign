@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:io' show File;
+import '../../../../core/widgets/optimized_image.dart';
 import '../../../../core/theme.dart';
 import '../../../../core/components/components.dart';
 import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/shared/widgets/image_preview_page.dart';
 
 /// Step 3 of upload catalogue: Review/preview screen
 ///
@@ -41,22 +44,57 @@ class UploadCatalogueStep3 extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(18),
           child: Container(
-            height: 180,
+            height: 200,
             color: context.softPinkColor,
-            child: Center(
-              child: media.isEmpty
-                  ? Icon(Icons.image_outlined,
-                      size: 56, color: context.primaryColor)
-                  : Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: media.map((m) => Chip(label: Text(m))).toList()),
-            ),
+            child: media.isEmpty
+                ? Center(
+                    child: Icon(Icons.image_outlined,
+                        size: 56, color: context.primaryColor),
+                  )
+                : GridView.builder(
+                    padding: const EdgeInsets.all(8),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemCount: media.length,
+                    itemBuilder: (context, index) {
+                      final m = media[index];
+                      final isNetwork = m.startsWith('http');
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ImagePreviewPage(
+                                imageUrl: m,
+                              ),
+                            ),
+                          );
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: isNetwork
+                              ? OptimizedThumbnail(
+                                  imageUrl: m,
+                                  width: 80,
+                                  height: 80,
+                                )
+                              : Image.file(
+                                  File(m),
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ),
         AppSpacing.spaceMD,
-        Text(
-            title.isEmpty ? 'Untitled project' : title,
+        Text(title.isEmpty ? 'Untitled project' : title,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
         AppSpacing.spaceMD,
         Container(
@@ -86,10 +124,7 @@ class UploadCatalogueStep3 extends StatelessWidget {
             const Text('Description',
                 style: TextStyle(fontWeight: FontWeight.w700)),
             AppSpacing.spaceSM,
-            Text(
-                description.isEmpty
-                    ? 'No description provided.'
-                    : description,
+            Text(description.isEmpty ? 'No description provided.' : description,
                 style: TextStyle(color: context.colorScheme.onSurfaceVariant)),
           ]),
         ),

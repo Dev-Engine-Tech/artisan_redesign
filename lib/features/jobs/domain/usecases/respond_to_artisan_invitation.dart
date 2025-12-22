@@ -25,7 +25,8 @@ class RespondToArtisanInvitation {
   }
 
   /// Generic call method for custom status
-  Future<bool> call(int invitationId, {required String status, String? rejectionReason}) async {
+  Future<bool> call(int invitationId,
+      {required String status, String? rejectionReason}) async {
     return await repository.respondToArtisanInvitation(
       invitationId,
       status: status,

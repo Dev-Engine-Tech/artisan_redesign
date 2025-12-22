@@ -123,9 +123,11 @@ class CustomTextField extends StatelessWidget {
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
+          hintStyle:
+              TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: colorScheme.onSurface.withValues(alpha: 0.4))
+              ? Icon(prefixIcon,
+                  color: colorScheme.onSurface.withValues(alpha: 0.4))
               : null,
           suffixIcon: suffixIcon,
           filled: true,
@@ -152,7 +154,8 @@ class CustomTextField extends StatelessWidget {
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
+            borderSide:
+                BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );
@@ -161,7 +164,8 @@ class CustomTextField extends StatelessWidget {
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
+          hintStyle:
+              TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
               ? Container(
                   margin: AppSpacing.paddingMD,
@@ -201,7 +205,8 @@ class CustomTextField extends StatelessWidget {
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
+            borderSide:
+                BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );
@@ -333,9 +338,11 @@ class CustomTextFormField extends StatelessWidget {
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
+          hintStyle:
+              TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: colorScheme.onSurface.withValues(alpha: 0.4))
+              ? Icon(prefixIcon,
+                  color: colorScheme.onSurface.withValues(alpha: 0.4))
               : null,
           suffixIcon: suffixIcon,
           filled: true,
@@ -362,7 +369,8 @@ class CustomTextFormField extends StatelessWidget {
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
+            borderSide:
+                BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );
@@ -371,7 +379,8 @@ class CustomTextFormField extends StatelessWidget {
         return InputDecoration(
           labelText: showLabel ? null : label,
           hintText: hint,
-          hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
+          hintStyle:
+              TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
           prefixIcon: prefixIcon != null
               ? Container(
                   margin: AppSpacing.paddingMD,
@@ -411,7 +420,8 @@ class CustomTextFormField extends StatelessWidget {
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: AppRadius.radiusLG,
-            borderSide: BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
+            borderSide:
+                BorderSide(color: colorScheme.onSurface.withValues(alpha: 0.3)),
           ),
           contentPadding: AppSpacing.paddingLG,
         );

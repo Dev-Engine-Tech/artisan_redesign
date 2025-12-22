@@ -55,7 +55,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
   final List<DiscoverTab> _tabs = [
     const DiscoverTab(label: 'Best Matches', key: 'matches'),
     const DiscoverTab(label: 'Saved Jobs', key: 'saved'),
-    const DiscoverTab(label: 'Collaborations', key: 'collaborations', icon: Icons.people_outline),
+    const DiscoverTab(
+        label: 'Collaborations',
+        key: 'collaborations',
+        icon: Icons.people_outline),
   ];
 
   @override

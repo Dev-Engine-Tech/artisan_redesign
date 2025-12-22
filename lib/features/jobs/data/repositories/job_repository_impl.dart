@@ -86,7 +86,8 @@ class JobRepositoryImpl implements JobRepository {
   @override
   Future<List<Job>> getJobInvitations({int page = 1, int limit = 20}) async {
     try {
-      final models = await remoteDataSource.fetchJobInvitations(page: page, limit: limit);
+      final models =
+          await remoteDataSource.fetchJobInvitations(page: page, limit: limit);
       return models.map((m) => m.toEntity()).toList();
     } catch (_) {
       rethrow;
@@ -94,18 +95,22 @@ class JobRepositoryImpl implements JobRepository {
   }
 
   @override
-  Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
+  Future<bool> respondToJobInvitation(String invitationId,
+      {required bool accept}) async {
     try {
-      return await remoteDataSource.respondToJobInvitation(invitationId, accept: accept);
+      return await remoteDataSource.respondToJobInvitation(invitationId,
+          accept: accept);
     } catch (_) {
       rethrow;
     }
   }
 
   @override
-  Future<List<ArtisanInvitation>> getArtisanInvitations({int page = 1, int limit = 20}) async {
+  Future<List<ArtisanInvitation>> getArtisanInvitations(
+      {int page = 1, int limit = 20}) async {
     try {
-      final models = await remoteDataSource.fetchArtisanInvitations(page: page, limit: limit);
+      final models = await remoteDataSource.fetchArtisanInvitations(
+          page: page, limit: limit);
       return models.map((m) => m.toEntity()).toList();
     } catch (_) {
       rethrow;
@@ -125,7 +130,8 @@ class JobRepositoryImpl implements JobRepository {
   @override
   Future<ArtisanInvitation> getArtisanInvitationDetail(int invitationId) async {
     try {
-      final model = await remoteDataSource.fetchArtisanInvitationDetail(invitationId);
+      final model =
+          await remoteDataSource.fetchArtisanInvitationDetail(invitationId);
       return model.toEntity();
     } catch (_) {
       rethrow;
@@ -133,7 +139,8 @@ class JobRepositoryImpl implements JobRepository {
   }
 
   @override
-  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
+  Future<bool> respondToArtisanInvitation(int invitationId,
+      {required String status, String? rejectionReason}) async {
     try {
       return await remoteDataSource.respondToArtisanInvitation(
         invitationId,

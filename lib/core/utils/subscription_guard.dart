@@ -109,7 +109,8 @@ class SubscriptionGuard {
       final planName = plan.toString().split('.').last.toUpperCase();
       showUpgradeModal(
         context,
-        message: 'The "$requestedStyle" invoice style is not available on your $planName plan. Upgrade to Silver or Gold plan to access all invoice styles.',
+        message:
+            'The "$requestedStyle" invoice style is not available on your $planName plan. Upgrade to Silver or Gold plan to access all invoice styles.',
       );
       return false;
     }
@@ -139,7 +140,8 @@ class SubscriptionGuard {
   /// Returns true if allowed, false otherwise (and shows upgrade modal)
   Future<bool> checkJobApplicationLimit(BuildContext context) async {
     try {
-      final response = await _dio.get(ApiEndpoints.subscriptionApplicationLimit);
+      final response =
+          await _dio.get(ApiEndpoints.subscriptionApplicationLimit);
       final data = response.data;
 
       // Parse the response to check if application is allowed

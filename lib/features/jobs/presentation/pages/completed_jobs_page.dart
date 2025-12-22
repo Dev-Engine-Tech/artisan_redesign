@@ -11,6 +11,7 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/job_completio
 import 'package:artisans_circle/features/jobs/presentation/widgets/completed_jobs_earnings_summary.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/jobs_filter_bar.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/jobs_empty_state.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import '../../../../core/utils/responsive.dart';
 
 class CompletedJobsPage extends StatefulWidget {
@@ -89,8 +90,8 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
       body: SafeArea(
         child: Column(
           children: [
-            const CompletedJobsEarningsSummary(
-              totalEarnings: '₦1,250,000',
+            CompletedJobsEarningsSummary(
+              totalEarnings: Currency.formatNgn(1250000),
               completedProjectsCount: 12,
               percentageIncrease: '+23%',
             ),
@@ -102,7 +103,8 @@ class _CompletedJobsPageState extends State<CompletedJobsPage> {
               filterOptions: const [
                 FilterOption(label: 'All', value: 'all'),
                 FilterOption(label: 'Paid', value: 'paid'),
-                FilterOption(label: 'Pending Payment', value: 'pending_payment'),
+                FilterOption(
+                    label: 'Pending Payment', value: 'pending_payment'),
                 FilterOption(label: 'Reviewed', value: 'reviewed'),
                 FilterOption(label: 'High Rating', value: 'high_rating'),
               ],
@@ -658,16 +660,17 @@ class CompletedJobCard extends StatelessWidget {
                     Text(
                       'Completed',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.green.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            color: Colors.green.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     AppSpacing.spaceSM,
                     Text(
                       _formatCompletionDate(job.completedDate),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                   ],
                 ),

@@ -23,10 +23,13 @@ class ArtisanInvitationModel extends ArtisanInvitation {
 
   factory ArtisanInvitationModel.fromJson(Map<String, dynamic> json) {
     // Parse job details from nested 'job' object or root level
-    final jobData = json['job'] is Map ? json['job'] as Map<String, dynamic> : json;
+    final jobData =
+        json['job'] is Map ? json['job'] as Map<String, dynamic> : json;
 
     // Parse client details from nested 'client' object
-    final clientData = jobData['client'] is Map ? jobData['client'] as Map<String, dynamic> : null;
+    final clientData = jobData['client'] is Map
+        ? jobData['client'] as Map<String, dynamic>
+        : null;
 
     // Parse category - it can be a string or an object with 'name' field
     String? categoryName;
@@ -63,18 +66,33 @@ class ArtisanInvitationModel extends ArtisanInvitation {
     return ArtisanInvitationModel(
       id: json['id'] as int,
       jobId: (jobData['id'] ?? jobData['job_id']) as int,
-      jobTitle: (jobData['title'] ?? jobData['job_title'] ?? 'Untitled Job') as String,
-      jobDescription: jobData['description'] is String ? jobData['description'] as String? : null,
+      jobTitle: (jobData['title'] ?? jobData['job_title'] ?? 'Untitled Job')
+          as String,
+      jobDescription: jobData['description'] is String
+          ? jobData['description'] as String?
+          : null,
       jobCategory: categoryName,
-      minBudget: _parseIntOrNull(jobData['min_budget'] ?? jobData['budget_min']),
-      maxBudget: _parseIntOrNull(jobData['max_budget'] ?? jobData['budget_max']),
-      duration: jobData['duration'] is String ? jobData['duration'] as String? : null,
-      workMode: jobData['work_mode'] is String ? jobData['work_mode'] as String? : null,
+      minBudget:
+          _parseIntOrNull(jobData['min_budget'] ?? jobData['budget_min']),
+      maxBudget:
+          _parseIntOrNull(jobData['max_budget'] ?? jobData['budget_max']),
+      duration:
+          jobData['duration'] is String ? jobData['duration'] as String? : null,
+      workMode: jobData['work_mode'] is String
+          ? jobData['work_mode'] as String?
+          : null,
       address: _extractAddress(jobData),
-      clientName: clientName ?? (json['client_name'] is String ? json['client_name'] as String? : null),
+      clientName: clientName ??
+          (json['client_name'] is String
+              ? json['client_name'] as String?
+              : null),
       clientId: _parseIntOrNull(clientData?['id'] ?? json['client_id']),
-      invitationStatus: json['invitation_status'] is String ? json['invitation_status'] as String : 'Pending',
-      rejectionReason: json['rejection_reason'] is String ? json['rejection_reason'] as String? : null,
+      invitationStatus: json['invitation_status'] is String
+          ? json['invitation_status'] as String
+          : 'Pending',
+      rejectionReason: json['rejection_reason'] is String
+          ? json['rejection_reason'] as String?
+          : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       respondedAt: json['responded_at'] != null
           ? DateTime.parse(json['responded_at'] as String)

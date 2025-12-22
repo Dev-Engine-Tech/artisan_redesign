@@ -99,10 +99,13 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                 final name = accountState.profile.fullName;
                                 if (name.isNotEmpty) greeting = 'Hi $name';
                               } else {
-                                final authState = context.watch<AuthBloc>().state;
+                                final authState =
+                                    context.watch<AuthBloc>().state;
                                 if (authState is AuthAuthenticated) {
                                   final user = authState.user;
-                                  final full = (user.firstName + ' ' + user.lastName).trim();
+                                  final full =
+                                      (user.firstName + ' ' + user.lastName)
+                                          .trim();
                                   if (full.isNotEmpty) {
                                     greeting = 'Hi $full';
                                   } else if (user.firstName.isNotEmpty) {
@@ -431,8 +434,10 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                       : ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _dashboard!.recentInvoices.length.clamp(0, 3),
-                          separatorBuilder: (context, index) => AppSpacing.spaceSM,
+                          itemCount:
+                              _dashboard!.recentInvoices.length.clamp(0, 3),
+                          separatorBuilder: (context, index) =>
+                              AppSpacing.spaceSM,
                           itemBuilder: (context, index) {
                             final invoice = _dashboard!.recentInvoices[index];
                             final entity = invoice.toEntity();
@@ -449,7 +454,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: AppRadius.radiusLG,
-                                      color: context.primaryColor.withValues(alpha: 0.2),
+                                      color: context.primaryColor
+                                          .withValues(alpha: 0.2),
                                     ),
                                     child: Icon(
                                       Icons.receipt,
@@ -459,11 +465,13 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                   AppSpacing.spaceMD,
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           entity.clientName,
-                                          style: theme.textTheme.titleMedium?.copyWith(
+                                          style: theme.textTheme.titleMedium
+                                              ?.copyWith(
                                             fontWeight: FontWeight.w600,
                                             color: context.brownHeaderColor,
                                           ),
@@ -471,14 +479,16 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                         AppSpacing.spaceXS,
                                         Text(
                                           'Invoice #${entity.invoiceNumber}',
-                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
                                             color: colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         AppSpacing.spaceSM,
                                         Text(
                                           'NGN ${entity.total.toStringAsFixed(0)}',
-                                          style: theme.textTheme.titleMedium?.copyWith(
+                                          style: theme.textTheme.titleMedium
+                                              ?.copyWith(
                                             fontWeight: FontWeight.w600,
                                             color: context.brownHeaderColor,
                                           ),
@@ -499,16 +509,19 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
                                         ),
                                         child: Text(
                                           _getStatusText(entity.status),
-                                          style: theme.textTheme.bodySmall?.copyWith(
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
                                             fontWeight: FontWeight.w500,
-                                            color: _getStatusColor(entity.status),
+                                            color:
+                                                _getStatusColor(entity.status),
                                           ),
                                         ),
                                       ),
                                       AppSpacing.spaceSM,
                                       Text(
                                         _formatDate(entity.issueDate),
-                                        style: theme.textTheme.bodySmall?.copyWith(
+                                        style:
+                                            theme.textTheme.bodySmall?.copyWith(
                                           color: colorScheme.onSurfaceVariant,
                                         ),
                                       ),
@@ -533,8 +546,8 @@ class _InvoiceMenuPageState extends State<InvoiceMenuPage> {
     );
   }
 
-  Widget _buildTopIcon(
-      BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildTopIcon(BuildContext context, String title, IconData icon,
+      Color color, VoidCallback onTap) {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,

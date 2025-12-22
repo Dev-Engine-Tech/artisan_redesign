@@ -1,6 +1,7 @@
 import 'package:share_plus/share_plus.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:flutter/services.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 class JobShareService {
   static const String _appName = 'Artisans Circle';
@@ -81,8 +82,8 @@ class JobShareService {
 
   static String _formatJobShareText(Job job) {
     final budget = job.minBudget == job.maxBudget
-        ? '₦${job.maxBudget.toStringAsFixed(0)}'
-        : '₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}';
+        ? Currency.formatNgn(job.maxBudget)
+        : '${Currency.formatNgn(job.minBudget)} - ${Currency.formatNgn(job.maxBudget)}';
 
     return '''
 🔨 ${job.title}
@@ -107,8 +108,8 @@ Web: $_webUrl
 
   static String _formatJobReferralText(Job job, String? personalMessage) {
     final budget = job.minBudget == job.maxBudget
-        ? '₦${job.maxBudget.toStringAsFixed(0)}'
-        : '₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}';
+        ? Currency.formatNgn(job.maxBudget)
+        : '${Currency.formatNgn(job.minBudget)} - ${Currency.formatNgn(job.maxBudget)}';
 
     return '''
 ${personalMessage != null ? '$personalMessage\n\n' : ''}Hi! I found this job opportunity that might interest you:
@@ -135,8 +136,8 @@ Good luck! 🍀
       List<Job> jobs, String collectionName) {
     final jobsPreview = jobs.take(3).map((job) {
       final budget = job.minBudget == job.maxBudget
-          ? '₦${job.maxBudget.toStringAsFixed(0)}'
-          : '₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}';
+          ? Currency.formatNgn(job.maxBudget)
+          : '${Currency.formatNgn(job.minBudget)} - ${Currency.formatNgn(job.maxBudget)}';
 
       return '• ${job.title} - $budget (${job.duration})';
     }).join('\n');

@@ -26,7 +26,8 @@ class _FakeCustomerRepository implements CustomerRepository {
   }
 
   @override
-  Future<List<Customer>> getCustomers({int page = 1, int limit = 20, String? searchQuery}) async {
+  Future<List<Customer>> getCustomers(
+      {int page = 1, int limit = 20, String? searchQuery}) async {
     return [];
   }
 
@@ -43,7 +44,20 @@ class _FakeCustomerRepository implements CustomerRepository {
 
 class _FakeCatalogRepository implements CatalogRepository {
   @override
-  Future<CatalogItem> createCatalog({required String title, required String subCategoryId, required String description, int? priceMin, int? priceMax, String? projectTimeline, List<String> imagePaths = const [], bool instantSelling = false, String? brand, String? condition, String? salesCategory, bool warranty = false, bool delivery = false}) {
+  Future<CatalogItem> createCatalog(
+      {required String title,
+      required String subCategoryId,
+      required String description,
+      int? priceMin,
+      int? priceMax,
+      String? projectTimeline,
+      List<String> imagePaths = const [],
+      bool instantSelling = false,
+      String? brand,
+      String? condition,
+      String? salesCategory,
+      bool warranty = false,
+      bool delivery = false}) {
     throw UnimplementedError();
   }
 
@@ -68,7 +82,21 @@ class _FakeCatalogRepository implements CatalogRepository {
   }
 
   @override
-  Future<CatalogItem> updateCatalog({required String id, String? title, String? subCategoryId, String? description, int? priceMin, int? priceMax, String? projectTimeline, List<String> newImagePaths = const [], bool? instantSelling, String? brand, String? condition, String? salesCategory, bool? warranty, bool? delivery}) {
+  Future<CatalogItem> updateCatalog(
+      {required String id,
+      String? title,
+      String? subCategoryId,
+      String? description,
+      int? priceMin,
+      int? priceMax,
+      String? projectTimeline,
+      List<String> newImagePaths = const [],
+      bool? instantSelling,
+      String? brand,
+      String? condition,
+      String? salesCategory,
+      bool? warranty,
+      bool? delivery}) {
     throw UnimplementedError();
   }
 }
@@ -77,7 +105,8 @@ void main() {
   setUpAll(() {
     final getIt = GetIt.I;
     if (!getIt.isRegistered<GetCustomers>()) {
-      getIt.registerLazySingleton<GetCustomers>(() => GetCustomers(_FakeCustomerRepository()));
+      getIt.registerLazySingleton<GetCustomers>(
+          () => GetCustomers(_FakeCustomerRepository()));
     }
     if (!getIt.isRegistered<GetMyCatalogItems>()) {
       getIt.registerLazySingleton<GetMyCatalogItems>(

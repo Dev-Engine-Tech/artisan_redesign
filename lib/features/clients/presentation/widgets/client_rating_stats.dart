@@ -46,20 +46,24 @@ class ClientRatingStats extends StatelessWidget {
                   children: [
                     Text(
                       ratingStats.averageRating.toStringAsFixed(1),
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
                     ),
                     const SizedBox(width: 8),
                     // Star rating display
                     ...List.generate(5, (index) {
                       final rating = ratingStats.averageRating;
                       if (index < rating.floor()) {
-                        return const Icon(Icons.star, color: AppColors.orange, size: 16);
+                        return const Icon(Icons.star,
+                            color: AppColors.orange, size: 16);
                       } else if (index < rating && rating % 1 != 0) {
-                        return const Icon(Icons.star_half, color: AppColors.orange, size: 16);
+                        return const Icon(Icons.star_half,
+                            color: AppColors.orange, size: 16);
                       } else {
-                        return Icon(Icons.star_border, color: Colors.grey.shade400, size: 16);
+                        return Icon(Icons.star_border,
+                            color: Colors.grey.shade400, size: 16);
                       }
                     }),
                   ],

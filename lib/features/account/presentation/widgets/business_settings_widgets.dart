@@ -264,7 +264,8 @@ class ImageUploadSection extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(Icons.close, color: AppColors.cardBackground),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppColors.textPrimary.withValues(alpha: 0.7),
+                      backgroundColor:
+                          AppColors.textPrimary.withValues(alpha: 0.7),
                     ),
                     onPressed: onRemove,
                   ),

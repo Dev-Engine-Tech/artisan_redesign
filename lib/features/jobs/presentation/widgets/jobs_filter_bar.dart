@@ -50,10 +50,12 @@ class JobsFilterBar extends StatelessWidget {
               controller: searchController,
               decoration: InputDecoration(
                 hintText: searchHint,
-                prefixIcon: Icon(Icons.search, color: colorScheme.onSurfaceVariant),
+                prefixIcon:
+                    Icon(Icons.search, color: colorScheme.onSurfaceVariant),
                 suffixIcon: searchQuery.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: colorScheme.onSurfaceVariant),
+                        icon: Icon(Icons.clear,
+                            color: colorScheme.onSurfaceVariant),
                         onPressed: onSearchClear,
                       )
                     : null,
@@ -77,18 +79,25 @@ class JobsFilterBar extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => onFilterChanged(option.value),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isSelected ? context.primaryColor : context.cardBackgroundColor,
+                      color: isSelected
+                          ? context.primaryColor
+                          : context.cardBackgroundColor,
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: isSelected ? context.primaryColor : context.softBorderColor,
+                        color: isSelected
+                            ? context.primaryColor
+                            : context.softBorderColor,
                       ),
                     ),
                     child: Text(
                       option.label,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: isSelected ? colorScheme.onPrimary : context.brownHeaderColor,
+                        color: isSelected
+                            ? colorScheme.onPrimary
+                            : context.brownHeaderColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),

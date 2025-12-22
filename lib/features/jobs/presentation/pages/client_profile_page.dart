@@ -36,7 +36,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
     super.initState();
     // ignore: avoid_print
     if (widget.initialName != null && widget.initialName!.trim().isNotEmpty) {
-      print('[ClientProfile] Initial displayName="${widget.initialName}" for id="${widget.clientId}"');
+      print(
+          '[ClientProfile] Initial displayName="${widget.initialName}" for id="${widget.clientId}"');
     }
     _load();
   }
@@ -59,7 +60,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
         return;
       }
       // ignore: avoid_print
-      print('[ClientProfile] Fetch start for id="$id" baseUrl=${dio.options.baseUrl}');
+      print(
+          '[ClientProfile] Fetch start for id="$id" baseUrl=${dio.options.baseUrl}');
 
       Future<Map<String, dynamic>?> tryFetch() async {
         Response r;
@@ -87,7 +89,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
         // 3) Fallback: user-details?user_id=
         // ignore: avoid_print
         print('[ClientProfile] GET ${ApiEndpoints.userDetails}?user_id=$id');
-        r = await dio.get(ApiEndpoints.userDetails, queryParameters: {'user_id': id}, options: any);
+        r = await dio.get(ApiEndpoints.userDetails,
+            queryParameters: {'user_id': id}, options: any);
         // ignore: avoid_print
         print('[ClientProfile] -> status ${r.statusCode}');
         if (r.statusCode == 200 && r.data is Map) {
@@ -96,7 +99,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
         // 4) Fallback: user-details?id=
         // ignore: avoid_print
         print('[ClientProfile] GET ${ApiEndpoints.userDetails}?id=$id');
-        r = await dio.get(ApiEndpoints.userDetails, queryParameters: {'id': id}, options: any);
+        r = await dio.get(ApiEndpoints.userDetails,
+            queryParameters: {'id': id}, options: any);
         // ignore: avoid_print
         print('[ClientProfile] -> status ${r.statusCode}');
         if (r.statusCode == 200 && r.data is Map) {
@@ -125,7 +129,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
     } on DioException catch (e) {
       if (!mounted) return;
       // ignore: avoid_print
-      print('[ClientProfile] DioException status=${e.response?.statusCode} data=${_safeString(e.response?.data)} message=${e.message}');
+      print(
+          '[ClientProfile] DioException status=${e.response?.statusCode} data=${_safeString(e.response?.data)} message=${e.message}');
       setState(() {
         _error = e.response?.data?.toString() ?? e.message;
         _loading = false;
@@ -195,12 +200,14 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline, color: AppColors.danger),
+                        const Icon(Icons.error_outline,
+                            color: AppColors.danger),
                         AppSpacing.spaceSM,
                         SizedBox(
                           height: 160,
                           child: SingleChildScrollView(
-                            child: Text(_error!, style: const TextStyle(color: Colors.black87)),
+                            child: Text(_error!,
+                                style: const TextStyle(color: Colors.black87)),
                           ),
                         ),
                         AppSpacing.spaceLG,
@@ -223,14 +230,19 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
       if (fn != null && fn.toString().trim().isNotEmpty) return fn.toString();
       final first = p['first_name']?.toString();
       final last = p['last_name']?.toString();
-      final combined = [first, last].where((s) => (s ?? '').isNotEmpty).join(' ');
+      final combined =
+          [first, last].where((s) => (s ?? '').isNotEmpty).join(' ');
       if (combined.isNotEmpty) return combined;
       return 'Client';
     })();
     final email = (p['email']?.toString() ?? widget.initialEmail);
     final phone = (p['phone']?.toString() ?? widget.initialPhone);
     final location = (p['location'] ?? p['address'] ?? p['city'])?.toString();
-    final avatarUrl = (p['profile_pic'] ?? p['avatar'] ?? p['photo'] ?? widget.initialAvatarUrl)?.toString();
+    final avatarUrl = (p['profile_pic'] ??
+            p['avatar'] ??
+            p['photo'] ??
+            widget.initialAvatarUrl)
+        ?.toString();
     final fixedAvatar = sanitizeImageUrl(avatarUrl);
     final avatarValid = fixedAvatar.startsWith('http');
     return ListView(
@@ -258,7 +270,8 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
                           ?.copyWith(fontWeight: FontWeight.w700)),
                   if (location != null && location.isNotEmpty) ...[
                     AppSpacing.spaceXS,
-                    Text(location, style: const TextStyle(color: Colors.black54)),
+                    Text(location,
+                        style: const TextStyle(color: Colors.black54)),
                   ]
                 ],
               ),

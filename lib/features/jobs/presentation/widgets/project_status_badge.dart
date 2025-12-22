@@ -23,29 +23,36 @@ class ProjectStatusBadge extends StatelessWidget {
     switch (status!.toLowerCase()) {
       case 'ongoing':
       case 'started':
-        badgeColor = isDark ? Colors.blue.withValues(alpha: 0.3) : Colors.blue.shade100;
+        badgeColor =
+            isDark ? Colors.blue.withValues(alpha: 0.3) : Colors.blue.shade100;
         textColor = isDark ? Colors.blue.shade200 : Colors.blue.shade800;
         displayText = 'Started';
         break;
       case 'completed':
-        badgeColor = isDark ? Colors.green.withValues(alpha: 0.3) : Colors.green.shade100;
+        badgeColor = isDark
+            ? Colors.green.withValues(alpha: 0.3)
+            : Colors.green.shade100;
         textColor = isDark ? Colors.green.shade200 : Colors.green.shade800;
         displayText = 'Completed';
         break;
       case 'paused':
       case 'pending':
-        badgeColor = isDark ? Colors.orange.withValues(alpha: 0.3) : Colors.orange.shade100;
+        badgeColor = isDark
+            ? Colors.orange.withValues(alpha: 0.3)
+            : Colors.orange.shade100;
         textColor = isDark ? Colors.orange.shade200 : Colors.orange.shade800;
         displayText = 'Paused';
         break;
       case 'rejected':
       case 'cancelled':
-        badgeColor = isDark ? Colors.red.withValues(alpha: 0.3) : Colors.red.shade100;
+        badgeColor =
+            isDark ? Colors.red.withValues(alpha: 0.3) : Colors.red.shade100;
         textColor = isDark ? Colors.red.shade200 : Colors.red.shade800;
         displayText = 'Cancelled';
         break;
       default:
-        badgeColor = isDark ? Colors.grey.withValues(alpha: 0.3) : Colors.grey.shade100;
+        badgeColor =
+            isDark ? Colors.grey.withValues(alpha: 0.3) : Colors.grey.shade100;
         textColor = isDark ? Colors.grey.shade200 : Colors.grey.shade800;
         displayText = status!;
     }

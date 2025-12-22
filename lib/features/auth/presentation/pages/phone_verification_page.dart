@@ -83,7 +83,8 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: colorScheme.onPrimary.withValues(alpha: 0.1),
+                              color:
+                                  colorScheme.onPrimary.withValues(alpha: 0.1),
                               borderRadius: AppRadius.radiusLG,
                             ),
                             child: IconButton(

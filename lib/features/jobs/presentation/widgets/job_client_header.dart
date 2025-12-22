@@ -34,7 +34,8 @@ class JobClientHeader extends StatelessWidget {
           AppSpacing.spaceXS,
           CircleAvatar(
             radius: 22,
-            backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+            backgroundColor:
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
             child: const Icon(Icons.person, color: AppColors.brownHeader),
           ),
           AppSpacing.spaceMD,
@@ -53,7 +54,10 @@ class JobClientHeader extends StatelessWidget {
                 Text(
                   'Client',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.45),
                   ),
                 ),
               ],

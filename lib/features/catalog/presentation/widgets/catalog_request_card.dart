@@ -3,6 +3,7 @@ import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/entities/catalog_request.dart';
 import '../pages/catalog_request_view_page.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 /// Enhanced catalog request card with status indicators and client information
 /// matching the artisan_app design patterns
@@ -40,7 +41,8 @@ class CatalogRequestCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
+              border:
+                  Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
             ),
             padding: AppSpacing.paddingLG,
             child: Column(
@@ -108,40 +110,28 @@ class CatalogRequestCard extends StatelessWidget {
     if (request.paymentBudget != null && request.paymentBudget!.isNotEmpty) {
       final budget = double.tryParse(request.paymentBudget!);
       if (budget != null) {
-        priceDisplay = '₦${budget.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (match) => '${match[1]},',
-        )}';
+        priceDisplay = Currency.formatNgn(budget);
       }
     } else if (request.priceMin != null || request.priceMax != null) {
       final minPrice = double.tryParse(request.priceMin ?? '0') ?? 0;
-      final maxPrice = double.tryParse(request.priceMax ?? request.priceMin ?? '0') ?? 0;
+      final maxPrice =
+          double.tryParse(request.priceMax ?? request.priceMin ?? '0') ?? 0;
 
       if (minPrice == maxPrice && minPrice > 0) {
-        priceDisplay = '₦${minPrice.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (match) => '${match[1]},',
-        )}';
+        priceDisplay = Currency.formatNgn(minPrice);
       } else if (minPrice > 0 && maxPrice > 0) {
-        priceDisplay = '₦${minPrice.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (match) => '${match[1]},',
-        )} - ₦${maxPrice.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (match) => '${match[1]},',
-        )}';
+        priceDisplay =
+            '${Currency.formatNgn(minPrice)} - ${Currency.formatNgn(maxPrice)}';
       }
     } else if (request.materials.isNotEmpty) {
       // Calculate total from materials
       final total = request.materials.fold<int>(
         0,
-        (sum, material) => sum + ((material.price ?? 0) * (material.quantity ?? 1)),
+        (sum, material) =>
+            sum + ((material.price ?? 0) * (material.quantity ?? 1)),
       );
       if (total > 0) {
-        priceDisplay = '₦${total.toString().replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (match) => '${match[1]},',
-        )}';
+        priceDisplay = Currency.formatNgn(total);
       }
     }
 
@@ -149,36 +139,35 @@ class CatalogRequestCard extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Builder(
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: context.primaryColor.withValues(alpha: 0.1),
-            borderRadius: AppRadius.radiusMD,
-            border: Border.all(color: context.primaryColor.withValues(alpha: 0.3)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.attach_money,
-                size: 18,
-                color: context.primaryColor,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                priceDisplay!,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: context.primaryColor,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    );
+    return Builder(builder: (context) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: context.primaryColor.withValues(alpha: 0.1),
+          borderRadius: AppRadius.radiusMD,
+          border:
+              Border.all(color: context.primaryColor.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.attach_money,
+              size: 18,
+              color: context.primaryColor,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              priceDisplay!,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: context.primaryColor,
+                  ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   /// Builds the status badge
@@ -194,9 +183,9 @@ class CatalogRequestCard extends StatelessWidget {
       child: Text(
         statusInfo.text,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: statusInfo.color,
-          fontWeight: FontWeight.w600,
-        ),
+              color: statusInfo.color,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }
@@ -324,7 +313,8 @@ class CatalogRequestCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _buildApprovalIndicator('Artisan', request.isArtisanApproved, context),
+          _buildApprovalIndicator(
+              'Artisan', request.isArtisanApproved, context),
           AppSpacing.spaceLG,
           _buildApprovalIndicator('Client', request.isClientApproved, context),
           const Spacer(),
@@ -332,7 +322,9 @@ class CatalogRequestCard extends StatelessWidget {
             '${request.approvalCount}/2 Approved',
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color: request.isBothApproved ? colorScheme.tertiary : context.primaryColor,
+              color: request.isBothApproved
+                  ? colorScheme.tertiary
+                  : context.primaryColor,
             ),
           ),
         ],
@@ -341,7 +333,8 @@ class CatalogRequestCard extends StatelessWidget {
   }
 
   /// Builds individual approval indicator
-  Widget _buildApprovalIndicator(String label, bool approved, BuildContext context) {
+  Widget _buildApprovalIndicator(
+      String label, bool approved, BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -352,7 +345,9 @@ class CatalogRequestCard extends StatelessWidget {
           height: 16,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: approved ? colorScheme.tertiary : colorScheme.surfaceContainerHighest,
+            color: approved
+                ? colorScheme.tertiary
+                : colorScheme.surfaceContainerHighest,
             border: Border.all(
               color: approved ? colorScheme.tertiary : colorScheme.outline,
               width: 1.5,
@@ -370,7 +365,9 @@ class CatalogRequestCard extends StatelessWidget {
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: approved ? colorScheme.tertiary : colorScheme.onSurface.withValues(alpha: 0.7),
+            color: approved
+                ? colorScheme.tertiary
+                : colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
         ),

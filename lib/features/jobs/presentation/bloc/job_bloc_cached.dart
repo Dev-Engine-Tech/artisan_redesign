@@ -65,7 +65,8 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     }
 
     try {
-      final list = await executeWithCache<List<Job>>( // ensure proper typing
+      final list = await executeWithCache<List<Job>>(
+        // ensure proper typing
         cacheKey: cacheKey,
         fetch: () => getJobs(
           page: event.page,
@@ -84,7 +85,8 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
         fromJson: (json) {
           // Deserialize from cached JSON into List<Job>
           return (json as List)
-              .map((item) => JobModel.fromJson(item as Map<String, dynamic>).toEntity())
+              .map((item) =>
+                  JobModel.fromJson(item as Map<String, dynamic>).toEntity())
               .toList();
         },
         toJson: (jobs) {
@@ -130,12 +132,15 @@ class JobBlocCached extends Bloc<JobEvent, JobState> with CachedBlocMixin {
     }
 
     try {
-      final list = await executeWithCache<List<Job>>( // ensure proper typing
+      final list = await executeWithCache<List<Job>>(
+        // ensure proper typing
         cacheKey: cacheKey,
         fetch: () => getApplications(page: event.page, limit: event.limit),
         fromJson: (json) {
           return (json as List)
-              .map((item) => JobModel.fromJson(item as Map<String, dynamic>, isFromApplications: true).toEntity())
+              .map((item) => JobModel.fromJson(item as Map<String, dynamic>,
+                      isFromApplications: true)
+                  .toEntity())
               .toList();
         },
         toJson: (jobs) {

@@ -28,7 +28,8 @@ class SignupStepIndicator extends StatelessWidget {
               decoration: BoxDecoration(
                 color: active
                     ? context.primaryColor
-                    : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    : colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

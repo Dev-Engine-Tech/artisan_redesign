@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../image_url.dart';
 import '../theme.dart';
 
 /// Performance-optimized image widget following SOLID principles
@@ -79,11 +80,13 @@ class OptimizedImage extends StatelessWidget {
 
   bool _isValidHttpUrl(String? url) {
     if (url == null) return false;
-    final s = url.trim();
+    final s = sanitizeImageUrl(url.trim());
     if (!(s.startsWith('http://') || s.startsWith('https://'))) return false;
     try {
       final u = Uri.parse(s);
-      return u.hasScheme && (u.scheme == 'http' || u.scheme == 'https') && u.host.isNotEmpty;
+      return u.hasScheme &&
+          (u.scheme == 'http' || u.scheme == 'https') &&
+          u.host.isNotEmpty;
     } catch (_) {
       return false;
     }

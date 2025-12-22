@@ -6,6 +6,7 @@ class RespondToJobInvitation {
   RespondToJobInvitation(this.repository);
 
   Future<bool> call(String invitationId, {required bool accept}) async {
-    return await repository.respondToJobInvitation(invitationId, accept: accept);
+    return await repository.respondToJobInvitation(invitationId,
+        accept: accept);
   }
 }

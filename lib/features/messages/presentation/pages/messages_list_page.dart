@@ -49,21 +49,24 @@ class MessagesListPage extends StatelessWidget {
                 color: AppColors.softPink,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+              icon: Icon(Icons.arrow_back,
+                  color: colorScheme.onSurface.withValues(alpha: 0.54)),
               onPressed: () => Navigator.of(context).maybePop(),
             ),
           ),
         ),
         title: Text('Messages',
-            style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700)),
+            style: theme.textTheme.titleLarge
+                ?.copyWith(fontWeight: FontWeight.w700)),
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+            icon: Icon(Icons.search,
+                color: colorScheme.onSurface.withValues(alpha: 0.54)),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.more_vert, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+            icon: Icon(Icons.more_vert,
+                color: colorScheme.onSurface.withValues(alpha: 0.54)),
             onPressed: () {},
           )
         ],
@@ -84,14 +87,17 @@ class MessagesListPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.lock_outline,
-                        size: 64, color: colorScheme.onSurface.withValues(alpha: 0.26)),
+                        size: 64,
+                        color: colorScheme.onSurface.withValues(alpha: 0.26)),
                     AppSpacing.spaceLG,
                     Text('Authentication Required',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600)),
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     AppSpacing.spaceSM,
                     Text('Please sign in to view your messages',
-                        style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color:
+                                colorScheme.onSurface.withValues(alpha: 0.54))),
                     AppSpacing.spaceXXL,
                     PrimaryButton(
                       text: 'Go Back',
@@ -120,16 +126,19 @@ class MessagesListPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.error_outline,
-                          size: 64, color: colorScheme.error.withValues(alpha: 0.5)),
+                          size: 64,
+                          color: colorScheme.error.withValues(alpha: 0.5)),
                       AppSpacing.spaceLG,
                       Text('Profile Error',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600)),
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600)),
                       AppSpacing.spaceSM,
                       Text(
                         'Your user profile is missing required information (User ID). Please try logging out and logging back in.',
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color:
+                                colorScheme.onSurface.withValues(alpha: 0.6)),
                       ),
                       AppSpacing.spaceXXL,
                       PrimaryButton(
@@ -212,7 +221,8 @@ class MessagesListPage extends StatelessWidget {
                                           Expanded(
                                             child: Text(
                                               c.name,
-                                              style: theme.textTheme.titleMedium?.copyWith(
+                                              style: theme.textTheme.titleMedium
+                                                  ?.copyWith(
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
@@ -220,7 +230,10 @@ class MessagesListPage extends StatelessWidget {
                                           Text(
                                             _formatTime(c.lastTimestamp),
                                             style: theme.textTheme.bodySmall
-                                                ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.6)),
+                                                ?.copyWith(
+                                                    color: colorScheme.onSurface
+                                                        .withValues(
+                                                            alpha: 0.6)),
                                           ),
                                         ],
                                       ),
@@ -242,10 +255,12 @@ class MessagesListPage extends StatelessWidget {
                                                   : (c.lastMessage ?? ''),
                                               style: theme.textTheme.bodyMedium
                                                   ?.copyWith(
-                                                    color: c.isTyping
-                                                        ? AppColors.orange
-                                                        : colorScheme.onSurface.withValues(alpha: 0.54),
-                                                  ),
+                                                color: c.isTyping
+                                                    ? AppColors.orange
+                                                    : colorScheme.onSurface
+                                                        .withValues(
+                                                            alpha: 0.54),
+                                              ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -265,8 +280,11 @@ class MessagesListPage extends StatelessWidget {
                                                           12)),
                                               child: Text(
                                                 '${c.unreadCount}',
-                                                style: theme.textTheme.labelSmall?.copyWith(
-                                                    color: colorScheme.onPrimary),
+                                                style: theme
+                                                    .textTheme.labelSmall
+                                                    ?.copyWith(
+                                                        color: colorScheme
+                                                            .onPrimary),
                                               ),
                                             )
                                         ],

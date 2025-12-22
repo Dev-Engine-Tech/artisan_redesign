@@ -60,7 +60,9 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
                         errorBuilder: (c, e, s) => Container(
                           height: 180,
                           color: context.softPinkColor,
-                          child: Center(child: Icon(Icons.image, color: colorScheme.onSurfaceVariant)),
+                          child: Center(
+                              child: Icon(Icons.image,
+                                  color: colorScheme.onSurfaceVariant)),
                         ),
                       )
                     : Container(
@@ -103,7 +105,8 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      _Badge(label: '₦${job.minBudget} - ₦${job.maxBudget}'),
+                      _Badge(
+                          label: 'NGN ${job.minBudget} - NGN ${job.maxBudget}'),
                       _Badge(label: job.duration),
                     ],
                   ),
@@ -137,7 +140,8 @@ class _CatalogueDetailsPageState extends State<CatalogueDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Description',
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w700)),
                   AppSpacing.spaceSM,
                   Text(job.description,
                       style: theme.textTheme.bodyMedium

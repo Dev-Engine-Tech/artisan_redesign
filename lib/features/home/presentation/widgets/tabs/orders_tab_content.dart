@@ -96,7 +96,8 @@ class _OrdersTabContentState extends State<OrdersTabContent> {
               padding: AppSpacing.verticalSM,
               physics:
                   const AlwaysScrollableScrollPhysics(), // Smooth scrolling behavior
-              cacheExtent: 400, // Cache more items offscreen for smoother scrolling
+              cacheExtent:
+                  400, // Cache more items offscreen for smoother scrolling
               addAutomaticKeepAlives:
                   true, // Keep list items alive for better performance
               addRepaintBoundaries: true, // Isolate repaints for performance

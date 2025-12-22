@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:io' show File;
+import '../../../../core/widgets/optimized_image.dart';
+import 'package:artisans_circle/shared/widgets/image_preview_page.dart';
 import '../../../../core/theme.dart';
 import '../../../../core/components/components.dart';
 
@@ -17,6 +20,7 @@ class UploadCatalogueStep1 extends StatelessWidget {
   final VoidCallback onNext;
   final VoidCallback onPickSubcategory;
   final VoidCallback onPickMedia;
+  final VoidCallback onCaptureMedia;
   final ValueChanged<String> onRemoveMedia;
 
   const UploadCatalogueStep1({
@@ -27,6 +31,7 @@ class UploadCatalogueStep1 extends StatelessWidget {
     required this.onNext,
     required this.onPickSubcategory,
     required this.onPickMedia,
+    required this.onCaptureMedia,
     required this.onRemoveMedia,
     super.key,
   });
@@ -123,51 +128,123 @@ class UploadCatalogueStep1 extends StatelessWidget {
         const Text('Attached File (Optional)',
             style: TextStyle(fontWeight: FontWeight.w600)),
         AppSpacing.spaceSM,
-        GestureDetector(
-          onTap: onPickMedia,
-          child: Container(
-            height: 160,
-            decoration: BoxDecoration(
-              borderRadius: AppRadius.radiusLG,
-              border: Border.all(
-                  color: context.softBorderColor,
-                  style: BorderStyle.solid,
-                  width: 1.5),
-              color: context.colorScheme.surface,
-            ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.perm_media_outlined,
-                      color: context.primaryColor, size: 36),
-                  AppSpacing.spaceSM,
-                  const Text(
-                      'Copy and paste images, videos or any file from your device.'),
-                  AppSpacing.spaceSM,
-                  OutlinedAppButton(
-                    text: 'Upload Media',
-                    onPressed: onPickMedia,
-                  ),
-                ],
+        Container(
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: AppRadius.radiusLG,
+            border: Border.all(
+                color: context.softBorderColor,
+                style: BorderStyle.solid,
+                width: 1.5),
+            color: context.colorScheme.surface,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: media.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.perm_media_outlined,
+                                color: context.primaryColor, size: 36),
+                            AppSpacing.spaceSM,
+                            const Text('Add images from your device or camera'),
+                          ],
+                        ),
+                      )
+                    : GridView.builder(
+                        padding: const EdgeInsets.all(8),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: media.length,
+                        itemBuilder: (context, index) {
+                          final m = media[index];
+                          final isNetwork = m.startsWith('http');
+                          return GestureDetector(
+                            onTap: () {
+                              if (isNetwork) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ImagePreviewPage(
+                                      imageUrl: m,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => ImagePreviewPage(
+                                      imageUrl: m,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: AppRadius.radiusMD,
+                                  child: isNetwork
+                                      ? OptimizedThumbnail(
+                                          imageUrl: m,
+                                          width: 80,
+                                          height: 80,
+                                        )
+                                      : Image.file(
+                                          File(m),
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                                Positioned(
+                                  right: -8,
+                                  top: -8,
+                                  child: GestureDetector(
+                                    onTap: () => onRemoveMedia(m),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      padding: const EdgeInsets.all(4),
+                                      child: const Icon(Icons.close,
+                                          size: 14, color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
               ),
-            ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedAppButton(
+                      text: 'Upload Media',
+                      onPressed: onPickMedia,
+                    ),
+                    OutlinedAppButton(
+                      text: 'Capture Photo',
+                      onPressed: onCaptureMedia,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        if (media.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 12),
-            child: Wrap(
-              spacing: 8,
-              children: media.map((m) {
-                String displayText =
-                    m.startsWith('http') ? 'Existing Image' : m.split('/').last;
-                return Chip(
-                    label: Text(displayText),
-                    onDeleted: () => onRemoveMedia(m));
-              }).toList(),
-            ),
-          ),
         AppSpacing.spaceXL,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),

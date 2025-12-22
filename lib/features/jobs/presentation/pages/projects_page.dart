@@ -96,23 +96,23 @@ class _CatalogPageState extends State<CatalogPage>
         ),
         child: Row(
           children: [
-            Icon(Icons.search, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+            Icon(Icons.search,
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
             AppSpacing.spaceSM,
             Expanded(
               child: Text('Search products, services and artisans',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6))),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color:
+                          colorScheme.onSurfaceVariant.withValues(alpha: 0.6))),
             ),
             AppSpacing.spaceSM,
             Container(
               margin: const EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
-                  color: context.softPinkColor, borderRadius: AppRadius.radiusMD),
+                  color: context.softPinkColor,
+                  borderRadius: AppRadius.radiusMD),
               child: IconButton(
-                icon:
-                    Icon(Icons.filter_list, color: context.brownHeaderColor),
+                icon: Icon(Icons.filter_list, color: context.brownHeaderColor),
                 onPressed: () {},
               ),
             ),
@@ -130,7 +130,8 @@ class _CatalogPageState extends State<CatalogPage>
       child: Container(
         height: 160,
         decoration: BoxDecoration(
-            color: context.primaryColor, borderRadius: BorderRadius.circular(14)),
+            color: context.primaryColor,
+            borderRadius: BorderRadius.circular(14)),
         padding: AppSpacing.paddingLG,
         child: Row(
           children: [
@@ -403,14 +404,19 @@ class _CatalogPageState extends State<CatalogPage>
                         ),
 
                         // Sub-category badge
-                        if (item.subCategoryName != null && item.subCategoryName!.isNotEmpty) ...[
+                        if (item.subCategoryName != null &&
+                            item.subCategoryName!.isNotEmpty) ...[
                           AppSpacing.spaceXS,
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: context.primaryColor.withValues(alpha: 0.1),
+                              color:
+                                  context.primaryColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: context.primaryColor.withValues(alpha: 0.3)),
+                              border: Border.all(
+                                  color: context.primaryColor
+                                      .withValues(alpha: 0.3)),
                             ),
                             child: Text(
                               item.subCategoryName!,
@@ -454,26 +460,36 @@ class _CatalogPageState extends State<CatalogPage>
                           runSpacing: 6,
                           children: [
                             if (item.hotSale == true)
-                              _buildFeatureBadge(context, '🔥 Hot Sale', Colors.red),
-                            if (item.condition != null && item.condition!.isNotEmpty)
+                              _buildFeatureBadge(
+                                  context, '🔥 Hot Sale', Colors.red),
+                            if (item.condition != null &&
+                                item.condition!.isNotEmpty)
                               _buildFeatureBadge(
                                 context,
                                 item.condition!.toUpperCase(),
-                                item.condition?.toLowerCase() == 'new' ? Colors.green : Colors.orange,
+                                item.condition?.toLowerCase() == 'new'
+                                    ? Colors.green
+                                    : Colors.orange,
                               ),
                             if (item.warranty == true)
-                              _buildFeatureBadge(context, '✓ Warranty', Colors.blue),
+                              _buildFeatureBadge(
+                                  context, '✓ Warranty', Colors.blue),
                             if (item.delivery == true)
-                              _buildFeatureBadge(context, '🚚 Delivery', Colors.teal),
-                            if (item.discountPercent != null && item.discountPercent! > 0)
-                              _buildFeatureBadge(context, '${item.discountPercent}% OFF', Colors.red),
+                              _buildFeatureBadge(
+                                  context, '🚚 Delivery', Colors.teal),
+                            if (item.discountPercent != null &&
+                                item.discountPercent! > 0)
+                              _buildFeatureBadge(context,
+                                  '${item.discountPercent}% OFF', Colors.red),
                           ],
                         ),
                         if ((item.hotSale == true) ||
-                            (item.condition != null && item.condition!.isNotEmpty) ||
+                            (item.condition != null &&
+                                item.condition!.isNotEmpty) ||
                             (item.warranty == true) ||
                             (item.delivery == true) ||
-                            (item.discountPercent != null && item.discountPercent! > 0))
+                            (item.discountPercent != null &&
+                                item.discountPercent! > 0))
                           AppSpacing.spaceMD,
 
                         // Price and timeline row
@@ -491,8 +507,8 @@ class _CatalogPageState extends State<CatalogPage>
                                 ),
                                 child: Text(
                                   item.priceMin != null && item.priceMax != null
-                                      ? '₦${_formatPrice(item.priceMin!)} - ₦${_formatPrice(item.priceMax!)}'
-                                      : '₦${_formatPrice(item.priceMin ?? item.priceMax ?? 0)}',
+                                      ? 'NGN ${_formatPrice(item.priceMin!)} - NGN ${_formatPrice(item.priceMax!)}'
+                                      : 'NGN ${_formatPrice(item.priceMin ?? item.priceMax ?? 0)}',
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 13,
@@ -501,7 +517,8 @@ class _CatalogPageState extends State<CatalogPage>
                               ),
 
                             // Status indicator
-                            ProjectStatusBadge(status: item.projectStatus ?? item.status),
+                            ProjectStatusBadge(
+                                status: item.projectStatus ?? item.status),
                           ],
                         ),
 
@@ -619,8 +636,8 @@ class _CatalogPageState extends State<CatalogPage>
   /// Formats price with thousand separators (e.g., 700000 -> 700,000)
   String _formatPrice(int price) {
     return price.toString().replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-      (match) => '${match[1]},',
-    );
+          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (match) => '${match[1]},',
+        );
   }
 }

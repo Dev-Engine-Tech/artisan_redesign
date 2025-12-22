@@ -149,8 +149,10 @@ class UploadCatalogueStep2 extends StatelessWidget {
                 onSelected: (v) => onSkillToggled(s),
                 selectedColor: context.brownHeaderColor,
                 backgroundColor: context.colorScheme.surface,
-                labelStyle:
-                    TextStyle(color: selected ? context.colorScheme.onPrimary : context.colorScheme.onSurface),
+                labelStyle: TextStyle(
+                    color: selected
+                        ? context.colorScheme.onPrimary
+                        : context.colorScheme.onSurface),
               );
             }).toList(),
           ),

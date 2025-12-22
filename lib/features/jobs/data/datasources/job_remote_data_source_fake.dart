@@ -289,7 +289,8 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   }
 
   @override
-  Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20}) async {
+  Future<List<JobModel>> fetchJobInvitations(
+      {int page = 1, int limit = 20}) async {
     // Simulate small latency
     await Future.delayed(const Duration(milliseconds: 250));
     final start = (page - 1) * limit;
@@ -301,7 +302,8 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   }
 
   @override
-  Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
+  Future<bool> respondToJobInvitation(String invitationId,
+      {required bool accept}) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 250));
 
@@ -339,7 +341,8 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       id: 1,
       jobId: 101,
       jobTitle: 'Modern Kitchen Renovation',
-      jobDescription: 'Complete kitchen remodeling with new cabinets, countertops, and appliances.',
+      jobDescription:
+          'Complete kitchen remodeling with new cabinets, countertops, and appliances.',
       jobCategory: 'Carpentry',
       minBudget: 500000,
       maxBudget: 800000,
@@ -350,13 +353,15 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       clientId: 201,
       invitationStatus: 'Pending',
       createdAt: DateTime.now().subtract(const Duration(days: 2)),
-      message: 'We saw your work on Instagram and would love to work with you on this project.',
+      message:
+          'We saw your work on Instagram and would love to work with you on this project.',
     ),
     ArtisanInvitationModel(
       id: 2,
       jobId: 102,
       jobTitle: 'Bathroom Plumbing Installation',
-      jobDescription: 'Install new bathroom fixtures including bathtub, shower, and vanity.',
+      jobDescription:
+          'Install new bathroom fixtures including bathtub, shower, and vanity.',
       jobCategory: 'Plumbing',
       minBudget: 200000,
       maxBudget: 350000,
@@ -367,13 +372,15 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       clientId: 202,
       invitationStatus: 'Pending',
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
-      message: 'You were highly recommended by a friend. Looking forward to working with you.',
+      message:
+          'You were highly recommended by a friend. Looking forward to working with you.',
     ),
     ArtisanInvitationModel(
       id: 3,
       jobId: 103,
       jobTitle: 'Electrical Wiring for New Building',
-      jobDescription: 'Complete electrical installation for a 4-bedroom duplex.',
+      jobDescription:
+          'Complete electrical installation for a 4-bedroom duplex.',
       jobCategory: 'Electrical',
       minBudget: 600000,
       maxBudget: 900000,
@@ -384,12 +391,14 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
       clientId: 203,
       invitationStatus: 'Pending',
       createdAt: DateTime.now().subtract(const Duration(hours: 5)),
-      message: 'Urgent project. Please review and let us know if you can start soon.',
+      message:
+          'Urgent project. Please review and let us know if you can start soon.',
     ),
   ];
 
   @override
-  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20}) async {
+  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations(
+      {int page = 1, int limit = 20}) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 250));
 
@@ -428,7 +437,8 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   }
 
   @override
-  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(int invitationId) async {
+  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(
+      int invitationId) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 200));
 
@@ -441,7 +451,8 @@ class JobRemoteDataSourceFake implements JobRemoteDataSource {
   }
 
   @override
-  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
+  Future<bool> respondToArtisanInvitation(int invitationId,
+      {required String status, String? rejectionReason}) async {
     // Simulate network latency
     await Future.delayed(const Duration(milliseconds: 250));
 

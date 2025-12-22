@@ -250,7 +250,8 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
                   'Last error: $lastError',
-                  style: TextStyle(color: context.colorScheme.error, fontSize: 12),
+                  style:
+                      TextStyle(color: context.colorScheme.error, fontSize: 12),
                 ),
               ),
           ],
@@ -307,7 +308,11 @@ class _SupportAccountPageState extends State<SupportAccountPage> {
             SizedBox(
                 width: 120,
                 child: Text(k,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600) ?? TextStyle(fontWeight: FontWeight.w600))),
+                    style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w600) ??
+                        TextStyle(fontWeight: FontWeight.w600))),
             AppSpacing.spaceSM,
             Expanded(child: Text(v)),
           ],
@@ -515,8 +520,8 @@ class _HeaderCard extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 10,
                       backgroundColor: context.primaryColor,
-                      child:
-                          Icon(Icons.camera_alt, size: 12, color: context.colorScheme.surface),
+                      child: Icon(Icons.camera_alt,
+                          size: 12, color: context.colorScheme.surface),
                     ),
                   ),
                 )
@@ -583,10 +588,12 @@ class _MenuTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(10)),
           padding: AppSpacing.paddingSM,
           child: Icon(icon,
-              color: isDestructive ? context.dangerColor : context.primaryColor),
+              color:
+                  isDestructive ? context.dangerColor : context.primaryColor),
         ),
         title: Text(title,
-            style: TextStyle(color: isDestructive ? context.dangerColor : null)),
+            style:
+                TextStyle(color: isDestructive ? context.dangerColor : null)),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),
@@ -621,8 +628,11 @@ class _DarkModeToggle extends StatelessWidget {
             subtitle: Text(
               isDark ? 'Switch to light mode' : 'Switch to dark mode',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.6),
+                  ),
             ),
             trailing: Switch(
               value: isDark,

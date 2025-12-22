@@ -240,7 +240,7 @@ class CollaborationDetailsPage extends StatelessWidget {
             _buildInfoRow(
               context,
               'Job Budget',
-              '₦${_formatPrice(job.budget!)}',
+              'NGN ${_formatPrice(job.budget!)}',
               Icons.attach_money,
             ),
           ],
@@ -319,7 +319,8 @@ class CollaborationDetailsPage extends StatelessWidget {
                   return fixed.startsWith('http') ? NetworkImage(fixed) : null;
                 })(),
                 child: (artisan.profilePic == null ||
-                        !sanitizeImageUrl(artisan.profilePic).startsWith('http'))
+                        !sanitizeImageUrl(artisan.profilePic)
+                            .startsWith('http'))
                     ? Text(
                         artisan.name[0].toUpperCase(),
                         style: const TextStyle(
@@ -459,7 +460,7 @@ class CollaborationDetailsPage extends StatelessWidget {
             _buildInfoRow(
               context,
               'Expected Earnings',
-              '₦${_formatPrice(collaboration.expectedEarnings!)}',
+              'NGN ${_formatPrice(collaboration.expectedEarnings!)}',
               Icons.account_balance_outlined,
               valueColor: Colors.green.shade700,
             ),

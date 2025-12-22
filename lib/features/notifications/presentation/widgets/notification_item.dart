@@ -21,10 +21,14 @@ class NotificationItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: notification.read ? colorScheme.surface : colorScheme.primary.withValues(alpha: 0.05),
+        color: notification.read
+            ? colorScheme.surface
+            : colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: AppRadius.radiusLG,
         border: Border.all(
-          color: notification.read ? colorScheme.outline.withValues(alpha: 0.2) : colorScheme.primary.withValues(alpha: 0.2),
+          color: notification.read
+              ? colorScheme.outline.withValues(alpha: 0.2)
+              : colorScheme.primary.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [

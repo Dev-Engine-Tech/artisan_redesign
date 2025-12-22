@@ -17,17 +17,25 @@ extension AppThemeExtension on BuildContext {
   bool get isDarkMode => theme.brightness == Brightness.dark;
 
   Color get primaryColor => AppColors.orange;
-  Color get lightPeachColor => isDarkMode ? colorScheme.surfaceContainerHighest : AppColors.lightPeach;
-  Color get softPinkColor => isDarkMode ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.7) : AppColors.softPink;
+  Color get lightPeachColor =>
+      isDarkMode ? colorScheme.surfaceContainerHighest : AppColors.lightPeach;
+  Color get softPinkColor => isDarkMode
+      ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.7)
+      : AppColors.softPink;
   Color get cardBackgroundColor => colorScheme.surface;
-  Color get brownHeaderColor => isDarkMode ? const Color(0xFFD4A574) : AppColors.brownHeader;
-  Color get darkBlueColor => isDarkMode ? const Color(0xFF8FA3B8) : AppColors.darkBlue;
+  Color get brownHeaderColor =>
+      isDarkMode ? const Color(0xFFD4A574) : AppColors.brownHeader;
+  Color get darkBlueColor =>
+      isDarkMode ? const Color(0xFF8FA3B8) : AppColors.darkBlue;
   Color get dangerColor => AppColors.danger;
   Color get subtleBorderColor => colorScheme.outlineVariant;
-  Color get softPeachColor => isDarkMode ? const Color(0xFF2D2522) : AppColors.softPeach;
+  Color get softPeachColor =>
+      isDarkMode ? const Color(0xFF2D2522) : AppColors.softPeach;
   Color get softBorderColor => colorScheme.outlineVariant;
   Color get disabledOrangeColor => AppColors.disabledOrange;
-  Color get badgeBackgroundColor => isDarkMode ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.5) : AppColors.badgeBackground;
+  Color get badgeBackgroundColor => isDarkMode
+      ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+      : AppColors.badgeBackground;
 
   // Spacing constants
   EdgeInsets get padding4 => AppSpacing.paddingXS;

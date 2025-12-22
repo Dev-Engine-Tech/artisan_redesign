@@ -35,7 +35,8 @@ class JobActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     // Check if this is an invitation (has invitationId) and still pending
     final bool isInvitation = job.invitationId != null;
-    final bool isPendingInvitation = isInvitation && job.status == JobStatus.pending;
+    final bool isPendingInvitation =
+        isInvitation && job.status == JobStatus.pending;
 
     // Not applied yet → Apply (or Accept Invite for invitations)
     if (!job.applied) {

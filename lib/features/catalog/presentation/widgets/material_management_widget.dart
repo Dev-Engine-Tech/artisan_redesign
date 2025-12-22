@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
@@ -284,7 +285,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                   controller: material.priceController,
                   enabled: widget.isEditable,
                   decoration: const InputDecoration(
-                    labelText: 'Price (₦)',
+                    labelText: 'Price (NGN)',
                     border: OutlineInputBorder(),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -308,7 +309,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                   borderRadius: AppRadius.radiusSM,
                 ),
                 child: Text(
-                  'Total: ₦${material.totalPrice.toStringAsFixed(0)}',
+                  'Total: ${Currency.formatNgn(material.totalPrice)}',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -345,7 +346,7 @@ class _MaterialManagementWidgetState extends State<MaterialManagementWidget> {
                 ),
           ),
           Text(
-            '₦${totalPrice.toStringAsFixed(0)}',
+            Currency.formatNgn(totalPrice),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: Colors.green.shade700,

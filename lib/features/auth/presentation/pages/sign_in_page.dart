@@ -170,7 +170,8 @@ class _SignInPageState extends State<SignInPage> {
                                         child: Text(
                                           'Login',
                                           textAlign: TextAlign.center,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
                                             fontWeight: FontWeight.w600,
                                             color: _selectedTab == 0
                                                 ? context.brownHeaderColor
@@ -201,7 +202,8 @@ class _SignInPageState extends State<SignInPage> {
                                         child: Text(
                                           'Register',
                                           textAlign: TextAlign.center,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
                                             fontWeight: FontWeight.w600,
                                             color: _selectedTab == 1
                                                 ? context.brownHeaderColor
@@ -278,7 +280,8 @@ class _SignInPageState extends State<SignInPage> {
                                       ),
                                       Text(
                                         'Remember me',
-                                        style: theme.textTheme.bodySmall?.copyWith(
+                                        style:
+                                            theme.textTheme.bodySmall?.copyWith(
                                           color: colorScheme.onSurfaceVariant,
                                         ),
                                       ),
@@ -304,21 +307,24 @@ class _SignInPageState extends State<SignInPage> {
                                   Row(
                                     children: [
                                       Expanded(
-                                          child:
-                                              Divider(color: colorScheme.outlineVariant)),
+                                          child: Divider(
+                                              color:
+                                                  colorScheme.outlineVariant)),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16),
                                         child: Text(
                                           'Or login with',
-                                          style: theme.textTheme.bodySmall?.copyWith(
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
                                             color: colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                       ),
                                       Expanded(
-                                          child:
-                                              Divider(color: colorScheme.outlineVariant)),
+                                          child: Divider(
+                                              color:
+                                                  colorScheme.outlineVariant)),
                                     ],
                                   ),
 

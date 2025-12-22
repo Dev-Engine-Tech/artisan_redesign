@@ -62,7 +62,8 @@ class AppCard extends StatelessWidget {
     final theme = Theme.of(context);
     final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(12);
     final effectivePadding = padding ?? const EdgeInsets.all(16);
-    final effectiveBackgroundColor = backgroundColor ?? theme.colorScheme.surface;
+    final effectiveBackgroundColor =
+        backgroundColor ?? theme.colorScheme.surface;
 
     Widget cardContent = Container(
       decoration: BoxDecoration(
@@ -83,10 +84,8 @@ class AppCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (title != null || trailing != null)
-              _buildHeader(context),
-            if (title != null || trailing != null)
-              const SizedBox(height: 12),
+            if (title != null || trailing != null) _buildHeader(context),
+            if (title != null || trailing != null) const SizedBox(height: 12),
             child,
           ],
         ),
@@ -116,8 +115,8 @@ class AppCard extends StatelessWidget {
             child: Text(
               title!,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
           ),
         if (trailing != null) trailing!,

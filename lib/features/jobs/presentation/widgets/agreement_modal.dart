@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/components/components.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import '../../domain/entities/agreement.dart';
 import '../../domain/entities/job.dart';
 import '../bloc/job_bloc.dart';
@@ -155,7 +156,7 @@ class AgreementModal extends StatelessWidget {
           _buildDetailRow('Status', agreement.status),
           AppSpacing.spaceSM,
           _buildDetailRow(
-              'Total Amount', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
+              'Total Amount', Currency.formatNgn(agreement.agreedPayment)),
           if (agreement.comment.isNotEmpty) ...[
             AppSpacing.spaceMD,
             Text(
@@ -203,7 +204,7 @@ class AgreementModal extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               Text(
-                '₦${agreement.agreedPayment.toStringAsFixed(0)}',
+                Currency.formatNgn(agreement.agreedPayment),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -221,7 +222,7 @@ class AgreementModal extends StatelessWidget {
                     ),
               ),
               Text(
-                '₦${(agreement.agreedPayment * 0.05).toStringAsFixed(0)}',
+                Currency.formatNgn(agreement.agreedPayment * 0.05),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Colors.grey.shade600,
                     ),
@@ -239,7 +240,7 @@ class AgreementModal extends StatelessWidget {
                     ),
               ),
               Text(
-                '₦${(agreement.agreedPayment * 0.95).toStringAsFixed(0)}',
+                Currency.formatNgn(agreement.agreedPayment * 0.95),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: Colors.green,

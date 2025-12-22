@@ -159,7 +159,8 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
       },
       child: BlocBuilder<JobBloc, JobState>(
         builder: (context, state) {
-          if (state is JobStateLoading || state is JobStateRespondingToArtisanInvitation) {
+          if (state is JobStateLoading ||
+              state is JobStateRespondingToArtisanInvitation) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -177,14 +178,19 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                   Text(
                     'Failed to load job invitations',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.7),
+                        ),
                   ),
                   AppSpacing.spaceSM,
                   PrimaryButton(
                     text: 'Retry',
                     onPressed: () {
-                      context.read<JobBloc>().add(LoadRecentArtisanInvitations());
+                      context
+                          .read<JobBloc>()
+                          .add(LoadRecentArtisanInvitations());
                     },
                   ),
                 ],
@@ -199,8 +205,7 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
               return const EmptyStateWidget(
                 icon: Icons.mail_outline,
                 title: 'No Job Invitations',
-                subtitle:
-                    'Job invitations from clients will appear here',
+                subtitle: 'Job invitations from clients will appear here',
               );
             }
 
@@ -214,7 +219,8 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                 padding: AppSpacing.verticalSM,
                 physics:
                     const AlwaysScrollableScrollPhysics(), // Smooth scrolling behavior
-                cacheExtent: 400, // Cache more items offscreen for smoother scrolling
+                cacheExtent:
+                    400, // Cache more items offscreen for smoother scrolling
                 addAutomaticKeepAlives:
                     true, // Keep list items alive for better performance
                 addRepaintBoundaries: true, // Isolate repaints for performance
@@ -242,7 +248,8 @@ class _JobInviteTabContentState extends State<JobInviteTabContent> {
                     title: invitation.jobTitle,
                     category: invitation.jobCategory ?? 'Job Invitation',
                     description: invitation.jobDescription ?? '',
-                    address: invitation.address ?? invitation.clientName ?? 'Client',
+                    address:
+                        invitation.address ?? invitation.clientName ?? 'Client',
                     minBudget: invitation.minBudget ?? 0,
                     maxBudget: invitation.maxBudget ?? 0,
                     duration: invitation.duration ?? 'Not specified',

@@ -38,10 +38,12 @@ abstract class JobRemoteDataSource {
   Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20});
 
   /// Respond to a job invitation (LEGACY - use respondToArtisanInvitation instead)
-  Future<bool> respondToJobInvitation(String invitationId, {required bool accept});
+  Future<bool> respondToJobInvitation(String invitationId,
+      {required bool accept});
 
   /// Fetches artisan invitations using v1 endpoint (/invitation/api/artisan-invitations/)
-  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20});
+  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations(
+      {int page = 1, int limit = 20});
 
   /// Fetches recent artisan invitations (top 5) using v1 endpoint (/invitation/api/recent-artisan-invitations/)
   Future<List<ArtisanInvitationModel>> fetchRecentArtisanInvitations();
@@ -50,7 +52,8 @@ abstract class JobRemoteDataSource {
   Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(int invitationId);
 
   /// Respond to artisan invitation using v1 PATCH endpoint with status and optional rejection_reason
-  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason});
+  Future<bool> respondToArtisanInvitation(int invitationId,
+      {required String status, String? rejectionReason});
 }
 
 class JobRemoteDataSourceImpl extends BaseRemoteDataSource
@@ -410,7 +413,8 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
   }
 
   @override
-  Future<List<JobModel>> fetchJobInvitations({int page = 1, int limit = 20}) async {
+  Future<List<JobModel>> fetchJobInvitations(
+      {int page = 1, int limit = 20}) async {
     try {
       final response = await dio.get(
         ApiEndpoints.jobInvitations,
@@ -476,7 +480,8 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
   }
 
   @override
-  Future<bool> respondToJobInvitation(String invitationId, {required bool accept}) async {
+  Future<bool> respondToJobInvitation(String invitationId,
+      {required bool accept}) async {
     try {
       final response = await dio.post(
         ApiEndpoints.respondToInvitation,
@@ -499,7 +504,8 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
   }
 
   @override
-  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations({int page = 1, int limit = 20}) async {
+  Future<List<ArtisanInvitationModel>> fetchArtisanInvitations(
+      {int page = 1, int limit = 20}) async {
     try {
       final response = await dio.get(
         ApiEndpoints.artisanInvitations,
@@ -564,7 +570,8 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
   @override
   Future<List<ArtisanInvitationModel>> fetchRecentArtisanInvitations() async {
     try {
-      print('🔍 Fetching recent artisan invitations from: ${ApiEndpoints.recentArtisanInvitations}');
+      print(
+          '🔍 Fetching recent artisan invitations from: ${ApiEndpoints.recentArtisanInvitations}');
       final response = await dio.get(ApiEndpoints.recentArtisanInvitations);
 
       print('📡 Response status: ${response.statusCode}');
@@ -631,15 +638,18 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
   }
 
   @override
-  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(int invitationId) async {
+  Future<ArtisanInvitationModel> fetchArtisanInvitationDetail(
+      int invitationId) async {
     try {
-      final response = await dio.get(ApiEndpoints.artisanInvitationDetail(invitationId));
+      final response =
+          await dio.get(ApiEndpoints.artisanInvitationDetail(invitationId));
 
       if (response.statusCode != null &&
           response.statusCode! >= 200 &&
           response.statusCode! < 300) {
         final body = response.data;
-        return ArtisanInvitationModel.fromJson(Map<String, dynamic>.from(body as Map));
+        return ArtisanInvitationModel.fromJson(
+            Map<String, dynamic>.from(body as Map));
       } else {
         throw DioException(
           requestOptions: response.requestOptions,
@@ -657,7 +667,8 @@ class JobRemoteDataSourceImpl extends BaseRemoteDataSource
   }
 
   @override
-  Future<bool> respondToArtisanInvitation(int invitationId, {required String status, String? rejectionReason}) async {
+  Future<bool> respondToArtisanInvitation(int invitationId,
+      {required String status, String? rejectionReason}) async {
     try {
       final data = <String, dynamic>{
         'invitation_status': status, // "Accepted" or "Rejected"

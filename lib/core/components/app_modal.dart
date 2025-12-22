@@ -66,7 +66,8 @@ class AppBottomSheetContent extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
       child: SafeArea(
         child: Column(
@@ -163,7 +164,8 @@ class AppModal extends StatelessWidget {
         elevation: 0,
         leading: showCloseButton
             ? IconButton(
-                icon: Icon(Icons.close, color: colorScheme.onSurface.withValues(alpha: 0.87)),
+                icon: Icon(Icons.close,
+                    color: colorScheme.onSurface.withValues(alpha: 0.87)),
                 onPressed: onClose ?? () => Navigator.pop(context),
               )
             : null,
@@ -323,7 +325,9 @@ class QuickActionSheet {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: action.isDestructive ? colorScheme.error : colorScheme.onSurface.withValues(alpha: 0.87),
+          color: action.isDestructive
+              ? colorScheme.error
+              : colorScheme.onSurface.withValues(alpha: 0.87),
         ),
       ),
       onTap: () {

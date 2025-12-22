@@ -3,6 +3,7 @@ import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
 import 'client_profile_page.dart';
 import '../widgets/order_badge.dart';
@@ -50,11 +51,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Widget _agreementsCard() {
     // These values are placeholders to match the design. In a real app
     // they'd be computed from the job/order data or API.
-    const agreedPayment = 'NGN 20,000.00';
-    const deliveryFee = 'NGN 10,000.00';
-    const serviceCharge = 'NGN 4,000.00';
-    const wht = 'NGN 4,000.00';
-    const amountYouGet = 'NGN 2,000.00';
+    final agreedPayment = Currency.formatNgn(20000, decimalDigits: 2);
+    final deliveryFee = Currency.formatNgn(10000, decimalDigits: 2);
+    final serviceCharge = Currency.formatNgn(4000, decimalDigits: 2);
+    final wht = Currency.formatNgn(4000, decimalDigits: 2);
+    final amountYouGet = Currency.formatNgn(2000, decimalDigits: 2);
 
     return Container(
       margin: AppSpacing.verticalMD,
@@ -73,15 +74,18 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   .titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700)),
           AppSpacing.spaceMD,
-          const OrderAgreementRow(label: 'Agreed Payment:', value: agreedPayment),
+          OrderAgreementRow(
+              label: 'Agreed Payment:', value: agreedPayment),
           AppSpacing.spaceSM,
-          const OrderAgreementRow(label: 'Delivery Fee:', value: deliveryFee),
+          OrderAgreementRow(label: 'Delivery Fee:', value: deliveryFee),
           AppSpacing.spaceSM,
-          const OrderAgreementRow(label: 'Service Charge:', value: serviceCharge),
+          OrderAgreementRow(
+              label: 'Service Charge:', value: serviceCharge),
           AppSpacing.spaceSM,
-          const OrderAgreementRow(label: 'WHT (2%):', value: wht),
+          OrderAgreementRow(label: 'WHT (2%):', value: wht),
           AppSpacing.spaceSM,
-          const OrderAgreementRow(label: 'Amount you will get:', value: amountYouGet),
+          OrderAgreementRow(
+              label: 'Amount you will get:', value: amountYouGet),
           AppSpacing.spaceMD,
           Container(
             width: double.infinity,
@@ -194,7 +198,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             if (cid.isNotEmpty) {
                               // Debug logging for troubleshooting
                               // ignore: avoid_print
-                              print('[OrderDetails] View Profile tapped: jobId=${job.id}, clientId="$cid", clientName="${job.clientName}"');
+                              print(
+                                  '[OrderDetails] View Profile tapped: jobId=${job.id}, clientId="$cid", clientName="${job.clientName}"');
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => ClientProfilePage(
@@ -284,7 +289,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   .bodySmall
                                   ?.copyWith(color: Colors.black45)),
                           const SizedBox(height: 6),
-                          Text('₦${job.minBudget}k - ₦${job.maxBudget}k',
+                          Text(
+                              '${Currency.formatNgnCompact(job.minBudget)} - ${Currency.formatNgnCompact(job.maxBudget)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium

@@ -6,6 +6,7 @@ import 'package:artisans_circle/core/components/components.dart';
 import '../../domain/usecases/delete_catalog.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/upload_catalogue_page.dart';
 import '../../domain/entities/catalog_item.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import '../../../../core/utils/responsive.dart';
 
 class CatalogItemDetailsPage extends StatelessWidget {
@@ -86,18 +87,20 @@ class CatalogItemDetailsPage extends StatelessWidget {
                     const SizedBox(height: 6),
                     if (item.ownerName != null && item.ownerName!.isNotEmpty)
                       Text(item.ownerName!,
-                          style: theme.textTheme.bodyMedium
-                              ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.45))),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurface
+                                  .withValues(alpha: 0.45))),
                     AppSpacing.spaceMD,
                     Text(item.description,
-                        style: theme.textTheme.bodyMedium
-                            ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color:
+                                colorScheme.onSurface.withValues(alpha: 0.54))),
                     AppSpacing.spaceMD,
                     Wrap(spacing: 8, runSpacing: 8, children: [
                       if (item.priceMin != null)
                         _Badge(
                             label:
-                                'Price: ₦${item.priceMin}${item.priceMax != null ? ' - ₦${item.priceMax}' : ''}'),
+                                'Price: ${Currency.formatNgnRange(item.priceMin, item.priceMax)}'),
                       if (item.projectTimeline != null &&
                           item.projectTimeline!.isNotEmpty)
                         _Badge(label: 'Timeline: ${item.projectTimeline!}'),
@@ -123,14 +126,15 @@ class CatalogItemDetailsPage extends StatelessWidget {
             PrimaryButton(
               text: 'Edit',
               onPressed: () async {
-                // Open edit flow
+                // Open edit flow with current item passed in
                 final changed = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(
-                      builder: (_) => const UploadCataloguePage()),
+                      builder: (_) => UploadCataloguePage(item: item)),
                 );
                 if (changed == true && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Catalogue updated')));
+                  Navigator.of(context).pop(true);
                 }
               },
             ),

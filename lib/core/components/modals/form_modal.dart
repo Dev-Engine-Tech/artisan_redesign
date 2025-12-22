@@ -70,7 +70,8 @@ class _FormModalState extends State<FormModal> {
   void initState() {
     super.initState();
     for (final field in widget.fields) {
-      _controllers[field.label] = TextEditingController(text: field.initialValue);
+      _controllers[field.label] =
+          TextEditingController(text: field.initialValue);
     }
   }
 

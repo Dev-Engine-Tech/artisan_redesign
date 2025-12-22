@@ -54,7 +54,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: colorScheme.onSurfaceVariant),
+                      icon: Icon(Icons.arrow_back,
+                          color: colorScheme.onSurfaceVariant),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
@@ -180,8 +181,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                 child: Text(
                   request.title,
                   style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               _buildStatusBadge(request),
@@ -191,7 +192,8 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
             AppSpacing.spaceSM,
             Row(
               children: [
-                Icon(Icons.schedule, size: 16, color: colorScheme.onSurfaceVariant),
+                Icon(Icons.schedule,
+                    size: 16, color: colorScheme.onSurfaceVariant),
                 AppSpacing.spaceXS,
                 Text(
                   'Created: ${_formatDate(request.createdAt!)}',
@@ -256,13 +258,18 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       Row(
                         children: [
                           Icon(Icons.email,
-                              size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                              size: 14,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
                           AppSpacing.spaceXS,
                           Text(
                             client.email!,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -273,13 +280,18 @@ class _CatalogRequestViewPageState extends State<CatalogRequestViewPage> {
                       Row(
                         children: [
                           Icon(Icons.phone,
-                              size: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                              size: 14,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant),
                           AppSpacing.spaceXS,
                           Text(
                             client.phone!,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ],

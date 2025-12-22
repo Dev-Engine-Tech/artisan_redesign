@@ -31,8 +31,7 @@ class MockGetJobInvitations extends Mock implements GetJobInvitations {}
 class MockRespondToJobInvitation extends Mock
     implements RespondToJobInvitation {}
 
-class MockGetArtisanInvitations extends Mock
-    implements GetArtisanInvitations {}
+class MockGetArtisanInvitations extends Mock implements GetArtisanInvitations {}
 
 class MockGetRecentArtisanInvitations extends Mock
     implements GetRecentArtisanInvitations {}
@@ -165,8 +164,8 @@ void main() {
         when(() => mockApplyToJob(any(that: isA<JobApplication>())))
             .thenAnswer((_) async => true);
         when(() => mockGetApplications(
-            page: any(named: 'page'), limit: any(named: 'limit')))
-            .thenAnswer((_) async => [sampleJob]);
+            page: any(named: 'page'),
+            limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);
         when(() => mockGetJobs(
             page: any(named: 'page'),
             limit: any(named: 'limit'))).thenAnswer((_) async => [sampleJob]);

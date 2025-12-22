@@ -311,15 +311,18 @@ class _ProgressSubmissionModalState extends State<ProgressSubmissionModal> {
                                       ClipRRect(
                                         borderRadius: AppRadius.radiusMD,
                                         child: (() {
-                                          final fixed = sanitizeImageUrl(_imageUrls[index]);
+                                          final fixed = sanitizeImageUrl(
+                                              _imageUrls[index]);
                                           return Image.network(
                                             fixed,
                                             width: 120,
                                             height: 120,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) => Container(
+                                            errorBuilder: (_, __, ___) =>
+                                                Container(
                                               color: AppColors.softBorder,
-                                              child: const Icon(Icons.broken_image),
+                                              child: const Icon(
+                                                  Icons.broken_image),
                                             ),
                                           );
                                         })(),

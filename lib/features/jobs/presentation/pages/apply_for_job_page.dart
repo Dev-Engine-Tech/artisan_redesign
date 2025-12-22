@@ -477,7 +477,7 @@ class _ApplyForJobPageState extends State<ApplyForJobPage> {
                               decoration: BoxDecoration(
                                   color: AppColors.orange,
                                   borderRadius: AppRadius.radiusMD),
-                              child: const Text('₦',
+                              child: const Text('NGN',
                                   style: TextStyle(color: Colors.white)),
                             ),
                             AppSpacing.spaceSM,

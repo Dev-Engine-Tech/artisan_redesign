@@ -5,10 +5,12 @@ import '../../../../core/components/components.dart';
 
 class ClientInfoCard extends StatelessWidget {
   final ClientInfo client;
+  final bool hasBeenHired;
 
   const ClientInfoCard({
     super.key,
     required this.client,
+    required this.hasBeenHired,
   });
 
   @override
@@ -51,11 +53,26 @@ class ClientInfoCard extends StatelessWidget {
           ),
           AppSpacing.spaceXS,
 
-          if (client.email.isNotEmpty)
-            _buildInfoRow(Icons.email_outlined, client.email),
-
-          if (client.phone != null && client.phone!.isNotEmpty)
-            _buildInfoRow(Icons.phone_outlined, client.phone!),
+          // Only show email and phone if artisan has been hired
+          if (hasBeenHired) ...[
+            if (client.email.isNotEmpty)
+              _buildInfoRow(Icons.email_outlined, client.email),
+            if (client.phone != null && client.phone!.isNotEmpty)
+              _buildInfoRow(Icons.phone_outlined, client.phone!),
+          ] else ...[
+            // Show masked contact info with message
+            _buildMaskedInfoRow(
+              Icons.email_outlined,
+              'Email hidden',
+              'Complete a job to view contact details',
+            ),
+            if (client.phone != null && client.phone!.isNotEmpty)
+              _buildMaskedInfoRow(
+                Icons.phone_outlined,
+                'Phone hidden',
+                'Complete a job to view contact details',
+              ),
+          ],
 
           if (client.location.isNotEmpty)
             _buildInfoRow(Icons.location_on_outlined, client.location),
@@ -77,6 +94,41 @@ class ClientInfoCard extends StatelessWidget {
               style: const TextStyle(color: Colors.black87),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMaskedInfoRow(IconData icon, String maskedText, String hint) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.grey.shade400, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  maskedText,
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  hint,
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.lock_outline, color: Colors.grey.shade400, size: 16),
         ],
       ),
     );

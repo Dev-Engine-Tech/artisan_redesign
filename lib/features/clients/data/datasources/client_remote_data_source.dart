@@ -21,19 +21,41 @@ class ClientRemoteDataSourceImpl implements ClientRemoteDataSource {
 
       // ignore: avoid_print
       print('[ClientRemoteDataSource] Response status: ${response.statusCode}');
+      // ignore: avoid_print
+      print(
+          '[ClientRemoteDataSource] Response data type: ${response.data.runtimeType}');
+      // ignore: avoid_print
+      print('[ClientRemoteDataSource] Response data: ${response.data}');
 
       if (response.statusCode == 200) {
-        return ClientProfileModel.fromJson(response.data as Map<String, dynamic>);
+        // Handle different response formats
+        dynamic data = response.data;
+
+        // If response is wrapped in a data field
+        if (data is Map<String, dynamic> && data.containsKey('data')) {
+          data = data['data'];
+        }
+
+        // Ensure we have a Map
+        if (data is! Map<String, dynamic>) {
+          throw Exception(
+              'Invalid response format: expected Map but got ${data.runtimeType}');
+        }
+
+        return ClientProfileModel.fromJson(data);
       } else {
-        throw Exception('Failed to load client profile: ${response.statusCode}');
+        throw Exception(
+            'Failed to load client profile: ${response.statusCode}');
       }
     } on DioException catch (e) {
       // ignore: avoid_print
-      print('[ClientRemoteDataSource] DioException: ${e.message}, Response: ${e.response?.data}');
+      print(
+          '[ClientRemoteDataSource] DioException: ${e.message}, Response: ${e.response?.data}');
 
       // Provide more detailed error message
       if (e.response?.statusCode == 500) {
-        throw Exception('Server error (500): The client profile endpoint is not available or encountered an error');
+        throw Exception(
+            'Server error (500): The client profile endpoint is not available or encountered an error');
       } else if (e.response?.statusCode == 404) {
         throw Exception('Client profile not found');
       } else {

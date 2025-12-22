@@ -35,8 +35,11 @@ class JobsTabContent extends StatelessWidget {
                 Text(
                   'Failed to load jobs',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.7),
+                      ),
                 ),
                 AppSpacing.spaceSM,
                 PrimaryButton(
@@ -68,7 +71,8 @@ class JobsTabContent extends StatelessWidget {
             padding: AppSpacing.verticalSM,
             physics:
                 const AlwaysScrollableScrollPhysics(), // Smooth scrolling behavior
-            cacheExtent: 400, // Cache more items offscreen for smoother scrolling
+            cacheExtent:
+                400, // Cache more items offscreen for smoother scrolling
             addAutomaticKeepAlives:
                 true, // Keep list items alive for better performance
             addRepaintBoundaries: true, // Isolate repaints for performance

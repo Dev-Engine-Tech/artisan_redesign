@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 class JobSummaryPage extends StatelessWidget {
   final Job job;
@@ -108,7 +109,8 @@ class JobSummaryPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Budget: ₦${job.minBudget} - ₦${job.maxBudget}',
+                          Text(
+                              'Budget: ${Currency.formatNgn(job.minBudget)} - ${Currency.formatNgn(job.maxBudget)}',
                               style: Theme.of(context).textTheme.bodyMedium),
                           Text('Duration: ${job.duration}',
                               style: Theme.of(context).textTheme.bodyMedium),
@@ -139,7 +141,7 @@ class JobSummaryPage extends StatelessWidget {
                         return ListTile(
                           title: Text(m.description),
                           subtitle: Text('Qty: ${m.quantity ?? 1}'),
-                          trailing: Text('₦${m.price ?? 0}'),
+                          trailing: Text(Currency.formatNgn(m.price ?? 0)),
                         );
                       }).toList(),
                     ),
@@ -169,7 +171,7 @@ class JobSummaryPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium),
                         const SizedBox(height: 6),
                         Text(
-                            'Agreed Payment: ₦${job.agreement!.agreedPayment.toStringAsFixed(0)}'),
+                            'Agreed Payment: ${Currency.formatNgn(job.agreement!.agreedPayment)}'),
                         if (job.agreement!.comment.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Text('Comment: ${job.agreement!.comment}'),

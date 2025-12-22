@@ -55,7 +55,9 @@ class HomeHeroBanner extends StatelessWidget {
                           child: Text(
                             data['subtitle']!,
                             style: TextStyle(
-                                color: colorScheme.onPrimary.withValues(alpha: 0.7), fontSize: 13),
+                                color: colorScheme.onPrimary
+                                    .withValues(alpha: 0.7),
+                                fontSize: 13),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -68,8 +70,8 @@ class HomeHeroBanner extends StatelessWidget {
                       height: 72,
                       decoration: BoxDecoration(
                           color: colorScheme.onPrimary.withValues(alpha: 0.24),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(AppRadius.lg)))),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(AppRadius.lg)))),
                 ],
               ),
             ),

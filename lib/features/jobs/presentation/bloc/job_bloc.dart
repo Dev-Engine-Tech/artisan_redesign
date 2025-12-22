@@ -260,7 +260,8 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
         name: 'JobBloc');
     emit(const JobStateLoading());
     try {
-      final list = await getJobInvitations(page: event.page, limit: event.limit);
+      final list =
+          await getJobInvitations(page: event.page, limit: event.limit);
       dev.log('Received ${list.length} job invitations', name: 'JobBloc');
       emit(JobStateInvitationsLoaded(invitations: list));
     } catch (e) {
@@ -271,11 +272,13 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
 
   Future<void> _onRespondToJobInvitation(
       RespondToJobInvitationEvent event, Emitter<JobState> emit) async {
-    dev.log('Responding to job invitation ${event.invitationId} accept=${event.accept}',
+    dev.log(
+        'Responding to job invitation ${event.invitationId} accept=${event.accept}',
         name: 'JobBloc');
     emit(JobStateRespondingToInvitation(invitationId: event.invitationId));
     try {
-      final ok = await respondToJobInvitation(event.invitationId, accept: event.accept);
+      final ok = await respondToJobInvitation(event.invitationId,
+          accept: event.accept);
       if (ok) {
         emit(JobStateInvitationResponseSuccess(
           invitationId: event.invitationId,
@@ -285,75 +288,92 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
               : 'Job invitation declined',
         ));
       } else {
-        emit(const JobStateError(message: 'Failed to respond to job invitation'));
+        emit(const JobStateError(
+            message: 'Failed to respond to job invitation'));
       }
     } catch (e) {
-      dev.log('Error responding to job invitation: $e', name: 'JobBloc', error: e);
+      dev.log('Error responding to job invitation: $e',
+          name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }
 
   Future<void> _onLoadArtisanInvitations(
       LoadArtisanInvitations event, Emitter<JobState> emit) async {
-    dev.log('Loading artisan invitations page=${event.page} limit=${event.limit}',
+    dev.log(
+        'Loading artisan invitations page=${event.page} limit=${event.limit}',
         name: 'JobBloc');
     emit(const JobStateLoading());
     try {
-      final list = await getArtisanInvitations(page: event.page, limit: event.limit);
+      final list =
+          await getArtisanInvitations(page: event.page, limit: event.limit);
       dev.log('Received ${list.length} artisan invitations', name: 'JobBloc');
       emit(JobStateArtisanInvitationsLoaded(invitations: list));
     } catch (e) {
-      dev.log('Error loading artisan invitations: $e', name: 'JobBloc', error: e);
+      dev.log('Error loading artisan invitations: $e',
+          name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }
 
   Future<void> _onLoadRecentArtisanInvitations(
       LoadRecentArtisanInvitations event, Emitter<JobState> emit) async {
-    dev.log('Loading recent artisan invitations (top 5 for current artisan)', name: 'JobBloc');
+    dev.log('Loading recent artisan invitations (top 5 for current artisan)',
+        name: 'JobBloc');
     emit(const JobStateLoading());
     try {
       final list = await getRecentArtisanInvitations();
-      dev.log('Received ${list.length} recent artisan invitations for current user', name: 'JobBloc');
+      dev.log(
+          'Received ${list.length} recent artisan invitations for current user',
+          name: 'JobBloc');
 
       // Log invitation details for debugging
       for (final inv in list) {
-        dev.log('Invitation: id=${inv.id}, jobId=${inv.jobId}, title=${inv.jobTitle}, status=${inv.invitationStatus}', name: 'JobBloc');
+        dev.log(
+            'Invitation: id=${inv.id}, jobId=${inv.jobId}, title=${inv.jobTitle}, status=${inv.invitationStatus}',
+            name: 'JobBloc');
       }
 
       emit(JobStateArtisanInvitationsLoaded(invitations: list));
     } catch (e, stackTrace) {
-      dev.log('Error loading recent artisan invitations: $e', name: 'JobBloc', error: e, stackTrace: stackTrace);
+      dev.log('Error loading recent artisan invitations: $e',
+          name: 'JobBloc', error: e, stackTrace: stackTrace);
       emit(JobStateError(message: e.toString()));
     }
   }
 
   Future<void> _onAcceptArtisanInvitation(
       AcceptArtisanInvitation event, Emitter<JobState> emit) async {
-    dev.log('Accepting artisan invitation ${event.invitationId}', name: 'JobBloc');
-    emit(JobStateRespondingToArtisanInvitation(invitationId: event.invitationId));
+    dev.log('Accepting artisan invitation ${event.invitationId}',
+        name: 'JobBloc');
+    emit(JobStateRespondingToArtisanInvitation(
+        invitationId: event.invitationId));
     try {
       final ok = await respondToArtisanInvitation.accept(event.invitationId);
       if (ok) {
         emit(JobStateArtisanInvitationResponseSuccess(
           invitationId: event.invitationId,
           accepted: true,
-          message: 'Invitation accepted successfully! You can now apply to this job.',
+          message:
+              'Invitation accepted successfully! You can now apply to this job.',
         ));
       } else {
         emit(const JobStateError(message: 'Failed to accept invitation'));
       }
     } catch (e) {
-      dev.log('Error accepting artisan invitation: $e', name: 'JobBloc', error: e);
+      dev.log('Error accepting artisan invitation: $e',
+          name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }
 
   Future<void> _onRejectArtisanInvitation(
       RejectArtisanInvitation event, Emitter<JobState> emit) async {
-    dev.log('Rejecting artisan invitation ${event.invitationId} reason=${event.reason}',
+    dev.log(
+        'Rejecting artisan invitation ${event.invitationId} reason=${event.reason}',
         name: 'JobBloc');
-    emit(JobStateRespondingToArtisanInvitation(invitationId: event.invitationId));
+    emit(JobStateRespondingToArtisanInvitation(
+        invitationId: event.invitationId));
     try {
       final ok = await respondToArtisanInvitation.reject(
         event.invitationId,
@@ -369,7 +389,8 @@ class JobBloc extends Bloc<JobEvent, JobState> with CachedBlocMixin {
         emit(const JobStateError(message: 'Failed to reject invitation'));
       }
     } catch (e) {
-      dev.log('Error rejecting artisan invitation: $e', name: 'JobBloc', error: e);
+      dev.log('Error rejecting artisan invitation: $e',
+          name: 'JobBloc', error: e);
       emit(JobStateError(message: e.toString()));
     }
   }

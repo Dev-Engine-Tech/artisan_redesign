@@ -14,7 +14,8 @@ class ClientProfileModel extends ClientProfile {
       client: ClientInfoModel.fromJson(json['client'] ?? {}),
       ratingStats: RatingStatsModel.fromJson(json['rating_stats'] ?? {}),
       recentReviews: (json['recent_reviews'] as List<dynamic>?)
-              ?.map((e) => ClientReviewModel.fromJson(e as Map<String, dynamic>))
+              ?.map(
+                  (e) => ClientReviewModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
       jobs: ClientJobsModel.fromJson(json['jobs'] ?? {}),
@@ -46,13 +47,10 @@ class ClientInfoModel extends ClientInfo {
       bio: json['bio'] as String?,
       profilePic: json['profile_pic'] as String?,
       occupation: json['occupation'] as String?,
-      state: json['state'] != null
-          ? LocationInfoModel.fromJson(json['state'] as Map<String, dynamic>)
-          : null,
-      localGovernment: json['local_government'] != null
-          ? LocationInfoModel.fromJson(
-              json['local_government'] as Map<String, dynamic>)
-          : null,
+      // API returns state and local_government as integer IDs, not objects
+      // We'll set them to null for now since we don't have the name mapping
+      state: null,
+      localGovernment: null,
     );
   }
 }
@@ -135,15 +133,18 @@ class ClientJobsModel extends ClientJobs {
   factory ClientJobsModel.fromJson(Map<String, dynamic> json) {
     return ClientJobsModel(
       recent: (json['recent'] as List<dynamic>?)
-              ?.map((e) => JobModel.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => JobModel.fromJson(e as Map<String, dynamic>,
+                  isFromApplications: false))
               .toList() ??
           [],
       ongoing: (json['ongoing'] as List<dynamic>?)
-              ?.map((e) => JobModel.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => JobModel.fromJson(e as Map<String, dynamic>,
+                  isFromApplications: false))
               .toList() ??
           [],
       completed: (json['completed'] as List<dynamic>?)
-              ?.map((e) => JobModel.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => JobModel.fromJson(e as Map<String, dynamic>,
+                  isFromApplications: false))
               .toList() ??
           [],
     );

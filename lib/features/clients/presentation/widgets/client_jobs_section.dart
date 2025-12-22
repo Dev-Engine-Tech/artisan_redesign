@@ -150,7 +150,7 @@ class _ClientJobsSectionState extends State<ClientJobsSection> {
   }
 
   Widget _buildJobItem(Job job) {
-    final budgetText = '₦${job.minBudget} - ₦${job.maxBudget}';
+    final budgetText = 'NGN ${job.minBudget} - ${job.maxBudget}';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -177,7 +177,8 @@ class _ClientJobsSectionState extends State<ClientJobsSection> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(job.status.name).withValues(alpha: 0.1),
+                  color:
+                      _getStatusColor(job.status.name).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -206,7 +207,8 @@ class _ClientJobsSectionState extends State<ClientJobsSection> {
           AppSpacing.spaceXS,
           Row(
             children: [
-              const Icon(Icons.payments_outlined, size: 14, color: Colors.black54),
+              const Icon(Icons.payments_outlined,
+                  size: 14, color: Colors.black54),
               const SizedBox(width: 4),
               Text(
                 budgetText,

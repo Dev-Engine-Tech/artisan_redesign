@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/image_url.dart';
 import 'package:artisans_circle/core/utils/responsive.dart';
@@ -58,7 +59,10 @@ class CollaborationCard extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: context.responsiveFontSize(16),
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.87),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.87),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -69,7 +73,10 @@ class CollaborationCard extends StatelessWidget {
                             'Client: ${collaboration.job.client}',
                             style: TextStyle(
                               fontSize: context.responsiveFontSize(12),
-                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.54),
                             ),
                           ),
                         ],
@@ -90,10 +97,13 @@ class CollaborationCard extends StatelessWidget {
                     radius: context.responsiveIconSize(20),
                     backgroundImage: (() {
                       final fixed = sanitizeImageUrl(otherArtisan.profilePic);
-                      return fixed.startsWith('http') ? NetworkImage(fixed) : null;
+                      return fixed.startsWith('http')
+                          ? NetworkImage(fixed)
+                          : null;
                     })(),
                     child: (otherArtisan.profilePic == null ||
-                            !sanitizeImageUrl(otherArtisan.profilePic).startsWith('http'))
+                            !sanitizeImageUrl(otherArtisan.profilePic)
+                                .startsWith('http'))
                         ? Text(
                             otherArtisan.name[0].toUpperCase(),
                             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -116,7 +126,10 @@ class CollaborationCard extends StatelessWidget {
                           otherArtisan.occupation,
                           style: TextStyle(
                             fontSize: context.responsiveFontSize(12),
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.54),
                           ),
                         ),
                       ],
@@ -171,13 +184,13 @@ class CollaborationCard extends StatelessWidget {
                     if (collaboration.expectedEarnings != null) ...[
                       const SizedBox(width: 8),
                       Text(
-                        '(≈₦${collaboration.expectedEarnings!.toStringAsFixed(0).replaceAllMapped(
-                              RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-                              (match) => '${match[1]},',
-                            )})',
+                        '(≈${Currency.formatNgn(collaboration.expectedEarnings!)})',
                         style: TextStyle(
                           fontSize: context.responsiveFontSize(12),
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.54),
                         ),
                       ),
                     ],
@@ -193,14 +206,20 @@ class CollaborationCard extends StatelessWidget {
                   Icon(
                     Icons.access_time,
                     size: context.responsiveIconSize(14),
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.54),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     _formatRelativeTime(collaboration.createdAt),
                     style: TextStyle(
                       fontSize: context.responsiveFontSize(12),
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.54),
                     ),
                   ),
                 ],

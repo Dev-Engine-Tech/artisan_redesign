@@ -207,7 +207,8 @@ class ChatBubbleWidget extends StatelessWidget {
                           ? message.replied!.text!
                           : (message.replied!.type == domain.MessageType.image
                               ? 'Photo'
-                              : message.replied!.type == domain.MessageType.audio
+                              : message.replied!.type ==
+                                      domain.MessageType.audio
                                   ? 'Voice message'
                                   : ''),
                       style: TextStyle(
@@ -231,9 +232,8 @@ class ChatBubbleWidget extends StatelessWidget {
                 child: Text(
                   message.text ?? '',
                   style: TextStyle(
-                      color: mine
-                          ? colorScheme.onPrimary
-                          : colorScheme.onSurface),
+                      color:
+                          mine ? colorScheme.onPrimary : colorScheme.onSurface),
                 ),
               ),
               if (mine) ...[

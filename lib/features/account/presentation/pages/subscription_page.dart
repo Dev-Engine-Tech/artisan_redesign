@@ -4,6 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../core/theme.dart';
 import '../../../../core/components/components.dart';
 import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import '../../../../core/api/endpoints.dart';
 import '../../../../core/di.dart';
 import '../../../../core/services/subscription_service.dart';
@@ -35,6 +36,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   int _currentPage = 0;
   bool _isYearly = true; // Default to yearly subscription
   SubscriptionPlan _currentPlan = SubscriptionPlan.unknown;
+  Map<String, SubscriptionPlanPricing> _pricing = const {};
+  bool _loadingPricing = false;
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
     // Initialize PageController immediately to prevent LateInitializationError
     _pageController = PageController(initialPage: 0);
     _loadCurrentPlan();
+    _loadPlanPricing();
   }
 
   Future<void> _loadCurrentPlan() async {
@@ -85,6 +89,29 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
       debugPrint('❌ Error loading current plan: $e');
       // Keep default page (already initialized)
     }
+  }
+
+  Future<void> _loadPlanPricing() async {
+    try {
+      setState(() => _loadingPricing = true);
+      final subscriptionService = getIt<SubscriptionService>();
+      final plans = await subscriptionService.getPlanPricing();
+      if (!mounted) return;
+      setState(() {
+        _pricing = plans;
+        _loadingPricing = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loadingPricing = false);
+    }
+  }
+
+  String _priceFor(String planKey) {
+    final p = _pricing[planKey];
+    if (p == null) return '—';
+    final amount = _isYearly ? p.yearly : p.monthly;
+    return Currency.formatNgn(amount);
   }
 
   Future<void> _initiateUpgrade(String planName) async {
@@ -330,14 +357,14 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Amount needed: ₦${requiredAmount?.toStringAsFixed(0) ?? 'N/A'}',
+                          'Amount needed: NGN ${requiredAmount?.toStringAsFixed(0) ?? 'N/A'}',
                           style: TextStyle(
                             color: AppColors.brownHeader.withValues(alpha: 0.8),
                             fontSize: 13,
                           ),
                         ),
                         Text(
-                          'Shortfall: ₦${shortfall.toStringAsFixed(0)}',
+                          'Shortfall: NGN ${shortfall.toStringAsFixed(0)}',
                           style: const TextStyle(
                             color: AppColors.orange,
                             fontSize: 13,
@@ -683,7 +710,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     title: 'Bronze Plan',
                     description:
                         'Perfect for individuals starting their artisan journey',
-                    price: _isYearly ? '₦50,000' : '₦5,000',
+                    price: _priceFor('bronze'),
                     period: _isYearly ? '/ year' : '/ month',
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -708,7 +735,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     title: 'Silver Plan',
                     description:
                         'Best for established artisans looking to grow their business',
-                    price: _isYearly ? '₦100,000' : '₦10,000',
+                    price: _priceFor('silver'),
                     period: _isYearly ? '/ year' : '/ month',
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -736,7 +763,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                     title: 'Gold Plan',
                     description:
                         'Comprehensive solution for large artisan businesses',
-                    price: _isYearly ? '₦150,000' : '₦15,000',
+                    price: _priceFor('gold'),
                     period: _isYearly ? '/ year' : '/ month',
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,

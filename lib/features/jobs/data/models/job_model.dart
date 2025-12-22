@@ -177,10 +177,14 @@ class JobModel extends Job {
               v['full_name'],
               v['name'],
               v['username'],
-              [v['first_name'], v['last_name']].where((e) => (e ?? '').toString().isNotEmpty).join(' ').trim(),
+              [v['first_name'], v['last_name']]
+                  .where((e) => (e ?? '').toString().isNotEmpty)
+                  .join(' ')
+                  .trim(),
             ];
             for (final n in nameCandidates) {
-              if (n != null && n.toString().trim().isNotEmpty) return n.toString();
+              if (n != null && n.toString().trim().isNotEmpty)
+                return n.toString();
             }
           }
         }

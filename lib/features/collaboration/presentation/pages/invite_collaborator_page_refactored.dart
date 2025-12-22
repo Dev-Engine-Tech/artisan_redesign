@@ -851,7 +851,7 @@ class _PaymentMethodSelector extends StatelessWidget {
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
             subtitle: const Text(
-              'Specific amount in Naira',
+              'Specific amount in NGN',
               style: TextStyle(fontSize: 12),
             ),
             value: PaymentMethod.fixed,
@@ -883,7 +883,7 @@ class _AmountField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: paymentMethod == PaymentMethod.percentage
             ? 'Percentage (%)'
-            : 'Amount (₦)',
+            : 'Amount (NGN)',
         hintText: paymentMethod == PaymentMethod.percentage
             ? 'e.g., 30'
             : 'e.g., 50000',

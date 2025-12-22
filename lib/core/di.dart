@@ -208,7 +208,8 @@ Future<void> setupDependencies({String? baseUrl, bool useFake = false}) async {
     () => ClientRemoteDataSourceImpl(dio: getIt<Dio>()),
   );
   getIt.registerLazySingleton<ClientRepository>(
-    () => ClientRepositoryImpl(remoteDataSource: getIt<ClientRemoteDataSource>()),
+    () =>
+        ClientRepositoryImpl(remoteDataSource: getIt<ClientRemoteDataSource>()),
   );
 
   // Collaboration feature - Real API implementation

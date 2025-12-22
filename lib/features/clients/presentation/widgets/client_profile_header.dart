@@ -46,7 +46,8 @@ class ClientProfileHeader extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
               ),
-              if (client.occupation != null && client.occupation!.isNotEmpty) ...[
+              if (client.occupation != null &&
+                  client.occupation!.isNotEmpty) ...[
                 AppSpacing.spaceXS,
                 Text(
                   client.occupation!,

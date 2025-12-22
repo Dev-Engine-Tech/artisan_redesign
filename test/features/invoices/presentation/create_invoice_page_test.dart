@@ -29,7 +29,8 @@ class _FakeCustomerRepository implements CustomerRepository {
   }
 
   @override
-  Future<List<Customer>> getCustomers({int page = 1, int limit = 20, String? searchQuery}) async {
+  Future<List<Customer>> getCustomers(
+      {int page = 1, int limit = 20, String? searchQuery}) async {
     return [
       Customer(
         id: '1',
@@ -70,7 +71,8 @@ void main() {
           () => GetMyCatalogItems(fakeRepo));
     }
     if (!getIt.isRegistered<GetCustomers>()) {
-      getIt.registerLazySingleton<GetCustomers>(() => GetCustomers(_FakeCustomerRepository()));
+      getIt.registerLazySingleton<GetCustomers>(
+          () => GetCustomers(_FakeCustomerRepository()));
     }
   });
 

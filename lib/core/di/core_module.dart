@@ -29,7 +29,8 @@ class CoreModule {
 
   static const bool kAllowInsecure =
       bool.fromEnvironment('ALLOW_INSECURE', defaultValue: false);
-  static const bool kLogHttp = bool.fromEnvironment('LOG_HTTP', defaultValue: false);
+  static const bool kLogHttp =
+      bool.fromEnvironment('LOG_HTTP', defaultValue: false);
 
   /// Initialize core infrastructure dependencies
   ///

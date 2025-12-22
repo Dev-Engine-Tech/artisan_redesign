@@ -131,16 +131,16 @@ class HeroCard extends StatelessWidget {
                 Text(
                   item.title,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: textColor,
-                  ),
+                        fontWeight: FontWeight.w700,
+                        color: textColor,
+                      ),
                 ),
                 AppSpacing.spaceSM,
                 Text(
                   item.subtitle,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: textColor.withValues(alpha: 0.7),
-                  ),
+                        color: textColor.withValues(alpha: 0.7),
+                      ),
                 ),
               ],
             ),

@@ -18,7 +18,8 @@ class CatalogItem extends Equatable {
   // Instant selling fields
   final bool instantSelling;
   final String? brand;
-  final String? condition; // "Brand New", "Foreign used", "Local Used", "new", "used"
+  final String?
+      condition; // "Brand New", "Foreign used", "Local Used", "new", "used"
   final String? salesCategory;
   final bool warranty;
   final bool delivery;

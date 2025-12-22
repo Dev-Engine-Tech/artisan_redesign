@@ -15,12 +15,14 @@ class ImagePreviewPage extends StatelessWidget {
         ? Image.network(
             fixed,
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 80),
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.broken_image, size: 80),
           )
         : const Icon(Icons.broken_image, size: 80);
     return Scaffold(
       backgroundColor: AppColors.textPrimary,
-      appBar: AppBar(backgroundColor: AppColors.textPrimary.withValues(alpha: 0.0)),
+      appBar:
+          AppBar(backgroundColor: AppColors.textPrimary.withValues(alpha: 0.0)),
       body: Center(
         child: InteractiveViewer(
           child: heroTag != null ? Hero(tag: heroTag!, child: image) : image,

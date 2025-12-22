@@ -6,6 +6,7 @@ import 'package:artisans_circle/features/messages/domain/entities/conversation.d
     as domain;
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/shared/widgets/compat_radio.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import '../../../../core/utils/responsive.dart';
 
 class JobInviteDetailsPage extends StatefulWidget {
@@ -59,7 +60,8 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                 color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
+              icon: Icon(Icons.arrow_back,
+                  color: context.colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -95,18 +97,22 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                                ?.copyWith(
+                                    color:
+                                        context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 10),
                         Text(job.description,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                                ?.copyWith(
+                                    color:
+                                        context.colorScheme.onSurfaceVariant)),
                         AppSpacing.spaceMD,
                         Wrap(
                           children: [
                             _badge('Applicants: 10 artisans'),
-                            _badge('Budget: NGN 500,000'),
+                            _badge('Budget: ${Currency.formatNgn(job.maxBudget)}'),
                             _badge('Work type: On site'),
                             _badge('Duration: ${job.duration}'),
                           ],
@@ -127,7 +133,8 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Reviews',
-                            style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+                            style: context.textTheme.bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w600)),
                         AppSpacing.spaceSM,
                         CircleAvatar(
                             radius: 12,
@@ -193,16 +200,17 @@ class _JobInviteDetailsPageState extends State<JobInviteDetailsPage> {
                         onChanged: (v) =>
                             setState(() => _deliveryOption = v ?? 'pickup'),
                         title: Text('Pickup items from artisans location',
-                            style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                            style: context.textTheme.bodyMedium?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant)),
                       ),
                       CompatRadioListTile<String>(
                         value: 'deliver',
                         groupValue: _deliveryOption,
                         onChanged: (v) =>
                             setState(() => _deliveryOption = v ?? 'deliver'),
-                        title: Text(
-                            'Deliver items to a specific location',
-                            style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                        title: Text('Deliver items to a specific location',
+                            style: context.textTheme.bodyMedium?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant)),
                       ),
                       if (_deliveryOption == 'deliver')
                         Padding(

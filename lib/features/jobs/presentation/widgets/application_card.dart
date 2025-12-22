@@ -52,21 +52,20 @@ class ApplicationCard extends StatelessWidget {
                       children: [
                         Text(
                           job.title,
-                          style:
-                              theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: context.brownHeaderColor,
-                                  ),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: context.brownHeaderColor,
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         AppSpacing.spaceXS,
                         Text(
                           job.category,
-                          style:
-                              theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurface.withValues(alpha: 0.54),
-                                  ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color:
+                                colorScheme.onSurface.withValues(alpha: 0.54),
+                          ),
                         ),
                       ],
                     ),
@@ -95,8 +94,8 @@ class ApplicationCard extends StatelessWidget {
                     child: Text(
                       job.address,
                       style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface.withValues(alpha: 0.54),
-                          ),
+                        color: colorScheme.onSurface.withValues(alpha: 0.54),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -115,8 +114,8 @@ class ApplicationCard extends StatelessWidget {
                   Text(
                     job.duration,
                     style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.54),
-                        ),
+                      color: colorScheme.onSurface.withValues(alpha: 0.54),
+                    ),
                   ),
                   const Spacer(),
                   Text(
@@ -125,9 +124,9 @@ class ApplicationCard extends StatelessWidget {
                           (match) => '${match[1]},',
                         )}',
                     style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: context.brownHeaderColor,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: context.brownHeaderColor,
+                    ),
                   ),
                 ],
               ),
@@ -143,61 +142,59 @@ class ApplicationCard extends StatelessWidget {
   }
 
   Widget _buildStatusChip(JobStatus status) {
-    return Builder(
-      builder: (context) {
-        Color backgroundColor;
-        Color textColor;
-        String statusText;
+    return Builder(builder: (context) {
+      Color backgroundColor;
+      Color textColor;
+      String statusText;
 
-        switch (status) {
-          case JobStatus.pending:
-            backgroundColor = context.softPeachColor;
-            textColor = context.primaryColor;
-            statusText = 'Pending';
-            break;
-          case JobStatus.accepted:
-            backgroundColor = context.colorScheme.tertiary.withValues(alpha: 0.1);
-            textColor = context.colorScheme.tertiary;
-            statusText = 'Accepted';
-            break;
-          case JobStatus.rejected:
-            backgroundColor = context.dangerColor.withValues(alpha: 0.1);
-            textColor = context.dangerColor;
-            statusText = 'Rejected';
-            break;
-          case JobStatus.inProgress:
-            backgroundColor = context.darkBlueColor.withValues(alpha: 0.1);
-            textColor = context.darkBlueColor;
-            statusText = 'In Progress';
-            break;
-          case JobStatus.completed:
-            backgroundColor = context.colorScheme.tertiary.withValues(alpha: 0.1);
-            textColor = context.colorScheme.tertiary;
-            statusText = 'Completed';
-            break;
-          case JobStatus.changeRequested:
-            backgroundColor = context.primaryColor.withValues(alpha: 0.1);
-            textColor = context.primaryColor;
-            statusText = 'Changes Requested';
-            break;
-        }
-
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: AppRadius.radiusLG,
-          ),
-          child: Text(
-            statusText,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: textColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        );
+      switch (status) {
+        case JobStatus.pending:
+          backgroundColor = context.softPeachColor;
+          textColor = context.primaryColor;
+          statusText = 'Pending';
+          break;
+        case JobStatus.accepted:
+          backgroundColor = context.colorScheme.tertiary.withValues(alpha: 0.1);
+          textColor = context.colorScheme.tertiary;
+          statusText = 'Accepted';
+          break;
+        case JobStatus.rejected:
+          backgroundColor = context.dangerColor.withValues(alpha: 0.1);
+          textColor = context.dangerColor;
+          statusText = 'Rejected';
+          break;
+        case JobStatus.inProgress:
+          backgroundColor = context.darkBlueColor.withValues(alpha: 0.1);
+          textColor = context.darkBlueColor;
+          statusText = 'In Progress';
+          break;
+        case JobStatus.completed:
+          backgroundColor = context.colorScheme.tertiary.withValues(alpha: 0.1);
+          textColor = context.colorScheme.tertiary;
+          statusText = 'Completed';
+          break;
+        case JobStatus.changeRequested:
+          backgroundColor = context.primaryColor.withValues(alpha: 0.1);
+          textColor = context.primaryColor;
+          statusText = 'Changes Requested';
+          break;
       }
-    );
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: AppRadius.radiusLG,
+        ),
+        child: Text(
+          statusText,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: textColor,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+      );
+    });
   }
 
   bool _shouldShowActionButtons() {

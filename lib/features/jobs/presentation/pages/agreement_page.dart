@@ -6,6 +6,7 @@ import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/core/di.dart';
 import '../../../../core/utils/responsive.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 /// Adaptive Agreement UI
 /// - Call `showAgreementAdaptive(context, job)` to present the agreement.
@@ -63,7 +64,7 @@ class AgreementPage extends StatelessWidget {
                   .titleLarge
                   ?.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
-          Text('Agreed Payment: NGN ${job.minBudget}',
+          Text('Agreed Payment: ${Currency.formatNgn(job.minBudget)}',
               style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
@@ -80,7 +81,8 @@ class AgreementPage extends StatelessWidget {
                 color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
+              icon: Icon(Icons.arrow_back,
+                  color: context.colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -161,7 +163,8 @@ class AgreementContent extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Job Details',
-              style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
+              style: context.textTheme.bodyLarge
+                  ?.copyWith(fontWeight: FontWeight.w700)),
           AppSpacing.spaceSM,
           Text(job.title,
               style: Theme.of(context)
@@ -207,17 +210,20 @@ class AgreementContent extends StatelessWidget {
           Text(job.description, style: Theme.of(context).textTheme.bodyMedium),
           AppSpacing.spaceMD,
           Text('How long will this project take you?',
-              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+              style: context.textTheme.bodyMedium
+                  ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           Text(job.duration, style: Theme.of(context).textTheme.bodyMedium),
           AppSpacing.spaceMD,
           Text('How do you want to be paid?',
-              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+              style: context.textTheme.bodyMedium
+                  ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           Text('By Project', style: Theme.of(context).textTheme.bodyMedium),
           AppSpacing.spaceMD,
           Text('Desired pay (optional)',
-              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+              style: context.textTheme.bodyMedium
+                  ?.copyWith(color: context.colorScheme.onSurfaceVariant)),
           const SizedBox(height: 6),
           Text('NGN ${job.minBudget}',
               style: Theme.of(context)
@@ -279,25 +285,25 @@ class AgreementContent extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 // row 1
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
                       Expanded(flex: 5, child: Text('1 by 12 wood')),
                       Expanded(flex: 2, child: Text('100')),
-                      Expanded(flex: 3, child: Text('NGN 14,000')),
+                      Expanded(flex: 3, child: Text('${Currency.formatNgn(14000)}')),
                     ],
                   ),
                 ),
                 const Divider(height: 1),
                 // row 2
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
                   child: Row(
                     children: [
                       Expanded(flex: 5, child: Text('Zinc Nail')),
                       Expanded(flex: 2, child: Text('2 bags')),
-                      Expanded(flex: 3, child: Text('NGN 80,000')),
+                      Expanded(flex: 3, child: Text('${Currency.formatNgn(80000)}')),
                     ],
                   ),
                 ),
@@ -311,11 +317,12 @@ class AgreementContent extends StatelessWidget {
                       Expanded(
                           flex: 5,
                           child: Text('Total',
-                              style: context.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700))),
+                              style: context.textTheme.bodyMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700))),
                       const Expanded(flex: 2, child: SizedBox()),
                       Expanded(
                           flex: 3,
-                          child: Text('NGN 94,000',
+                          child: Text('${Currency.formatNgn(94000)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -332,7 +339,8 @@ class AgreementContent extends StatelessWidget {
           AppSpacing.spaceSM,
           Container(
             decoration: BoxDecoration(
-              color: context.colorScheme.tertiaryContainer.withValues(alpha: 0.3),
+              color:
+                  context.colorScheme.tertiaryContainer.withValues(alpha: 0.3),
               borderRadius: AppRadius.radiusMD,
               border: Border.all(
                   color: context.colorScheme.tertiary.withValues(alpha: 0.3)),
@@ -346,8 +354,8 @@ class AgreementContent extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: context.primaryColor,
                         borderRadius: AppRadius.radiusMD),
-                    child:
-                        Icon(Icons.picture_as_pdf, color: context.colorScheme.onPrimary)),
+                    child: Icon(Icons.picture_as_pdf,
+                        color: context.colorScheme.onPrimary)),
                 AppSpacing.spaceMD,
                 Expanded(
                     child: Text(
@@ -381,11 +389,11 @@ class AgreementContent extends StatelessWidget {
                 children: [
                   Expanded(
                       child: Text(label,
-                          style: ctx.textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant))),
+                          style: ctx.textTheme.bodyMedium?.copyWith(
+                              color: ctx.colorScheme.onSurfaceVariant))),
                   AppSpacing.spaceSM,
                   Text(value,
-                      style:
-                          valueStyle ?? Theme.of(ctx).textTheme.bodyMedium),
+                      style: valueStyle ?? Theme.of(ctx).textTheme.bodyMedium),
                 ],
               ),
             );
@@ -435,11 +443,11 @@ class AgreementContent extends StatelessWidget {
                                   color: ctx.brownHeaderColor)),
                       row('Service Charge:',
                           '- NGN ${serviceCharge.toString()}',
-                          valueStyle:
-                              ctx.textTheme.bodyMedium?.copyWith(color: ctx.brownHeaderColor)),
+                          valueStyle: ctx.textTheme.bodyMedium
+                              ?.copyWith(color: ctx.brownHeaderColor)),
                       row('WHT (2%):', '- NGN ${wht.toString()}',
-                          valueStyle:
-                              ctx.textTheme.bodyMedium?.copyWith(color: ctx.brownHeaderColor)),
+                          valueStyle: ctx.textTheme.bodyMedium
+                              ?.copyWith(color: ctx.brownHeaderColor)),
                       const Divider(),
                       row('Amount You will get:',
                           'NGN ${amountYouGet.toString()}',
@@ -454,11 +462,14 @@ class AgreementContent extends StatelessWidget {
                 ),
                 AppSpacing.spaceMD,
                 Text('Agreed Delivery Date',
-                    style: ctx.textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant)),
+                    style: ctx.textTheme.bodyMedium
+                        ?.copyWith(color: ctx.colorScheme.onSurfaceVariant)),
                 const SizedBox(height: 6),
                 Text(agreedDate, style: Theme.of(ctx).textTheme.bodyMedium),
                 AppSpacing.spaceMD,
-                Text('Comment', style: ctx.textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant)),
+                Text('Comment',
+                    style: ctx.textTheme.bodyMedium
+                        ?.copyWith(color: ctx.colorScheme.onSurfaceVariant)),
                 const SizedBox(height: 6),
                 Text(comment, style: Theme.of(ctx).textTheme.bodyMedium),
                 AppSpacing.spaceSM,

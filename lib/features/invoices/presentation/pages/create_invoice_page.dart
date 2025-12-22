@@ -424,7 +424,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                     _invoice!.status == InvoiceStatus.draft)
                   Builder(
                     builder: (ctx) => PopupMenuButton<_MenuAction>(
-                      icon: Icon(Icons.more_vert, color: ctx.colorScheme.onSurfaceVariant),
+                      icon: Icon(Icons.more_vert,
+                          color: ctx.colorScheme.onSurfaceVariant),
                       onSelected: (action) async {
                         switch (action) {
                           case _MenuAction.delete:
@@ -584,8 +585,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                               Container(
                                 height: 80,
                                 decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: colorScheme.outlineVariant),
+                                  border: Border.all(
+                                      color: colorScheme.outlineVariant),
                                   borderRadius: AppRadius.radiusSM,
                                 ),
                                 child: TextFormField(
@@ -1229,7 +1230,8 @@ class _CreateInvoicePageState extends State<CreateInvoicePage>
                     ),
                   ),
                   AppSpacing.spaceXS,
-                  Icon(Icons.help_outline, size: 16, color: colorScheme.onSurfaceVariant),
+                  Icon(Icons.help_outline,
+                      size: 16, color: colorScheme.onSurfaceVariant),
                 ],
               ),
               AppSpacing.spaceSM,

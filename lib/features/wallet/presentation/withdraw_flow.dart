@@ -3,6 +3,7 @@ import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/components/components.dart';
 import 'package:artisans_circle/core/analytics/firebase_analytics_service.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 /// Simple withdraw flow used by the Home page Withdraw button.
 /// This is a self-contained UI demonstration of the flow shown in the screenshots:
@@ -109,8 +110,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
               color: c.colorScheme.surface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppRadius.xl))),
           child: Column(
             children: [
               Padding(
@@ -131,12 +132,18 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               ListTile(
                 title: const Text('Acct Name:'),
                 trailing: Text(account.name,
-                    style: Theme.of(c).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+                    style: Theme.of(c)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.w600)),
               ),
               ListTile(
                 title: const Text('Amount'),
-                trailing: Text('₦${amount.toStringAsFixed(0)}',
-                    style: Theme.of(c).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
+                trailing: Text(Currency.formatNgn(amount),
+                    style: Theme.of(c)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.w700)),
               ),
               Expanded(child: Container()),
               Padding(
@@ -193,7 +200,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                 color: context.softPinkColor,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
+              icon: Icon(Icons.arrow_back,
+                  color: context.colorScheme.onSurfaceVariant),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -226,13 +234,16 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Zenith Bank Plc',
-                              style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
+                              style: context.textTheme.bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700)),
                           AppSpacing.spaceXS,
                           Text('Acct No: ******3139',
-                              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant)),
                           const SizedBox(height: 2),
                           Text('Bank Name: Adeyeni Praise',
-                              style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant)),
                         ]),
                   ),
                 ],
@@ -243,9 +254,11 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Amount:',
-                    style: context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700)),
-                Text('Earnings: ₦${widget.initialEarnings.toStringAsFixed(0)}',
-                    style: context.textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                    style: context.textTheme.bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                Text('Earnings: ${Currency.formatNgn(widget.initialEarnings)}',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant)),
               ],
             ),
             AppSpacing.spaceSM,
@@ -259,8 +272,8 @@ class _WithdrawAmountPageState extends State<_WithdrawAmountPage> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                     border: InputBorder.none, hintText: '0'),
-                style:
-                    context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                style: context.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(height: 28),
@@ -321,8 +334,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
       builder: (_, controller) => Container(
         decoration: BoxDecoration(
             color: context.colorScheme.surface,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(AppRadius.xl))),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           children: [
@@ -330,9 +343,9 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
             Text('Input PIN to withdraw',
                 style: Theme.of(context).textTheme.titleLarge),
             AppSpacing.spaceMD,
-            Text('₦${widget.amount.toStringAsFixed(0)}',
-                style:
-                    context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+            Text(Currency.formatNgn(widget.amount),
+                style: context.textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: 18),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -371,8 +384,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                           shape: RoundedRectangleBorder(
                               borderRadius: AppRadius.radiusLG)),
                       child: Text('$i',
-                          style: context.textTheme.titleMedium?.copyWith(
-                              color: context.colorScheme.onSurface)),
+                          style: context.textTheme.titleMedium
+                              ?.copyWith(color: context.colorScheme.onSurface)),
                     ),
                   const SizedBox.shrink(),
                   ElevatedButton(
@@ -383,8 +396,8 @@ class _PinEntrySheetState extends State<_PinEntrySheet> {
                         shape: RoundedRectangleBorder(
                             borderRadius: AppRadius.radiusLG)),
                     child: Text('0',
-                        style: context.textTheme.titleMedium?.copyWith(
-                            color: context.colorScheme.onSurface)),
+                        style: context.textTheme.titleMedium
+                            ?.copyWith(color: context.colorScheme.onSurface)),
                   ),
                   ElevatedButton(
                     onPressed: _removeDigit,
@@ -436,7 +449,7 @@ class _WithdrawSuccessPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 28.0),
               child: Text(
-                'You successfully withdrew NGN${amount.toStringAsFixed(0)} to ${account.masked} - ${account.bank} - ${account.name}.',
+                'You successfully withdrew ${Currency.formatNgn(amount)} to ${account.masked} - ${account.bank} - ${account.name}.',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium

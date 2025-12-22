@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'artisan_profile.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 /// Payment method for collaboration
 enum PaymentMethod {
@@ -136,10 +137,7 @@ class Collaboration extends Equatable {
     if (paymentMethod == PaymentMethod.percentage) {
       return '${paymentAmount.toStringAsFixed(0)}% of earnings';
     } else {
-      return '₦${paymentAmount.toStringAsFixed(0).replaceAllMapped(
-            RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-            (match) => '${match[1]},',
-          )}';
+      return Currency.formatNgn(paymentAmount);
     }
   }
 

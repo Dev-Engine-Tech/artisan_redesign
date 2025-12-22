@@ -61,8 +61,8 @@ class ActionCard extends StatelessWidget {
             Text(
               title!,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
           if (title != null) const SizedBox(height: 12),
           if (leading != null) ...[
@@ -127,9 +127,8 @@ class ActionCard extends StatelessWidget {
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
           elevation: isSecondary ? 0 : 2,
-          side: isSecondary
-              ? BorderSide(color: theme.colorScheme.primary)
-              : null,
+          side:
+              isSecondary ? BorderSide(color: theme.colorScheme.primary) : null,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),

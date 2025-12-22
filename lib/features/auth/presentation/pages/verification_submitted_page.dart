@@ -24,13 +24,14 @@ class VerificationSubmittedPage extends StatelessWidget {
                 height: 140,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [colorScheme.tertiary, colorScheme.tertiary.withValues(alpha: 0.8)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight),
+                  gradient: LinearGradient(colors: [
+                    colorScheme.tertiary,
+                    colorScheme.tertiary.withValues(alpha: 0.8)
+                  ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                 ),
                 child: Center(
-                  child: Icon(Icons.check, size: 72, color: colorScheme.onPrimary),
+                  child:
+                      Icon(Icons.check, size: 72, color: colorScheme.onPrimary),
                 ),
               ),
               const SizedBox(height: 28),
@@ -40,7 +41,8 @@ class VerificationSubmittedPage extends StatelessWidget {
               Text(
                 'Your documents are under review. You will be notified about the status within the next 24 hours.',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodyLarge
+                    ?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
               const Spacer(),
               PrimaryButton(

@@ -53,7 +53,8 @@ class AuthRepositoryImpl implements AuthRepository {
       final raw = prefs.getString('logged_in_user');
 
       if (kDebugMode) {
-        debugPrint('📖 Reading user from SharedPreferences with key: logged_in_user');
+        debugPrint(
+            '📖 Reading user from SharedPreferences with key: logged_in_user');
         debugPrint('📖 Raw data found: ${raw != null ? "YES" : "NO"}');
       }
 

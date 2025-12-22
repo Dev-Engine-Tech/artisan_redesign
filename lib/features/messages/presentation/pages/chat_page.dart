@@ -100,17 +100,25 @@ class _ChatPageState extends State<ChatPage> {
                 color: Colors.transparent,
                 child: Center(
                     child: Text('▂ ▃ ▄ ▅ ▂ ▃ ▄',
-                        style: TextStyle(color: mine ? colorScheme.onPrimary : colorScheme.onSurface)))),
+                        style: TextStyle(
+                            color: mine
+                                ? colorScheme.onPrimary
+                                : colorScheme.onSurface)))),
             AppSpacing.spaceSM,
             Text('00:16',
                 style: TextStyle(
-                    color: mine ? colorScheme.onPrimary.withValues(alpha: 0.9) : colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                    color: mine
+                        ? colorScheme.onPrimary.withValues(alpha: 0.9)
+                        : colorScheme.onSurface.withValues(alpha: 0.6),
+                    fontSize: 12)),
             if (mine) ...[
               AppSpacing.spaceSM,
               Icon(
                 m.isSeen ? Icons.done_all : Icons.done,
                 size: 16,
-                color: m.isSeen ? colorScheme.onPrimary : colorScheme.onPrimary.withValues(alpha: 0.7),
+                color: m.isSeen
+                    ? colorScheme.onPrimary
+                    : colorScheme.onPrimary.withValues(alpha: 0.7),
               )
             ],
           ],
@@ -131,32 +139,33 @@ class _ChatPageState extends State<ChatPage> {
               color: mine ? AppColors.orange : colorScheme.surface,
               borderRadius: BorderRadius.circular(14),
             ),
-              child: SizedBox(
-                width: 180,
-                height: 180,
-                child: isRemote
-                  ? (Image.network(
-                          fixedUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                                color: colorScheme.surfaceContainerHighest,
-                                child: Icon(
-                                  Icons.image,
-                                  color: mine
-                                      ? colorScheme.onPrimary
-                                      : AppColors.brownHeader,
-                                  size: 48,
-                                ),
-                              )))
+            child: SizedBox(
+              width: 180,
+              height: 180,
+              child: isRemote
+                  ? (Image.network(fixedUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                            color: colorScheme.surfaceContainerHighest,
+                            child: Icon(
+                              Icons.image,
+                              color: mine
+                                  ? colorScheme.onPrimary
+                                  : AppColors.brownHeader,
+                              size: 48,
+                            ),
+                          )))
                   : Container(
-                          color: colorScheme.surfaceContainerHighest,
-                          child: Icon(
-                            Icons.image,
-                            color: mine ? colorScheme.onPrimary : AppColors.brownHeader,
-                            size: 48,
-                          ),
-                        ),
-              ),
+                      color: colorScheme.surfaceContainerHighest,
+                      child: Icon(
+                        Icons.image,
+                        color: mine
+                            ? colorScheme.onPrimary
+                            : AppColors.brownHeader,
+                        size: 48,
+                      ),
+                    ),
+            ),
           ),
           AppSpacing.spaceXS,
           Row(
@@ -171,7 +180,9 @@ class _ChatPageState extends State<ChatPage> {
                 Icon(
                   m.isSeen ? Icons.done_all : Icons.done,
                   size: 14,
-                  color: m.isSeen ? AppColors.orange : colorScheme.onSurface.withValues(alpha: 0.38),
+                  color: m.isSeen
+                      ? AppColors.orange
+                      : colorScheme.onSurface.withValues(alpha: 0.38),
                 )
               ]
             ],
@@ -194,7 +205,9 @@ class _ChatPageState extends State<ChatPage> {
               margin: const EdgeInsets.only(bottom: 6),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               decoration: BoxDecoration(
-                color: mine ? colorScheme.onPrimary.withValues(alpha: 0.24) : colorScheme.onSurface.withValues(alpha: 0.12),
+                color: mine
+                    ? colorScheme.onPrimary.withValues(alpha: 0.24)
+                    : colorScheme.onSurface.withValues(alpha: 0.12),
                 borderRadius: AppRadius.radiusMD,
               ),
               child: Row(
@@ -207,7 +220,9 @@ class _ChatPageState extends State<ChatPage> {
                             ? Icons.mic
                             : Icons.reply,
                     size: 16,
-                    color: mine ? colorScheme.onPrimary.withValues(alpha: 0.7) : colorScheme.onSurface.withValues(alpha: 0.45),
+                    color: mine
+                        ? colorScheme.onPrimary.withValues(alpha: 0.7)
+                        : colorScheme.onSurface.withValues(alpha: 0.45),
                   ),
                   const SizedBox(width: 6),
                   ConstrainedBox(
@@ -222,7 +237,9 @@ class _ChatPageState extends State<ChatPage> {
                                   : ''),
                       style: TextStyle(
                         fontSize: 12,
-                        color: mine ? colorScheme.onPrimary.withValues(alpha: 0.7) : colorScheme.onSurface.withValues(alpha: 0.54),
+                        color: mine
+                            ? colorScheme.onPrimary.withValues(alpha: 0.7)
+                            : colorScheme.onSurface.withValues(alpha: 0.54),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -238,17 +255,21 @@ class _ChatPageState extends State<ChatPage> {
               Flexible(
                 child: Text(
                   m.text ?? '',
-                  style: TextStyle(color: mine ? colorScheme.onPrimary : colorScheme.onSurface),
+                  style: TextStyle(
+                      color:
+                          mine ? colorScheme.onPrimary : colorScheme.onSurface),
                 ),
               ),
               if (mine) ...[
                 AppSpacing.spaceSM,
                 Text(t(m.timestamp),
-                    style:
-                        TextStyle(fontSize: 10, color: colorScheme.onPrimary.withValues(alpha: 0.7))),
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: colorScheme.onPrimary.withValues(alpha: 0.7))),
                 AppSpacing.spaceXS,
                 Icon(m.isSeen ? Icons.done_all : Icons.done,
-                    size: 16, color: colorScheme.onPrimary.withValues(alpha: 0.7))
+                    size: 16,
+                    color: colorScheme.onPrimary.withValues(alpha: 0.7))
               ]
             ],
           ),
@@ -356,7 +377,8 @@ class _ChatPageState extends State<ChatPage> {
                   color: AppColors.softPink,
                   borderRadius: BorderRadius.circular(10)),
               child: IconButton(
-                icon: Icon(Icons.chevron_left, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+                icon: Icon(Icons.chevron_left,
+                    color: colorScheme.onSurface.withValues(alpha: 0.54)),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
@@ -369,16 +391,20 @@ class _ChatPageState extends State<ChatPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: 64, color: colorScheme.onSurface.withValues(alpha: 0.26)),
+              Icon(Icons.lock_outline,
+                  size: 64,
+                  color: colorScheme.onSurface.withValues(alpha: 0.26)),
               AppSpacing.spaceLG,
               Text(
                 'Authentication Required',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
               AppSpacing.spaceSM,
               Text(
                 'Please sign in to access chat',
-                style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54)),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.54)),
               ),
               AppSpacing.spaceXXL,
               PrimaryButton(
@@ -407,7 +433,8 @@ class _ChatPageState extends State<ChatPage> {
                 color: AppColors.softPink,
                 borderRadius: BorderRadius.circular(10)),
             child: IconButton(
-              icon: Icon(Icons.chevron_left, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+              icon: Icon(Icons.chevron_left,
+                  color: colorScheme.onSurface.withValues(alpha: 0.54)),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -435,7 +462,8 @@ class _ChatPageState extends State<ChatPage> {
         ),
         actions: [
           IconButton(
-              icon: Icon(Icons.more_vert, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+              icon: Icon(Icons.more_vert,
+                  color: colorScheme.onSurface.withValues(alpha: 0.54)),
               onPressed: () {}),
         ],
       ),
@@ -466,8 +494,9 @@ class _ChatPageState extends State<ChatPage> {
                                   const TextStyle(fontWeight: FontWeight.w700)),
                           const SizedBox(height: 6),
                           Text(widget.job!.category,
-                              style: theme.textTheme.bodySmall
-                                  ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.45))),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurface
+                                      .withValues(alpha: 0.45))),
                           AppSpacing.spaceSM,
                           Text(widget.job!.description,
                               maxLines: 2,
@@ -500,8 +529,9 @@ class _ChatPageState extends State<ChatPage> {
                                         TextStyle(fontWeight: FontWeight.w600)),
                                 AppSpacing.spaceSM,
                                 Text(state.message,
-                                    style:
-                                        theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54)),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurface
+                                            .withValues(alpha: 0.54)),
                                     textAlign: TextAlign.center),
                                 AppSpacing.spaceLG,
                                 PrimaryButton(
@@ -521,13 +551,21 @@ class _ChatPageState extends State<ChatPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(Icons.message_outlined,
-                                      size: 64, color: colorScheme.onSurface.withValues(alpha: 0.26)),
+                                      size: 64,
+                                      color: colorScheme.onSurface
+                                          .withValues(alpha: 0.26)),
                                   AppSpacing.spaceLG,
                                   Text('No messages yet',
-                                      style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: colorScheme.onSurface
+                                                  .withValues(alpha: 0.54))),
                                   AppSpacing.spaceSM,
                                   Text('Start the conversation!',
-                                      style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.38))),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                              color: colorScheme.onSurface
+                                                  .withValues(alpha: 0.38))),
                                 ],
                               ),
                             );
@@ -550,7 +588,9 @@ class _ChatPageState extends State<ChatPage> {
                                         borderRadius: AppRadius.radiusLG),
                                     child: Text('Today',
                                         style: theme.textTheme.bodyMedium
-                                            ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54))),
+                                            ?.copyWith(
+                                                color: colorScheme.onSurface
+                                                    .withValues(alpha: 0.54))),
                                   ),
                                 );
                               }
@@ -628,7 +668,8 @@ class _ChatPageState extends State<ChatPage> {
                                                   List<domain.Conversation>>(
                                             context: context,
                                             isScrollControlled: true,
-                                            backgroundColor: colorScheme.surface,
+                                            backgroundColor:
+                                                colorScheme.surface,
                                             shape: const RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.vertical(
@@ -1012,35 +1053,41 @@ class _ChatPageState extends State<ChatPage> {
                                                     width: 100,
                                                     height: 100,
                                                     child: (() {
-                                                      final fixed = sanitizeImageUrl(g.mediaUrl);
-                                                      final valid = fixed.startsWith('http');
+                                                      final fixed =
+                                                          sanitizeImageUrl(
+                                                              g.mediaUrl);
+                                                      final valid = fixed
+                                                          .startsWith('http');
                                                       return valid
                                                           ? Image.network(
                                                               fixed,
                                                               fit: BoxFit.cover,
-                                                              errorBuilder: (_, __, ___) => Container(
-                                                                    color: colorScheme
-                                                                        .surfaceContainerHighest,
-                                                                    child: Icon(
-                                                                        Icons.image,
-                                                                        color: mine
-                                                                            ? colorScheme
-                                                                                .onPrimary
-                                                                            : AppColors
-                                                                                .brownHeader),
-                                                                  ),
+                                                              errorBuilder: (_,
+                                                                      __,
+                                                                      ___) =>
+                                                                  Container(
+                                                                color: colorScheme
+                                                                    .surfaceContainerHighest,
+                                                                child: Icon(
+                                                                    Icons.image,
+                                                                    color: mine
+                                                                        ? colorScheme
+                                                                            .onPrimary
+                                                                        : AppColors
+                                                                            .brownHeader),
+                                                              ),
                                                             )
                                                           : Container(
-                                                            color:
-                                                                colorScheme.surfaceContainerHighest,
-                                                            child: Icon(
-                                                                Icons.image,
-                                                                color: mine
-                                                                    ? colorScheme
-                                                                        .onPrimary
-                                                                    : AppColors
-                                                                        .brownHeader),
-                                                          );
+                                                              color: colorScheme
+                                                                  .surfaceContainerHighest,
+                                                              child: Icon(
+                                                                  Icons.image,
+                                                                  color: mine
+                                                                      ? colorScheme
+                                                                          .onPrimary
+                                                                      : AppColors
+                                                                          .brownHeader),
+                                                            );
                                                     })(),
                                                   ),
                                                 ),

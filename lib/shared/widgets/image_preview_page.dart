@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:artisans_circle/core/image_url.dart';
+import 'dart:io' show File;
 
 /// Shared full-screen image preview page
 ///
@@ -31,14 +32,20 @@ class ImagePreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fixed = sanitizeImageUrl(imageUrl);
-    final valid = fixed.startsWith('http');
-    final image = valid
+    final isNetwork = fixed.startsWith('http');
+    final image = isNetwork
         ? Image.network(
             fixed,
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 80),
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.broken_image, size: 80),
           )
-        : const Icon(Icons.broken_image, size: 80);
+        : Image.file(
+            File(imageUrl),
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.broken_image, size: 80),
+          );
 
     return Scaffold(
       backgroundColor: Colors.black,

@@ -11,6 +11,7 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/change_reques
 import 'package:artisans_circle/core/di.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/services/job_share_service.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 /// Polished job card aiming to match the provided designs:
 /// - soft rounded container with subtle border
@@ -39,14 +40,12 @@ class JobCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final budgetText = job.minBudget == job.maxBudget
-        ? '₦${job.maxBudget.toString()}'
-        : '₦${job.minBudget.toString()} - ₦${job.maxBudget.toString()}';
-    final titleStyle = theme
-        .textTheme
-        .titleLarge
-        ?.copyWith(fontWeight: FontWeight.w600);
-    final subtitleStyle =
-        theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54));
+        ? Currency.formatNgn(job.maxBudget)
+        : '${Currency.formatNgn(job.minBudget)} - ${Currency.formatNgn(job.maxBudget)}';
+    final titleStyle =
+        theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600);
+    final subtitleStyle = theme.textTheme.bodyMedium
+        ?.copyWith(color: colorScheme.onSurface.withValues(alpha: 0.54));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -107,7 +106,8 @@ class JobCard extends StatelessWidget {
                             children: [
                               Expanded(
                                   child: Text(job.title, style: titleStyle)),
-                              if (job.applied || job.invitationId != null) _buildStatusIndicator(),
+                              if (job.applied || job.invitationId != null)
+                                _buildStatusIndicator(),
                             ],
                           ),
                           AppSpacing.spaceXS,
@@ -126,9 +126,7 @@ class JobCard extends StatelessWidget {
                             ),
                             child: Text(
                               job.address,
-                              style: theme
-                                  .textTheme
-                                  .bodySmall
+                              style: theme.textTheme.bodySmall
                                   ?.copyWith(color: context.brownHeaderColor),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -145,13 +143,17 @@ class JobCard extends StatelessWidget {
                         IconButton(
                           onPressed: () => JobShareService.shareJob(job),
                           icon: Icon(Icons.share_outlined,
-                              size: 20, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+                              size: 20,
+                              color: colorScheme.onSurface
+                                  .withValues(alpha: 0.54)),
                           tooltip: 'Share Job',
                         ),
                         IconButton(
                           onPressed: () {},
                           icon: Icon(Icons.more_vert,
-                              size: 20, color: colorScheme.onSurface.withValues(alpha: 0.54)),
+                              size: 20,
+                              color: colorScheme.onSurface
+                                  .withValues(alpha: 0.54)),
                         ),
                       ],
                     ),
@@ -165,9 +167,7 @@ class JobCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(budgetText,
-                        style: theme
-                            .textTheme
-                            .bodyLarge
+                        style: theme.textTheme.bodyLarge
                             ?.copyWith(fontWeight: FontWeight.w700)),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -177,8 +177,8 @@ class JobCard extends StatelessWidget {
                         borderRadius: AppRadius.radiusMD,
                         border: Border.all(color: context.subtleBorderColor),
                       ),
-                      child: Text(job.duration,
-                          style: theme.textTheme.bodyMedium),
+                      child:
+                          Text(job.duration, style: theme.textTheme.bodyMedium),
                     )
                   ],
                 ),
@@ -226,119 +226,115 @@ class JobCard extends StatelessWidget {
 
   /// Builds a small circular status indicator based on application status
   Widget _buildStatusIndicator() {
-    return Builder(
-      builder: (context) {
-        Color statusColor;
-        IconData statusIcon;
+    return Builder(builder: (context) {
+      Color statusColor;
+      IconData statusIcon;
 
-        // Check if this is an invitation
-        if (job.invitationId != null) {
-          switch (job.status) {
-            case JobStatus.pending:
-              statusColor = context.colorScheme.primary;
-              statusIcon = Icons.mail_outline;
-              break;
-            case JobStatus.rejected:
-              statusColor = context.colorScheme.error;
-              statusIcon = Icons.cancel_outlined;
-              break;
-            case JobStatus.inProgress:
-              statusColor = context.colorScheme.tertiary;
-              statusIcon = Icons.check_circle;
-              break;
-            default:
-              statusColor = context.colorScheme.onSurfaceVariant;
-              statusIcon = Icons.pending;
-          }
-        } else if (job.status == JobStatus.accepted) {
-          statusColor = context.colorScheme.tertiary;
-          statusIcon = Icons.check_circle;
-        } else if (job.agreement != null) {
-          statusColor = context.primaryColor;
-          statusIcon = Icons.assignment;
-        } else if (job.changeRequest != null) {
-          statusColor = context.darkBlueColor;
-          statusIcon = Icons.change_circle;
-        } else {
-          statusColor = context.colorScheme.onSurfaceVariant;
-          statusIcon = Icons.pending;
+      // Check if this is an invitation
+      if (job.invitationId != null) {
+        switch (job.status) {
+          case JobStatus.pending:
+            statusColor = context.colorScheme.primary;
+            statusIcon = Icons.mail_outline;
+            break;
+          case JobStatus.rejected:
+            statusColor = context.colorScheme.error;
+            statusIcon = Icons.cancel_outlined;
+            break;
+          case JobStatus.inProgress:
+            statusColor = context.colorScheme.tertiary;
+            statusIcon = Icons.check_circle;
+            break;
+          default:
+            statusColor = context.colorScheme.onSurfaceVariant;
+            statusIcon = Icons.pending;
         }
-
-        return Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-            border: Border.all(color: statusColor, width: 1.5),
-          ),
-          child: Icon(
-            statusIcon,
-            size: 14,
-            color: statusColor,
-          ),
-        );
+      } else if (job.status == JobStatus.accepted) {
+        statusColor = context.colorScheme.tertiary;
+        statusIcon = Icons.check_circle;
+      } else if (job.agreement != null) {
+        statusColor = context.primaryColor;
+        statusIcon = Icons.assignment;
+      } else if (job.changeRequest != null) {
+        statusColor = context.darkBlueColor;
+        statusIcon = Icons.change_circle;
+      } else {
+        statusColor = context.colorScheme.onSurfaceVariant;
+        statusIcon = Icons.pending;
       }
-    );
+
+      return Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: statusColor.withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+          border: Border.all(color: statusColor, width: 1.5),
+        ),
+        child: Icon(
+          statusIcon,
+          size: 14,
+          color: statusColor,
+        ),
+      );
+    });
   }
 
   /// Builds the application status text
   Widget _buildApplicationStatus() {
-    return Builder(
-      builder: (context) {
-        String status;
-        Color statusColor;
+    return Builder(builder: (context) {
+      String status;
+      Color statusColor;
 
-        // Check if this is an invitation
-        if (job.invitationId != null) {
-          switch (job.status) {
-            case JobStatus.pending:
-              status = 'Pending Invitation';
-              statusColor = context.colorScheme.primary;
-              break;
-            case JobStatus.rejected:
-              status = 'Invitation Declined';
-              statusColor = context.colorScheme.error;
-              break;
-            case JobStatus.inProgress:
-              status = 'Invitation Accepted';
-              statusColor = context.colorScheme.tertiary;
-              break;
-            default:
-              status = 'Invitation';
-              statusColor = context.colorScheme.onSurfaceVariant;
-          }
-        } else {
-          status = job.applicationStatus;
-          if (status == 'Accepted') {
+      // Check if this is an invitation
+      if (job.invitationId != null) {
+        switch (job.status) {
+          case JobStatus.pending:
+            status = 'Pending Invitation';
+            statusColor = context.colorScheme.primary;
+            break;
+          case JobStatus.rejected:
+            status = 'Invitation Declined';
+            statusColor = context.colorScheme.error;
+            break;
+          case JobStatus.inProgress:
+            status = 'Invitation Accepted';
             statusColor = context.colorScheme.tertiary;
-          } else if (status == 'Review Agreement') {
-            statusColor = context.primaryColor;
-          } else if (status == 'Change request sent') {
-            statusColor = context.darkBlueColor;
-          } else {
+            break;
+          default:
+            status = 'Invitation';
             statusColor = context.colorScheme.onSurfaceVariant;
-          }
         }
-
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.1),
-            borderRadius: AppRadius.radiusSM,
-            border:
-                Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
-          ),
-          child: Text(
-            status,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: statusColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        );
+      } else {
+        status = job.applicationStatus;
+        if (status == 'Accepted') {
+          statusColor = context.colorScheme.tertiary;
+        } else if (status == 'Review Agreement') {
+          statusColor = context.primaryColor;
+        } else if (status == 'Change request sent') {
+          statusColor = context.darkBlueColor;
+        } else {
+          statusColor = context.colorScheme.onSurfaceVariant;
+        }
       }
-    );
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(
+          color: statusColor.withValues(alpha: 0.1),
+          borderRadius: AppRadius.radiusSM,
+          border:
+              Border.all(color: statusColor.withValues(alpha: 0.3), width: 0.5),
+        ),
+        child: Text(
+          status,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: statusColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
+    });
   }
 
   /// Gets the primary action based on application status
@@ -420,7 +416,6 @@ class JobCard extends StatelessWidget {
       return 'Waiting Agreement';
     }
   }
-
 
   /// Gets the secondary button label based on application status
   String _getSecondaryLabel() {

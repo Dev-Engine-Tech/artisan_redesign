@@ -112,9 +112,9 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
           Text(
             tab.label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: context.brownHeaderColor,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            ),
+                  color: context.brownHeaderColor,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
           ),
           if (tab.count != null) ...[
             AppSpacing.spaceSM,
@@ -127,9 +127,9 @@ class _DiscoverTabViewState extends State<DiscoverTabView>
               child: Text(
                 tab.count!.toString(),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.brownHeaderColor,
-                  fontWeight: FontWeight.w600,
-                ),
+                      color: context.brownHeaderColor,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ),
           ],
@@ -211,7 +211,10 @@ class DiscoverTabContent extends StatelessWidget {
               Text(
                 error!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -256,7 +259,10 @@ class DiscoverTabsShimmer extends StatelessWidget {
               height: height,
               margin: const EdgeInsets.only(right: 8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.3),
                 borderRadius: AppRadius.radiusXXXL,
               ),
             ),

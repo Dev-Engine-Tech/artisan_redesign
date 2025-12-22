@@ -12,7 +12,7 @@ import 'package:artisans_circle/features/jobs/presentation/widgets/upload_catalo
 import 'package:artisans_circle/features/jobs/presentation/widgets/upload_catalogue_step3.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/utils/subscription_guard.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 /// Multi-step upload flow for creating a catalogue entry.
 ///
@@ -60,7 +60,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
 
   // Selected image file paths (for upload)
   final List<String> _media = [];
-  // final ImagePicker _picker = ImagePicker(); // Temporarily disabled
+  // Existing media URLs when editing (do not re-upload)
+  final List<String> _existingMedia = [];
+  final ImagePicker _picker = ImagePicker();
 
   final List<String> _timelines = [
     'Less than a week',
@@ -107,7 +109,7 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
 
       // Initialize existing images
       if (it.imageUrl != null && it.imageUrl!.isNotEmpty) {
-        _media.add(it.imageUrl!);
+        _existingMedia.add(it.imageUrl!);
       }
 
       // Map numeric timeline values to dropdown options
@@ -272,7 +274,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               color: context.softPinkColor,
               borderRadius: BorderRadius.circular(10)),
           child: IconButton(
-            icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
+            icon: Icon(Icons.arrow_back,
+                color: context.colorScheme.onSurfaceVariant),
             onPressed: _back,
           ),
         ),
@@ -293,7 +296,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
               margin: EdgeInsets.only(right: i == 2 ? 0 : 8),
               height: 8,
               decoration: BoxDecoration(
-                color: active ? context.primaryColor : context.subtleBorderColor,
+                color:
+                    active ? context.primaryColor : context.subtleBorderColor,
                 borderRadius: BorderRadius.circular(6),
               ),
             ),
@@ -889,13 +893,55 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                   titleController: _titleController,
                   descriptionController: _descriptionController,
                   selectedSubcategoryName: _selectedSubcategoryName,
-                  media: _media,
+                  media: [..._existingMedia, ..._media],
                   onNext: _next,
                   onPickSubcategory: _pickSubcategory,
                   onPickMedia: () async {
-                    // Temporarily disabled
+                    try {
+                      final files = await _picker.pickMultiImage(
+                        maxWidth: 2048,
+                        imageQuality: 85,
+                      );
+                      if (files.isNotEmpty) {
+                        setState(() {
+                          for (final f in files) {
+                            if (f.path.isNotEmpty) {
+                              _media.add(f.path);
+                            }
+                          }
+                        });
+                      }
+                    } catch (e) {
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to pick images: $e')),
+                      );
+                    }
                   },
-                  onRemoveMedia: (m) => setState(() => _media.remove(m)),
+                  onCaptureMedia: () async {
+                    try {
+                      final photo = await _picker.pickImage(
+                        source: ImageSource.camera,
+                        maxWidth: 2048,
+                        imageQuality: 85,
+                      );
+                      if (photo != null && photo.path.isNotEmpty) {
+                        setState(() => _media.add(photo.path));
+                      }
+                    } catch (e) {
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to capture photo: $e')),
+                      );
+                    }
+                  },
+                  onRemoveMedia: (m) => setState(() {
+                    if (m.startsWith('http')) {
+                      _existingMedia.remove(m);
+                    } else {
+                      _media.remove(m);
+                    }
+                  }),
                 ),
                 UploadCatalogueStep2(
                   minPriceController: _minPriceController,
@@ -920,15 +966,17 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                       _selectedSkills.add(s);
                     }
                   }),
-                  onMaterialsChanged: (v) => setState(() => _materialsIncluded = v),
-                  onInstantSellingChanged: (v) => setState(() => _instantSelling = v),
+                  onMaterialsChanged: (v) =>
+                      setState(() => _materialsIncluded = v),
+                  onInstantSellingChanged: (v) =>
+                      setState(() => _instantSelling = v),
                   onConditionChanged: (v) => setState(() => _condition = v),
                   onWarrantyChanged: (v) => setState(() => _warranty = v),
                   onDeliveryChanged: (v) => setState(() => _delivery = v),
                   onNext: _next,
                 ),
                 UploadCatalogueStep3(
-                  media: _media,
+                  media: [..._existingMedia, ..._media],
                   title: _titleController.text,
                   description: _descriptionController.text,
                   timeline: _timeline,

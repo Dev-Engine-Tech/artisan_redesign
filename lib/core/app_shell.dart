@@ -327,7 +327,8 @@ class _AppShellState extends State<AppShell> {
                     backgroundColor: colorScheme.surface,
                     elevation: 0,
                     selectedItemColor: colorScheme.primary,
-                    unselectedItemColor: colorScheme.onSurface.withValues(alpha: 0.5),
+                    unselectedItemColor:
+                        colorScheme.onSurface.withValues(alpha: 0.5),
                     selectedLabelStyle:
                         const TextStyle(fontWeight: FontWeight.w600),
                     showUnselectedLabels: true,

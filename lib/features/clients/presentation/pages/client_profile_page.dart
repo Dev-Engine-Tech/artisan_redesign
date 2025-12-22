@@ -50,7 +50,8 @@ class ClientProfilePage extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline, color: AppColors.danger, size: 48),
+                        const Icon(Icons.error_outline,
+                            color: AppColors.danger, size: 48),
                         AppSpacing.spaceSM,
                         Text(
                           state.message,
@@ -62,8 +63,8 @@ class ClientProfilePage extends StatelessWidget {
                           text: 'Retry',
                           onPressed: () {
                             context.read<ClientProfileBloc>().add(
-                              LoadClientProfile(clientId: clientId),
-                            );
+                                  LoadClientProfile(clientId: clientId),
+                                );
                           },
                         ),
                       ],
@@ -75,11 +76,22 @@ class ClientProfilePage extends StatelessWidget {
 
             if (state is ClientProfileLoaded) {
               final profile = state.profile;
+              // Check if artisan has been hired (has any jobs with this client)
+              final hasBeenHired = profile.jobs.totalJobs > 0;
+
+              // ignore: avoid_print
+              print('[ClientProfile] Total jobs: ${profile.jobs.totalJobs}');
+              // ignore: avoid_print
+              print(
+                  '[ClientProfile] Recent: ${profile.jobs.recent.length}, Ongoing: ${profile.jobs.ongoing.length}, Completed: ${profile.jobs.completed.length}');
+              // ignore: avoid_print
+              print('[ClientProfile] Has been hired: $hasBeenHired');
+
               return RefreshIndicator(
                 onRefresh: () async {
                   context.read<ClientProfileBloc>().add(
-                    LoadClientProfile(clientId: clientId),
-                  );
+                        LoadClientProfile(clientId: clientId),
+                      );
                 },
                 child: ListView(
                   padding: const EdgeInsets.all(16),
@@ -92,7 +104,10 @@ class ClientProfilePage extends StatelessWidget {
                     if (profile.client.bio != null ||
                         profile.client.location.isNotEmpty ||
                         profile.client.email.isNotEmpty)
-                      ClientInfoCard(client: profile.client),
+                      ClientInfoCard(
+                        client: profile.client,
+                        hasBeenHired: hasBeenHired,
+                      ),
 
                     if (profile.client.bio != null ||
                         profile.client.location.isNotEmpty ||
@@ -107,15 +122,16 @@ class ClientProfilePage extends StatelessWidget {
                     if (profile.recentReviews.isNotEmpty) ...[
                       Text(
                         'Recent Reviews',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
                       ),
                       AppSpacing.spaceSM,
                       ...profile.recentReviews.map((review) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: ClientReviewItem(review: review),
-                      )),
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: ClientReviewItem(review: review),
+                          )),
                       AppSpacing.spaceLG,
                     ],
 

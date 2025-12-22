@@ -10,6 +10,7 @@ import 'package:artisans_circle/features/messages/domain/entities/conversation.d
     as domain;
 import 'package:artisans_circle/features/messages/presentation/manager/chat_manager.dart';
 import 'package:artisans_circle/core/theme.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 import 'package:artisans_circle/features/jobs/presentation/pages/apply_for_job_page.dart';
 import 'package:artisans_circle/features/jobs/presentation/bloc/job_bloc.dart';
 import 'package:artisans_circle/features/jobs/presentation/widgets/agreement_modal.dart';
@@ -107,14 +108,22 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       color: AppColors.softPink,
                       borderRadius: BorderRadius.circular(10)),
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54)),
+                    icon: Icon(Icons.arrow_back,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.54)),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
               )
             : null,
-        title:
-            Text('Job Details', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.87))),
+        title: Text('Job Details',
+            style: TextStyle(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.87))),
       ),
       body: SafeArea(
         child: Center(
@@ -132,19 +141,22 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                   onViewProfile: () {
                     // Debug logging for troubleshooting
                     // ignore: avoid_print
-                    print('[JobDetails] View Profile tapped: jobId=${job.id}, clientId="${job.clientId}", clientName="${job.clientName}"');
+                    print(
+                        '[JobDetails] View Profile tapped: jobId=${job.id}, clientId="${job.clientId}", clientName="${job.clientName}"');
                     final clientIdStr = job.clientId?.trim();
                     if (clientIdStr != null && clientIdStr.isNotEmpty) {
                       final clientId = int.tryParse(clientIdStr);
                       if (clientId != null) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => ClientProfilePage(clientId: clientId),
+                            builder: (_) =>
+                                ClientProfilePage(clientId: clientId),
                           ),
                         );
                       } else {
                         // ignore: avoid_print
-                        print('[JobDetails] Invalid client ID format: $clientIdStr');
+                        print(
+                            '[JobDetails] Invalid client ID format: $clientIdStr');
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Invalid client ID')),
                         );
@@ -178,7 +190,11 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
-                                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.45))),
                             if (job.invitationId != null) ...[
                               const SizedBox(height: 8),
                               _buildInvitationStatusBadge(context, job),
@@ -199,15 +215,23 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
-                                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45))),
+                                  ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.45))),
                           const SizedBox(height: 6),
-                          Text('₦${job.minBudget}k - ₦${job.maxBudget}k',
+                          Text(
+                              '${Currency.formatNgnCompact(job.minBudget)} - ${Currency.formatNgnCompact(job.maxBudget)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium
                                   ?.copyWith(
                                       fontWeight: FontWeight.w800,
-                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.87))),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.87))),
                         ],
                       ),
                     )
@@ -293,7 +317,8 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 // Primary job actions (dynamic by status)
                 JobActionButtons(
                   job: job,
-                  onAgreementView: () => _showAgreementModal(context, job.agreement!),
+                  onAgreementView: () =>
+                      _showAgreementModal(context, job.agreement!),
                 ),
 
                 AppSpacing.spaceMD,
@@ -343,13 +368,15 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                         const JobReviewItem(
                           name: 'Kate Henshaw',
                           date: 'May 02, 2025',
-                          body: 'Lorem ipsum dolor sit amet consectetur. Nunc fermentum praesent a sapien. Tristique turpis aliquet non mattis neque scelerisque semper.',
+                          body:
+                              'Lorem ipsum dolor sit amet consectetur. Nunc fermentum praesent a sapien. Tristique turpis aliquet non mattis neque scelerisque semper.',
                         ),
                         const Divider(height: 1),
                         const JobReviewItem(
                           name: 'John Doe',
                           date: 'Apr 25, 2025',
-                          body: 'Excellent work, timely delivery and great communication.',
+                          body:
+                              'Excellent work, timely delivery and great communication.',
                         ),
                         AppSpacing.spaceSM,
                         Padding(
@@ -445,7 +472,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 Text(
                   job.proposal!,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.54),
                       ),
                 ),
               ],
@@ -483,7 +513,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildInfoRow(
-                  'Payment', '₦${agreement.agreedPayment.toStringAsFixed(0)}'),
+                  'Payment', Currency.formatNgn(agreement.agreedPayment)),
               AppSpacing.spaceSM,
               _buildInfoRow(
                   'Delivery Date', _formatDate(agreement.deliveryDate)),
@@ -502,7 +532,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 agreement.comment,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.54),
                     ),
               ),
               AppSpacing.spaceLG,
@@ -556,7 +589,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 changeRequest.proposedChange,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.54),
                     ),
               ),
               AppSpacing.spaceMD,
@@ -570,7 +606,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               Text(
                 changeRequest.reason,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.54),
                     ),
               ),
             ],
@@ -613,9 +652,9 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       child: Text(
         status,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: statusColor,
-          fontWeight: FontWeight.w600,
-        ),
+              color: statusColor,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }
@@ -637,7 +676,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
           child: Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.54),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.54),
                 ),
           ),
         ),
@@ -645,7 +687,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
     );
   }
 
-/// Helper to get status color
+  /// Helper to get status color
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Accepted':

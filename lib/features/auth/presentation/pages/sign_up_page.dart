@@ -189,13 +189,17 @@ class _SignUpViewState extends State<_SignUpView> {
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.1),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimary
+                                    .withValues(alpha: 0.1),
                                 borderRadius: AppRadius.radiusLG,
                               ),
                               child: IconButton(
                                 icon: Icon(
                                   Icons.arrow_back_ios,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   size: 20,
                                 ),
                                 onPressed: () {
@@ -218,20 +222,27 @@ class _SignUpViewState extends State<_SignUpView> {
                         // Title and subtitle
                         Text(
                           _getStepTitle(state.step),
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w700,
-                            height: 1.2,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.w700,
+                                height: 1.2,
+                              ),
                         ),
 
                         AppSpacing.spaceSM,
 
                         Text(
                           _getStepSubtitle(state.step),
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.8),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary
+                                        .withValues(alpha: 0.8),
+                                  ),
                         ),
                       ],
                     ),
@@ -401,7 +412,9 @@ class _SignUpViewState extends State<_SignUpView> {
           // Or register with
           Row(
             children: [
-              Expanded(child: Divider(color: colorScheme.outline.withValues(alpha: 0.3))),
+              Expanded(
+                  child: Divider(
+                      color: colorScheme.outline.withValues(alpha: 0.3))),
               Padding(
                 padding: AppSpacing.horizontalLG,
                 child: Text(
@@ -411,7 +424,9 @@ class _SignUpViewState extends State<_SignUpView> {
                   ),
                 ),
               ),
-              Expanded(child: Divider(color: colorScheme.outline.withValues(alpha: 0.3))),
+              Expanded(
+                  child: Divider(
+                      color: colorScheme.outline.withValues(alpha: 0.3))),
             ],
           ),
 

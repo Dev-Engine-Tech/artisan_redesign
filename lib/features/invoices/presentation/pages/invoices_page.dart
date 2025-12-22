@@ -112,9 +112,11 @@ class _InvoicesPageState extends State<InvoicesPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(invoice.status, context).withValues(alpha: 0.1),
+                    color: _getStatusColor(invoice.status, context)
+                        .withValues(alpha: 0.1),
                     borderRadius: AppRadius.radiusLG,
-                    border: Border.all(color: _getStatusColor(invoice.status, context)),
+                    border: Border.all(
+                        color: _getStatusColor(invoice.status, context)),
                   ),
                   child: Text(
                     _getStatusText(invoice.status),
@@ -222,7 +224,8 @@ class _InvoicesPageState extends State<InvoicesPage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.more_vert, color: context.colorScheme.onSurfaceVariant),
+            icon: Icon(Icons.more_vert,
+                color: context.colorScheme.onSurfaceVariant),
             onPressed: () {
               // TODO: Implement more options
             },

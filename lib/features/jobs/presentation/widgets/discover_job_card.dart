@@ -4,6 +4,7 @@ import 'package:artisans_circle/core/widgets/optimized_image.dart';
 import 'package:artisans_circle/features/jobs/domain/entities/job.dart';
 import 'package:artisans_circle/core/theme.dart';
 import 'package:artisans_circle/core/services/job_share_service.dart';
+import 'package:artisans_circle/core/utils/currency.dart';
 
 /// Discover-specific job card updated to closely match the provided design:
 /// - large image banner with rounded corners
@@ -31,10 +32,8 @@ class DiscoverJobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = Theme.of(context)
-        .textTheme
-        .titleLarge
-        ?.copyWith(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black87);
+    final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black87);
     final subtitleStyle =
         Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.black87);
     final priceStyle = Theme.of(context)
@@ -152,8 +151,8 @@ class DiscoverJobCard extends StatelessWidget {
                             ),
                             child: Text(
                                 job.minBudget == job.maxBudget
-                                    ? 'Price\n₦${job.maxBudget.toStringAsFixed(0)}'
-                                    : 'Price Range\n₦${job.minBudget.toStringAsFixed(0)} - ₦${job.maxBudget.toStringAsFixed(0)}',
+                                    ? 'Price\n${Currency.formatNgn(job.maxBudget)}'
+                                    : 'Price Range\n${Currency.formatNgn(job.minBudget)} - ${Currency.formatNgn(job.maxBudget)}',
                                 textAlign: TextAlign.right,
                                 style: priceStyle),
                           ),
@@ -177,7 +176,9 @@ class DiscoverJobCard extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
-                                ?.copyWith(color: Colors.black87, fontWeight: FontWeight.w600)),
+                                ?.copyWith(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600)),
                       ),
                     ],
                   ),

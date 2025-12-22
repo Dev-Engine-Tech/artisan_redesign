@@ -100,7 +100,8 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
         elevation: 0,
         leading: BackButton(color: colorScheme.onSurface),
         title: Text('Take a selfie',
-            style: theme.textTheme.titleLarge?.copyWith(color: colorScheme.onSurface)),
+            style: theme.textTheme.titleLarge
+                ?.copyWith(color: colorScheme.onSurface)),
       ),
       body: SafeArea(
         child: _initializing
@@ -128,29 +129,35 @@ class _SelfieCapturePageState extends State<SelfieCapturePage> {
                                     width: 220,
                                     height: 220,
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                                      color: colorScheme.surfaceContainerHighest
+                                          .withValues(alpha: 0.5),
                                       borderRadius: BorderRadius.circular(110),
                                     ),
                                     child: Icon(Icons.person,
-                                        size: 64, color: colorScheme.onSurface.withValues(alpha: 0.5)),
+                                        size: 64,
+                                        color: colorScheme.onSurface
+                                            .withValues(alpha: 0.5)),
                                   ),
                                   AppSpacing.spaceLG,
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 24.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 24.0),
                                     child: Text(
                                       'Camera not available. Use simulated capture for tests/emulator.',
                                       textAlign: TextAlign.center,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: colorScheme.onSurface.withValues(alpha: 0.6),
+                                      style:
+                                          theme.textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurface
+                                            .withValues(alpha: 0.6),
                                       ),
                                     ),
                                   ),
                                   if (_error != null) ...[
                                     AppSpacing.spaceSM,
                                     Text(_error!,
-                                        style: theme.textTheme.bodySmall?.copyWith(
-                                            color: colorScheme.error)),
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                                color: colorScheme.error)),
                                   ],
                                 ],
                               ),

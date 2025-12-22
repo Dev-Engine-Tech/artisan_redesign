@@ -57,7 +57,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             borderRadius: AppRadius.radiusLG,
-            border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
+            border:
+                Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
           ),
           child: DropdownButtonFormField<String>(
             initialValue: value,
@@ -67,11 +68,13 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
             dropdownColor: colorScheme.surface,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.4)),
+              hintStyle: TextStyle(
+                  color: colorScheme.onSurface.withValues(alpha: 0.4)),
               border: InputBorder.none,
               contentPadding: AppSpacing.paddingLG,
               prefixIcon: prefixIcon != null
-                  ? Icon(prefixIcon, color: colorScheme.onSurface.withValues(alpha: 0.4))
+                  ? Icon(prefixIcon,
+                      color: colorScheme.onSurface.withValues(alpha: 0.4))
                   : null,
             ),
           ),
@@ -95,7 +98,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
           borderRadius: AppRadius.radiusLG,
           border: Border.all(
-            color: _docType == value ? AppColors.orange : colorScheme.outline.withValues(alpha: 0.2),
+            color: _docType == value
+                ? AppColors.orange
+                : colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Row(
@@ -117,7 +122,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: _docType == value ? AppColors.orange : colorScheme.onSurface.withValues(alpha: 0.4),
+                  color: _docType == value
+                      ? AppColors.orange
+                      : colorScheme.onSurface.withValues(alpha: 0.4),
                   width: 2,
                 ),
               ),
@@ -298,8 +305,10 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                 children: [
                                   Text(
                                     'Document Type',
-                                    style: theme.textTheme.labelMedium?.copyWith(
-                                      color: colorScheme.onSurface.withValues(alpha: 0.7),
+                                    style:
+                                        theme.textTheme.labelMedium?.copyWith(
+                                      color: colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -363,8 +372,10 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                 children: [
                                   Text(
                                     'Take a Selfie',
-                                    style: theme.textTheme.labelMedium?.copyWith(
-                                      color: colorScheme.onSurface.withValues(alpha: 0.7),
+                                    style:
+                                        theme.textTheme.labelMedium?.copyWith(
+                                      color: colorScheme.onSurface
+                                          .withValues(alpha: 0.7),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -473,8 +484,10 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
                                     Expanded(
                                       child: Text(
                                         'Your identity verification helps build trust with clients and protects your account. All documents are encrypted and stored securely.',
-                                        style: theme.textTheme.bodySmall?.copyWith(
-                                          color: colorScheme.onSurface.withValues(alpha: 0.8),
+                                        style:
+                                            theme.textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.onSurface
+                                              .withValues(alpha: 0.8),
                                         ),
                                       ),
                                     ),

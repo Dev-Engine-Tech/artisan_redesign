@@ -27,7 +27,9 @@ class HomeTabChip extends StatelessWidget {
               height: 40,
               padding: AppSpacing.horizontalSM,
               decoration: BoxDecoration(
-                color: selected ? context.softPinkColor : context.cardBackgroundColor,
+                color: selected
+                    ? context.softPinkColor
+                    : context.cardBackgroundColor,
                 borderRadius: AppRadius.radiusXXXL,
               ),
               child: Row(
@@ -43,7 +45,8 @@ class HomeTabChip extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                        color: context.colorScheme.surface, borderRadius: AppRadius.radiusLG),
+                        color: context.colorScheme.surface,
+                        borderRadius: AppRadius.radiusLG),
                     child: Text('56',
                         style: TextStyle(
                             fontSize: 10, color: context.brownHeaderColor)),

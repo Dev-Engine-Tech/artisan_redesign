@@ -111,14 +111,20 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
               AppSpacing.spaceMD,
               Text(
                 'Request Sent',
-                style: Theme.of(ctx).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(ctx)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
               AppSpacing.spaceMD,
               Text(
                 'Your change request has been sent successfully and the client has been notified.',
                 textAlign: TextAlign.center,
-                style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(color: ctx.colorScheme.onSurfaceVariant),
+                style: Theme.of(ctx)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: ctx.colorScheme.onSurfaceVariant),
               ),
               const SizedBox(height: 18),
               PrimaryButton(
@@ -169,13 +175,17 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                   color: context.softPinkColor,
                   borderRadius: BorderRadius.circular(10)),
               child: IconButton(
-                icon: Icon(Icons.arrow_back, color: context.colorScheme.onSurfaceVariant),
+                icon: Icon(Icons.arrow_back,
+                    color: context.colorScheme.onSurfaceVariant),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
           ),
           title: Text('Change Request',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w600)),
           centerTitle: true,
         ),
         backgroundColor: context.lightPeachColor,
@@ -197,21 +207,39 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Agreed Payment',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color:
+                                        context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 6),
                         Text('NGN ${job.minBudget}',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: context.brownHeaderColor,
-                                fontWeight: FontWeight.w700)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(
+                                    color: context.brownHeaderColor,
+                                    fontWeight: FontWeight.w700)),
                         AppSpacing.spaceMD,
                         Text('Agreed Delivery Date',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color:
+                                        context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 6),
                         Text('30/04/2024',
                             style: Theme.of(context).textTheme.bodyMedium),
                         AppSpacing.spaceMD,
                         Text('Comment',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    color:
+                                        context.colorScheme.onSurfaceVariant)),
                         const SizedBox(height: 6),
                         Text(job.description,
                             style: Theme.of(context).textTheme.bodyMedium),
@@ -220,7 +248,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 AppSpacing.spaceXL,
 
                 Text('Proposed Changes',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant)),
                 AppSpacing.spaceSM,
                 DropdownButtonFormField<String>(
                   initialValue: _proposedChange,
@@ -255,7 +284,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 // Dynamic fields based on selected proposed change
                 if (_proposedChange == 'price') ...[
                   Text('Proposed Price',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant)),
                   AppSpacing.spaceSM,
                   Container(
                     decoration: BoxDecoration(
@@ -286,7 +316,8 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                   AppSpacing.spaceMD,
                 ] else if (_proposedChange == 'delivery') ...[
                   Text('Proposed Delivery Date',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant)),
                   AppSpacing.spaceSM,
                   GestureDetector(
                     onTap: _pickDate,
@@ -316,12 +347,14 @@ class _ChangeRequestPageState extends State<ChangeRequestPage> {
                 ],
 
                 Text('Explain reasons for the proposed changes',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: context.colorScheme.onSurfaceVariant)),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant)),
                 AppSpacing.spaceSM,
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: context.colorScheme.tertiary.withValues(alpha: 0.7)),
+                        color: context.colorScheme.tertiary
+                            .withValues(alpha: 0.7)),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   padding: const EdgeInsets.all(6),

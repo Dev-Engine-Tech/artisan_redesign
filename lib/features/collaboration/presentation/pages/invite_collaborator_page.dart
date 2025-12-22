@@ -438,7 +438,7 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                               ),
                             ),
                             subtitle: const Text(
-                              'Specific amount in Naira',
+                              'Specific amount in NGN',
                               style: TextStyle(fontSize: 12),
                             ),
                             value: PaymentMethod.fixed,
@@ -463,7 +463,7 @@ class _InviteCollaboratorPageState extends State<InviteCollaboratorPage> {
                       decoration: InputDecoration(
                         labelText: _paymentMethod == PaymentMethod.percentage
                             ? 'Percentage (%)'
-                            : 'Amount (₦)',
+                            : 'Amount (NGN)',
                         hintText: _paymentMethod == PaymentMethod.percentage
                             ? 'e.g., 30'
                             : 'e.g., 50000',
