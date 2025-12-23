@@ -25,6 +25,12 @@ class UploadCatalogueStep2 extends StatelessWidget {
   final TextEditingController salesCategoryController;
   final bool warranty;
   final bool delivery;
+  final bool hotSale;
+  final TextEditingController? discountController;
+  final String? badge;
+  final List<String>? badges;
+  final ValueChanged<bool>? onHotSaleChanged;
+  final ValueChanged<String?>? onBadgeChanged;
   final ValueChanged<String?> onTimelineChanged;
   final ValueChanged<String> onSkillToggled;
   final ValueChanged<bool> onMaterialsChanged;
@@ -49,6 +55,12 @@ class UploadCatalogueStep2 extends StatelessWidget {
     required this.salesCategoryController,
     required this.warranty,
     required this.delivery,
+    this.hotSale = false,
+    this.discountController,
+    this.badge,
+    this.badges,
+    this.onHotSaleChanged,
+    this.onBadgeChanged,
     required this.onTimelineChanged,
     required this.onSkillToggled,
     required this.onMaterialsChanged,
@@ -107,6 +119,60 @@ class UploadCatalogueStep2 extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 18),
+        const Text('Promotion', style: TextStyle(fontWeight: FontWeight.w600)),
+        AppSpacing.spaceSM,
+        Container(
+          padding: AppSpacing.paddingMD,
+          decoration: BoxDecoration(
+              color: context.cardBackgroundColor,
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              SwitchListTile(
+                title: const Text('Hot sale'),
+                value: hotSale,
+                onChanged: onHotSaleChanged,
+              ),
+              AppSpacing.spaceSM,
+              TextField(
+                controller: discountController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  prefixText: '',
+                  suffixText: '%',
+                  filled: true,
+                  fillColor: context.cardBackgroundColor,
+                  hintText: 'Discount percent (0 - 99.99)',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                ),
+              ),
+              AppSpacing.spaceSM,
+              DropdownButtonFormField<String>(
+                value: badge,
+                items: (badges ?? const ['', 'new', 'hot', 'sale'])
+                    .map((b) => DropdownMenuItem(
+                        value: b, child: Text(b.isEmpty ? 'None' : b)))
+                    .toList(),
+                onChanged: onBadgeChanged,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: context.cardBackgroundColor,
+                  hintText: 'Badge',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 18),
         const Text('Product Timeline',

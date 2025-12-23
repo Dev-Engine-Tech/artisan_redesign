@@ -49,12 +49,16 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
 
   // Instant selling fields
   bool _instantSelling = false;
+  bool _hotSale = false;
   final TextEditingController _brandController = TextEditingController();
   String? _condition;
   final TextEditingController _salesCategoryController =
       TextEditingController();
   bool _warranty = false;
   bool _delivery = false;
+  final TextEditingController _discountController = TextEditingController();
+  final TextEditingController _priceNumericController = TextEditingController();
+  String? _badge; // '', 'new', 'hot', 'sale'
 
   final List<String> _conditions = ['Brand New', 'Foreign used', 'Local Used'];
 
@@ -90,6 +94,8 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
     _subCategoryIdController.dispose();
     _brandController.dispose();
     _salesCategoryController.dispose();
+    _discountController.dispose();
+    _priceNumericController.dispose();
     super.dispose();
   }
 
@@ -217,6 +223,14 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           projectTimeline: timelineValue,
           imagePaths: _media,
           instantSelling: _instantSelling,
+          hotSale: _hotSale,
+          discountPercent: _discountController.text.trim().isEmpty
+              ? null
+              : _discountController.text.trim(),
+          badge: _badge,
+          priceNumeric: _priceNumericController.text.trim().isEmpty
+              ? null
+              : num.tryParse(_priceNumericController.text.trim()),
           brand: _brandController.text.trim().isEmpty
               ? null
               : _brandController.text.trim(),
@@ -239,6 +253,14 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
           projectTimeline: timelineValue,
           newImagePaths: _media,
           instantSelling: _instantSelling,
+          hotSale: _hotSale,
+          discountPercent: _discountController.text.trim().isEmpty
+              ? null
+              : _discountController.text.trim(),
+          badge: _badge,
+          priceNumeric: _priceNumericController.text.trim().isEmpty
+              ? null
+              : num.tryParse(_priceNumericController.text.trim()),
           brand: _brandController.text.trim().isEmpty
               ? null
               : _brandController.text.trim(),
@@ -958,6 +980,10 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                   salesCategoryController: _salesCategoryController,
                   warranty: _warranty,
                   delivery: _delivery,
+                  hotSale: _hotSale,
+                  discountController: _discountController,
+                  badge: _badge,
+                  badges: const ['', 'new', 'hot', 'sale'],
                   onTimelineChanged: (v) => setState(() => _timeline = v),
                   onSkillToggled: (s) => setState(() {
                     if (_selectedSkills.contains(s)) {
@@ -973,6 +999,9 @@ class _UploadCataloguePageState extends State<UploadCataloguePage> {
                   onConditionChanged: (v) => setState(() => _condition = v),
                   onWarrantyChanged: (v) => setState(() => _warranty = v),
                   onDeliveryChanged: (v) => setState(() => _delivery = v),
+                  onHotSaleChanged: (v) =>
+                      setState(() => _hotSale = v ?? false),
+                  onBadgeChanged: (v) => setState(() => _badge = v),
                   onNext: _next,
                 ),
                 UploadCatalogueStep3(
