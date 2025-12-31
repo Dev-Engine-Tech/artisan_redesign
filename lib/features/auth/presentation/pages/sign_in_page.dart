@@ -334,8 +334,9 @@ class _SignInPageState extends State<SignInPage> {
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: TextAppButton(
+                                        child: SocialButton(
                                           text: 'Google',
+                                          iconAsset: 'assets/google_logo.png',
                                           onPressed: () => context
                                               .read<AuthBloc>()
                                               .add(
@@ -344,8 +345,9 @@ class _SignInPageState extends State<SignInPage> {
                                       ),
                                       AppSpacing.spaceLG,
                                       Expanded(
-                                        child: TextAppButton(
+                                        child: SocialButton(
                                           text: 'Apple',
+                                          iconAsset: 'assets/google_logo.png',
                                           onPressed: () => context
                                               .read<AuthBloc>()
                                               .add(

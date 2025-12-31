@@ -385,6 +385,99 @@ class TextAppButton extends StatelessWidget {
   }
 }
 
+/// Social login button with icon from assets
+///
+/// Example:
+/// ```dart
+/// SocialButton(
+///   text: 'Google',
+///   iconAsset: 'assets/icons/ic_google.svg',
+///   onPressed: () => _handleGoogleSignIn(),
+/// )
+/// ```
+class SocialButton extends StatelessWidget {
+  final String text;
+  final String iconAsset;
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  final double height;
+  final double? width;
+
+  const SocialButton({
+    required this.text,
+    required this.iconAsset,
+    super.key,
+    this.onPressed,
+    this.isLoading = false,
+    this.height = 56,
+    this.width,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return LayoutBuilder(builder: (context, constraints) {
+      final button = OutlinedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colorScheme.onSurface,
+          side: BorderSide(color: colorScheme.outline, width: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+        child: isLoading
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (iconAsset.endsWith('.svg'))
+                    // SVG support would require flutter_svg package
+                    Icon(Icons.login, size: 20)
+                  else
+                    Image.asset(
+                      iconAsset,
+                      height: 20,
+                      width: 20,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Icon(Icons.login, size: 20),
+                    ),
+                  const SizedBox(width: 12),
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+      );
+      if (width != null) {
+        return SizedBox(height: height, width: width, child: button);
+      }
+      if (constraints.hasBoundedWidth) {
+        return SizedBox(height: height, width: double.infinity, child: button);
+      }
+      return ConstrainedBox(
+        constraints: BoxConstraints(minHeight: height),
+        child: button,
+      );
+    });
+  }
+}
+
 /// Icon button with consistent styling
 ///
 /// Example:
