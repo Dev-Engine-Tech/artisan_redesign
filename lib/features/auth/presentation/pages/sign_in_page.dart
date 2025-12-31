@@ -336,7 +336,7 @@ class _SignInPageState extends State<SignInPage> {
                                       Expanded(
                                         child: SocialButton(
                                           text: 'Google',
-                                          iconAsset: 'assets/google_logo.png',
+                                          iconAsset: 'assets/icons/ic_google.svg',
                                           onPressed: () => context
                                               .read<AuthBloc>()
                                               .add(
@@ -347,7 +347,7 @@ class _SignInPageState extends State<SignInPage> {
                                       Expanded(
                                         child: SocialButton(
                                           text: 'Apple',
-                                          iconAsset: 'assets/google_logo.png',
+                                          iconAsset: 'assets/icons/ic_apple.svg',
                                           onPressed: () => context
                                               .read<AuthBloc>()
                                               .add(

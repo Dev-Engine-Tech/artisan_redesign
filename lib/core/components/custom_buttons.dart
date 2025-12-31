@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../theme.dart';
 
 /// Primary button with orange background - use for main CTAs
@@ -443,15 +444,20 @@ class SocialButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (iconAsset.endsWith('.svg'))
-                    // SVG support would require flutter_svg package
-                    Icon(Icons.login, size: 20)
+                    SvgPicture.asset(
+                      iconAsset,
+                      height: 20,
+                      width: 20,
+                      // ignore: deprecated_member_use
+                      color: null,
+                    )
                   else
                     Image.asset(
                       iconAsset,
                       height: 20,
                       width: 20,
                       errorBuilder: (context, error, stackTrace) =>
-                          Icon(Icons.login, size: 20),
+                          const Icon(Icons.login, size: 20),
                     ),
                   const SizedBox(width: 12),
                   Text(
